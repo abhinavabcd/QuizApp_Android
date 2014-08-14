@@ -1,4 +1,4 @@
-package com.amcolabs.quizapp;
+package com.amcolabs.quizapp.views;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -8,11 +8,19 @@ import android.content.Context;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
+import com.amcolabs.quizapp.AppManagerInterface;
+import com.amcolabs.quizapp.Question;
+import com.amcolabs.quizapp.User;
 import com.amcolabs.quizapp.User.ShortUserInfo;
+import com.amcolabs.quizapp.widgets.TimerView;
 
-public class ProgressiveQuiz extends LinearLayout{
-
+public class ProgressiveQuiz implements AppManagerInterface{
 	
+	int nPeople;
+	int nQuestions;
+    String quizType = "progressive";
+    String name = null;
+    
 	public LinearLayout clashScreen;
 	private LinearLayout questionView;
 	private LinearLayout headerView;
@@ -22,34 +30,28 @@ public class ProgressiveQuiz extends LinearLayout{
 	Question currentQuestion=null;
 	private boolean allUsersResponded;
 	
-	ProgressiveQuiz(Context context){
-		super(context);
-		timerView = new TimerView(-1){
-			public void onTimerEnd() {
-				ProgressiveQuiz.this.onTimerEnd(); 
-			};
-		};
-	}
-
-	public void start(){
+	public void start(Context context){
+		//inflate clash view 
+		//slide current view to right and destroy
+		//add clashview view
 		showWaitingScreen();
+		//TODO:server initialize websocket
 	}
-
+	@Override
+	public LinearLayout getView() {
+		return null;
+	}
 	
 	public void showWaitingScreen(){
 		showClashScreen(User.getShortUserInfo() , null);
 	}
-	
+ 	
 	private void showClashScreen(ShortUserInfo ... users) {
 		
 	}
 	
 	private void finalizeClashScreen(){
-		
-	}
-	
-	private void newUserJoined(ShortUserInfo userInfo){
-		
+		//animate for a second and start questions
 	}
 	
 	public void onQuestionsStarted(ArrayList<Question> questions){
@@ -93,5 +95,5 @@ public class ProgressiveQuiz extends LinearLayout{
 		// TODO Auto-generated method stub
 		
 	}
-	
+
 }
