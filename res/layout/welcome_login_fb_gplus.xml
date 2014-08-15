@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <ImageView
+        android:id="@+id/imageView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/logo" />
+
+    <com.amcolabs.quizapp.widgets.GothamTextView
+        android:id="@+id/textView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:paddingBottom="@dimen/normal_padding"
+        android:text="Welcome to the all new trivia app. This is one among the series of upcoming amazing trivia apps. \n Choose your style of login."
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+    
+        <Button
+        android:id="@+id/facebook_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/normal_padding"
+        android:background="#3b5998"
+        android:padding="@dimen/small_padding"
+        android:text="Login with Facebook"
+        android:textColor="@android:color/white"
+        />
+
+    <Button
+        android:id="@+id/google_plus_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/normal_padding"
+        android:background="#c83929"
+        android:padding="@dimen/small_padding"
+        android:text="Login with Google Plus"
+        android:textColor="@android:color/white"
+        />
+    <Button
+        android:id="@+id/signup_with_email"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/normal_padding"
+        android:background="#8BAB42"
+        android:padding="@dimen/small_padding"
+        android:text="SignUp with Email"
+        android:textColor="@android:color/white"
+        />
+    
+
+</LinearLayout>

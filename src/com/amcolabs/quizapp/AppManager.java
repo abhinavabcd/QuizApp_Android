@@ -3,9 +3,9 @@ package com.amcolabs.quizapp;
 import android.content.Context;
 import android.widget.LinearLayout;
 
-public class AppManager {
+public abstract class AppManager {
 	
-	private QuizApp quizApp;
+	protected QuizApp quizApp;
 	public AppManager(QuizApp quizApp) {
 		this.quizApp = quizApp;
 	}
@@ -13,7 +13,13 @@ public class AppManager {
 	public void start(Context context){
 		
 	}
+	
 	public LinearLayout getView(){
 		return null;
 	}
+	
+	public abstract void onScreenAdded(Screen screen);
+	public abstract void onScreenRemoved(Screen screen);
+	public abstract void animateNewScreen(Screen newScreen, Screen oldScreen);
+	public abstract Screen getCurrentScreen();
 }

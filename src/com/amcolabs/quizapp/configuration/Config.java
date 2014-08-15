@@ -23,7 +23,7 @@ import android.os.Environment;
 import android.util.DisplayMetrics;
 import android.widget.ImageButton;
 
-import com.amcolabs.quizapp.User;
+import com.amcolabs.quizapp.UserDeviceManager;
 import com.google.gson.Gson;
 import com.loopj.android.http.AsyncHttpClient;
 
@@ -54,13 +54,16 @@ public class Config{
 	public static final String sharingAppText = "Try this app \n "+playStoreUrl;
 	public static final int NOTIFICATION_ID_SERVER_PUSH = 10;
 	public static final String FORCE_APP_VERSION = "forceAppVersion";
+	public static final String PREF_ENCODED_KEY = "encodedKey";
+	public static final String PREF_NOT_ACTIVATED = "isNotActivated";
+	public static final String PREF_LAST_CATEGORIES_FETCH_TIME = "categoriesFetchTimeStamp";
 
 	public static File sdDir = new File(Environment.getExternalStorageDirectory().getPath());
 	
 	
 	private static double serverTime = 0;
 
-	private static DatabaseHelper dbhelper = null;//OpenHelperManager.getHelper(User.getCurrentActivity(), DatabaseHelper.class);
+	private static DatabaseHelper dbhelper = null;//OpenHelperManager.getHelper(UserDeviceManager.getCurrentActivity(), DatabaseHelper.class);
 
 	public static DatabaseHelper getDbhelper() {
 		return dbhelper;
@@ -102,14 +105,14 @@ public class Config{
 		metaTitles.add("During");
 		metaTitles.add("Subject");
 		sdDir.mkdir();
-		Config.serverTimeZoneDiff = Double.parseDouble(User.getPreference(Config.PREF_SERVER_TIME_DIFF , "0"));
+		Config.serverTimeZoneDiff = Double.parseDouble(UserDeviceManager.getPreference(Config.PREF_SERVER_TIME_DIFF , "0"));
 	}
 
 	public static void loadCategries(){	
         BufferedReader reader = null;
         StringBuilder out = new StringBuilder();
 		try {
-			reader = new BufferedReader(new InputStreamReader(User.getCurrentActivity().getAssets().open("CountryCodes.json")));
+			reader = new BufferedReader(new InputStreamReader(UserDeviceManager.getCurrentActivity().getAssets().open("CountryCodes.json")));
 	        String line;
 	        try {
 				while ((line = reader.readLine()) != null) {
@@ -157,7 +160,7 @@ public class Config{
 	public static void setServerTime(double serverTime , double webRequestTimeInNanos) {
 		Config.serverTime = serverTime;
 		Config.serverTimeZoneDiff = getCurrentTimeStamp() - (serverTime+ getElapsedTimeInSec(webRequestTimeInNanos)/2 );	
-		User.setPreference(Config.PREF_SERVER_TIME_DIFF , Double.toString(Config.serverTimeZoneDiff));
+		UserDeviceManager.setPreference(Config.PREF_SERVER_TIME_DIFF , Double.toString(Config.serverTimeZoneDiff));
 //		dbhelper.getUserPreferencesDataDao().createOrUpdate(new UserPreferences(Config.PREF_SERVER_TIME_DIFF, Double.toString(Config.serverTimeZoneDiff))); 
 	}
 

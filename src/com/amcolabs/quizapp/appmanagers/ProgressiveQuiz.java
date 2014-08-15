@@ -12,8 +12,8 @@ import com.amcolabs.quizapp.AppManager;
 import com.amcolabs.quizapp.Question;
 import com.amcolabs.quizapp.QuizApp;
 import com.amcolabs.quizapp.Screen;
-import com.amcolabs.quizapp.User;
-import com.amcolabs.quizapp.User.ShortUserInfo;
+import com.amcolabs.quizapp.ShortUserInfo;
+import com.amcolabs.quizapp.UserDeviceManager;
 import com.amcolabs.quizapp.widgets.TimerView;
 
 public class ProgressiveQuiz extends AppManager{
@@ -51,7 +51,7 @@ public class ProgressiveQuiz extends AppManager{
 	}
 	
 	public void showWaitingScreen(){
-		showClashScreen(User.getShortUserInfo() , null);
+		showClashScreen(quizApp.getUser().getShortUserInfo() , null);
 	}
  	
 	private void showClashScreen(ShortUserInfo ... users) {
@@ -102,6 +102,27 @@ public class ProgressiveQuiz extends AppManager{
 	protected void onTimerEnd() {
 		// TODO Auto-generated method stub
 		
+	}
+	
+	@Override
+	public void onScreenAdded(Screen screen) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void onScreenRemoved(Screen screen) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void animateNewScreen(Screen newScreen, Screen oldScreen) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public Screen getCurrentScreen() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }
