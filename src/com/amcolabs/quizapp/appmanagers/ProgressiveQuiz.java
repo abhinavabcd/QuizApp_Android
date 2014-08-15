@@ -1,4 +1,4 @@
-package com.amcolabs.quizapp.views;
+package com.amcolabs.quizapp.appmanagers;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -8,22 +8,30 @@ import android.content.Context;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
-import com.amcolabs.quizapp.AppManagerInterface;
+import com.amcolabs.quizapp.AppManager;
 import com.amcolabs.quizapp.Question;
+import com.amcolabs.quizapp.QuizApp;
+import com.amcolabs.quizapp.Screen;
 import com.amcolabs.quizapp.User;
 import com.amcolabs.quizapp.User.ShortUserInfo;
 import com.amcolabs.quizapp.widgets.TimerView;
 
-public class ProgressiveQuiz implements AppManagerInterface{
+public class ProgressiveQuiz extends AppManager{
 	
+	public ProgressiveQuiz(QuizApp quizApp) {
+		super(quizApp);
+		// TODO Auto-generated constructor stub
+	}
+
+
 	int nPeople;
 	int nQuestions;
     String quizType = "progressive";
     String name = null;
     
-	public LinearLayout clashScreen;
-	private LinearLayout questionView;
-	private LinearLayout headerView;
+	public Screen clashScreen;
+	private Screen questionView;
+	private Screen headerView;
 	private Map<String , ProgressBar> userProgressBars = new HashMap<String, ProgressBar>();
 	private TimerView timerView = null;
 	
