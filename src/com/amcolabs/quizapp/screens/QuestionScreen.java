@@ -7,6 +7,7 @@ import android.graphics.Bitmap;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 
+import com.amcolabs.quizapp.AppController;
 import com.amcolabs.quizapp.AppManager;
 import com.amcolabs.quizapp.Screen;
 
@@ -18,16 +19,11 @@ public class QuestionScreen extends Screen {
 	
 	private TableLayout mainTableView;
 	
-	public QuestionScreen(Context context, AppManager appManager) {
-		super(context,appManager);
-		initializeNew(context);
+	public QuestionScreen(AppController controller) {
+		super(controller);
 	}
 
 	public void loadQuestion(){
-		
-	}
-	
-	public void initializeNew(Context context){
 		
 	}
 }
