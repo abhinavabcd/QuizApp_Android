@@ -13,6 +13,9 @@ public class Screen extends TableLayout {
 		this.controller = controller;
 	}
 	
+	public QuizApp getApp(){
+		return controller.quizApp;
+	}
 	@Override
 	protected void onDraw(Canvas canvas) {
 		if(isInViewPort)

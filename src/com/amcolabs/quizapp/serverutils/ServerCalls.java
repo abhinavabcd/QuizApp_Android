@@ -74,7 +74,7 @@ public class ServerCalls {
 		}
 		if(map.containsKey(Config.FORCE_APP_VERSION)){ 
 			try{
-				Context context = quizApp.getContext().getApplicationContext();
+				Context context = quizApp.getApplicationContext();
 				PackageInfo pInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
 				int versionCode = pInfo.versionCode;
 				if(versionCode < Integer.parseInt(map.get(Config.FORCE_APP_VERSION))){
@@ -95,7 +95,7 @@ public class ServerCalls {
 		switch(code){
 			case FAILED:
 				if(serverErrorMsgShownCount++%4==0)
-					StaticPopupDialogBoxes.alertPrompt(quizApp.getFragmentManager(), UiText.SERVER_ERROR.getValue(), null);
+					StaticPopupDialogBoxes.alertPrompt(quizApp.getSupportFragmentManager(), UiText.SERVER_ERROR.getValue(), null);
 				break;
 		}
 	}

@@ -214,7 +214,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
     
     public static synchronized DatabaseHelper getHelper(QuizApp quizApp) {
         if (helper == null) {
-            helper = new DatabaseHelper(quizApp.getContext(), quizApp);
+            helper = new DatabaseHelper(quizApp.getApplicationContext(), quizApp);
             usageCounter.set(0);
         }
         usageCounter.incrementAndGet();

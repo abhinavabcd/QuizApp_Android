@@ -5,9 +5,10 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.EmptyStackException;
 import java.util.Stack;
 
-import android.app.Activity;
-import android.content.Context;
+import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
+import android.support.v7.app.ActionBarActivity;
+import android.view.Menu;
 import android.view.View;
 import android.view.animation.TranslateAnimation;
 import android.widget.FrameLayout;
@@ -19,8 +20,12 @@ import com.amcolabs.quizapp.serverutils.ServerCalls;
 import com.amcolabs.quizapp.uiutils.UiUtils;
 import com.amcolabs.quizapp.uiutils.UiUtils.UiText;
 
+public class QuizApp extends ActionBarActivity {
 
-public class QuizApp extends FrameLayout{
+
+
+	private FrameLayout mainFrame;
+
 	static final boolean FROM_LEFT = false;
 	static final boolean FROM_RIGHT = true;
 	static final boolean TO_LEFT = true;
@@ -34,18 +39,39 @@ public class QuizApp extends FrameLayout{
 	private DatabaseHelper dbHelper;
 	private boolean initializedDb;
 	private Config config;
-	
-	public QuizApp(Context context) {
-		super(context);
+
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		mainFrame = (FrameLayout)getLayoutInflater().inflate(R.layout.activity_main,null);
+		
+		setContentView(mainFrame);
 		userDeviceManager = new UserDeviceManager(this);//initialized preferences , device id , pertaining to device
 		config = new Config(this);
 		uiUtils = new UiUtils(this);
 		serverCalls = new ServerCalls(this);
-		this.addView(userDeviceManager.getLoadingView(context));
+		addView(userDeviceManager.getLoadingView(getApplicationContext()));
 		currentAppController = new Stack<AppController>();
 		currentAppController.setSize(2);
 		((UserHome)loadAppController(UserHome.class))
 			.checkAndShowLoginOrSignupScreen();
+	
+	}
+
+	private void addView(View view) {
+		mainFrame.addView(view);
+	}
+
+	private void removeView(Screen screen) {
+		mainFrame.removeView(screen);
+	}
+	
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+
+		// Inflate the menu; this adds items to the action bar if it is present.
+		getMenuInflater().inflate(R.menu.main, menu);
+		return true;
 	}
 	
 	public AppController loadAppController(Class<? extends AppController> clazz){
@@ -73,10 +99,6 @@ public class QuizApp extends FrameLayout{
 		return appController;
 	}
 	
-	public FragmentManager getFragmentManager() {
-		return getFragmentManager();
-	}
-
 	public UserDeviceManager getUserDeviceManager(){
 		return userDeviceManager;
 	}
@@ -155,5 +177,8 @@ public class QuizApp extends FrameLayout{
 		currentScreen.startAnimation(animate);
 		currentScreen.setVisibility(View.GONE);
 		removeView(currentScreen);
-	}	
+	}
+
+
+
 }

@@ -30,7 +30,7 @@ public abstract class AppController {
 	}
 
 	public Context getContext() {
-		return quizApp.getContext();
+		return quizApp.getApplicationContext();
 	}
 
 	public void removeScreen() {

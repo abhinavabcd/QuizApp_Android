@@ -114,15 +114,15 @@ public class UserHome  extends AppController implements OnInitializationComplete
 			}
 		});
 		
-		mSocialNetworkManager = (SocialNetworkManager) quizApp.getFragmentManager().findFragmentByTag(SOCIAL_NETWORK_TAG);
+		mSocialNetworkManager = (SocialNetworkManager) quizApp.getSupportFragmentManager().findFragmentByTag(SOCIAL_NETWORK_TAG);
 
         if (mSocialNetworkManager == null) {
-            mSocialNetworkManager = SocialNetworkManager.Builder.from(quizApp.getContext())
+            mSocialNetworkManager = SocialNetworkManager.Builder.from(quizApp.getApplicationContext())
                     .facebook(new ArrayList<String>())
                     .googlePlus()
                     .build();
-            quizApp.getFragmentManager().beginTransaction().add(mSocialNetworkManager, SOCIAL_NETWORK_TAG).commit();
-
+            quizApp.getSupportFragmentManager().beginTransaction().add(mSocialNetworkManager, SOCIAL_NETWORK_TAG).commit();
+ 
             mSocialNetworkManager.setOnInitializationCompleteListener(this);
         } else {
             // we need to setup buttons correctly, mSocialNetworkManager isn't null, so
