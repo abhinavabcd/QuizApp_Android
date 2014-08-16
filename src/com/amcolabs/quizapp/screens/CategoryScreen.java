@@ -7,8 +7,8 @@ import com.amcolabs.quizapp.Screen;
 
 public class CategoryScreen extends Screen {
 
-	public CategoryScreen(Context context, AppManager appManager) {
-		super(context, appManager);
+	public CategoryScreen(AppManager appManager) {
+		super(appManager);
 		// TODO Auto-generated constructor stub
 	}
 	

@@ -7,9 +7,8 @@ import com.amcolabs.quizapp.Screen;
 
 public class TopicsScreen extends Screen {
 
-	public TopicsScreen(Context context,AppManager appManager) {
-		super(context,appManager);
-		// TODO Auto-generated constructor stub
+	public TopicsScreen(AppManager appManager) {
+		super(appManager);
 	}
 
 }

@@ -7,8 +7,8 @@ import com.amcolabs.quizapp.Screen;
 
 public class LoginScreen extends Screen {
 
-	public LoginScreen(Context context,AppManager appManager) {
-		super(context,appManager);
+	public LoginScreen(AppManager appManager) {
+		super(appManager);
 	}
 	
 }

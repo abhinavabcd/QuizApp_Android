@@ -14,6 +14,7 @@ import com.amcolabs.quizapp.configuration.Config;
 import com.amcolabs.quizapp.screens.CategoryScreen;
 import com.amcolabs.quizapp.screens.LoginScreen;
 import com.amcolabs.quizapp.screens.WelcomeScreen;
+import com.amcolabs.quizapp.serverutils.ServerCalls;
 import com.androidsocialnetworks.lib.SocialNetwork;
 import com.androidsocialnetworks.lib.SocialNetworkManager;
 import com.androidsocialnetworks.lib.SocialNetworkManager.OnInitializationCompleteListener;
@@ -26,7 +27,6 @@ public class UserHome  extends AppManager implements OnInitializationCompleteLis
 	private static final String SOCIAL_NETWORK_TAG = "com.amcolabs.quizapp.loginscreen";
     protected SocialNetworkManager mSocialNetworkManager;
     protected boolean mSocialNetworkManagerInitialized = false;
-	private Screen currentScreen;
 
 	public UserHome(QuizApp quizApp) {
 		super(quizApp);
@@ -36,22 +36,72 @@ public class UserHome  extends AppManager implements OnInitializationCompleteLis
 //	public SignUpScreen signUpScreen;
 //	public CategoryScreen categoriesScreen;
 //	public TopicsScreen topicsScreen;
-	
+	 
 	@Override
 	public void start(Context context) {
 		String encodedKey = quizApp.getUserDeviceManager().getPreference(Config.PREF_ENCODED_KEY, null);
-		if(encodedKey!=null){
-			ServerCalls.getNewCategories(quizApp.getUserDeviceManager().getDoublePreference(Config.PREF_LAST_CATEGORIES_FETCH_TIME, 0));
+		if(encodedKey!=null){  
+			quizApp.getServerCalls().getNewCategories(quizApp.getUserDeviceManager().getDoublePreference(Config.PREF_LAST_CATEGORIES_FETCH_TIME, 0));
 			//on fetch update new categories and draw the categories
-			animateNewScreen(new CategoryScreen(context, this), null);
+			showCategoriesScreen();
 		}
 		else if(quizApp.getUserDeviceManager().getPreference(Config.PREF_NOT_ACTIVATED, null)!=null){
 			ServerCalls.checkVerificationStatus();// on ACTIVATED, save user quizApp setUser
 		}
 		else{
-			WelcomeScreen welcomeScreen = new WelcomeScreen(context, this);
-			animateNewScreen(welcomeScreen, null);
+			WelcomeScreen welcomeScreen = initializeWelcomeScreen();
+			addNewScreen(welcomeScreen);
 		}
+	}
+	
+	
+	@Override
+	public void removeScreen() {
+		if(currentScreen instanceof WelcomeScreen){
+			removeWelcomeScreen();
+		}
+		super.removeScreen();
+	}
+	
+	
+    public void removeWelcomeScreen() {//destroy msocialNetwork
+		 for (SocialNetwork socialNetwork : mSocialNetworkManager.getInitializedSocialNetworks()) {
+	            socialNetwork.cancelAll();
+        }
+		 super.removeScreen();
+    }
+	
+	public WelcomeScreen initializeWelcomeScreen(){
+		WelcomeScreen welcomeScreen = new WelcomeScreen(this);
+		welcomeScreen.getPlusButton().setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				onGooglePlusAction();
+			}
+		});
+		welcomeScreen.getPlusButton().setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				onFacebookAction();
+			}
+		});
+		
+		mSocialNetworkManager = (SocialNetworkManager) quizApp.getFragmentManager().findFragmentByTag(SOCIAL_NETWORK_TAG);
+
+        if (mSocialNetworkManager == null) {
+            mSocialNetworkManager = SocialNetworkManager.Builder.from(quizApp.getActivity())
+                    .facebook(new ArrayList<String>())
+                    .googlePlus()
+                    .build();
+            quizApp.getFragmentManager().beginTransaction().add(mSocialNetworkManager, SOCIAL_NETWORK_TAG).commit();
+
+            mSocialNetworkManager.setOnInitializationCompleteListener(this);
+        } else {
+            // we need to setup buttons correctly, mSocialNetworkManager isn't null, so
+            // we are sure that it was initialized
+            mSocialNetworkManagerInitialized = true;
+        }
+        return welcomeScreen;
 	}
 	
 	@Override
@@ -71,63 +121,7 @@ public class UserHome  extends AppManager implements OnInitializationCompleteLis
         mSocialNetworkManager.getGooglePlusSocialNetwork().requestLogin(this);
     }
     
-    @Override
-    public void animateNewScreen(Screen newScreen, Screen oldScreen){
-    	if(oldScreen!=null){
-	    	onScreenRemoved(oldScreen);
-	    	quizApp.removeView(oldScreen);
-    	}
-    	onScreenAdded(newScreen);
-    	quizApp.addView(newScreen);
-    	currentScreen = newScreen;
-    	//do some animation
-    }
-
-    @Override 
-    public void onScreenAdded(Screen screen) {
-    	if(screen instanceof LoginScreen){
-    		WelcomeScreen welcomeScreen = (WelcomeScreen)screen;
-    		welcomeScreen.getPlusButton().setOnClickListener(new OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					onGooglePlusAction();
-				}
-			});
-    		welcomeScreen.getPlusButton().setOnClickListener(new OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					onFacebookAction();
-				}
-			});
-    		
-    		mSocialNetworkManager = (SocialNetworkManager) quizApp.getFragmentManager().findFragmentByTag(SOCIAL_NETWORK_TAG);
-	
-	        if (mSocialNetworkManager == null) {
-	            mSocialNetworkManager = SocialNetworkManager.Builder.from(quizApp.getActivity())
-	                    .facebook(new ArrayList<String>())
-	                    .googlePlus()
-	                    .build();
-	            quizApp.getFragmentManager().beginTransaction().add(mSocialNetworkManager, SOCIAL_NETWORK_TAG).commit();
-	
-	            mSocialNetworkManager.setOnInitializationCompleteListener(this);
-	        } else {
-	            // we need to setup buttons correctly, mSocialNetworkManager isn't null, so
-	            // we are sure that it was initialized
-	            mSocialNetworkManagerInitialized = true;
-	        }
-    	}
-    	
-    }
-
-    @Override 
-    public void onScreenRemoved(Screen screen) {//destroy app managers
-    	if(screen instanceof LoginScreen){
-    		//cancel if any 
-    		 for (SocialNetwork socialNetwork : mSocialNetworkManager.getInitializedSocialNetworks()) {
-    	            socialNetwork.cancelAll();
-	         }
-    	}
-    }
+ 
     
     protected boolean checkIsLoginned(int socialNetworkID) {
         if (mSocialNetworkManager.getSocialNetwork(socialNetworkID).isConnected()) {

@@ -12,8 +12,8 @@ public class WelcomeScreen extends Screen {
 	Button googlePlusButton;
 	Button facebookPlusButton;
 	
-	public WelcomeScreen(Context context,AppManager appManager) {
-		super(context,appManager);
+	public WelcomeScreen(AppManager appManager) {
+		super(appManager);
 	}
 
 	public Button getPlusButton() {

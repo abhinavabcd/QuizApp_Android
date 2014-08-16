@@ -6,6 +6,7 @@ import android.widget.LinearLayout;
 public abstract class AppManager {
 	
 	protected QuizApp quizApp;
+	protected Screen currentScreen;
 	public AppManager(QuizApp quizApp) {
 		this.quizApp = quizApp;
 	}
@@ -18,8 +19,23 @@ public abstract class AppManager {
 		return null;
 	}
 	
-	public abstract void onScreenAdded(Screen screen);
-	public abstract void onScreenRemoved(Screen screen);
-	public abstract void animateNewScreen(Screen newScreen, Screen oldScreen);
-	public abstract Screen getCurrentScreen();
+	public void addNewScreen(Screen newScreen){
+		currentScreen = newScreen;
+    	quizApp.addView(newScreen);//do into animation
+	}
+	
+	public Screen getCurrentScreen(){
+		return currentScreen;
+	}
+
+	public Context getContext() {
+		return quizApp.getContext();
+	}
+
+	public void removeScreen() {
+		if(currentScreen!=null)
+			quizApp.removeView(currentScreen);//remove to side animation
+		currentScreen=null;
+	}
+	
 }

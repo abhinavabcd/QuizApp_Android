@@ -6,10 +6,9 @@ import android.widget.TableLayout;
 
 public class Screen extends TableLayout {
 	protected AppManager appManager = null;
-	public Screen(Context context , AppManager appManager) {
-		super(context);
+	public Screen(AppManager appManager) {
+		super(appManager.getContext());
 		this.appManager = appManager;
-		// TODO Auto-generated constructor stub
 	}
 
 }

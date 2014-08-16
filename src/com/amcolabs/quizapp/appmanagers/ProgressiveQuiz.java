@@ -105,21 +105,6 @@ public class ProgressiveQuiz extends AppManager{
 	}
 	
 	@Override
-	public void onScreenAdded(Screen screen) {
-		// TODO Auto-generated method stub
-		
-	}
-	@Override
-	public void onScreenRemoved(Screen screen) {
-		// TODO Auto-generated method stub
-		
-	}
-	@Override
-	public void animateNewScreen(Screen newScreen, Screen oldScreen) {
-		// TODO Auto-generated method stub
-		
-	}
-	@Override
 	public Screen getCurrentScreen() {
 		// TODO Auto-generated method stub
 		return null;
