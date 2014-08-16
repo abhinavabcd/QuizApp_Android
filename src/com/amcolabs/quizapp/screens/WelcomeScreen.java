@@ -5,15 +5,20 @@ import android.view.View;
 import android.widget.Button;
 
 import com.amcolabs.quizapp.AppController;
+import com.amcolabs.quizapp.QuizApp;
+import com.amcolabs.quizapp.R;
 import com.amcolabs.quizapp.Screen;
 
 public class WelcomeScreen extends Screen {
 
 	Button googlePlusButton;
-	Button facebookPlusButton;
+	Button facebookButton;
 	
-	public WelcomeScreen(AppController appManager) {
-		super(appManager);
+	public WelcomeScreen(AppController controller) {
+		super(controller);
+		View v = QuizApp.inflate(controller.getContext(), R.layout.welcome_login_fb_gplus, null);
+		googlePlusButton = (Button)v.findViewById(R.id.google_plus_button);
+		facebookButton = (Button)v.findViewById(R.id.facebook_button);
 	}
 
 	public Button getPlusButton() {
@@ -21,6 +26,6 @@ public class WelcomeScreen extends Screen {
 	}
 	
 	public Button getFacebookButton() {
-		return facebookPlusButton;
+		return facebookButton;
 	}
 }

@@ -6,11 +6,11 @@ import android.util.AttributeSet;
 import android.widget.TableLayout;
 
 public class Screen extends TableLayout {
-	protected AppController appManager = null;
+	protected AppController controller = null;
 	protected boolean isInViewPort = true;
-	public Screen(AppController appManager) {
-		super(appManager.getContext());
-		this.appManager = appManager;
+	public Screen(AppController controller) {
+		super(controller.getContext());
+		this.controller = controller;
 	}
 	
 	@Override

@@ -3,6 +3,7 @@ package com.amcolabs.quizapp;
 import java.util.Stack;
 
 import android.content.Context;
+import android.view.LayoutInflater;
 import android.widget.LinearLayout;
 
 public abstract class AppController {
@@ -14,7 +15,6 @@ public abstract class AppController {
 		screenStack = new Stack<Screen>();
 		screenStack.setSize(2);
 	}
-	
 	
 	public LinearLayout getView(){
 		return null;
