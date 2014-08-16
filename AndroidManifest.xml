@@ -2,11 +2,12 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.amcolabs.quizapp"
     android:versionCode="1"
-    android:versionName="1.0" >
+    android:versionName="0.1b" >
 
     <uses-sdk
-        android:minSdkVersion="8"
-        android:targetSdkVersion="19" />
+        android:minSdkVersion="9"
+        android:targetSdkVersion="19"
+        android:maxSdkVersion="29" />
 
     <application
         android:allowBackup="true"

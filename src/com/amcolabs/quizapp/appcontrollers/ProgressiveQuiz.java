@@ -1,4 +1,4 @@
-package com.amcolabs.quizapp.appmanagers;
+package com.amcolabs.quizapp.appcontrollers;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -8,15 +8,15 @@ import android.content.Context;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
-import com.amcolabs.quizapp.AppManager;
+import com.amcolabs.quizapp.AppController;
 import com.amcolabs.quizapp.Question;
 import com.amcolabs.quizapp.QuizApp;
 import com.amcolabs.quizapp.Screen;
-import com.amcolabs.quizapp.User;
-import com.amcolabs.quizapp.User.ShortUserInfo;
+import com.amcolabs.quizapp.ShortUserInfo;
+import com.amcolabs.quizapp.UserDeviceManager;
 import com.amcolabs.quizapp.widgets.TimerView;
 
-public class ProgressiveQuiz extends AppManager{
+public class ProgressiveQuiz extends AppController{
 	
 	public ProgressiveQuiz(QuizApp quizApp) {
 		super(quizApp);
@@ -38,20 +38,13 @@ public class ProgressiveQuiz extends AppManager{
 	Question currentQuestion=null;
 	private boolean allUsersResponded;
 	
-	public void start(Context context){
-		//inflate clash view 
-		//slide current view to right and destroy
-		//add clashview view
-		showWaitingScreen();
-		//TODO:server initialize websocket
-	}
 	@Override
 	public LinearLayout getView() {
 		return null;
 	}
 	
 	public void showWaitingScreen(){
-		showClashScreen(User.getShortUserInfo() , null);
+		showClashScreen(quizApp.getUser().getShortUserInfo() , null);
 	}
  	
 	private void showClashScreen(ShortUserInfo ... users) {
@@ -102,6 +95,12 @@ public class ProgressiveQuiz extends AppManager{
 	protected void onTimerEnd() {
 		// TODO Auto-generated method stub
 		
+	}
+	
+	@Override
+	public Screen getCurrentScreen() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }
