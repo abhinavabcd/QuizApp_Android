@@ -85,7 +85,7 @@ public class UserHome  extends AppController implements OnInitializationComplete
 
 	@Override
 	public void removeScreen() {
-		if(currentScreen instanceof WelcomeScreen){
+		if(getCurrentScreen() instanceof WelcomeScreen){
 			removeWelcomeScreen();
 		}
 		super.removeScreen();
@@ -132,10 +132,6 @@ public class UserHome  extends AppController implements OnInitializationComplete
         return welcomeScreen;
 	}
 	
-	@Override
-	public Screen getCurrentScreen() {
-		return currentScreen;
-	}
 	
 	public void onUserLoggedIn(User user){
 		quizApp.setUser(user);

@@ -20,6 +20,11 @@ import com.amcolabs.quizapp.uiutils.UiUtils.UiText;
 
 
 public class QuizApp extends FrameLayout{
+	static final boolean FROM_LEFT = false;
+	static final boolean FROM_RIGHT = true;
+	static final boolean TO_LEFT = true;
+	static final boolean TO_RIGHT = false;
+	
 	private User currentUser;
 	private Stack<AppController> currentAppController;
 	private UserDeviceManager userDeviceManager;
@@ -121,6 +126,7 @@ public class QuizApp extends FrameLayout{
 		if(!currentAppController.peek().onBackPressed()){
 			try{
 				AppController c = currentAppController.pop();
+				animateScreenIn(c.getCurrentScreen(), FROM_LEFT);
 			}
 			catch(EmptyStackException e) {
 				((UserHome)loadAppController(UserHome.class)).checkAndShowLoginOrSignupScreen();
@@ -129,7 +135,7 @@ public class QuizApp extends FrameLayout{
 	}
 
 	public void animateScreenIn(Screen newScreen) {
-		animateScreenIn(newScreen,true);
+		animateScreenIn(newScreen,FROM_RIGHT);
 	}
 
 	public void animateScreenIn(Screen newScreen, boolean fromRight){
@@ -141,7 +147,7 @@ public class QuizApp extends FrameLayout{
 	}
 	
 	public void animateScreenRemove(Screen currentScreen) {
-		animateScreenRemove(currentScreen, false);
+		animateScreenRemove(currentScreen, TO_LEFT);
 	}
 	
 	public void animateScreenRemove(Screen currentScreen , boolean toLeft) {

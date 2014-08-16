@@ -1,14 +1,18 @@
 package com.amcolabs.quizapp;
 
+import java.util.Stack;
+
 import android.content.Context;
 import android.widget.LinearLayout;
 
 public abstract class AppController {
 	
 	protected QuizApp quizApp;
-	protected Screen currentScreen;
+	protected Stack<Screen> screenStack;
 	public AppController(QuizApp quizApp) {
 		this.quizApp = quizApp;
+		screenStack = new Stack<Screen>();
+		screenStack.setSize(2);
 	}
 	
 	
@@ -17,12 +21,12 @@ public abstract class AppController {
 	}
 	
 	public void addNewScreen(Screen newScreen){
-		currentScreen = newScreen;
+		screenStack.push(newScreen);
     	quizApp.animateScreenIn(newScreen);//do into animation
 	}
 	
 	public Screen getCurrentScreen(){
-		return currentScreen;
+		return screenStack.peek();
 	}
 
 	public Context getContext() {
@@ -30,12 +34,18 @@ public abstract class AppController {
 	}
 
 	public void removeScreen() {
-		if(currentScreen!=null)
-			quizApp.animateScreenRemove(currentScreen);//remove to side animation
-		currentScreen=null;
+		if(!screenStack.isEmpty())
+			quizApp.animateScreenRemove(screenStack.pop());//remove to side animation
 	}
 
 	public boolean onBackPressed(){
+		if(!screenStack.isEmpty()){
+			quizApp.animateScreenRemove(screenStack.pop(), QuizApp.TO_RIGHT);//remove to side animation
+		}
+		if(!screenStack.isEmpty()){
+			quizApp.animateScreenRemove(screenStack.pop(), QuizApp.TO_LEFT);//remove to side animation
+			return true;
+		}
 		return false;
 	}
 }
