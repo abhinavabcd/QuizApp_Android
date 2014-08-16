@@ -1,6 +1,7 @@
 package com.amcolabs.quizapp.appmanagers;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import android.content.Context;
 import android.view.View;
@@ -11,8 +12,9 @@ import com.amcolabs.quizapp.QuizApp;
 import com.amcolabs.quizapp.Screen;
 import com.amcolabs.quizapp.User;
 import com.amcolabs.quizapp.configuration.Config;
+import com.amcolabs.quizapp.databaseutils.Category;
+import com.amcolabs.quizapp.helperclasses.DataInputListener;
 import com.amcolabs.quizapp.screens.CategoryScreen;
-import com.amcolabs.quizapp.screens.LoginScreen;
 import com.amcolabs.quizapp.screens.WelcomeScreen;
 import com.amcolabs.quizapp.serverutils.ServerCalls;
 import com.androidsocialnetworks.lib.SocialNetwork;
@@ -41,12 +43,19 @@ public class UserHome  extends AppManager implements OnInitializationCompleteLis
 	public void start(Context context) {
 		String encodedKey = quizApp.getUserDeviceManager().getPreference(Config.PREF_ENCODED_KEY, null);
 		if(encodedKey!=null){  
-			quizApp.getServerCalls().getNewCategories(quizApp.getUserDeviceManager().getDoublePreference(Config.PREF_LAST_CATEGORIES_FETCH_TIME, 0));
 			//on fetch update new categories and draw the categories
 			showCategoriesScreen();
 		}
 		else if(quizApp.getUserDeviceManager().getPreference(Config.PREF_NOT_ACTIVATED, null)!=null){
-			ServerCalls.checkVerificationStatus();// on ACTIVATED, save user quizApp setUser
+			quizApp.getServerCalls().checkVerificationStatus(new DataInputListener<String>(){
+				@Override
+				public String onData(String encodedKey) {
+					if(encodedKey!=null){
+						showCategoriesScreen();
+					}
+					return null;
+				}
+			});// on ACTIVATED, save user quizApp setUser
 		}
 		else{
 			WelcomeScreen welcomeScreen = initializeWelcomeScreen();
@@ -54,7 +63,23 @@ public class UserHome  extends AppManager implements OnInitializationCompleteLis
 		}
 	}
 	
+	private void updateCategoriesScreen(List<Category> categories) {
+		// TODO Auto-generated method stub
+		
+	};
 	
+	private void showCategoriesScreen() {
+		removeScreen();
+		List<Category> categories = quizApp.getDataBaseHelper().getCategories();
+		addNewScreen(new CategoryScreen(this));
+		quizApp.getServerCalls().getNewCategories(quizApp.getUserDeviceManager().getDoublePreference(Config.PREF_LAST_CATEGORIES_FETCH_TIME, 0), new DataInputListener<List<Category>>(){
+			public String onData(List<Category> s) {
+				updateCategoriesScreen(s);
+				return null;
+			}
+		});
+	}
+
 	@Override
 	public void removeScreen() {
 		if(currentScreen instanceof WelcomeScreen){

@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -23,11 +24,12 @@ import android.widget.ImageButton;
 
 import com.amcolabs.quizapp.QuizApp;
 import com.amcolabs.quizapp.UserDeviceManager;
+import com.amcolabs.quizapp.databaseutils.UserPreferences;
 import com.google.gson.Gson;
 
 public class Config{
 
-	public static final Gson gson = new Gson();
+	private final Gson gson = new Gson();
 	public static final String PREF_SERVER_TIME_DIFF = "serverTimeDiff";
 	public static final int RETRY_URL_COUNT = 1;
 	public static final String AD_UNIT_ID = "ca-app-pub-3957510202036052/9058751323";
@@ -59,27 +61,15 @@ public class Config{
 	public static final String NOTIFICATION_KEY_TEXT_MESSAGE = "message";
 	private QuizApp quizApp;
 
-	private DatabaseHelper dbhelper = null;//OpenHelperManager.getHelper(UserDeviceManager.getCurrentActivity(), DatabaseHelper.class);
 
 	public Config(QuizApp quizApp) {
 		this.quizApp = quizApp;
 		serverTimeZoneDiff = Double.parseDouble(quizApp.getUserDeviceManager().getPreference(Config.PREF_SERVER_TIME_DIFF , "0"));
 	}
 	
-	public static File sdDir = new File(Environment.getExternalStorageDirectory().getPath());
 	
 	
 	private static double serverTime = 0;
-
-
-	public DatabaseHelper getDbhelper() {
-		return dbhelper;
-	}
-
-	public void setDbhelper(DatabaseHelper dbhelper) {
-		Config.dbhelper = dbhelper;
-	}
-
 	public static double serverTimeZoneDiff = 0;
 	
 	public static double getCurrentServerTimeStamp(){
@@ -122,13 +112,17 @@ public class Config{
 
 	}
 	
-	public static void setServerTime(double serverTime , double webRequestTimeInNanos) {
+	public void setServerTime(double serverTime , double webRequestTimeInNanos) {
 		Config.serverTime = serverTime;
 		Config.serverTimeZoneDiff = getCurrentTimeStamp() - (serverTime+ getElapsedTimeInSec(webRequestTimeInNanos)/2 );	
-		UserDeviceManager.setPreference(Config.PREF_SERVER_TIME_DIFF , Double.toString(Config.serverTimeZoneDiff));
-//		dbhelper.getUserPreferencesDataDao().createOrUpdate(new UserPreferences(Config.PREF_SERVER_TIME_DIFF, Double.toString(Config.serverTimeZoneDiff))); 
+		quizApp.getUserDeviceManager().setPreference(Config.PREF_SERVER_TIME_DIFF , Double.toString(Config.serverTimeZoneDiff));
+		try {
+			quizApp.getDataBaseHelper().getUserPreferencesDao().createOrUpdate(new UserPreferences(Config.PREF_SERVER_TIME_DIFF, Double.toString(Config.serverTimeZoneDiff)));
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} 
 	}
-
+ 
 	public static double getMaxTime(){
 		return System.currentTimeMillis() + Double.valueOf("315360000000") ; // Ten years from now
 	}
@@ -146,5 +140,9 @@ public class Config{
 		if(Math.abs(a-b)<0.00002)
 			return true;
 		return false;
+	}
+
+	public Gson getGson() {
+		return gson;
 	}
 }

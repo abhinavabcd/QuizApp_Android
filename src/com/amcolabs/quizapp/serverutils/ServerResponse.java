@@ -30,7 +30,7 @@ public class ServerResponse {
 				
 				RATING_OK(220),
 				
-				OK(400), REG_SAVED(500);
+				OK(400), REG_SAVED(500), OK_NEW_CATEGORIES(240);
 
 				
 		private int value;

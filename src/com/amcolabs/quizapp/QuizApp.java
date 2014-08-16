@@ -4,6 +4,8 @@ import android.content.Context;
 import android.support.v4.app.FragmentManager;
 import android.widget.FrameLayout;
 
+import com.amcolabs.quizapp.configuration.Config;
+import com.amcolabs.quizapp.databaseutils.DatabaseHelper;
 import com.amcolabs.quizapp.serverutils.ServerCalls;
 import com.amcolabs.quizapp.uiutils.UiUtils;
 import com.amcolabs.quizapp.uiutils.UiUtils.UiText;
@@ -16,20 +18,16 @@ public class QuizApp extends FrameLayout{
 	private ServerCalls serverCalls;
 	private DatabaseHelper dbHelper;
 	private boolean initializedDb;
+	private Config config;
 	
 	public QuizApp(Context context) {
 		super(context);
 		userDeviceManager = new UserDeviceManager(this);//initialized preferences , device id , pertaining to device
+		config = new Config(this);
 		uiUtils = new UiUtils(this);
 		serverCalls = new ServerCalls(this);
 	}
 	
-	public void initializeDb(){
-		if(!initializedDb){
-			initializedDb = true;
-			dbHelper = new DataBaseHelper();
-		}
-	}
 	public FragmentManager getFragmentManager() {
 		return getFragmentManager();
 	}
@@ -67,5 +65,17 @@ public class QuizApp extends FrameLayout{
 	public ServerCalls getServerCalls() {
 		// TODO Auto-generated method stub
 		return serverCalls;
+	}
+
+	public Config getConfig() {
+		return config;
+	}
+
+	public DatabaseHelper getDataBaseHelper() {
+		if(!initializedDb){
+			initializedDb = true;
+			dbHelper = DatabaseHelper.getHelper(this);
+		}
+		return dbHelper;
 	}
 }

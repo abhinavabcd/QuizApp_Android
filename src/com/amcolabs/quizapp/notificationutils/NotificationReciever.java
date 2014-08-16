@@ -7,6 +7,7 @@ import android.os.Bundle;
 
 import com.amcolabs.quizapp.UserDeviceManager;
 import com.amcolabs.quizapp.configuration.Config;
+import com.amcolabs.quizapp.uiutils.UiUtils;
 
 
 
@@ -33,7 +34,8 @@ public class NotificationReciever extends BroadcastReceiver{
 				Bundle extras = intent.getExtras();
 				int temp = 0;
 				try{
-					temp = Integer.parseInt(extras.getString(Config.NOTIFICATION_KEY_MESSAGE_TYPE, "-1"));
+					String temp2 = extras.getString(Config.NOTIFICATION_KEY_MESSAGE_TYPE);
+					temp = temp2==null ? -1 : Integer.parseInt(temp2);
 				}
 				catch(ClassCastException e){
 					temp =0;

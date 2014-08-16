@@ -138,34 +138,4 @@ public class StaticPopupDialogBoxes {
 	 * @param onDismiss   set Whether to send True or False to listener when dismissed
 	 */
 
-	
-	public static void showInstructionsDailog(Context context){
-		if(context==null) return;
-		final TrackedDialog dialog = new TrackedDialog(context);
-		dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-		
-		dialog.setCanceledOnTouchOutside(false);
-		dialog.setCancelable(false);
-		ScrollView mainView  = (ScrollView)dialog.getLayoutInflater().inflate(R.layout.instructions_dialog, null);
-		Button btn = (Button) mainView.findViewById(R.id.Continuebutton);
-		btn.setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				dialog.dismiss();
-			}
-		});
-		
-		dialog.setContentView(mainView);
-		//dialog.setCanceledOnTouchOutside(false);
-		
-		WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
-	    lp.copyFrom(dialog.getWindow().getAttributes());
-	    lp.width = WindowManager.LayoutParams.MATCH_PARENT;
-	    lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
-	    dialog.setCanceledOnTouchOutside(false);
-//		openDialogs.add(dialog);
-		dialog.show();
-		dialog.getWindow().setAttributes(lp);
-	}
 }

@@ -14,6 +14,7 @@ import android.support.v4.app.FragmentActivity;
 
 import com.amcolabs.quizapp.QuizApp;
 import com.amcolabs.quizapp.configuration.Config;
+import com.amcolabs.quizapp.databaseutils.Category;
 import com.amcolabs.quizapp.helperclasses.DataInputListener;
 import com.amcolabs.quizapp.popups.StaticPopupDialogBoxes;
 import com.amcolabs.quizapp.serverutils.ServerResponse.MessageType;
@@ -54,7 +55,7 @@ public class ServerCalls {
 	public  HashMap<String,String> decodeConfigVariables(ServerResponse response){
 		HashMap<String,String> map = decodeConfigVariables(response.payload1);
 		if(map.containsKey(Config.PREF_SERVER_TIME)){
-			Config.setServerTime(Double.parseDouble(map.get(Config.PREF_SERVER_TIME)) , response.getResponseTime());
+			quizApp.getConfig().setServerTime(Double.parseDouble(map.get(Config.PREF_SERVER_TIME)) , response.getResponseTime());
 		}
 		return map;
 	}
@@ -64,8 +65,8 @@ public class ServerCalls {
 		HashMap<String,String> map = null;
 		if(fromRawJson==null || fromRawJson.equalsIgnoreCase(""))
 			return null;
-		try{
-			map = Config.gson.fromJson(fromRawJson , new TypeToken<HashMap<String,String>>(){}.getType());
+		try{ 
+			map = quizApp.getConfig().getGson().fromJson(fromRawJson , new TypeToken<HashMap<String,String>>(){}.getType());
 		}
 		catch(IllegalStateException e){
 			e.printStackTrace();
@@ -116,7 +117,7 @@ public class ServerCalls {
 						@Override
 						public void onSuccess(int arg0, Header[] arg1, byte[] responseBytes) {
 							String response = new String(responseBytes);
-						    ServerResponse serverResponse= Config.gson.fromJson(response, ServerResponse.class);
+						    ServerResponse serverResponse= quizApp.getConfig().getGson().fromJson(response, ServerResponse.class);
 						    serverResponse.setResponseTime(Config.getCurrentNanos() - nano1);
 						    MessageType messageType = serverResponse.getStatusCode();
 						    handleResponseCodes(messageType, serverResponse);
@@ -154,7 +155,7 @@ public class ServerCalls {
 				@Override
 				public void onSuccess(int arg0, Header[] arg1, byte[] responseBytes) {
 					String response = new String(responseBytes);					
-				    ServerResponse serverResponse= Config.gson.fromJson(response, ServerResponse.class);
+				    ServerResponse serverResponse= quizApp.getConfig().getGson().fromJson(response, ServerResponse.class);
 				    MessageType messageType = serverResponse.getStatusCode();
 				    serverResponse.setResponseTime(Config.getCurrentNanos() - nano1);
 				    
@@ -272,7 +273,7 @@ public class ServerCalls {
 	}
 
 
-	public void getNewCategories(double lastTimeStamp) {
+	public void getNewCategories(double lastTimeStamp , final DataInputListener<List<Category>> categoriesListener) {
 		String url = GET_NEW_CATEGORIES;
 		url+="&encodedKey="+quizApp.getUserDeviceManager().getEncodedKey();
 		url+="&lastTimeStamp="+Double.toString(lastTimeStamp);
@@ -281,10 +282,21 @@ public class ServerCalls {
 			public void onServerResponse(MessageType messageType, ServerResponse response) {
 				switch(messageType){
 					case OK_NEW_CATEGORIES:
-						
-					
+						List<Category> categories = quizApp.getConfig().getGson().fromJson(response.payload, new TypeToken<List<Category>>(){}.getType());
+						if(categoriesListener!=null && categories.size()>0){
+							categoriesListener.onData(categories);
+						}
+						 break;
+					default:
+						break;
 				}
 			}
 		});
+	}
+
+
+	public void checkVerificationStatus(DataInputListener<String> dataInputListener) {
+		// TODO Auto-generated method stub
+		
 	}
 }

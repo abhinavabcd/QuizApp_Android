@@ -9,7 +9,6 @@ public class CategoryScreen extends Screen {
 
 	public CategoryScreen(AppManager appManager) {
 		super(appManager);
-		// TODO Auto-generated constructor stub
 	}
 	
 	public void showSpecialTopics(){
