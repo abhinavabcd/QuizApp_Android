@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:ProgressWheel="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/mainHeaderLayout"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal" >
+
+    <LinearLayout
+        android:id="@+id/usersLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="left"
+        android:layout_weight="5"
+        android:orientation="vertical" >
+
+        <include
+            android:id="@+id/user1"
+            layout="@layout/user_quiz_progress" />
+
+        <include
+            android:id="@+id/user2"
+            layout="@layout/user_quiz_progress" />
+    </LinearLayout>
+
+    <com.amcolabs.quizapp.widgets.TimerView
+        android:id="@+id/timerView"
+        android:layout_gravity="right|bottom"
+        android:layout_weight="1" 
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        ProgressWheel:barColor="#339BB9"
+        ProgressWheel:barLength="30dp"
+        ProgressWheel:barWidth="10dp"
+        ProgressWheel:rimColor="#44000000"
+        ProgressWheel:rimWidth="10dp"
+        ProgressWheel:spinSpeed="3dp"
+        ProgressWheel:textColor="#222222"
+        ProgressWheel:textSize="14sp"/>
+
+</LinearLayout>

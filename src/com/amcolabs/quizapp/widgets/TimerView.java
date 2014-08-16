@@ -83,7 +83,8 @@ public class TimerView extends View{
 	double startTime = 0;
 	double elapsedTimeInSeconds = 0;
 	
-	public void startTimer(){
+	public void startTimer(int timerSeconds){
+		timerInSeconds = timerSeconds;
 		startTime = Config.getCurrentNanos();
 		running = true;
 		
