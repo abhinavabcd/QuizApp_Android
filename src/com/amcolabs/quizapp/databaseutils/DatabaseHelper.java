@@ -46,16 +46,16 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 	private RuntimeExceptionDao<UserPreferences, Integer> userPreferencesRuntimeDao;
 
 	QuizApp quizApp = null;
-    public DatabaseHelper(Context context , QuizApp quizApp) {
-    	super(context, DATABASE_PATH+DATABASE_NAME, null, DATABASE_VERSION, R.raw.ormlite_config);
+    public DatabaseHelper(QuizApp quizApp) {
+    	super(quizApp, DATABASE_PATH+DATABASE_NAME, null, DATABASE_VERSION, R.raw.ormlite_config);
     	this.quizApp = quizApp;
 //    	if(Config.IS_TEST_BUILD)
 //    		FileHelper.deleteFile("databases", DATABASE_NAME);//delete the existing db file
     	
-        boolean dbexist = FileHelper.isFileExists(context , "databases" , DATABASE_NAME); 
+        boolean dbexist = FileHelper.isFileExists(quizApp , "databases" , DATABASE_NAME); 
         if (!dbexist || (quizApp!=null && quizApp.getUserDeviceManager().hasJustInstalled)) {
             try {
-                InputStream myinput = context.getAssets().open(DATABASE_NAME);
+                InputStream myinput = quizApp.getAssets().open(DATABASE_NAME);
                 String outfilename = DATABASE_PATH + DATABASE_NAME;
                 Log.i(DatabaseHelper.class.getName(), "DB Path : " + outfilename);
                 File newDB = new File(DATABASE_PATH);
@@ -214,7 +214,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
     
     public static synchronized DatabaseHelper getHelper(QuizApp quizApp) {
         if (helper == null) {
-            helper = new DatabaseHelper(quizApp.getApplicationContext(), quizApp);
+            helper = new DatabaseHelper(quizApp);
             usageCounter.set(0);
         }
         usageCounter.incrementAndGet();

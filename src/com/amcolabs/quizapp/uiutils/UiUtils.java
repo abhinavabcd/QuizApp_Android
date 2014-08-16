@@ -74,7 +74,7 @@ public class UiUtils {
 		try{
 			if(uiBlockCount==0){
 				preloaderText = UiText.TEXT_LOADING.getValue();
-				preloader = ProgressDialog.show(quizApp.getApplicationContext(), "", preloaderText, true);
+				preloader = ProgressDialog.show(quizApp, "", preloaderText, true);
 			}
 			uiBlockCount++;
 		}
@@ -88,7 +88,7 @@ public class UiUtils {
 		try{
 		if(uiBlockCount==0){
 			preloaderText = text;
-			preloader = ProgressDialog.show(quizApp.getApplicationContext(), "", text, true);
+			preloader = ProgressDialog.show(quizApp, "", text, true);
 		}
 		else{
 			preloaderText = preloaderText+ ("\n"+text);

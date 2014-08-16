@@ -74,7 +74,7 @@ public class ServerCalls {
 		}
 		if(map.containsKey(Config.FORCE_APP_VERSION)){ 
 			try{
-				Context context = quizApp.getApplicationContext();
+				Context context = quizApp;
 				PackageInfo pInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
 				int versionCode = pInfo.versionCode;
 				if(versionCode < Integer.parseInt(map.get(Config.FORCE_APP_VERSION))){
