@@ -187,9 +187,9 @@ public class UserHome  extends AppController implements OnInitializationComplete
 	}
 	
 	@Override
-	public void onBackPressed() {
+	public boolean onBackPressed() {
 		// TODO Auto-generated method stub
-		super.onBackPressed();
+		return super.onBackPressed();
 	}
 }
 

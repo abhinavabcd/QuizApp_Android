@@ -18,7 +18,7 @@ public abstract class AppController {
 	
 	public void addNewScreen(Screen newScreen){
 		currentScreen = newScreen;
-    	quizApp.addView(newScreen);//do into animation
+    	quizApp.animateScreenIn(newScreen);//do into animation
 	}
 	
 	public Screen getCurrentScreen(){
@@ -31,12 +31,11 @@ public abstract class AppController {
 
 	public void removeScreen() {
 		if(currentScreen!=null)
-			quizApp.removeView(currentScreen);//remove to side animation
+			quizApp.animateScreenRemove(currentScreen);//remove to side animation
 		currentScreen=null;
 	}
 
-	public void onBackPressed() {
-		
+	public boolean onBackPressed(){
+		return false;
 	}
-	
 }

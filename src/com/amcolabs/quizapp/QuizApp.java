@@ -2,9 +2,13 @@ package com.amcolabs.quizapp;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.EmptyStackException;
+import java.util.Stack;
 
 import android.content.Context;
 import android.support.v4.app.FragmentManager;
+import android.view.View;
+import android.view.animation.TranslateAnimation;
 import android.widget.FrameLayout;
 
 import com.amcolabs.quizapp.appcontrollers.UserHome;
@@ -17,7 +21,7 @@ import com.amcolabs.quizapp.uiutils.UiUtils.UiText;
 
 public class QuizApp extends FrameLayout{
 	private User currentUser;
-	private AppController currentAppController;
+	private Stack<AppController> currentAppController;
 	private UserDeviceManager userDeviceManager;
 	private UiUtils uiUtils;
 	private ServerCalls serverCalls;
@@ -31,31 +35,35 @@ public class QuizApp extends FrameLayout{
 		config = new Config(this);
 		uiUtils = new UiUtils(this);
 		serverCalls = new ServerCalls(this);
+		currentAppController = new Stack<AppController>();
+		currentAppController.setSize(2);
 		((UserHome)loadAppController(UserHome.class))
 			.checkAndShowLoginOrSignupScreen();
 	}
 	
 	public AppController loadAppController(Class<? extends AppController> clazz){
+		AppController appController=null; 
 		try {
 			Constructor<?> constructor = clazz.getConstructor(QuizApp.class);
-			currentAppController = (AppController) constructor.newInstance(this);
+			appController =(AppController) constructor.newInstance(this);
 		} catch (NoSuchMethodException e) {
-			currentAppController = new UserHome(this);
+			appController = new UserHome(this);
 			e.printStackTrace();
 		} catch (InstantiationException e) {
-			currentAppController = new UserHome(this);
+			appController = new UserHome(this);
 			e.printStackTrace();
 		} catch (IllegalAccessException e) {
-			currentAppController = new UserHome(this);
+			appController = new UserHome(this);
 			e.printStackTrace();
 		} catch (IllegalArgumentException e) {
-			currentAppController = new UserHome(this);
+			appController = new UserHome(this);
 			e.printStackTrace();
 		} catch (InvocationTargetException e) {
-			currentAppController = new UserHome(this);
+			appController = new UserHome(this);
 			e.printStackTrace();
 		}
-		return currentAppController;
+		currentAppController.push(appController);
+		return appController;
 	}
 	
 	public FragmentManager getFragmentManager() {
@@ -110,6 +118,38 @@ public class QuizApp extends FrameLayout{
 	}
 
 	public void onBackPressed() {
-		currentAppController.onBackPressed();
+		if(!currentAppController.peek().onBackPressed()){
+			try{
+				AppController c = currentAppController.pop();
+			}
+			catch(EmptyStackException e) {
+				((UserHome)loadAppController(UserHome.class)).checkAndShowLoginOrSignupScreen();
+			}
+		}
 	}
+
+	public void animateScreenIn(Screen newScreen) {
+		animateScreenIn(newScreen,true);
+	}
+
+	public void animateScreenIn(Screen newScreen, boolean fromRight){
+		addView(newScreen);
+		TranslateAnimation animate = new TranslateAnimation((fromRight?1:-1) *newScreen.getWidth(),0,0,0);
+		animate.setDuration(500);
+		animate.setFillAfter(true);
+		newScreen.startAnimation(animate);
+	}
+	
+	public void animateScreenRemove(Screen currentScreen) {
+		animateScreenRemove(currentScreen, false);
+	}
+	
+	public void animateScreenRemove(Screen currentScreen , boolean toLeft) {
+		TranslateAnimation animate = new TranslateAnimation(0,(toLeft?-1:1)*currentScreen.getWidth(),0,0);
+		animate.setDuration(500);
+		animate.setFillAfter(true);
+		currentScreen.startAnimation(animate);
+		currentScreen.setVisibility(View.GONE);
+		removeView(currentScreen);
+	}	
 }
