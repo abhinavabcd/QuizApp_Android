@@ -3,17 +3,14 @@ package com.amcolabs.quizapp;
 import android.content.Context;
 import android.widget.LinearLayout;
 
-public abstract class AppManager {
+public abstract class AppController {
 	
 	protected QuizApp quizApp;
 	protected Screen currentScreen;
-	public AppManager(QuizApp quizApp) {
+	public AppController(QuizApp quizApp) {
 		this.quizApp = quizApp;
 	}
 	
-	public void start(Context context){
-		
-	}
 	
 	public LinearLayout getView(){
 		return null;
@@ -36,6 +33,10 @@ public abstract class AppManager {
 		if(currentScreen!=null)
 			quizApp.removeView(currentScreen);//remove to side animation
 		currentScreen=null;
+	}
+
+	public void onBackPressed() {
+		
 	}
 	
 }

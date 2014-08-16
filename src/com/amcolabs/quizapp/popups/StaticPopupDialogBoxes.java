@@ -12,7 +12,7 @@ import java.util.TimeZone;
 import com.amcolabs.quizapp.QuizApp;
 import com.amcolabs.quizapp.R;
 import com.amcolabs.quizapp.UserDeviceManager;
-import com.amcolabs.quizapp.helperclasses.DataInputListener;
+import com.amcolabs.quizapp.datalisteners.DataInputListener;
 
 import android.app.Activity;
 import android.app.AlertDialog;

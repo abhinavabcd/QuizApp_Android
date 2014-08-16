@@ -4,7 +4,7 @@ import android.content.Context;
 import android.view.View;
 import android.widget.Button;
 
-import com.amcolabs.quizapp.AppManager;
+import com.amcolabs.quizapp.AppController;
 import com.amcolabs.quizapp.Screen;
 
 public class WelcomeScreen extends Screen {
@@ -12,7 +12,7 @@ public class WelcomeScreen extends Screen {
 	Button googlePlusButton;
 	Button facebookPlusButton;
 	
-	public WelcomeScreen(AppManager appManager) {
+	public WelcomeScreen(AppController appManager) {
 		super(appManager);
 	}
 

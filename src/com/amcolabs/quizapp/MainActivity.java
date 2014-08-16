@@ -13,14 +13,23 @@ import android.os.Build;
 
 public class MainActivity extends ActionBarActivity {
 
+	private QuizApp quizApp;
+
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-
+		quizApp = new QuizApp(this);
 		if (savedInstanceState == null) {
 			getSupportFragmentManager().beginTransaction()
-					.add(R.id.container, new PlaceholderFragment()).commit();
+					.add(R.id.container, new Fragment(){
+											@Override
+											public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
+												return quizApp;
+											}
+										}
+					).commit();
 		}
 	}
 
@@ -44,20 +53,9 @@ public class MainActivity extends ActionBarActivity {
 		return super.onOptionsItemSelected(item);
 	}
 
-	/**
-	 * A placeholder fragment containing a simple view.
-	 */
-	public static class PlaceholderFragment extends Fragment {
-
-		public PlaceholderFragment() {
-		}
-
-		@Override
-		public View onCreateView(LayoutInflater inflater, ViewGroup container,
-				Bundle savedInstanceState) {
-			View rootView = inflater.inflate(R.layout.fragment_main, container,
-					false);
-			return rootView;
-		}
+	
+	@Override
+	public void onBackPressed() {
+		quizApp.onBackPressed();
 	}
 }

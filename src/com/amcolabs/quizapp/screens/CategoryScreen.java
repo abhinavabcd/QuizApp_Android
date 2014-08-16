@@ -2,12 +2,12 @@ package com.amcolabs.quizapp.screens;
 
 import android.content.Context;
 
-import com.amcolabs.quizapp.AppManager;
+import com.amcolabs.quizapp.AppController;
 import com.amcolabs.quizapp.Screen;
 
 public class CategoryScreen extends Screen {
 
-	public CategoryScreen(AppManager appManager) {
+	public CategoryScreen(AppController appManager) {
 		super(appManager);
 	}
 	

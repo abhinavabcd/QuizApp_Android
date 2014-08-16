@@ -1,4 +1,4 @@
-package com.amcolabs.quizapp.appmanagers;
+package com.amcolabs.quizapp.appcontrollers;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -7,13 +7,13 @@ import android.content.Context;
 import android.view.View;
 import android.view.View.OnClickListener;
 
-import com.amcolabs.quizapp.AppManager;
+import com.amcolabs.quizapp.AppController;
 import com.amcolabs.quizapp.QuizApp;
 import com.amcolabs.quizapp.Screen;
 import com.amcolabs.quizapp.User;
 import com.amcolabs.quizapp.configuration.Config;
 import com.amcolabs.quizapp.databaseutils.Category;
-import com.amcolabs.quizapp.helperclasses.DataInputListener;
+import com.amcolabs.quizapp.datalisteners.DataInputListener;
 import com.amcolabs.quizapp.screens.CategoryScreen;
 import com.amcolabs.quizapp.screens.WelcomeScreen;
 import com.amcolabs.quizapp.serverutils.ServerCalls;
@@ -24,7 +24,7 @@ import com.androidsocialnetworks.lib.listener.OnLoginCompleteListener;
 import com.androidsocialnetworks.lib.listener.OnRequestSocialPersonCompleteListener;
 import com.androidsocialnetworks.lib.persons.SocialPerson;
 
-public class UserHome  extends AppManager implements OnInitializationCompleteListener, OnLoginCompleteListener, OnRequestSocialPersonCompleteListener{
+public class UserHome  extends AppController implements OnInitializationCompleteListener, OnLoginCompleteListener, OnRequestSocialPersonCompleteListener{
 	 
 	private static final String SOCIAL_NETWORK_TAG = "com.amcolabs.quizapp.loginscreen";
     protected SocialNetworkManager mSocialNetworkManager;
@@ -39,23 +39,15 @@ public class UserHome  extends AppManager implements OnInitializationCompleteLis
 //	public CategoryScreen categoriesScreen;
 //	public TopicsScreen topicsScreen;
 	 
-	@Override
-	public void start(Context context) {
+	
+	public void checkAndShowLoginOrSignupScreen(){
 		String encodedKey = quizApp.getUserDeviceManager().getPreference(Config.PREF_ENCODED_KEY, null);
 		if(encodedKey!=null){  
 			//on fetch update new categories and draw the categories
 			showCategoriesScreen();
 		}
 		else if(quizApp.getUserDeviceManager().getPreference(Config.PREF_NOT_ACTIVATED, null)!=null){
-			quizApp.getServerCalls().checkVerificationStatus(new DataInputListener<String>(){
-				@Override
-				public String onData(String encodedKey) {
-					if(encodedKey!=null){
-						showCategoriesScreen();
-					}
-					return null;
-				}
-			});// on ACTIVATED, save user quizApp setUser
+			checkAndShowVerificationScreen();
 		}
 		else{
 			WelcomeScreen welcomeScreen = initializeWelcomeScreen();
@@ -63,8 +55,19 @@ public class UserHome  extends AppManager implements OnInitializationCompleteLis
 		}
 	}
 	
+	private void checkAndShowVerificationScreen() {
+		quizApp.getServerCalls().checkVerificationStatus(new DataInputListener<String>(){
+			@Override
+			public String onData(String encodedKey) {
+				if(encodedKey!=null){
+					showCategoriesScreen();
+				}
+				return null;
+			}
+		});// on ACTIVATED, save user quizApp setUser
+	}
+
 	private void updateCategoriesScreen(List<Category> categories) {
-		// TODO Auto-generated method stub
 		
 	};
 	
@@ -181,6 +184,12 @@ public class UserHome  extends AppManager implements OnInitializationCompleteLis
 
 	@Override
 	public void onRequestSocialPersonSuccess(int socialNetworkId,SocialPerson socialPerson) {		
+	}
+	
+	@Override
+	public void onBackPressed() {
+		// TODO Auto-generated method stub
+		super.onBackPressed();
 	}
 }
 

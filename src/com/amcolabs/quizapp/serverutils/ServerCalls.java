@@ -15,7 +15,7 @@ import android.support.v4.app.FragmentActivity;
 import com.amcolabs.quizapp.QuizApp;
 import com.amcolabs.quizapp.configuration.Config;
 import com.amcolabs.quizapp.databaseutils.Category;
-import com.amcolabs.quizapp.helperclasses.DataInputListener;
+import com.amcolabs.quizapp.datalisteners.DataInputListener;
 import com.amcolabs.quizapp.popups.StaticPopupDialogBoxes;
 import com.amcolabs.quizapp.serverutils.ServerResponse.MessageType;
 import com.amcolabs.quizapp.uiutils.UiUtils;

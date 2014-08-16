@@ -1,9 +1,13 @@
 package com.amcolabs.quizapp;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+
 import android.content.Context;
 import android.support.v4.app.FragmentManager;
 import android.widget.FrameLayout;
 
+import com.amcolabs.quizapp.appcontrollers.UserHome;
 import com.amcolabs.quizapp.configuration.Config;
 import com.amcolabs.quizapp.databaseutils.DatabaseHelper;
 import com.amcolabs.quizapp.serverutils.ServerCalls;
@@ -13,6 +17,7 @@ import com.amcolabs.quizapp.uiutils.UiUtils.UiText;
 
 public class QuizApp extends FrameLayout{
 	private User currentUser;
+	private AppController currentAppController;
 	private UserDeviceManager userDeviceManager;
 	private UiUtils uiUtils;
 	private ServerCalls serverCalls;
@@ -26,6 +31,31 @@ public class QuizApp extends FrameLayout{
 		config = new Config(this);
 		uiUtils = new UiUtils(this);
 		serverCalls = new ServerCalls(this);
+		((UserHome)loadAppController(UserHome.class))
+			.checkAndShowLoginOrSignupScreen();
+	}
+	
+	public AppController loadAppController(Class<? extends AppController> clazz){
+		try {
+			Constructor<?> constructor = clazz.getConstructor(QuizApp.class);
+			currentAppController = (AppController) constructor.newInstance(this);
+		} catch (NoSuchMethodException e) {
+			currentAppController = new UserHome(this);
+			e.printStackTrace();
+		} catch (InstantiationException e) {
+			currentAppController = new UserHome(this);
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			currentAppController = new UserHome(this);
+			e.printStackTrace();
+		} catch (IllegalArgumentException e) {
+			currentAppController = new UserHome(this);
+			e.printStackTrace();
+		} catch (InvocationTargetException e) {
+			currentAppController = new UserHome(this);
+			e.printStackTrace();
+		}
+		return currentAppController;
 	}
 	
 	public FragmentManager getFragmentManager() {
@@ -77,5 +107,9 @@ public class QuizApp extends FrameLayout{
 			dbHelper = DatabaseHelper.getHelper(this);
 		}
 		return dbHelper;
+	}
+
+	public void onBackPressed() {
+		currentAppController.onBackPressed();
 	}
 }
