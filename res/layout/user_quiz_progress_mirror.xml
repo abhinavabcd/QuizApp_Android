@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/userLayout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content" >
+
+        <ImageView
+            android:id="@+id/userImageSmall"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_alignParentRight="true"
+            android:layout_margin="5dp"
+            android:scaleType="fitXY"
+            android:src="@drawable/ic_launcher" />
+
+        <com.amcolabs.quizapp.widgets.CustomProgressBar
+            android:id="@+id/quizProgress"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="false"
+            android:layout_below="@id/userImageSmall"
+            android:layout_centerVertical="false"
+            android:layout_margin="5dp"
+            android:indeterminate="false"
+            android:maxHeight="7dip"
+            android:minHeight="7dip"
+            android:progressDrawable="@drawable/fat_progress_bar" />
+
+        <TextView
+            android:id="@+id/userName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_toLeftOf="@+id/userImageSmall"
+            android:gravity="right"
+            android:text="Amigo"
+            android:textSize="12sp" />
+
+        <TextView
+            android:id="@+id/pointsEarned"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@id/userImageSmall"
+            android:layout_alignRight="@+id/userName"
+            android:layout_below="@+id/userName"
+            android:text="+50XP"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textSize="10sp" />
+
+</RelativeLayout>
