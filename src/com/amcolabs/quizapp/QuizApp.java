@@ -5,6 +5,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.EmptyStackException;
 import java.util.Stack;
 
+import android.app.Activity;
 import android.content.Context;
 import android.support.v4.app.FragmentManager;
 import android.view.View;
@@ -76,10 +77,6 @@ public class QuizApp extends FrameLayout{
 		return getFragmentManager();
 	}
 
-	public Context getActivity() {
-		return null;
-	}
-	
 	public UserDeviceManager getUserDeviceManager(){
 		return userDeviceManager;
 	}

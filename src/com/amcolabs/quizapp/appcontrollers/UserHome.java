@@ -117,7 +117,7 @@ public class UserHome  extends AppController implements OnInitializationComplete
 		mSocialNetworkManager = (SocialNetworkManager) quizApp.getFragmentManager().findFragmentByTag(SOCIAL_NETWORK_TAG);
 
         if (mSocialNetworkManager == null) {
-            mSocialNetworkManager = SocialNetworkManager.Builder.from(quizApp.getActivity())
+            mSocialNetworkManager = SocialNetworkManager.Builder.from(quizApp.getContext())
                     .facebook(new ArrayList<String>())
                     .googlePlus()
                     .build();
