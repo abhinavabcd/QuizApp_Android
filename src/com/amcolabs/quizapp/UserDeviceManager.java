@@ -80,12 +80,12 @@ public class UserDeviceManager {
 		preferences.edit().clear().commit();
 	}
 
-	static View getLoadingView(Context context) {
+	public View getLoadingView(Context context) {
 		LinearLayout mainLayout = new LinearLayout(context);
 		mainLayout.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.MATCH_PARENT));
 		mainLayout.setGravity(Gravity.CENTER);
 		ImageView headerImageView = new ImageView(context);
-		headerImageView.setImageDrawable(context.getResources().getDrawable(R.drawable.logo));
+		headerImageView.setImageDrawable(context.getResources().getDrawable(R.drawable.small_logo));
 		LayoutParams temp3 = new LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.WRAP_CONTENT);
 		headerImageView.setLayoutParams(temp3);
 	

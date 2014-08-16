@@ -40,6 +40,7 @@ public class QuizApp extends FrameLayout{
 		config = new Config(this);
 		uiUtils = new UiUtils(this);
 		serverCalls = new ServerCalls(this);
+		this.addView(userDeviceManager.getLoadingView(context));
 		currentAppController = new Stack<AppController>();
 		currentAppController.setSize(2);
 		((UserHome)loadAppController(UserHome.class))
