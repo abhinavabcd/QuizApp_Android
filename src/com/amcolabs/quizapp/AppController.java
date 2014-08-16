@@ -15,12 +15,16 @@ public abstract class AppController {
 		screenStack = new Stack<Screen>();
 		screenStack.setSize(2);
 	}
-	
-	public LinearLayout getView(){
-		return null;
+	public Context getContext() {
+		return quizApp;
+	}
+
+	public void removeScreen() {
+		if(!screenStack.isEmpty())
+			quizApp.animateScreenRemove(screenStack.peek());//remove to side animation
 	}
 	
-	public void addNewScreen(Screen newScreen){
+	public void showScreen(Screen newScreen){
 		screenStack.push(newScreen);
     	quizApp.animateScreenIn(newScreen);//do into animation
 	}
@@ -29,21 +33,13 @@ public abstract class AppController {
 		return screenStack.peek();
 	}
 
-	public Context getContext() {
-		return quizApp;
-	}
-
-	public void removeScreen() {
-		if(!screenStack.isEmpty())
-			quizApp.animateScreenRemove(screenStack.pop());//remove to side animation
-	}
 
 	public boolean onBackPressed(){
 		if(!screenStack.isEmpty()){
 			quizApp.animateScreenRemove(screenStack.pop(), QuizApp.TO_RIGHT);//remove to side animation
 		}
 		if(!screenStack.isEmpty()){
-			quizApp.animateScreenRemove(screenStack.pop(), QuizApp.TO_LEFT);//remove to side animation
+			quizApp.animateScreenIn(screenStack.pop(), QuizApp.TO_LEFT);//remove to side animation
 			return true;
 		}
 		return false;

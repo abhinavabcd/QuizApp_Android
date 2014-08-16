@@ -37,12 +37,7 @@ public class ProgressiveQuiz extends AppController{
 	
 	Question currentQuestion=null;
 	private boolean allUsersResponded;
-	
-	@Override
-	public LinearLayout getView() {
-		return null;
-	}
-	
+		
 	public void showWaitingScreen(){
 		showClashScreen(quizApp.getUser().getShortUserInfo() , null);
 	}
