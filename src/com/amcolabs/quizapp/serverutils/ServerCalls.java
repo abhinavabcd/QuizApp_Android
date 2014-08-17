@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 
 import com.amcolabs.quizapp.QuizApp;
+import com.amcolabs.quizapp.User;
 import com.amcolabs.quizapp.configuration.Config;
 import com.amcolabs.quizapp.databaseutils.Category;
 import com.amcolabs.quizapp.datalisteners.DataInputListener;
@@ -296,6 +297,20 @@ public class ServerCalls {
 
 
 	public void checkVerificationStatus(DataInputListener<String> dataInputListener) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	public void setGooglePlusLogin(User user,
+			DataInputListener<User> loginListener) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	public void setFacebookLogin(User user,
+			DataInputListener<User> loginListener) {
 		// TODO Auto-generated method stub
 		
 	}

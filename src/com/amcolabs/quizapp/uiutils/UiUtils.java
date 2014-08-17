@@ -71,7 +71,7 @@ public class UiUtils {
 	}
 	
 	public static enum UiText{
-		NO_PREVIOUS_MESSAGES("No Previous Messages"), TEXT_LOADING("loading.."), INVITE_DIALOG_TITLE("Invite your Friends"), SERVER_ERROR("Could not connect.");
+		NO_PREVIOUS_MESSAGES("No Previous Messages"), TEXT_LOADING("loading.."), INVITE_DIALOG_TITLE("Invite your Friends"), SERVER_ERROR("Could not connect."), FETCHING_USER("Fetching User..");
 		String value = null;
 		UiText(String value){
 			this.value = value;
