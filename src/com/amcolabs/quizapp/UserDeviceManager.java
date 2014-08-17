@@ -29,6 +29,7 @@ public class UserDeviceManager {
 		initializePreferences(quizApp);
 		hasJustInstalled = isFirstTimeUser();// false only after first call to getFeed from server
 		UserDeviceManager.getDeviceId(quizApp.getContentResolver());
+		currentState = AppRunningState.IS_RUNNING;
 	}
 		
 	// initialized on the main screen
@@ -128,7 +129,7 @@ public class UserDeviceManager {
 	public static boolean isAppPaused() {
 		return AppRunningState.IS_IN_BACKGROUND == currentState;
 	}
-	public static void setAppPaused(AppRunningState state) {
+	public static void setAppRunningState(AppRunningState state) {
 		 currentState = state;
 	}
 	public static boolean isRunning() {

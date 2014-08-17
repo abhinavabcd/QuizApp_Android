@@ -16,9 +16,9 @@ import com.amcolabs.quizapp.ShortUserInfo;
 import com.amcolabs.quizapp.UserDeviceManager;
 import com.amcolabs.quizapp.widgets.TimerView;
 
-public class ProgressiveQuiz extends AppController{
+public class ProgressiveQuizController extends AppController{
 	
-	public ProgressiveQuiz(QuizApp quizApp) {
+	public ProgressiveQuizController(QuizApp quizApp) {
 		super(quizApp);
 		// TODO Auto-generated constructor stub
 	}

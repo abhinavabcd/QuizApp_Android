@@ -17,7 +17,8 @@ import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
 import android.widget.FrameLayout;
 
-import com.amcolabs.quizapp.appcontrollers.UserHome;
+import com.amcolabs.quizapp.UserDeviceManager.AppRunningState;
+import com.amcolabs.quizapp.appcontrollers.UserHomeController;
 import com.amcolabs.quizapp.configuration.Config;
 import com.amcolabs.quizapp.databaseutils.DatabaseHelper;
 import com.amcolabs.quizapp.serverutils.ServerCalls;
@@ -56,13 +57,13 @@ public class QuizApp extends ActionBarActivity implements AnimationListener {
 		uiUtils = new UiUtils(this);
 		serverCalls = new ServerCalls(this);
 		appControllerStack = new Stack<AppController>();
-		appControllerStack.setSize(2);
+		appControllerStack.setSize(3);
 		loadingView = userDeviceManager.getLoadingView(this);
 		disposeScreens = new LinkedList<Screen>();
 		addView(loadingView);
 
-		((UserHome)loadAppController(UserHome.class))
-			.checkAndShowLoginOrSignupScreen();
+		((UserHomeController)loadAppController(UserHomeController.class))
+			.checkAndShowCategories();
 	}
 
 	private void addView(View view) {
@@ -87,19 +88,19 @@ public class QuizApp extends ActionBarActivity implements AnimationListener {
 			Constructor<?> constructor = clazz.getConstructor(QuizApp.class);
 			appController =(AppController) constructor.newInstance(this);
 		} catch (NoSuchMethodException e) {
-			appController = new UserHome(this);
+			appController = new UserHomeController(this);
 			e.printStackTrace();
 		} catch (InstantiationException e) {
-			appController = new UserHome(this);
+			appController = new UserHomeController(this);
 			e.printStackTrace();
 		} catch (IllegalAccessException e) {
-			appController = new UserHome(this);
+			appController = new UserHomeController(this);
 			e.printStackTrace();
 		} catch (IllegalArgumentException e) {
-			appController = new UserHome(this);
+			appController = new UserHomeController(this);
 			e.printStackTrace();
 		} catch (InvocationTargetException e) {
-			appController = new UserHome(this);
+			appController = new UserHomeController(this);
 			e.printStackTrace();
 		}
 		appControllerStack.push(appController);
@@ -150,15 +151,15 @@ public class QuizApp extends ActionBarActivity implements AnimationListener {
 	}
 
 	public void onBackPressed() {
-		if(!appControllerStack.peek().onBackPressed()){
-			try{
-				AppController c = appControllerStack.pop();
-				animateScreenIn(c.getCurrentScreen(), FROM_LEFT);
+		try{
+				if(!appControllerStack.peek().onBackPressed()){
+					AppController c = appControllerStack.pop();
+					animateScreenIn(c.getCurrentScreen(), FROM_LEFT);
+				}
 			}
 			catch(EmptyStackException e) {
-				finish();
+				finish();//all controllers finished
 			}
-		}
 	}
 
 	public void animateScreenIn(Screen newScreen) {
@@ -211,13 +212,30 @@ public class QuizApp extends ActionBarActivity implements AnimationListener {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         
-        if(!appControllerStack.isEmpty() && appControllerStack.peek() instanceof UserHome){
-	        Fragment fragment = getSupportFragmentManager().findFragmentByTag(UserHome.SOCIAL_NETWORK_TAG);
+        if(!appControllerStack.isEmpty() && appControllerStack.peek() instanceof UserHomeController){
+	        Fragment fragment = getSupportFragmentManager().findFragmentByTag(UserHomeController.SOCIAL_NETWORK_TAG);
 	        if (fragment != null) { //google plus unnecessary thing
 	            fragment.onActivityResult(requestCode, resultCode, data);
 	        }
         }
     }
-
+    
+	@Override
+	protected void onPause() {
+		UserDeviceManager.setAppRunningState(AppRunningState.IS_IN_BACKGROUND);
+		super.onPause();
+	}
+	
+	@Override
+	protected void onResume() {
+		UserDeviceManager.setAppRunningState(AppRunningState.IS_RUNNING);
+		super.onResume();
+	}
+	
+	@Override
+	protected void onDestroy() {
+		UserDeviceManager.setAppRunningState(AppRunningState.IS_DESTROYED);
+		super.onDestroy();
+	}
 
 }
