@@ -16,9 +16,9 @@ import com.amcolabs.quizapp.ShortUserInfo;
 import com.amcolabs.quizapp.UserDeviceManager;
 import com.amcolabs.quizapp.widgets.TimerView;
 
-public class ProgressiveQuiz extends AppController{
+public class ProgressiveQuizController extends AppController{
 	
-	public ProgressiveQuiz(QuizApp quizApp) {
+	public ProgressiveQuizController(QuizApp quizApp) {
 		super(quizApp);
 		// TODO Auto-generated constructor stub
 	}
@@ -37,12 +37,7 @@ public class ProgressiveQuiz extends AppController{
 	
 	Question currentQuestion=null;
 	private boolean allUsersResponded;
-	
-	@Override
-	public LinearLayout getView() {
-		return null;
-	}
-	
+		
 	public void showWaitingScreen(){
 		showClashScreen(quizApp.getUser().getShortUserInfo() , null);
 	}

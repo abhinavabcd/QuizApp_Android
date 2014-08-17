@@ -3,25 +3,29 @@ package com.amcolabs.quizapp;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.EmptyStackException;
+import java.util.LinkedList;
+import java.util.NoSuchElementException;
 import java.util.Stack;
 
-import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.FragmentManager;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.View;
-import android.view.animation.TranslateAnimation;
+import android.view.animation.Animation;
+import android.view.animation.Animation.AnimationListener;
 import android.widget.FrameLayout;
 
-import com.amcolabs.quizapp.appcontrollers.UserHome;
+import com.amcolabs.quizapp.UserDeviceManager.AppRunningState;
+import com.amcolabs.quizapp.appcontrollers.UserHomeController;
 import com.amcolabs.quizapp.configuration.Config;
 import com.amcolabs.quizapp.databaseutils.DatabaseHelper;
 import com.amcolabs.quizapp.serverutils.ServerCalls;
 import com.amcolabs.quizapp.uiutils.UiUtils;
 import com.amcolabs.quizapp.uiutils.UiUtils.UiText;
 
-public class QuizApp extends ActionBarActivity {
+public class QuizApp extends ActionBarActivity implements AnimationListener {
 
 
 
@@ -33,30 +37,33 @@ public class QuizApp extends ActionBarActivity {
 	static final boolean TO_RIGHT = false;
 	
 	private User currentUser;
-	private Stack<AppController> currentAppController;
+	private Stack<AppController> appControllerStack;
 	private UserDeviceManager userDeviceManager;
 	private UiUtils uiUtils;
 	private ServerCalls serverCalls;
 	private DatabaseHelper dbHelper;
 	private boolean initializedDb;
 	private Config config;
+	private LinkedList<Screen> disposeScreens;
 
+	private View loadingView;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		mainFrame = (FrameLayout)getLayoutInflater().inflate(R.layout.activity_main,null);
-		
 		setContentView(mainFrame);
 		userDeviceManager = new UserDeviceManager(this);//initialized preferences , device id , pertaining to device
 		config = new Config(this);
 		uiUtils = new UiUtils(this);
 		serverCalls = new ServerCalls(this);
-		addView(userDeviceManager.getLoadingView(getApplicationContext()));
-		currentAppController = new Stack<AppController>();
-		currentAppController.setSize(2);
-		((UserHome)loadAppController(UserHome.class))
-			.checkAndShowLoginOrSignupScreen();
-	
+		appControllerStack = new Stack<AppController>();
+		appControllerStack.setSize(3);
+		loadingView = userDeviceManager.getLoadingView(this);
+		disposeScreens = new LinkedList<Screen>();
+		addView(loadingView);
+
+		((UserHomeController)loadAppController(UserHomeController.class))
+			.checkAndShowCategories();
 	}
 
 	private void addView(View view) {
@@ -81,22 +88,22 @@ public class QuizApp extends ActionBarActivity {
 			Constructor<?> constructor = clazz.getConstructor(QuizApp.class);
 			appController =(AppController) constructor.newInstance(this);
 		} catch (NoSuchMethodException e) {
-			appController = new UserHome(this);
+			appController = new UserHomeController(this);
 			e.printStackTrace();
 		} catch (InstantiationException e) {
-			appController = new UserHome(this);
+			appController = new UserHomeController(this);
 			e.printStackTrace();
 		} catch (IllegalAccessException e) {
-			appController = new UserHome(this);
+			appController = new UserHomeController(this);
 			e.printStackTrace();
 		} catch (IllegalArgumentException e) {
-			appController = new UserHome(this);
+			appController = new UserHomeController(this);
 			e.printStackTrace();
 		} catch (InvocationTargetException e) {
-			appController = new UserHome(this);
+			appController = new UserHomeController(this);
 			e.printStackTrace();
 		}
-		currentAppController.push(appController);
+		appControllerStack.push(appController);
 		return appController;
 	}
 	
@@ -144,42 +151,91 @@ public class QuizApp extends ActionBarActivity {
 	}
 
 	public void onBackPressed() {
-		if(!currentAppController.peek().onBackPressed()){
-			try{
-				AppController c = currentAppController.pop();
-				animateScreenIn(c.getCurrentScreen(), FROM_LEFT);
+		try{
+				if(!appControllerStack.peek().onBackPressed()){
+					AppController c = appControllerStack.pop();
+					animateScreenIn(c.getCurrentScreen(), FROM_LEFT);
+				}
 			}
 			catch(EmptyStackException e) {
-				((UserHome)loadAppController(UserHome.class)).checkAndShowLoginOrSignupScreen();
+				finish();//all controllers finished
 			}
-		}
 	}
 
 	public void animateScreenIn(Screen newScreen) {
 		animateScreenIn(newScreen,FROM_RIGHT);
 	}
 
-	public void animateScreenIn(Screen newScreen, boolean fromRight){
-		addView(newScreen);
-		TranslateAnimation animate = new TranslateAnimation((fromRight?1:-1) *newScreen.getWidth(),0,0,0);
-		animate.setDuration(500);
-		animate.setFillAfter(true);
-		newScreen.startAnimation(animate);
-	}
-	
 	public void animateScreenRemove(Screen currentScreen) {
 		animateScreenRemove(currentScreen, TO_LEFT);
 	}
 	
-	public void animateScreenRemove(Screen currentScreen , boolean toLeft) {
-		TranslateAnimation animate = new TranslateAnimation(0,(toLeft?-1:1)*currentScreen.getWidth(),0,0);
-		animate.setDuration(500);
-		animate.setFillAfter(true);
-		currentScreen.startAnimation(animate);
-		currentScreen.setVisibility(View.GONE);
-		removeView(currentScreen);
+
+	public void animateScreenIn(Screen newScreen, boolean fromRight){
+		addView(newScreen);
+		loadingView.setVisibility(View.INVISIBLE);
+		if(fromRight)
+			newScreen.startAnimation(getUiUtils().getAnimationSlideInRight());
+		else
+			newScreen.startAnimation(getUiUtils().getAnimationSlideInLeft());
+				
+	}
+		public void animateScreenRemove(Screen currentScreen , boolean toLeft) {
+		if(toLeft){
+			currentScreen.startAnimation(getUiUtils().getAnimationSlideOutLeft());
+		}
+		else{
+			currentScreen.startAnimation(getUiUtils().getAnimationSlideOutRight());
+		}
+		disposeScreens.add(currentScreen);
 	}
 
+	@Override
+	public void onAnimationStart(Animation animation) {
+		loadingView.setVisibility(View.VISIBLE);//while removing
+	}
+	@Override
+	public void onAnimationEnd(Animation animation) {
+		try{
+			Screen screen = disposeScreens.remove();
+			removeView(screen);
+		}
+		catch(NoSuchElementException e){
+			e.printStackTrace();
+		}
+	}
 
+	@Override
+	public void onAnimationRepeat(Animation animation) {}
+	
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        
+        if(!appControllerStack.isEmpty() && appControllerStack.peek() instanceof UserHomeController){
+	        Fragment fragment = getSupportFragmentManager().findFragmentByTag(UserHomeController.SOCIAL_NETWORK_TAG);
+	        if (fragment != null) { //google plus unnecessary thing
+	            fragment.onActivityResult(requestCode, resultCode, data);
+	        }
+        }
+    }
+    
+	@Override
+	protected void onPause() {
+		UserDeviceManager.setAppRunningState(AppRunningState.IS_IN_BACKGROUND);
+		super.onPause();
+	}
+	
+	@Override
+	protected void onResume() {
+		UserDeviceManager.setAppRunningState(AppRunningState.IS_RUNNING);
+		super.onResume();
+	}
+	
+	@Override
+	protected void onDestroy() {
+		UserDeviceManager.setAppRunningState(AppRunningState.IS_DESTROYED);
+		super.onDestroy();
+	}
 
 }

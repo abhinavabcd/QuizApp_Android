@@ -32,10 +32,14 @@ import android.provider.ContactsContract.PhoneLookup;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.Animation.AnimationListener;
+import android.view.animation.AnimationUtils;
 import android.widget.Toast;
 
 import com.amcolabs.quizapp.QuizApp;
 import com.amcolabs.quizapp.R;
+import com.amcolabs.quizapp.Screen;
 import com.amcolabs.quizapp.configuration.Config;
 import com.amcolabs.quizapp.datalisteners.DataInputListener;
 import com.amcolabs.quizapp.notificationutils.NotificationReciever;
@@ -46,8 +50,24 @@ import com.j256.ormlite.dao.RuntimeExceptionDao;
 public class UiUtils {
 	
 	private QuizApp quizApp;
+	private Animation animationSlideInLeft;
+	private Animation animationSlideOutRight;
+	private Animation animationSlideInRight;
+	private Animation animationSlideOutLeft;
+	
 	public UiUtils(QuizApp quizApp){
 		this.quizApp = quizApp;
+		
+       animationSlideInLeft = AnimationUtils.loadAnimation(quizApp,
+    	         R.anim.slide_in_left);
+       animationSlideInRight = AnimationUtils.loadAnimation(quizApp,
+  	         R.anim.slide_in_right);
+  	   animationSlideOutLeft = AnimationUtils.loadAnimation(quizApp,
+  	         R.anim.slide_out_left);
+       animationSlideOutRight = AnimationUtils.loadAnimation(quizApp,
+    		   R.anim.slide_out_right);
+       animationSlideOutLeft.setAnimationListener(quizApp);
+       animationSlideOutRight.setAnimationListener(quizApp);
 	}
 	
 	public static enum UiText{
@@ -230,5 +250,18 @@ public class UiUtils {
 		return 	ret;
 	}
 
-        
+	public Animation getAnimationSlideOutRight() {
+		return animationSlideOutRight;
+	}
+
+	public Animation getAnimationSlideOutLeft() {
+		return animationSlideOutLeft;
+	}
+	
+	public Animation getAnimationSlideInLeft() {
+		return animationSlideInLeft;
+	}
+	public Animation getAnimationSlideInRight() {
+		return animationSlideInRight;
+	}        
 }

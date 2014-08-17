@@ -17,6 +17,7 @@ public class WelcomeScreen extends Screen {
 	public WelcomeScreen(AppController controller) {
 		super(controller);
 		View v = getApp().getLayoutInflater().inflate(R.layout.welcome_login_fb_gplus, null);
+		addView(v);
 		googlePlusButton = (Button)v.findViewById(R.id.google_plus_button);
 		facebookButton = (Button)v.findViewById(R.id.facebook_button);
 	}

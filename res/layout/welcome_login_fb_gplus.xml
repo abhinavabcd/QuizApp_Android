@@ -2,7 +2,9 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical" >
+    android:layout_gravity="center"
+    android:orientation="vertical"
+    android:padding="15dp" >
 
     <ImageView
         android:id="@+id/imageView1"
@@ -17,7 +19,8 @@
         android:gravity="center"
         android:paddingBottom="@dimen/normal_padding"
         android:text="Welcome to the all new trivia app. This is one among the series of upcoming amazing trivia apps. \n Choose your style of login."
-        android:textAppearance="?android:attr/textAppearanceMedium" />
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textSize="20dp" />
     
         <Button
         android:id="@+id/facebook_button"

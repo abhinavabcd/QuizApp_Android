@@ -17,20 +17,22 @@ import com.amcolabs.quizapp.datalisteners.DataInputListener;
 import com.amcolabs.quizapp.screens.CategoryScreen;
 import com.amcolabs.quizapp.screens.WelcomeScreen;
 import com.amcolabs.quizapp.serverutils.ServerCalls;
+import com.androidsocialnetworks.lib.AccessToken;
 import com.androidsocialnetworks.lib.SocialNetwork;
 import com.androidsocialnetworks.lib.SocialNetworkManager;
 import com.androidsocialnetworks.lib.SocialNetworkManager.OnInitializationCompleteListener;
+import com.androidsocialnetworks.lib.impl.GooglePlusSocialNetwork;
 import com.androidsocialnetworks.lib.listener.OnLoginCompleteListener;
 import com.androidsocialnetworks.lib.listener.OnRequestSocialPersonCompleteListener;
 import com.androidsocialnetworks.lib.persons.SocialPerson;
 
-public class UserHome  extends AppController implements OnInitializationCompleteListener, OnLoginCompleteListener, OnRequestSocialPersonCompleteListener{
+public class UserHomeController  extends AppController implements OnInitializationCompleteListener, OnLoginCompleteListener, OnRequestSocialPersonCompleteListener{
 	 
-	private static final String SOCIAL_NETWORK_TAG = "com.amcolabs.quizapp.loginscreen";
+	public static final String SOCIAL_NETWORK_TAG = "com.amcolabs.quizapp.loginscreen";
     protected SocialNetworkManager mSocialNetworkManager;
     protected boolean mSocialNetworkManagerInitialized = false;
 
-	public UserHome(QuizApp quizApp) {
+	public UserHomeController(QuizApp quizApp) {
 		super(quizApp);
 	}
 
@@ -40,7 +42,7 @@ public class UserHome  extends AppController implements OnInitializationComplete
 //	public TopicsScreen topicsScreen;
 	 
 	
-	public void checkAndShowLoginOrSignupScreen(){
+	public void checkAndShowCategories(){
 		String encodedKey = quizApp.getUserDeviceManager().getPreference(Config.PREF_ENCODED_KEY, null);
 		if(encodedKey!=null){  
 			//on fetch update new categories and draw the categories
@@ -50,8 +52,7 @@ public class UserHome  extends AppController implements OnInitializationComplete
 			checkAndShowVerificationScreen();
 		}
 		else{
-			WelcomeScreen welcomeScreen = initializeWelcomeScreen();
-			addNewScreen(welcomeScreen);
+			showWelcomeScreen();
 		}
 	}
 	
@@ -67,14 +68,16 @@ public class UserHome  extends AppController implements OnInitializationComplete
 		});// on ACTIVATED, save user quizApp setUser
 	}
 
-	private void updateCategoriesScreen(List<Category> categories) {
-		
-	};
+	private void updateCategoriesScreen(List<Category> newCategories) {
+		if(getCurrentScreen() instanceof CategoryScreen){
+			//update all that 
+		}
+	}
 	
 	private void showCategoriesScreen() {
 		removeScreen();
 		List<Category> categories = quizApp.getDataBaseHelper().getCategories();
-		addNewScreen(new CategoryScreen(this));
+		showScreen(new CategoryScreen(this));
 		quizApp.getServerCalls().getNewCategories(quizApp.getUserDeviceManager().getDoublePreference(Config.PREF_LAST_CATEGORIES_FETCH_TIME, 0), new DataInputListener<List<Category>>(){
 			public String onData(List<Category> s) {
 				updateCategoriesScreen(s);
@@ -86,20 +89,18 @@ public class UserHome  extends AppController implements OnInitializationComplete
 	@Override
 	public void removeScreen() {
 		if(getCurrentScreen() instanceof WelcomeScreen){
-			removeWelcomeScreen();
+			onRemoveWelcomeScreen();
 		}
 		super.removeScreen();
 	}
 	
-	
-    public void removeWelcomeScreen() {//destroy msocialNetwork
+    public void onRemoveWelcomeScreen() {//destroy msocialNetwork
 		 for (SocialNetwork socialNetwork : mSocialNetworkManager.getInitializedSocialNetworks()) {
 	            socialNetwork.cancelAll();
         }
-		 super.removeScreen();
     }
 	
-	public WelcomeScreen initializeWelcomeScreen(){
+	public WelcomeScreen showWelcomeScreen(){
 		WelcomeScreen welcomeScreen = new WelcomeScreen(this);
 		welcomeScreen.getPlusButton().setOnClickListener(new OnClickListener() {
 			@Override
@@ -107,7 +108,7 @@ public class UserHome  extends AppController implements OnInitializationComplete
 				onGooglePlusAction();
 			}
 		});
-		welcomeScreen.getPlusButton().setOnClickListener(new OnClickListener() {
+		welcomeScreen.getFacebookButton().setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				onFacebookAction();
@@ -129,12 +130,8 @@ public class UserHome  extends AppController implements OnInitializationComplete
             // we are sure that it was initialized
             mSocialNetworkManagerInitialized = true;
         }
+        showScreen(welcomeScreen);
         return welcomeScreen;
-	}
-	
-	
-	public void onUserLoggedIn(User user){
-		quizApp.setUser(user);
 	}
 
     protected void onFacebookAction() {
@@ -142,12 +139,20 @@ public class UserHome  extends AppController implements OnInitializationComplete
     }
 
     protected void onGooglePlusAction() {
-        mSocialNetworkManager.getGooglePlusSocialNetwork().requestLogin(this);
+    	GooglePlusSocialNetwork plusNetwork = mSocialNetworkManager.getGooglePlusSocialNetwork();
+    	if(!plusNetwork.isConnected())
+    		plusNetwork.requestLogin(this);
+    	else{
+    		onSocialNetworkManagerInitialized();
+    	}
     }
     
- 
+	public void onUserLoggedIn(User user){
+		quizApp.setUser(user);
+	}
+
     
-    protected boolean checkIsLoginned(int socialNetworkID) {
+     protected boolean checkIsLoginned(int socialNetworkID) {
         if (mSocialNetworkManager.getSocialNetwork(socialNetworkID).isConnected()) {
             return true;
         }
@@ -180,11 +185,11 @@ public class UserHome  extends AppController implements OnInitializationComplete
 
 	@Override
 	public void onRequestSocialPersonSuccess(int socialNetworkId,SocialPerson socialPerson) {		
+		AccessToken accessToken = mSocialNetworkManager.getSocialNetwork(socialNetworkId).getAccessToken();
 	}
 	
 	@Override
 	public boolean onBackPressed() {
-		// TODO Auto-generated method stub
 		return super.onBackPressed();
 	}
 }
