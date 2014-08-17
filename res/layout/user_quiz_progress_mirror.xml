@@ -14,7 +14,7 @@
             android:src="@drawable/ic_launcher" />
 
         <com.amcolabs.quizapp.widgets.CustomProgressBar
-            android:id="@+id/quizProgress"
+            android:id="@+id/userProgress"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="false"
@@ -37,7 +37,7 @@
             android:textSize="12sp" />
 
         <TextView
-            android:id="@+id/pointsEarned"
+            android:id="@+id/userPointsEarned"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignBaseline="@id/userImageSmall"
