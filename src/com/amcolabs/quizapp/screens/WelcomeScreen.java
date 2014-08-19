@@ -8,21 +8,22 @@ import com.amcolabs.quizapp.AppController;
 import com.amcolabs.quizapp.QuizApp;
 import com.amcolabs.quizapp.R;
 import com.amcolabs.quizapp.Screen;
+import com.google.android.gms.common.SignInButton;
 
 public class WelcomeScreen extends Screen {
 
-	Button googlePlusButton;
+	SignInButton googlePlusButton;
 	Button facebookButton;
 	
 	public WelcomeScreen(AppController controller) {
 		super(controller);
-		View v = getApp().getLayoutInflater().inflate(R.layout.welcome_login_fb_gplus, null);
+		View v = getApp().getActivity().getLayoutInflater().inflate(R.layout.welcome_login_fb_gplus, null);
 		addView(v);
-		googlePlusButton = (Button)v.findViewById(R.id.google_plus_button);
+		googlePlusButton = (SignInButton)v.findViewById(R.id.google_plus_button);
 		facebookButton = (Button)v.findViewById(R.id.facebook_button);
 	}
 
-	public Button getPlusButton() {
+	public SignInButton getPlusButton() {
 		return googlePlusButton;
 	}
 	

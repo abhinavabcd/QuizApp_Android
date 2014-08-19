@@ -41,8 +41,8 @@ public class Config{
 	public static final Locale LOCALE = Locale.getDefault();
 	public static final int NOTIFICATION_ID = 12323;
 	
-	public static final boolean IS_TEST_BUILD = false;
-	public static final boolean ENABLE_LOG = false;
+	public static final boolean IS_TEST_BUILD = true;
+	public static final boolean ENABLE_LOG = true;
 	
 	public static final String PREF_IS_FIRST_TIME_LOAD = "isFirstTimeUser";
 	public static final String VERSION_TEXT = "v0.0.1b";
@@ -59,6 +59,7 @@ public class Config{
 	public static final String PREF_LAST_CATEGORIES_FETCH_TIME = "categoriesFetchTimeStamp";
 	public static final String NOTIFICATION_KEY_MESSAGE_TYPE = "notificationType";
 	public static final String NOTIFICATION_KEY_TEXT_MESSAGE = "message";
+	public static final String GOOGLE_PLUS_SERVER_CLIENT_ID = "591807556804-qltit1nk5rga581b5a2j6tuoogum0s79.apps.googleusercontent.com";
 	private QuizApp quizApp;
 
 

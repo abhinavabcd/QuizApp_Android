@@ -58,13 +58,13 @@ public class UiUtils {
 	public UiUtils(QuizApp quizApp){
 		this.quizApp = quizApp;
 		
-       animationSlideInLeft = AnimationUtils.loadAnimation(quizApp,
+       animationSlideInLeft = AnimationUtils.loadAnimation(quizApp.getContext(),
     	         R.anim.slide_in_left);
-       animationSlideInRight = AnimationUtils.loadAnimation(quizApp,
+       animationSlideInRight = AnimationUtils.loadAnimation(quizApp.getContext(),
   	         R.anim.slide_in_right);
-  	   animationSlideOutLeft = AnimationUtils.loadAnimation(quizApp,
+  	   animationSlideOutLeft = AnimationUtils.loadAnimation(quizApp.getContext(),
   	         R.anim.slide_out_left);
-       animationSlideOutRight = AnimationUtils.loadAnimation(quizApp,
+       animationSlideOutRight = AnimationUtils.loadAnimation(quizApp.getContext(),
     		   R.anim.slide_out_right);
        animationSlideOutLeft.setAnimationListener(quizApp);
        animationSlideOutRight.setAnimationListener(quizApp);
@@ -94,7 +94,7 @@ public class UiUtils {
 		try{
 			if(uiBlockCount==0){
 				preloaderText = UiText.TEXT_LOADING.getValue();
-				preloader = ProgressDialog.show(quizApp, "", preloaderText, true);
+				preloader = ProgressDialog.show(quizApp.getContext(), "", preloaderText, true);
 			}
 			uiBlockCount++;
 		}
@@ -108,7 +108,7 @@ public class UiUtils {
 		try{
 		if(uiBlockCount==0){
 			preloaderText = text;
-			preloader = ProgressDialog.show(quizApp, "", text, true);
+			preloader = ProgressDialog.show(quizApp.getContext(), "", text, true);
 		}
 		else{
 			preloaderText = preloaderText+ ("\n"+text);

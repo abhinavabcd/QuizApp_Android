@@ -22,6 +22,8 @@ import com.amcolabs.quizapp.serverutils.ServerResponse.MessageType;
 import com.amcolabs.quizapp.uiutils.UiUtils;
 import com.amcolabs.quizapp.uiutils.UiUtils.UiText;
 import com.google.android.gcm.GCMRegistrar;
+import com.google.android.gms.drive.internal.h;
+import com.google.android.gms.tagmanager.DataLayer;
 import com.google.gson.reflect.TypeToken;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
@@ -30,7 +32,7 @@ import com.loopj.android.http.SyncHttpClient;
 
 public class ServerCalls {
 
-	public static final String SERVER_URL = Config.IS_TEST_BUILD? "http://192.168.0.10:8084/func":"http://immutable.appsandlabs.com/func";
+	public static final String SERVER_URL = Config.IS_TEST_BUILD? "http://192.168.0.10:8084/func":"http://quizapp-main.amcolabs.com/func";
 
 	private static final String GET_ENCODEDKEY_URL = SERVER_URL+"?task=getEncodedKey";
 	private static final String SET_GCM_KEY_URL = SERVER_URL+"?task=setGCMRegistrationId";
@@ -38,6 +40,10 @@ public class ServerCalls {
 	private static final String GET_NEW_CATEGORIES =  SERVER_URL+"?task=getNewCategories";
 
 	private static final String GET_RATING_URL = SERVER_URL+"?task=updateUserRating";
+
+	private static final String GET_LOGIN_WITH_GOOGLPLUS = SERVER_URL+"?task=loginWithGoogle";
+
+	private static final String GET_LOGIN_WITH_FACEBOOK= SERVER_URL+"?task=loginWithFacebook";
 	
 	private int serverErrorMsgShownCount =0;
 	//encodedKey=YWJjZGVmZ2h8YWJoaW5hdmFiY2RAZ21haWwuY29t|1393389556|37287ef4a1261b927e8a98d639035d81f0e7eb2c
@@ -75,7 +81,7 @@ public class ServerCalls {
 		}
 		if(map.containsKey(Config.FORCE_APP_VERSION)){ 
 			try{
-				Context context = quizApp;
+				Context context = quizApp.getContext();
 				PackageInfo pInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
 				int versionCode = pInfo.versionCode;
 				if(versionCode < Integer.parseInt(map.get(Config.FORCE_APP_VERSION))){
@@ -96,7 +102,7 @@ public class ServerCalls {
 		switch(code){
 			case FAILED:
 				if(serverErrorMsgShownCount++%4==0)
-					StaticPopupDialogBoxes.alertPrompt(quizApp.getSupportFragmentManager(), UiText.SERVER_ERROR.getValue(), null);
+					StaticPopupDialogBoxes.alertPrompt(quizApp.getFragmentManager(), UiText.SERVER_ERROR.getValue(), null);
 				break;
 		}
 	}
@@ -141,7 +147,41 @@ public class ServerCalls {
 						} 
 			});
 	}
-	
+
+	public  void makeGeneralServerPostCall(String url, Map<String,String> postData ,
+			final HashMap<String,String> headers,
+			final DataInputListener<String> listener,final boolean blockUi){
+			SyncHttpClient client = new SyncHttpClient();
+			if(headers!=null || headers.size()>0){
+				for(String key: headers.keySet())
+					client.addHeader(key, headers.get(key));
+			}
+			client.post(url, new RequestParams(postData), new AsyncHttpResponseHandler() {
+				@Override
+				 public void onStart() {
+					if(blockUi){
+						quizApp.addUiBlock();
+						
+						}
+				}
+				@Override
+				public void onSuccess(int arg0, Header[] arg1, byte[] responseBytes) {
+					String response = new String(responseBytes);					
+				    listener.onData(response);
+				}
+				public void  onFailure(int messageType, org.apache.http.Header[] headers, byte[] responseBody, Throwable error){
+					listener.onData(null);
+				}
+				 @Override
+				public void onFinish() {
+				    	if(blockUi){
+				    		quizApp.removeUiBlock();							
+				    	}
+				}  
+				}
+		);
+	}
+		
 	public  void makeServerPostCall(String url, Map<String,String> postData ,final ServerNotifier serverNotifier,final boolean blockUi){
 
 		final long nano1 = Config.getCurrentNanos();
@@ -282,7 +322,7 @@ public class ServerCalls {
 			@Override
 			public void onServerResponse(MessageType messageType, ServerResponse response) {
 				switch(messageType){
-					case OK_NEW_CATEGORIES:
+					case OK_CATEGORIES:
 						List<Category> categories = quizApp.getConfig().getGson().fromJson(response.payload, new TypeToken<List<Category>>(){}.getType());
 						if(categoriesListener!=null && categories.size()>0){
 							categoriesListener.onData(categories);
@@ -302,16 +342,48 @@ public class ServerCalls {
 	}
 
 
-	public void setGooglePlusLogin(User user,
-			DataInputListener<User> loginListener) {
-		// TODO Auto-generated method stub
-		
+	public void setGooglePlusLogin(final User user,final DataInputListener<User> loginListener) {
+		String url = GET_LOGIN_WITH_GOOGLPLUS;
+		Map<String,String > params = new HashMap<String, String>();
+		params.put("userJson",quizApp.getConfig().getGson().toJson(user));
+		makeServerPostCall(url, params, new ServerNotifier() {
+			@Override
+			public void onServerResponse(MessageType messageType, ServerResponse response) {
+//				User user = null;
+				switch(messageType){
+					case GPLUS_USER_SAVED:
+//						user = quizApp.getConfig().getGson().fromJson(response.payload,User.class);
+						loginListener.onData(user);
+						break;
+					default:
+//						 user = quizApp.getConfig().getGson().fromJson(response.payload,User.class);
+						loginListener.onData(null);
+						break;
+				}
+			}
+		},false);
 	}
 
 
-	public void setFacebookLogin(User user,
-			DataInputListener<User> loginListener) {
-		// TODO Auto-generated method stub
-		
+	public void setFacebookLogin(final User user, final DataInputListener<User> loginListener) {
+		String url = GET_LOGIN_WITH_FACEBOOK;
+		Map<String,String > params = new HashMap<String, String>();
+		params.put("userJson",quizApp.getConfig().getGson().toJson(user));
+		makeServerPostCall(url, params, new ServerNotifier() {
+			@Override
+			public void onServerResponse(MessageType messageType, ServerResponse response) {
+				//User user = null;
+				switch(messageType){
+					case FACEBOOK_USER_SAVED:
+						//user = quizApp.getConfig().getGson().fromJson(response.payload,User.class);
+						loginListener.onData(user);
+						break;
+					default:
+						//user = quizApp.getConfig().getGson().fromJson(response.payload,User.class);
+						loginListener.onData(null);
+						break;
+				}
+			}
+		},false);
 	}
 }

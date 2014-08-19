@@ -20,17 +20,48 @@ public class ServerResponse {
 		
 	// below code to enumize the response codes
 	public enum MessageType{
-				NOT_ACTIVATED (1),
-
-				ACTIVATED (2),
-
-				NOT_AUTHORIZED (3),
-
+				////    =(.*)$ replace with (\1),  eclipse replace
+				NOT_ACTIVATED (104),
+				ACTIVATED (105),
+				NOT_AUTHORIZED (106),
+				OK (200),
+				OK_AUTH(202),
+				USER_EXISTS(203),
+				USER_NOT_EXISTS ( 204),
+				USER_SAVED ( 205),
+				OK_IMMUTABLE ( 206),
+				OK_FEED ( 207),
+				OK_INIT ( 208),
 				FAILED(300),
-				
-				RATING_OK(220),
-				
-				OK(400), REG_SAVED(500), OK_NEW_CATEGORIES(240);
+				DUPLICATE_USER ( 301),
+				CAN_UPGRADE(212),
+				ALLOWED(211),
+				CAN_UPGRADE_RECHARGE ( 213),
+				REG_SAVED ( 214),
+				OK_USER_INFO (215),
+				OK_NAME(216),
+				NO_NAME_FOUND ( 217),
+				RATING_OK ( 220),
+
+				OK_DETAILS ( 501),
+				NOT_FOUND(404   ),
+				OK_QUESTIONS ( 502),
+				OK_QUESTION ( 503),
+				OK_SERVER_DETAILS ( 504),
+				OK_CATEGORIES ( 505),
+				FACEBOOK_USER_SAVED ( 506),
+				GPLUS_USER_SAVED ( 507),
+
+//				################################# dict values/commands for payload type definition
+				USER_ANSWERED_QUESTION ( 1),
+				GET_NEXT_QUESTION ( 2),
+				STARTING_QUESTIONS ( 3),
+				ANNOUNCING_WINNER ( 4),
+				USER_DISCONNECTED ( 5),
+				NEXT_QUESTION (6),
+				START_QUESTIONS ( 7),
+				STATUS_WHAT_USER_GOT ( 8);
+
 
 				
 		private int value;

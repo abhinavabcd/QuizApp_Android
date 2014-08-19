@@ -1,11 +1,8 @@
 package com.amcolabs.quizapp.appcontrollers;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 
-import android.content.Context;
 import android.view.View;
 import android.view.View.OnClickListener;
 
@@ -17,12 +14,10 @@ import com.amcolabs.quizapp.UserDeviceManager;
 import com.amcolabs.quizapp.configuration.Config;
 import com.amcolabs.quizapp.databaseutils.Category;
 import com.amcolabs.quizapp.datalisteners.DataInputListener;
+import com.amcolabs.quizapp.popups.StaticPopupDialogBoxes;
 import com.amcolabs.quizapp.screens.CategoryScreen;
 import com.amcolabs.quizapp.screens.WelcomeScreen;
-import com.amcolabs.quizapp.serverutils.ServerCalls;
-import com.amcolabs.quizapp.uiutils.UiUtils.UiText;
 import com.androidsocialnetworks.lib.AccessToken;
-import com.androidsocialnetworks.lib.SocialNetwork;
 import com.androidsocialnetworks.lib.SocialNetworkManager;
 import com.androidsocialnetworks.lib.SocialNetworkManager.OnInitializationCompleteListener;
 import com.androidsocialnetworks.lib.impl.FacebookSocialNetwork;
@@ -30,18 +25,18 @@ import com.androidsocialnetworks.lib.impl.GooglePlusSocialNetwork;
 import com.androidsocialnetworks.lib.listener.OnLoginCompleteListener;
 import com.androidsocialnetworks.lib.listener.OnRequestAccessTokenCompleteListener;
 import com.androidsocialnetworks.lib.listener.OnRequestDetailedSocialPersonCompleteListener;
-import com.androidsocialnetworks.lib.listener.OnRequestSocialPersonCompleteListener;
 import com.androidsocialnetworks.lib.persons.FacebookPerson;
 import com.androidsocialnetworks.lib.persons.GooglePlusPerson;
 import com.androidsocialnetworks.lib.persons.SocialPerson;
 import com.google.android.gms.plus.model.people.Person.Gender;
 
-public class UserHomeController  extends AppController implements OnInitializationCompleteListener, OnLoginCompleteListener, OnRequestDetailedSocialPersonCompleteListener, OnRequestAccessTokenCompleteListener{
+
+public class UserHomeController  extends AppController implements OnInitializationCompleteListener, OnLoginCompleteListener, OnRequestDetailedSocialPersonCompleteListener<SocialPerson>{
 	 
 	public static final String SOCIAL_NETWORK_TAG = "com.amcolabs.quizapp.loginscreen";
-    protected SocialNetworkManager mSocialNetworkManager;
     protected boolean mSocialNetworkManagerInitialized = false;
     User user= null;
+	private SocialNetworkManager mSocialNetworkManager;
 	public UserHomeController(QuizApp quizApp) {
 		super(quizApp);
 	}
@@ -105,111 +100,113 @@ public class UserHomeController  extends AppController implements OnInitializati
 	}
 	
     public void onRemoveWelcomeScreen() {//destroy msocialNetwork
-		 for (SocialNetwork socialNetwork : mSocialNetworkManager.getInitializedSocialNetworks()) {
-	            socialNetwork.cancelAll();
-        }
+    	
     }
 	
 	public WelcomeScreen showWelcomeScreen(){
-		WelcomeScreen welcomeScreen = new WelcomeScreen(this);
+		  WelcomeScreen welcomeScreen = new WelcomeScreen(this);
+	      mSocialNetworkManager = (SocialNetworkManager) quizApp.getFragmentManager().findFragmentByTag(SOCIAL_NETWORK_TAG);
+		  if (mSocialNetworkManager == null) {
+			    mSocialNetworkManager = SocialNetworkManager.Builder.from(quizApp.getActivity())
+			            .facebook(new ArrayList<String>())
+			            .googlePlus()
+			            .build();
+			    quizApp.getFragmentManager().beginTransaction().add(mSocialNetworkManager, SOCIAL_NETWORK_TAG).commit();
+			    mSocialNetworkManager.setOnInitializationCompleteListener(this);
+			} else {
+			    mSocialNetworkManagerInitialized = true;
+			}
+
 		welcomeScreen.getPlusButton().setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				onGooglePlusAction();
+				GooglePlusSocialNetwork plusNetwork = (GooglePlusSocialNetwork) mSocialNetworkManager.getSocialNetwork(GooglePlusSocialNetwork.ID);
+				if(!plusNetwork.isConnected()){
+					plusNetwork.requestLogin(UserHomeController.this);
+				}
+				else{
+					afterGooglePlusConnected();
+				}
 			}
 		});
 		welcomeScreen.getFacebookButton().setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				onFacebookAction();
+				FacebookSocialNetwork fbNetwork = (FacebookSocialNetwork) mSocialNetworkManager.getSocialNetwork(FacebookSocialNetwork.ID);
+				if(!fbNetwork.isConnected()){
+					fbNetwork.requestLogin(UserHomeController.this);
+				}
 			}
 		});
 		
-		mSocialNetworkManager = (SocialNetworkManager) quizApp.getSupportFragmentManager().findFragmentByTag(SOCIAL_NETWORK_TAG);
-
-		ArrayList<String> facebookPermissions = (ArrayList<String>) Arrays.asList("email","user_birthday","user_location");
-        if (mSocialNetworkManager == null) {
-            mSocialNetworkManager = SocialNetworkManager.Builder.from(quizApp)
-                    .facebook(facebookPermissions)
-                    .googlePlus()
-                    .build();
-            quizApp.getSupportFragmentManager().beginTransaction().add(mSocialNetworkManager, SOCIAL_NETWORK_TAG).commit();
-            mSocialNetworkManager.setOnInitializationCompleteListener(this);
-        } else {
-            // we need to setup buttons correctly, mSocialNetworkManager isn't null, so
-            // we are sure that it was initialized
-            mSocialNetworkManagerInitialized = true;
-        }
         showScreen(welcomeScreen);
         return welcomeScreen;
 	}
 
-    protected void onFacebookAction() {
-    	FacebookSocialNetwork fbNetwork = mSocialNetworkManager.getFacebookSocialNetwork();
-    	if(fbNetwork.isConnected())
-    		fbNetwork.requestLogin(this);
+	protected void onFacebookButtonPressed() {
+ 
     }
 
-    protected void onGooglePlusAction() {
-    	GooglePlusSocialNetwork plusNetwork = mSocialNetworkManager.getGooglePlusSocialNetwork();
-    	if(!plusNetwork.isConnected())
-    		plusNetwork.requestLogin(this);
-    }
-    
-	public void onUserLoggedIn(User user){
+  
+	public void afterUserLoggedIn(User user){
 		quizApp.setUser(user);
 	}
-
-    
-     protected boolean checkIsLoginned(int socialNetworkID) {
-        if (mSocialNetworkManager.getSocialNetwork(socialNetworkID).isConnected()) {
-            return true;
-        }
-        return false;
-    }
-
-
-	@Override
-	public void onSocialNetworkManagerInitialized() {
-        if (mSocialNetworkManager.getFacebookSocialNetwork().isConnected()) {
-        	if(getCurrentScreen() instanceof WelcomeScreen){
-        		((WelcomeScreen)getCurrentScreen()).getFacebookButton().setText(UiText.FETCHING_USER.getValue());
-        	}
-    		mSocialNetworkManager.getSocialNetwork(FacebookSocialNetwork.ID).requestDetailedCurrentPerson(this);
-        }
-        else if (mSocialNetworkManager.getGooglePlusSocialNetwork().isConnected()) {
-        	if(getCurrentScreen() instanceof WelcomeScreen){
-        		((WelcomeScreen)getCurrentScreen()).getPlusButton().setText(UiText.FETCHING_USER.getValue());
-        	}
-    		mSocialNetworkManager.getSocialNetwork(GooglePlusSocialNetwork.ID).requestDetailedCurrentPerson(this);
-        }
-        else{
-        	
-        }
-	}
-
-	@Override
-	public void onError(int socialNetworkID, String requestID,
-			String errorMessage, Object data) {
-	}
-
-	@Override
-	public void onLoginSuccess(int socialNetworkID) {
-		mSocialNetworkManager.getSocialNetwork(socialNetworkID).requestDetailedCurrentPerson(this);
-	}
-
+ 
 	@Override
 	public boolean onBackPressed() {
 		return super.onBackPressed();
 	}
 
 	@Override
+	public void onDestroy() {
+		Screen screen = popScreen();
+		while(screen!=null){
+			if(screen instanceof WelcomeScreen){
+				onRemoveWelcomeScreen();
+			}
+		}
+	}
+	
+	public void afterGooglePlusConnected(){
+		final GooglePlusSocialNetwork plusNetwork = (GooglePlusSocialNetwork) mSocialNetworkManager.getSocialNetwork(GooglePlusSocialNetwork.ID);
+		plusNetwork.requestAccessToken(new OnRequestAccessTokenCompleteListener() {
+			@Override
+			public void onError(int socialNetworkID, String requestID,
+					String errorMessage, Object data) {
+				System.out.println("");
+			}
+			@Override
+			public void onRequestAccessTokenComplete(int socialNetworkID,AccessToken accessToken) {
+				plusNetwork.requestDetailedCurrentPerson(UserHomeController.this);
+			}
+		});
+	}
+	public void afterFbConnected(){
+		
+	}
+
+	@Override
+	public void onSocialNetworkManagerInitialized() {
+		if(mSocialNetworkManagerInitialized) return;
+	    mSocialNetworkManager.getSocialNetwork(GooglePlusSocialNetwork.ID).isConnected();
+		mSocialNetworkManagerInitialized = true;
+		GooglePlusSocialNetwork plusNetwork = (GooglePlusSocialNetwork) mSocialNetworkManager.getSocialNetwork(GooglePlusSocialNetwork.ID);
+		FacebookSocialNetwork fbNetwork = (FacebookSocialNetwork) mSocialNetworkManager.getSocialNetwork(FacebookSocialNetwork.ID);
+		user = new User();
+		if(plusNetwork.isConnected()){
+			afterGooglePlusConnected();
+		}
+		//else wait for user to click
+		if(fbNetwork.isConnected()){
+			
+		}
+	}
+	@Override
 	public void onRequestDetailedSocialPersonSuccess(int socialNetworkID,SocialPerson socialPerson) {		
 		String details = null;
-		User user = new User();
-		GooglePlusPerson gPerson;
 		switch(socialNetworkID){
 			case GooglePlusSocialNetwork.ID:
+				GooglePlusPerson gPerson;
 				gPerson =((GooglePlusPerson)socialPerson);
 				details = gPerson.toString();
 				user.uid = gPerson.id;
@@ -217,7 +214,7 @@ public class UserHomeController  extends AppController implements OnInitializati
 				user.name = gPerson.name;
 				user.emailId = gPerson.email;
 				user.pictureUrl = gPerson.avatarURL;
-				user.coverPictureUrl = gPerson.coverURL;
+				user.coverUrl = gPerson.coverURL;
 				user.place = gPerson.currentLocation;
 				user.gender = gPerson.gender==Gender.MALE ?"male":"female";
 				user.birthday = 0;//gPerson.birthday;
@@ -229,37 +226,27 @@ public class UserHomeController  extends AppController implements OnInitializati
 				user.name = fPerson.name;
 				user.emailId = fPerson.email;
 				user.pictureUrl = fPerson.avatarURL;
-				user.coverPictureUrl = fPerson.coverUrl;
+				user.coverUrl = fPerson.coverUrl;
 				user.place = fPerson.city;
 				user.gender = fPerson.gender;
 				user.birthday = 0;//fPerson.birthday;
 				break;
+	}
+	}
+	
+	@Override
+	public void onLoginSuccess(int socialNetworkID) {
+		if(socialNetworkID == GooglePlusSocialNetwork.ID){
+			afterGooglePlusConnected();
 		}
-		mSocialNetworkManager.getSocialNetwork(socialNetworkID).requestAccessToken(this);
-		this.user = user;
+		if(socialNetworkID == FacebookSocialNetwork.ID){
+			afterFbConnected();
+		}
 	}
 
 	@Override
-	public void onRequestAccessTokenComplete(int socialNetworkID,AccessToken accessToken) {
-		DataInputListener<User> loginListener = new DataInputListener<User>(){
-			@Override
-			public String onData(User s) {
-				UserHomeController.this.onUserLoggedIn(s);
-				return super.onData(s);
-			}
-		};
-		
-		switch(socialNetworkID){
-			case GooglePlusSocialNetwork.ID:
-				user.googlePlus = accessToken.token;
-				quizApp.getServerCalls().setGooglePlusLogin(user,loginListener);
-				break;
-			case FacebookSocialNetwork.ID:
-				user.facebook = accessToken.token;
-				quizApp.getServerCalls().setFacebookLogin(user,loginListener);
-
-				break;
-		}
-	}	
+	public void onError(int socialNetworkID, String requestID,
+			String errorMessage, Object data) {
+		StaticPopupDialogBoxes.alertPrompt(quizApp.getFragmentManager(), requestID+errorMessage, null);
+	}
 }
-

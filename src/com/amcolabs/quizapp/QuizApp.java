@@ -7,12 +7,16 @@ import java.util.LinkedList;
 import java.util.NoSuchElementException;
 import java.util.Stack;
 
+import android.content.ContentResolver;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBarActivity;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
 import android.widget.FrameLayout;
@@ -25,7 +29,7 @@ import com.amcolabs.quizapp.serverutils.ServerCalls;
 import com.amcolabs.quizapp.uiutils.UiUtils;
 import com.amcolabs.quizapp.uiutils.UiUtils.UiText;
 
-public class QuizApp extends ActionBarActivity implements AnimationListener {
+public class QuizApp extends Fragment implements AnimationListener {
 
 
 
@@ -47,23 +51,33 @@ public class QuizApp extends ActionBarActivity implements AnimationListener {
 	private LinkedList<Screen> disposeScreens;
 
 	private View loadingView;
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		mainFrame = (FrameLayout)getLayoutInflater().inflate(R.layout.activity_main,null);
-		setContentView(mainFrame);
-		userDeviceManager = new UserDeviceManager(this);//initialized preferences , device id , pertaining to device
-		config = new Config(this);
-		uiUtils = new UiUtils(this);
-		serverCalls = new ServerCalls(this);
-		appControllerStack = new Stack<AppController>();
-		appControllerStack.setSize(3);
-		loadingView = userDeviceManager.getLoadingView(this);
-		disposeScreens = new LinkedList<Screen>();
-		addView(loadingView);
 
+	private boolean initialized = false;
+	@Override
+	public View onCreateView(LayoutInflater inflater, ViewGroup container,
+			Bundle savedInstanceState) {
+		mainFrame = (FrameLayout)getActivity().getLayoutInflater().inflate(R.layout.activity_main,null);
+		addView(loadingView);
 		((UserHomeController)loadAppController(UserHomeController.class))
-			.checkAndShowCategories();
+		.checkAndShowCategories();
+
+		return mainFrame;
+	}
+	
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		if(!initialized){
+			initialized = true;
+			userDeviceManager = new UserDeviceManager(this);//initialized preferences , device id , pertaining to device
+			config = new Config(this);
+			uiUtils = new UiUtils(this);
+			serverCalls = new ServerCalls(this);
+			appControllerStack = new Stack<AppController>();
+			appControllerStack.setSize(3);
+			loadingView = userDeviceManager.getLoadingView(this.getActivity());
+			disposeScreens = new LinkedList<Screen>();
+		}
 	}
 
 	private void addView(View view) {
@@ -72,14 +86,6 @@ public class QuizApp extends ActionBarActivity implements AnimationListener {
 
 	private void removeView(Screen screen) {
 		mainFrame.removeView(screen);
-	}
-	
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.main, menu);
-		return true;
 	}
 	
 	public AppController loadAppController(Class<? extends AppController> clazz){
@@ -101,6 +107,9 @@ public class QuizApp extends ActionBarActivity implements AnimationListener {
 			e.printStackTrace();
 		} catch (InvocationTargetException e) {
 			appController = new UserHomeController(this);
+			e.printStackTrace();
+		} catch (java.lang.InstantiationException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		appControllerStack.push(appController);
@@ -158,7 +167,7 @@ public class QuizApp extends ActionBarActivity implements AnimationListener {
 				}
 			}
 			catch(EmptyStackException e) {
-				finish();//all controllers finished
+				getActivity().finish();//all controllers finished
 			}
 	}
 
@@ -207,35 +216,26 @@ public class QuizApp extends ActionBarActivity implements AnimationListener {
 
 	@Override
 	public void onAnimationRepeat(Animation animation) {}
+
+	public Context getContext() {
+		// TODO Auto-generated method stub
+		return getActivity();
+	}
+
+	public ContentResolver getContentResolver() {
+		// TODO Auto-generated method stub
+		return getActivity().getContentResolver();
+	}
 	
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+	public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        
-        if(!appControllerStack.isEmpty() && appControllerStack.peek() instanceof UserHomeController){
-	        Fragment fragment = getSupportFragmentManager().findFragmentByTag(UserHomeController.SOCIAL_NETWORK_TAG);
-	        if (fragment != null) { //google plus unnecessary thing
-	            fragment.onActivityResult(requestCode, resultCode, data);
-	        }
+
+        Fragment fragment = getFragmentManager().findFragmentByTag(UserHomeController.SOCIAL_NETWORK_TAG);
+        if (fragment != null) {
+            fragment.onActivityResult(requestCode, resultCode, data);
         }
     }
-    
-	@Override
-	protected void onPause() {
-		UserDeviceManager.setAppRunningState(AppRunningState.IS_IN_BACKGROUND);
-		super.onPause();
-	}
 	
-	@Override
-	protected void onResume() {
-		UserDeviceManager.setAppRunningState(AppRunningState.IS_RUNNING);
-		super.onResume();
-	}
-	
-	@Override
-	protected void onDestroy() {
-		UserDeviceManager.setAppRunningState(AppRunningState.IS_DESTROYED);
-		super.onDestroy();
-	}
 
 }
