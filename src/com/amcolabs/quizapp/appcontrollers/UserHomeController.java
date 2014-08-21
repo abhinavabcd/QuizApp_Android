@@ -127,7 +127,8 @@ public class UserHomeController  extends AppController implements OnInitializati
 		
 		mSocialNetworkManager = (SocialNetworkManager) quizApp.getSupportFragmentManager().findFragmentByTag(SOCIAL_NETWORK_TAG);
 
-		ArrayList<String> facebookPermissions = (ArrayList<String>) Arrays.asList("email","user_birthday","user_location");
+		ArrayList<String> facebookPermissions = new ArrayList<String>();
+		facebookPermissions.addAll(Arrays.asList("email","user_birthday","user_location"));
         if (mSocialNetworkManager == null) {
             mSocialNetworkManager = SocialNetworkManager.Builder.from(quizApp)
                     .facebook(facebookPermissions)

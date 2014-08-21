@@ -5,18 +5,22 @@
     android:gravity="center_horizontal"
     android:orientation="vertical" >
 
-    <ImageView
+    <com.amcolabs.quizapp.widgets.ImageViewFiltered
         android:id="@+id/questionImage"
-        android:layout_width="wrap_content"
+        style="android:imageViewStyle"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="2"
-        android:src="@drawable/ic_launcher" />
+        android:layout_margin="20dp"
+        android:layout_weight="3"
+        android:adjustViewBounds="true"
+        android:scaleType="center" />
 
     <TextView
         android:id="@+id/questionText"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="2"
+        android:layout_weight="1"
+        android:gravity="center"
         android:text="Identify the Actor in above image" />
 
 </LinearLayout>
