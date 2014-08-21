@@ -41,9 +41,9 @@ public class ServerCalls {
 
 	private static final String GET_RATING_URL = SERVER_URL+"?task=updateUserRating";
 
-	private static final String GET_LOGIN_WITH_GOOGLPLUS = SERVER_URL+"?task=loginWithGoogle";
+	private static final String GET_LOGIN_WITH_GOOGLPLUS = SERVER_URL+"?task=registerWithGoogle";
 
-	private static final String GET_LOGIN_WITH_FACEBOOK= SERVER_URL+"?task=loginWithFacebook";
+	private static final String GET_LOGIN_WITH_FACEBOOK= SERVER_URL+"?task=registerWithFacebook";
 	
 	private int serverErrorMsgShownCount =0;
 	//encodedKey=YWJjZGVmZ2h8YWJoaW5hdmFiY2RAZ21haWwuY29t|1393389556|37287ef4a1261b927e8a98d639035d81f0e7eb2c
@@ -55,6 +55,7 @@ public class ServerCalls {
 	public ServerCalls(QuizApp quizApp){
 		this.quizApp = quizApp;
 		client  = new AsyncHttpClient();
+		client.setMaxRetriesAndTimeout(3, 10);
 		sClinet = new SyncHttpClient();
 	}
 	
@@ -99,11 +100,16 @@ public class ServerCalls {
 	
 	 
 	public void handleResponseCodes(MessageType code, ServerResponse response){
+		if(code==null){
+			return;
+		}
 		switch(code){
 			case FAILED:
 				if(serverErrorMsgShownCount++%4==0)
 					StaticPopupDialogBoxes.alertPrompt(quizApp.getFragmentManager(), UiText.SERVER_ERROR.getValue(), null);
 				break;
+		default:
+			break;
 		}
 	}
 	public void makeServerCall(final String url,final ServerNotifier serverNotifier,final boolean blockUi){
@@ -342,7 +348,7 @@ public class ServerCalls {
 	}
 
 
-	public void setGooglePlusLogin(final User user,final DataInputListener<User> loginListener) {
+	public void doGooglePlusLogin(final User user,final DataInputListener<User> loginListener) {
 		String url = GET_LOGIN_WITH_GOOGLPLUS;
 		Map<String,String > params = new HashMap<String, String>();
 		params.put("userJson",quizApp.getConfig().getGson().toJson(user));
@@ -353,6 +359,7 @@ public class ServerCalls {
 				switch(messageType){
 					case GPLUS_USER_SAVED:
 //						user = quizApp.getConfig().getGson().fromJson(response.payload,User.class);
+						quizApp.getUserDeviceManager().setPreference(Config.PREF_ENCODED_KEY, response.payload);
 						loginListener.onData(user);
 						break;
 					default:
@@ -365,7 +372,7 @@ public class ServerCalls {
 	}
 
 
-	public void setFacebookLogin(final User user, final DataInputListener<User> loginListener) {
+	public void doFacebookLogin(final User user, final DataInputListener<User> loginListener) {
 		String url = GET_LOGIN_WITH_FACEBOOK;
 		Map<String,String > params = new HashMap<String, String>();
 		params.put("userJson",quizApp.getConfig().getGson().toJson(user));
@@ -376,6 +383,7 @@ public class ServerCalls {
 				switch(messageType){
 					case FACEBOOK_USER_SAVED:
 						//user = quizApp.getConfig().getGson().fromJson(response.payload,User.class);
+						quizApp.getUserDeviceManager().setPreference(Config.PREF_ENCODED_KEY, response.payload);
 						loginListener.onData(user);
 						break;
 					default:

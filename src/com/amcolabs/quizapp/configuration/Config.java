@@ -60,6 +60,7 @@ public class Config{
 	public static final String NOTIFICATION_KEY_MESSAGE_TYPE = "notificationType";
 	public static final String NOTIFICATION_KEY_TEXT_MESSAGE = "message";
 	public static final String GOOGLE_PLUS_SERVER_CLIENT_ID = "591807556804-qltit1nk5rga581b5a2j6tuoogum0s79.apps.googleusercontent.com";
+	public static final String CDN_IMAGES_PATH = "http://localhost:8084/images";
 	private QuizApp quizApp;
 
 

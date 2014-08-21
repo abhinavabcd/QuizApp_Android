@@ -80,7 +80,10 @@ public class UserHomeController  extends AppController implements OnInitializati
 	}
 	
 	private void showCategoriesScreen() {
-		removeScreen();
+		clearScreen();
+		CategoryScreen cs= new CategoryScreen(this);
+		cs.fillCategories();
+		/*
 		List<Category> categories = quizApp.getDataBaseHelper().getCategories();
 		showScreen(new CategoryScreen(this));
 		quizApp.getServerCalls().getNewCategories(quizApp.getUserDeviceManager().getDoublePreference(Config.PREF_LAST_CATEGORIES_FETCH_TIME, 0), new DataInputListener<List<Category>>(){
@@ -89,18 +92,26 @@ public class UserHomeController  extends AppController implements OnInitializati
 				return null;
 			}
 		});
+		*/
+		showScreen(cs);
 	}
+	
 
 	@Override
-	public void removeScreen() {
+	public void clearScreen() {
 		if(getCurrentScreen() instanceof WelcomeScreen){
 			onRemoveWelcomeScreen();
 		}
-		super.removeScreen();
+		super.clearScreen();
 	}
 	
     public void onRemoveWelcomeScreen() {//destroy msocialNetwork
-    	
+    	if(mSocialNetworkManager.getSocialNetwork(GooglePlusSocialNetwork.ID).isConnected()){
+    		
+    	}
+    	if(mSocialNetworkManager.getSocialNetwork(FacebookSocialNetwork.ID).isConnected()){
+    		
+    	}
     }
 	
 	public WelcomeScreen showWelcomeScreen(){
@@ -136,6 +147,9 @@ public class UserHomeController  extends AppController implements OnInitializati
 				if(!fbNetwork.isConnected()){
 					fbNetwork.requestLogin(UserHomeController.this);
 				}
+				else{
+					afterFbConnected();
+				}
 			}
 		});
 		
@@ -150,6 +164,7 @@ public class UserHomeController  extends AppController implements OnInitializati
   
 	public void afterUserLoggedIn(User user){
 		quizApp.setUser(user);
+		checkAndShowCategories();
 	}
  
 	@Override
@@ -169,7 +184,7 @@ public class UserHomeController  extends AppController implements OnInitializati
 	
 	public void afterGooglePlusConnected(){
 		final GooglePlusSocialNetwork plusNetwork = (GooglePlusSocialNetwork) mSocialNetworkManager.getSocialNetwork(GooglePlusSocialNetwork.ID);
-		plusNetwork.requestAccessToken(new OnRequestAccessTokenCompleteListener() {
+		plusNetwork.requestAccessToken(quizApp.getActivity(), new OnRequestAccessTokenCompleteListener() {
 			@Override
 			public void onError(int socialNetworkID, String requestID,
 					String errorMessage, Object data) {
@@ -177,6 +192,7 @@ public class UserHomeController  extends AppController implements OnInitializati
 			}
 			@Override
 			public void onRequestAccessTokenComplete(int socialNetworkID,AccessToken accessToken) {
+				user.googlePlus = accessToken.token;
 				plusNetwork.requestDetailedCurrentPerson(UserHomeController.this);
 			}
 		});
@@ -188,14 +204,18 @@ public class UserHomeController  extends AppController implements OnInitializati
 	@Override
 	public void onSocialNetworkManagerInitialized() {
 		if(mSocialNetworkManagerInitialized) return;
-	    mSocialNetworkManager.getSocialNetwork(GooglePlusSocialNetwork.ID).isConnected();
+	    mSocialNetworkManager.getSocialNetwork(GooglePlusSocialNetwork.ID).isConnecting();
 		mSocialNetworkManagerInitialized = true;
 		GooglePlusSocialNetwork plusNetwork = (GooglePlusSocialNetwork) mSocialNetworkManager.getSocialNetwork(GooglePlusSocialNetwork.ID);
 		FacebookSocialNetwork fbNetwork = (FacebookSocialNetwork) mSocialNetworkManager.getSocialNetwork(FacebookSocialNetwork.ID);
 		user = new User();
-		if(plusNetwork.isConnected()){
+		if(plusNetwork.isConnected() && !plusNetwork.isConnecting()){
 			afterGooglePlusConnected();
 		}
+		if(plusNetwork.isConnected() && plusNetwork.isConnecting()){
+			plusNetwork.requestLogin(UserHomeController.this);
+		}
+		
 		//else wait for user to click
 		if(fbNetwork.isConnected()){
 			
@@ -232,6 +252,22 @@ public class UserHomeController  extends AppController implements OnInitializati
 				user.birthday = 0;//fPerson.birthday;
 				break;
 	}
+		DataInputListener<User> loginListener = new DataInputListener<User>(){
+			@Override
+			public String onData(User s) {
+				UserHomeController.this.afterUserLoggedIn(s);
+				return super.onData(s);
+			}
+		};
+		
+		switch(socialNetworkID){
+			case GooglePlusSocialNetwork.ID:
+				quizApp.getServerCalls().doGooglePlusLogin(user,loginListener);
+				break;
+			case FacebookSocialNetwork.ID:
+				quizApp.getServerCalls().doFacebookLogin(user,loginListener); 
+				break;
+		}
 	}
 	
 	@Override
@@ -245,8 +281,7 @@ public class UserHomeController  extends AppController implements OnInitializati
 	}
 
 	@Override
-	public void onError(int socialNetworkID, String requestID,
-			String errorMessage, Object data) {
+	public void onError(int socialNetworkID, String requestID,String errorMessage, Object data) {
 		StaticPopupDialogBoxes.alertPrompt(quizApp.getFragmentManager(), requestID+errorMessage, null);
 	}
 }

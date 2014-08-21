@@ -9,7 +9,6 @@ import android.app.Activity;
  */
 
 public class ServerResponse {
-	public int statusCode;
 	public int messageType;
 	public String payload; 
 	public String payload1;
@@ -21,6 +20,7 @@ public class ServerResponse {
 	// below code to enumize the response codes
 	public enum MessageType{
 				////    =(.*)$ replace with (\1),  eclipse replace
+				DUMMY(-1),
 				NOT_ACTIVATED (104),
 				ACTIVATED (105),
 				NOT_AUTHORIZED (106),
@@ -84,7 +84,7 @@ public class ServerResponse {
 	private static HashMap<Integer , MessageType> statusCodeMap = null;//new HashMap<Integer , MessageType>();;
 		
 	public MessageType getStatusCode(){
-		return this.getStatusCode(this.statusCode);
+		return this.getStatusCode(this.messageType);
 	}
 	public MessageType getStatusCode(int value){
 		if(statusCodeMap==null){
@@ -93,10 +93,10 @@ public class ServerResponse {
 				statusCodeMap.put(s.getValue(), s);
 			}
 		}
-		return statusCodeMap.containsKey(value) ? statusCodeMap.get(value):null;
+		return statusCodeMap.containsKey(value) ? statusCodeMap.get(value):MessageType.DUMMY;
 	}
 	public MessageType getStatusCode(Activity activity){ //ui based function can be removed when switching to new projects
-		int value = this.statusCode;
+		int value = this.messageType;
 		MessageType s= this.getStatusCode(value);
 		// do any necessary processing
 		switch(s){

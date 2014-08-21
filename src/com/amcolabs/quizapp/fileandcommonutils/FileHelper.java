@@ -32,7 +32,7 @@ public class FileHelper {
 		return f.exists();
 	}
 
-	public static boolean isFileExists(Context context, String folder , String filePath) {
+	public static Boolean isFileExists(Context context, String folder , String filePath) {
 		File f = new File(context.getFilesDir().getParentFile().getPath()+"/"+folder+"/"+filePath);
 		return f.exists();
 	}

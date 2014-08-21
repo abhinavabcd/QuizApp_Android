@@ -19,9 +19,12 @@ public abstract class AppController {
 		return quizApp.getContext();
 	}
 
-	public void removeScreen() {
-		if(!screenStack.isEmpty())
-			quizApp.animateScreenRemove(screenStack.peek());//remove to side animation
+	public void clearScreen() {
+		Screen p = null;
+		while(!screenStack.isEmpty() && (p=screenStack.pop())==null ){
+		}
+		if(p!=null)
+			quizApp.animateScreenRemove(p);//remove to side animation
 	}
 	
 	public void showScreen(Screen newScreen){
