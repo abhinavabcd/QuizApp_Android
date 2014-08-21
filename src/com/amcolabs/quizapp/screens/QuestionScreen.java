@@ -40,9 +40,7 @@ public class QuestionScreen extends Screen {
 		optionsWrapper = (LinearLayout) fullQuestionLayout.findViewById(R.id.quizOptions);
 		
 		loadUserInfo();
-		addView(headerWrapper);
-		addView(questionWrapper);
-		addView(optionsWrapper);
+		addView(fullQuestionLayout);
 	}
 
 	public void loadUserInfo() {

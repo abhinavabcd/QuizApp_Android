@@ -1,63 +1,34 @@
-package com.amcolabs.quizapp.screens;
+package com.amcolabs.quizapp.adapters;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.View.OnClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.ListView;
 
-import com.amcolabs.quizapp.AppController;
 import com.amcolabs.quizapp.QuizApp;
 import com.amcolabs.quizapp.R;
-import com.amcolabs.quizapp.Screen;
 import com.amcolabs.quizapp.databaseutils.Category;
+import com.amcolabs.quizapp.datalisteners.DataInputListener;
 import com.amcolabs.quizapp.widgets.GothamTextView;
-import com.squareup.picasso.Picasso;
 
-public class CategoryScreen extends Screen {
-	ArrayList<Category> categories = new ArrayList<Category>();
-	ArrayAdapter<Category> categoryAdaptor;
-	public CategoryScreen(AppController appManager) {
-		super(appManager);
-		
-	}
-	
-	public void fillCategories(){
-		for(int i=0;i<10;i++){
-			categories.add(Category.createDummy());
-		}
-		categoryAdaptor = new CategoryListAdapter(getApp(),0,categories);
-		LinearLayout lView = (LinearLayout) getApp().getActivity().getLayoutInflater().inflate(R.layout.block_list_view, null);
-		((ListView) lView.findViewById(R.id.listView)).setAdapter(categoryAdaptor);
-		addView(lView);
-	}
-	
-	
-	public void showUserFavourites(){
-		
-	}
-	
-	public void showQuizAppActivity(){
-		
-	}
-
-	static class CategoryViewHolder{
+class CategoryViewHolder{
 		ImageView imageView ;
 		GothamTextView categoryName;
 		GothamTextView shortCategoryDescription;
 		GothamTextView additionalText;
+		Category item;
 	}
 
-	static class CategoryListAdapter extends ArrayAdapter<Category>{
+public  class CategoryItemListAdapter extends ArrayAdapter<Category>{
 		QuizApp quizApp ;
-		public CategoryListAdapter(QuizApp quizApp, int resource,List<Category> objects) {
+		private DataInputListener<Category> clickListener;
+		public CategoryItemListAdapter(QuizApp quizApp, int resource,List<Category> objects, DataInputListener<Category> clickListener) {
 			super(quizApp.getActivity(), resource, objects);
 			this.quizApp = quizApp;
+			this.clickListener = clickListener;
 		}
 
 		@Override
@@ -72,6 +43,13 @@ public class CategoryScreen extends Screen {
 				holder.shortCategoryDescription = (GothamTextView) convertView.findViewById(R.id.category_short_name);
 				holder.additionalText = (GothamTextView) convertView.findViewById(R.id.additional_text);
 				convertView.setTag(holder);
+				if(clickListener!=null)
+					convertView.setOnClickListener(new OnClickListener() {
+						@Override
+						public void onClick(View v) {
+							clickListener.onData(((CategoryViewHolder)v.getTag()).item);
+						}
+					});
 			}
 			else{
 				holder = (CategoryViewHolder) convertView.getTag();
@@ -83,5 +61,4 @@ public class CategoryScreen extends Screen {
 			holder.additionalText.setText("a");
 			return convertView;
 		}
-	};
-}
+};

@@ -13,9 +13,12 @@ import com.amcolabs.quizapp.User;
 import com.amcolabs.quizapp.UserDeviceManager;
 import com.amcolabs.quizapp.configuration.Config;
 import com.amcolabs.quizapp.databaseutils.Category;
+import com.amcolabs.quizapp.databaseutils.Quiz;
 import com.amcolabs.quizapp.datalisteners.DataInputListener;
 import com.amcolabs.quizapp.popups.StaticPopupDialogBoxes;
-import com.amcolabs.quizapp.screens.CategoryScreen;
+import com.amcolabs.quizapp.screens.QuestionScreen;
+import com.amcolabs.quizapp.screens.QuizzesScreen;
+import com.amcolabs.quizapp.screens.HomeScreen;
 import com.amcolabs.quizapp.screens.WelcomeScreen;
 import com.androidsocialnetworks.lib.AccessToken;
 import com.androidsocialnetworks.lib.SocialNetworkManager;
@@ -31,19 +34,19 @@ import com.androidsocialnetworks.lib.persons.SocialPerson;
 import com.google.android.gms.plus.model.people.Person.Gender;
 
 
-public class UserHomeController  extends AppController implements OnInitializationCompleteListener, OnLoginCompleteListener, OnRequestDetailedSocialPersonCompleteListener<SocialPerson>{
+public class UserMainController  extends AppController implements OnInitializationCompleteListener, OnLoginCompleteListener, OnRequestDetailedSocialPersonCompleteListener<SocialPerson>{
 	 
 	public static final String SOCIAL_NETWORK_TAG = "com.amcolabs.quizapp.loginscreen";
     protected boolean mSocialNetworkManagerInitialized = false;
     User user= null;
 	private SocialNetworkManager mSocialNetworkManager;
-	public UserHomeController(QuizApp quizApp) {
+	public UserMainController(QuizApp quizApp) {
 		super(quizApp);
 	}
 
 //	public WelcomeScreen welcomeScreen;
 //	public SignUpScreen signUpScreen;
-//	public CategoryScreen categoriesScreen;
+//	public HomeScreen categoriesScreen;
 //	public TopicsScreen topicsScreen;
 	 
 	
@@ -51,7 +54,7 @@ public class UserHomeController  extends AppController implements OnInitializati
 		String encodedKey = quizApp.getUserDeviceManager().getPreference(Config.PREF_ENCODED_KEY, null);
 		if(encodedKey!=null){  
 			//on fetch update new categories and draw the categories
-			showCategoriesScreen();
+			showUserHomeScreen();
 		}
 		else if(quizApp.getUserDeviceManager().getPreference(Config.PREF_NOT_ACTIVATED, null)!=null){
 			checkAndShowVerificationScreen();
@@ -66,26 +69,49 @@ public class UserHomeController  extends AppController implements OnInitializati
 			@Override
 			public String onData(String encodedKey) {
 				if(encodedKey!=null){
-					showCategoriesScreen();
+					showUserHomeScreen();
 				}
 				return null;
 			}
 		});// on ACTIVATED, save user quizApp setUser
 	}
-
-	private void updateCategoriesScreen(List<Category> newCategories) {
-		if(getCurrentScreen() instanceof CategoryScreen){
-			//update all that 
+	public void onCategorySelected(Category category){
+		clearScreen();
+		QuizzesScreen categoryQuizzesScreen = new QuizzesScreen(this);
+		
+		ArrayList<Quiz> quizzes = new ArrayList<Quiz>();
+		for(int i=0;i<10;i++){ 
+			quizzes.add(Quiz.createDummy());
 		}
+		categoryQuizzesScreen.addQuizzesToList(quizzes);
+		showScreen(categoryQuizzesScreen);
 	}
 	
-	private void showCategoriesScreen() {
+	public void onQuizSelected(Quiz quiz){
 		clearScreen();
-		CategoryScreen cs= new CategoryScreen(this);
-		cs.fillCategories();
+		QuestionScreen questionScreen = new QuestionScreen(this);
+		
+		ArrayList<Quiz> quizzes = new ArrayList<Quiz>();
+		for(int i=0;i<10;i++){ 
+			quizzes.add(Quiz.createDummy());
+		}
+		showScreen(questionScreen);
+
+	}
+	
+	
+	
+	private void showUserHomeScreen() {
+		clearScreen();
+		HomeScreen cs= new HomeScreen(this);
+		ArrayList<Category> categories = new ArrayList<Category>();
+		for(int i=0;i<10;i++){
+			categories.add(Category.createDummy());
+		}
+		cs.fillCategories(categories);
 		/*
 		List<Category> categories = quizApp.getDataBaseHelper().getCategories();
-		showScreen(new CategoryScreen(this));
+		showScreen(new HomeScreen(this));
 		quizApp.getServerCalls().getNewCategories(quizApp.getUserDeviceManager().getDoublePreference(Config.PREF_LAST_CATEGORIES_FETCH_TIME, 0), new DataInputListener<List<Category>>(){
 			public String onData(List<Category> s) {
 				updateCategoriesScreen(s);
@@ -133,7 +159,7 @@ public class UserHomeController  extends AppController implements OnInitializati
 			public void onClick(View v) {
 				GooglePlusSocialNetwork plusNetwork = (GooglePlusSocialNetwork) mSocialNetworkManager.getSocialNetwork(GooglePlusSocialNetwork.ID);
 				if(!plusNetwork.isConnected()){
-					plusNetwork.requestLogin(UserHomeController.this);
+					plusNetwork.requestLogin(UserMainController.this);
 				}
 				else{
 					afterGooglePlusConnected();
@@ -145,7 +171,7 @@ public class UserHomeController  extends AppController implements OnInitializati
 			public void onClick(View v) {
 				FacebookSocialNetwork fbNetwork = (FacebookSocialNetwork) mSocialNetworkManager.getSocialNetwork(FacebookSocialNetwork.ID);
 				if(!fbNetwork.isConnected()){
-					fbNetwork.requestLogin(UserHomeController.this);
+					fbNetwork.requestLogin(UserMainController.this);
 				}
 				else{
 					afterFbConnected();
@@ -193,7 +219,7 @@ public class UserHomeController  extends AppController implements OnInitializati
 			@Override
 			public void onRequestAccessTokenComplete(int socialNetworkID,AccessToken accessToken) {
 				user.googlePlus = accessToken.token;
-				plusNetwork.requestDetailedCurrentPerson(UserHomeController.this);
+				plusNetwork.requestDetailedCurrentPerson(UserMainController.this);
 			}
 		});
 	}
@@ -213,7 +239,7 @@ public class UserHomeController  extends AppController implements OnInitializati
 			afterGooglePlusConnected();
 		}
 		if(plusNetwork.isConnected() && plusNetwork.isConnecting()){
-			plusNetwork.requestLogin(UserHomeController.this);
+			plusNetwork.requestLogin(UserMainController.this);
 		}
 		
 		//else wait for user to click
@@ -255,7 +281,7 @@ public class UserHomeController  extends AppController implements OnInitializati
 		DataInputListener<User> loginListener = new DataInputListener<User>(){
 			@Override
 			public String onData(User s) {
-				UserHomeController.this.afterUserLoggedIn(s);
+				UserMainController.this.afterUserLoggedIn(s);
 				return super.onData(s);
 			}
 		};

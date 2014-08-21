@@ -1,7 +1,7 @@
 package com.amcolabs.quizapp;
 
 import com.amcolabs.quizapp.UserDeviceManager.AppRunningState;
-import com.amcolabs.quizapp.appcontrollers.UserHomeController;
+import com.amcolabs.quizapp.appcontrollers.UserMainController;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -54,7 +54,7 @@ public class MainActivity extends ActionBarActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         
-        Fragment fragment = getSupportFragmentManager().findFragmentByTag(UserHomeController.SOCIAL_NETWORK_TAG);
+        Fragment fragment = getSupportFragmentManager().findFragmentByTag(UserMainController.SOCIAL_NETWORK_TAG);
         if (fragment != null) { //google plus unnecessary thing
             fragment.onActivityResult(requestCode, resultCode, data);
         }

@@ -4,17 +4,30 @@ import com.j256.ormlite.field.DatabaseField;
 
 public class Quiz {
 	@DatabaseField(index=true, unique=true)
-    String quizId;
+    public String quizId;
 	@DatabaseField
-	String quizType;
+	public String quizType;
 	@DatabaseField
-    String name;
+	public String name;
 	@DatabaseField
-    String tags; //comma seperated list of tags
+	public String shortDescription;
 	@DatabaseField
-    int nQuestions;
+	public String assetPath;	
 	@DatabaseField
-    int nPeople;
+	public String tags; //comma seperated list of tags
 	@DatabaseField
-    double modifiedTimestamp;
+	public int nQuestions;
+	@DatabaseField
+	public int nPeople;
+	@DatabaseField
+	public double modifiedTimestamp;
+	public static Quiz createDummy() {
+		
+		Quiz c = new Quiz();
+		c.quizId = "abcd";
+		c.shortDescription = "Time to go on";
+		c.name = "Do something";
+		c.modifiedTimestamp = 0;
+		return c;
+	}
 }

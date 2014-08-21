@@ -22,7 +22,7 @@ import android.view.animation.Animation.AnimationListener;
 import android.widget.FrameLayout;
 
 import com.amcolabs.quizapp.UserDeviceManager.AppRunningState;
-import com.amcolabs.quizapp.appcontrollers.UserHomeController;
+import com.amcolabs.quizapp.appcontrollers.UserMainController;
 import com.amcolabs.quizapp.configuration.Config;
 import com.amcolabs.quizapp.databaseutils.DatabaseHelper;
 import com.amcolabs.quizapp.serverutils.ServerCalls;
@@ -58,7 +58,7 @@ public class QuizApp extends Fragment implements AnimationListener {
 			Bundle savedInstanceState) {
 		mainFrame = (FrameLayout)getActivity().getLayoutInflater().inflate(R.layout.activity_main,null);
 		addView(loadingView);
-		((UserHomeController)loadAppController(UserHomeController.class))
+		((UserMainController)loadAppController(UserMainController.class))
 		.checkAndShowCategories();
 
 		return mainFrame;
@@ -94,19 +94,19 @@ public class QuizApp extends Fragment implements AnimationListener {
 			Constructor<?> constructor = clazz.getConstructor(QuizApp.class);
 			appController =(AppController) constructor.newInstance(this);
 		} catch (NoSuchMethodException e) {
-			appController = new UserHomeController(this);
+			appController = new UserMainController(this);
 			e.printStackTrace();
 		} catch (InstantiationException e) {
-			appController = new UserHomeController(this);
+			appController = new UserMainController(this);
 			e.printStackTrace();
 		} catch (IllegalAccessException e) {
-			appController = new UserHomeController(this);
+			appController = new UserMainController(this);
 			e.printStackTrace();
 		} catch (IllegalArgumentException e) {
-			appController = new UserHomeController(this);
+			appController = new UserMainController(this);
 			e.printStackTrace();
 		} catch (InvocationTargetException e) {
-			appController = new UserHomeController(this);
+			appController = new UserMainController(this);
 			e.printStackTrace();
 		} catch (java.lang.InstantiationException e) {
 			// TODO Auto-generated catch block
@@ -231,7 +231,7 @@ public class QuizApp extends Fragment implements AnimationListener {
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        Fragment fragment = getFragmentManager().findFragmentByTag(UserHomeController.SOCIAL_NETWORK_TAG);
+        Fragment fragment = getFragmentManager().findFragmentByTag(UserMainController.SOCIAL_NETWORK_TAG);
         if (fragment != null) {
             fragment.onActivityResult(requestCode, resultCode, data);
         }

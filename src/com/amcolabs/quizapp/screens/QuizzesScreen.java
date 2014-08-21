@@ -1,14 +1,40 @@
 package com.amcolabs.quizapp.screens;
 
-import android.content.Context;
+import java.util.ArrayList;
+
+import android.widget.LinearLayout;
+import android.widget.ListView;
 
 import com.amcolabs.quizapp.AppController;
+import com.amcolabs.quizapp.R;
 import com.amcolabs.quizapp.Screen;
+import com.amcolabs.quizapp.adapters.CategoryItemListAdapter;
+import com.amcolabs.quizapp.adapters.QuizItemListAdapter;
+import com.amcolabs.quizapp.databaseutils.Quiz;
+import com.amcolabs.quizapp.datalisteners.DataInputListener;
 
 public class QuizzesScreen extends Screen {
 
-	public QuizzesScreen(AppController appManager) {
-		super(appManager);
+	private ArrayList<Quiz> quizzes;
+	private DataInputListener<Quiz> clickListener;
+
+
+	public QuizzesScreen(AppController controller) {
+		super(controller);
+	}
+	
+	public void addQuizzes(ArrayList<Quiz> quizzes , DataInputListener<Quiz> clickListener){
+		this.clickListener = clickListener;
+		this.quizzes = quizzes;
+		
+		QuizItemListAdapter quizAdaptor = new QuizItemListAdapter(getApp(),0,quizzes, clickListener);
+		LinearLayout lView = (LinearLayout) getApp().getActivity().getLayoutInflater().inflate(R.layout.block_list_view, null);
+			((ListView) lView.findViewById(R.id.listView)).setAdapter(quizAdaptor);
+			addView(lView);
+	}
+
+	public void addQuizzesToList(ArrayList<Quiz> quizzes) {
+		
 	}
 
 }
