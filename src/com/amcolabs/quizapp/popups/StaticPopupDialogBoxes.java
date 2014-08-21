@@ -108,8 +108,8 @@ public class StaticPopupDialogBoxes {
 		(new AlertMessage(message, listener)).show(A, "");
 	}
 	
-	public static void alertPrompt(Activity A, String message , final DataInputListener<Boolean> listener){
-		if (!UserDeviceManager.isRunning()) return;
+	public static Dialog alertPrompt(Activity A, String message , final DataInputListener<Boolean> listener){
+		if (!UserDeviceManager.isRunning()) return null;
         AlertDialog.Builder builder = new AlertDialog.Builder(A);
         builder.setMessage(message)
                .setPositiveButton("OK", new android.content.DialogInterface.OnClickListener(){
@@ -128,6 +128,7 @@ public class StaticPopupDialogBoxes {
         else{
         	dialog.dismiss();
         }
+        return dialog;
 	}
 	
 	/**

@@ -3,6 +3,9 @@ package com.amcolabs.quizapp;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import com.google.android.gms.plus.model.people.Person;
+import com.google.android.gms.plus.model.people.PersonBuffer;
+
 public class User {
 	public String uid;
 	public String password;
@@ -10,7 +13,7 @@ public class User {
 	public String deviceId;
 	public String emailId;
 	public String pictureUrl;
-	public String coverPictureUrl;	
+	public String coverUrl;	
 	public String gender;
 	public double birthday;
 	public String place;
@@ -19,7 +22,7 @@ public class User {
 	public String googlePlus;
 	public String facebook;
 	public String solvedId;
-	public ArrayList<Integer> badgeIds;
+	public ArrayList<Integer> badges;
 	public HashMap<String,Integer> stats;
 	public HashMap<String, Integer[]>winsLosses;
 	
@@ -32,5 +35,10 @@ public class User {
 	}
 	public String getGooglePlusAuthToken(){
 		return googlePlus;
+	}
+
+	public static User from(Person person) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

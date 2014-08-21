@@ -43,7 +43,7 @@ public class QuestionScreen extends Screen {
 	
 	public QuestionScreen(AppController controller) {
 		super(controller);
-		LayoutInflater tmp = getApp().getLayoutInflater();
+		LayoutInflater tmp = getApp().getActivity().getLayoutInflater();
 		fullQuestionLayout = (LinearLayout) tmp.inflate(R.layout.quiz_full_question, null);
 		headerViewWrapper = (LinearLayout) fullQuestionLayout.findViewById(R.id.quizHeader);
 		questionViewWrapper = (LinearLayout) fullQuestionLayout.findViewById(R.id.quizQuestion);

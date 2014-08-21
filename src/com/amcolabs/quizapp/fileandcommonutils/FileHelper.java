@@ -22,17 +22,17 @@ public class FileHelper {
 		this.quizApp = quizApp;
 	}
 	public boolean isFileExistsInFiles(String relativePath) {
-		File f = new File(quizApp.getFilesDir() , relativePath);
+		File f = new File(quizApp.getContext().getFilesDir() , relativePath);
 		return f.exists();
 	}
 	
 	
 	public boolean isFileExists(String path) {
-		File f = new File(quizApp.getFilesDir().getParentFile().getPath()+"/"+path);
+		File f = new File(quizApp.getContext().getFilesDir().getParentFile().getPath()+"/"+path);
 		return f.exists();
 	}
 
-	public static boolean isFileExists(Context context, String folder , String filePath) {
+	public static Boolean isFileExists(Context context, String folder , String filePath) {
 		File f = new File(context.getFilesDir().getParentFile().getPath()+"/"+folder+"/"+filePath);
 		return f.exists();
 	}

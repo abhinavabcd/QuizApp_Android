@@ -1,26 +1,57 @@
 package com.amcolabs.quizapp.databaseutils;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
 
-import com.amcolabs.quizapp.serverutils.ServerResponse;
-import com.amcolabs.quizapp.serverutils.ServerResponse.MessageType;
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.Bitmap.CompressFormat;
+import android.graphics.drawable.Drawable;
+import android.os.Environment;
+import android.widget.ImageView;
+
+import com.amcolabs.quizapp.configuration.Config;
+import com.amcolabs.quizapp.fileandcommonutils.FileHelper;
 import com.j256.ormlite.field.DatabaseField;
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 
 public class Category {
 
 	@DatabaseField(id=true, index = true)
-    String categoryId;
+    public String categoryId;
 	@DatabaseField
-    String shortDescription;
+    public  String shortDescription;
 	@DatabaseField
-	String description;
+	public String description;
 	@DatabaseField
-	String quizList; 
+	public String quizList; 
 	@DatabaseField
-	int categoryType;
+	public String assetPath;  //could be cdn or a direct url
 	@DatabaseField
-	double modifiedTimestamp;
-    
+	public int categoryType;
+	@DatabaseField
+	public double modifiedTimestamp;
+
+	
+	
+	
+	
+	public static Category createDummy(){
+		Category c = new Category();
+		c.categoryId = "abcd";
+		c.shortDescription = "Time to go on";
+		c.description = "Do something";
+		c.quizList = "1,2,3,4,5";
+		c.categoryType = 2;
+		c.modifiedTimestamp = 0;
+		
+		return c;
+	}
+	
 	public static enum CategoryType{
 		SPECIAL(0);
 		

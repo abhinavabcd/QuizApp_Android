@@ -1,5 +1,9 @@
 package com.amcolabs.quizapp.uiutils;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,6 +22,8 @@ import android.content.Intent;
 import android.content.OperationApplicationException;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
+import android.graphics.Bitmap;
+import android.graphics.Bitmap.CompressFormat;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
@@ -35,6 +41,7 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
 import android.view.animation.AnimationUtils;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.amcolabs.quizapp.QuizApp;
@@ -45,6 +52,8 @@ import com.amcolabs.quizapp.datalisteners.DataInputListener;
 import com.amcolabs.quizapp.notificationutils.NotificationReciever;
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.j256.ormlite.dao.RuntimeExceptionDao;
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 
 
 public class UiUtils {
@@ -58,13 +67,13 @@ public class UiUtils {
 	public UiUtils(QuizApp quizApp){
 		this.quizApp = quizApp;
 		
-       animationSlideInLeft = AnimationUtils.loadAnimation(quizApp,
+       animationSlideInLeft = AnimationUtils.loadAnimation(quizApp.getContext(),
     	         R.anim.slide_in_left);
-       animationSlideInRight = AnimationUtils.loadAnimation(quizApp,
+       animationSlideInRight = AnimationUtils.loadAnimation(quizApp.getContext(),
   	         R.anim.slide_in_right);
-  	   animationSlideOutLeft = AnimationUtils.loadAnimation(quizApp,
+  	   animationSlideOutLeft = AnimationUtils.loadAnimation(quizApp.getContext(),
   	         R.anim.slide_out_left);
-       animationSlideOutRight = AnimationUtils.loadAnimation(quizApp,
+       animationSlideOutRight = AnimationUtils.loadAnimation(quizApp.getContext(),
     		   R.anim.slide_out_right);
        animationSlideOutLeft.setAnimationListener(quizApp);
        animationSlideOutRight.setAnimationListener(quizApp);
@@ -94,7 +103,7 @@ public class UiUtils {
 		try{
 			if(uiBlockCount==0){
 				preloaderText = UiText.TEXT_LOADING.getValue();
-				preloader = ProgressDialog.show(quizApp, "", preloaderText, true);
+				preloader = ProgressDialog.show(quizApp.getContext(), "", preloaderText, true);
 			}
 			uiBlockCount++;
 		}
@@ -108,7 +117,7 @@ public class UiUtils {
 		try{
 		if(uiBlockCount==0){
 			preloaderText = text;
-			preloader = ProgressDialog.show(quizApp, "", text, true);
+			preloader = ProgressDialog.show(quizApp.getContext(), "", text, true);
 		}
 		else{
 			preloaderText = preloaderText+ ("\n"+text);
@@ -264,4 +273,56 @@ public class UiUtils {
 	public Animation getAnimationSlideInRight() {
 		return animationSlideInRight;
 	}        
+	
+	public void loadImageIntoView(Context ctx , final ImageView imgView , String assetPath){
+		if(assetPath==null || assetPath.isEmpty())
+			return;
+		try{
+		    InputStream ims = ctx.getAssets().open(assetPath);
+		    Picasso.with(ctx).load("file:///android_asset/"+assetPath).into(imgView);
+		    return;
+		}
+		catch(IOException ex) {
+			final File file = new File(ctx.getFilesDir().getParentFile().getPath()+"/images/"+assetPath);
+			if(file.exists()){
+				Picasso.with(ctx).load(file).into(imgView);
+			}
+			else{
+				Picasso.with(ctx).load(Config.CDN_IMAGES_PATH+assetPath).into(new Target() {
+			        @Override
+			        public void onBitmapLoaded(final Bitmap bitmap, Picasso.LoadedFrom from) {
+			            new Thread(new Runnable() {
+			                @Override
+			                public void run() {               
+			                    try
+			                    {
+			                        file.createNewFile();
+			                        FileOutputStream ostream = new FileOutputStream(file);
+			                        bitmap.compress(CompressFormat.PNG, 75, ostream);
+			                        ostream.close();
+			                    }
+			                    catch (Exception e)
+			                    {
+			                        e.printStackTrace();
+			                    }
+			 
+			                }
+			            }).start();
+			            imgView.setImageBitmap(bitmap);
+			        }
+
+					@Override
+					public void onBitmapFailed(Drawable arg0) {
+						// TODO Auto-generated method stub
+					}
+					@Override
+					public void onPrepareLoad(Drawable arg0) {
+						// TODO Auto-generated method stub
+					}
+			    });
+			}
+		}		 
+		catch (Exception e) {
+		}
+	}
 }

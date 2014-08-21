@@ -25,8 +25,8 @@ public class UserDeviceManager {
 	private QuizApp quizApp;
 	
 	public UserDeviceManager(QuizApp quizApp) {
-		this.quizApp = quizApp;
-		initializePreferences(quizApp);
+		this.quizApp = quizApp; 
+		initializePreferences(quizApp.getContext());
 		hasJustInstalled = isFirstTimeUser();// false only after first call to getFeed from server
 		UserDeviceManager.getDeviceId(quizApp.getContentResolver());
 		currentState = AppRunningState.IS_RUNNING;

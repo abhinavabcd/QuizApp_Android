@@ -98,4 +98,10 @@ public class ProgressiveQuizController extends AppController{
 		return null;
 	}
 
+	@Override
+	public void onDestroy() {
+		// TODO Auto-generated method stub
+		
+	}
+
 }
