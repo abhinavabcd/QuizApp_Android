@@ -113,7 +113,7 @@ public class ImageViewFiltered extends ImageView{
 	        // Calculate the actual dimensions
 	        final int actW = Math.round(origW * scaleX);
 	        final int actH = Math.round(origH * scaleY);
-//	        setMeasuredDimension(measuredWidth,measuredHeight);
+//	        setMeasuredDimension(actW,actH);
 	        Log.e("DBG", "["+origW+","+origH+"] -> ["+actW+","+actH+"] & scales: x="+scaleX+" y="+scaleY);
 	    }
 		

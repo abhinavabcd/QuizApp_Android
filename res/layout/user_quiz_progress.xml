@@ -17,8 +17,9 @@
             android:id="@+id/userName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginRight="92dp"
-            android:layout_toEndOf="@id/userImageSmall"
+            android:layout_alignParentTop="true"
+            android:layout_toRightOf="@id/userImageSmall"
+            android:gravity="left"
             android:text="Amigo"
             android:textSize="12sp" />
 
@@ -39,11 +40,9 @@
             android:id="@+id/userPointsEarned"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignBottom="@+id/userImageSmall"
+            android:layout_alignBaseline="@id/userImageSmall"
             android:layout_alignLeft="@id/userName"
             android:layout_below="@id/userName"
-            android:layout_marginRight="14dp"
-            android:layout_toRightOf="@id/userImageSmall"
             android:text="+50XP"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:textSize="10sp" />

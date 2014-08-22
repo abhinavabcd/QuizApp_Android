@@ -41,8 +41,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignBaseline="@id/userImageSmall"
-            android:layout_alignRight="@+id/userName"
-            android:layout_below="@+id/userName"
+            android:layout_alignRight="@id/userName"
+            android:layout_below="@id/userName"
             android:text="+50XP"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:textSize="10sp" />
