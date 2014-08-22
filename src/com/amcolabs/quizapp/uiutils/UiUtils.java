@@ -77,6 +77,15 @@ public class UiUtils {
     		   R.anim.slide_out_right);
        animationSlideOutLeft.setAnimationListener(quizApp);
        animationSlideOutRight.setAnimationListener(quizApp);
+//       animationSlideInLeft.setAnimationListener(quizApp);
+//       animationSlideInRight.setAnimationListener(quizApp);
+	}
+	
+	public boolean isOutAnimation(Animation animation){
+		if(animation==animationSlideOutLeft || animation==animationSlideOutRight){
+			return true;
+		}
+		return false;
 	}
 	
 	public static enum UiText{

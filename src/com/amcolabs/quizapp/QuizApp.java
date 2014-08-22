@@ -23,6 +23,8 @@ import android.widget.FrameLayout;
 import com.amcolabs.quizapp.appcontrollers.UserMainController;
 import com.amcolabs.quizapp.configuration.Config;
 import com.amcolabs.quizapp.databaseutils.DatabaseHelper;
+import com.amcolabs.quizapp.datalisteners.DataInputListener;
+import com.amcolabs.quizapp.screens.WelcomeScreen;
 import com.amcolabs.quizapp.serverutils.ServerCalls;
 import com.amcolabs.quizapp.uiutils.UiUtils;
 import com.amcolabs.quizapp.uiutils.UiUtils.UiText;
@@ -39,7 +41,7 @@ public class QuizApp extends Fragment implements AnimationListener {
 	static final boolean TO_RIGHT = false;
 	
 	private User currentUser;
-	private Stack<AppController> appControllerStack;
+	private AppController currentAppController;
 	private UserDeviceManager userDeviceManager;
 	private UiUtils uiUtils;
 	private ServerCalls serverCalls;
@@ -55,7 +57,7 @@ public class QuizApp extends Fragment implements AnimationListener {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		mainFrame = (FrameLayout)getActivity().getLayoutInflater().inflate(R.layout.activity_main,null);
-		addView(loadingView);
+		mainFrame.addView(loadingView);
 		((UserMainController)loadAppController(UserMainController.class))
 		.checkAndShowCategories();
 
@@ -71,14 +73,14 @@ public class QuizApp extends Fragment implements AnimationListener {
 			config = new Config(this);
 			uiUtils = new UiUtils(this);
 			serverCalls = new ServerCalls(this);
-			appControllerStack = new Stack<AppController>();
 			loadingView = userDeviceManager.getLoadingView(this.getActivity());
 			disposeScreens = new LinkedList<Screen>();
 		}
 	}
 
-	private void addView(View view) {
-		mainFrame.addView(view);
+	private void addView(Screen screen) {
+		mainFrame.addView(screen);
+		screenStack.push(screen);
 	}
 
 	private void removeView(Screen screen) {
@@ -87,8 +89,8 @@ public class QuizApp extends Fragment implements AnimationListener {
 	
 	public AppController loadAppController(Class<? extends AppController> clazz){
 		AppController appController=null; 
-		if(appControllerStack.size()>0 && appControllerStack.peek().getClass().equals(clazz)){
-			return appControllerStack.peek();
+		if(currentAppController!=null && currentAppController.getClass().equals(clazz)){
+			return currentAppController;
 		}
 		try {
 			Constructor<?> constructor = clazz.getConstructor(QuizApp.class);
@@ -112,7 +114,6 @@ public class QuizApp extends Fragment implements AnimationListener {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		appControllerStack.push(appController);
 		return appController;
 	}
 	
@@ -160,14 +161,34 @@ public class QuizApp extends Fragment implements AnimationListener {
 	}
 	
 	public void onBackPressed() {
-		try{
-				if(!appControllerStack.peek().onBackPressed()){
-					AppController c = appControllerStack.pop();
-					Screen screen = c.popScreen();
-					if(screen!=null)
-						animateScreenIn(screen, FROM_LEFT);
-					else
-						onBackPressed();
+		try{		
+				
+				Screen screen = popCurrentScreen();
+				if(screen==null){
+					this.getActivity().moveTaskToBack(true);
+				}
+				if(screen!=null && !screen.controller.onBackPressed()){
+					animateScreenRemove(screen , TO_RIGHT, new AnimationListener() {
+						@Override
+						public void onAnimationStart(Animation animation) {
+						}
+						
+						@Override
+						public void onAnimationRepeat(Animation animation) {
+						}
+						
+						@Override
+						public void onAnimationEnd(Animation animation) {
+							QuizApp.this.onAnimationEnd(animation);//remove the disposed screen
+							loadingView.setVisibility(View.INVISIBLE);
+							Screen oldScreen = popCurrentScreen();
+							if(oldScreen!=null)
+								animateScreenIn(oldScreen, FROM_LEFT);
+							else{
+								getActivity().moveTaskToBack(true);
+							}
+						}
+					});
 				}
 			}
 			catch(EmptyStackException e) {
@@ -179,32 +200,62 @@ public class QuizApp extends Fragment implements AnimationListener {
 		animateScreenIn(newScreen,FROM_RIGHT);
 	}
 
-	public void animateScreenRemove(Screen currentScreen) {
-		animateScreenRemove(currentScreen, TO_LEFT);
+	public void animateScreenRemove() {
+		Screen currentScreen = peekCurrentScreen();
+		animateScreenRemove(currentScreen , TO_LEFT,null);
 	}
 	
+	
+	private Object uiSync = new Object();
+	Stack<Screen> screenStack = new Stack<Screen>();
+	public Screen popCurrentScreen(){
+		if(screenStack.isEmpty())
+			return null;
+		return screenStack.pop();
+	}
+	
+	public Screen peekCurrentScreen() {
+		if(screenStack.isEmpty())
+			return null;
+		return screenStack.peek();
+
+	}
 
 	public void animateScreenIn(Screen newScreen, boolean fromRight){
-		addView(newScreen);
-		loadingView.setVisibility(View.INVISIBLE);
-		if(fromRight)
-			newScreen.startAnimation(getUiUtils().getAnimationSlideInRight());
-		else
-			newScreen.startAnimation(getUiUtils().getAnimationSlideInLeft());		
+		synchronized (uiSync) {
+			addView(newScreen);
+			loadingView.setVisibility(View.INVISIBLE);
+			if(fromRight)
+				newScreen.startAnimation(getUiUtils().getAnimationSlideInRight());
+			else
+				newScreen.startAnimation(getUiUtils().getAnimationSlideInLeft());		
+		}
 	}
-	public void animateScreenRemove(Screen currentScreen , boolean toLeft) {
-		if(toLeft){
-			currentScreen.startAnimation(getUiUtils().getAnimationSlideOutLeft());
+	
+	public void setAnimationListener(Animation a , AnimationListener l){
+		if(l!=null)
+			a.setAnimationListener(l);
+		else
+			a.setAnimationListener(this);
+	}
+	public void animateScreenRemove(Screen currentScreen , boolean toLeft, AnimationListener endListener) {
+		synchronized (uiSync) {
+			if(currentScreen==null) return;
+			loadingView.setVisibility(View.VISIBLE);//while removing
+			disposeScreens.add(currentScreen);
+			if(toLeft){
+					setAnimationListener(getUiUtils().getAnimationSlideOutLeft(), endListener);
+					currentScreen.startAnimation(	getUiUtils().getAnimationSlideOutLeft());
+			}
+			else{
+				setAnimationListener(getUiUtils().getAnimationSlideOutRight(), endListener);
+				currentScreen.startAnimation(getUiUtils().getAnimationSlideOutRight());
+			}
 		}
-		else{
-			currentScreen.startAnimation(getUiUtils().getAnimationSlideOutRight());
-		}
-		disposeScreens.add(currentScreen);
 	}
 
 	@Override
 	public void onAnimationStart(Animation animation) {
-		loadingView.setVisibility(View.VISIBLE);//while removing
 	}
 	@Override
 	public void onAnimationEnd(Animation animation) {
@@ -242,6 +293,5 @@ public class QuizApp extends Fragment implements AnimationListener {
             fragment.onActivityResult(requestCode, resultCode, data);
         }
     }
-	
 
 }

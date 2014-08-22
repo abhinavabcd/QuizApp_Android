@@ -93,12 +93,6 @@ public class ProgressiveQuizController extends AppController{
 	}
 	
 	@Override
-	public Screen getCurrentScreen() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public void onDestroy() {
 		// TODO Auto-generated method stub
 		

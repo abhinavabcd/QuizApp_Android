@@ -52,7 +52,7 @@ public class UserMainController  extends AppController implements OnInitializati
 	
 	public void checkAndShowCategories(){
 		String encodedKey = quizApp.getUserDeviceManager().getPreference(Config.PREF_ENCODED_KEY, null);
-		if(encodedKey!=null){  
+		if(encodedKey!=null){
 			//on fetch update new categories and draw the categories
 			showUserHomeScreen();
 		}
@@ -76,7 +76,7 @@ public class UserMainController  extends AppController implements OnInitializati
 		});// on ACTIVATED, save user quizApp setUser
 	}
 	public void onCategorySelected(Category category){
-		clearScreen(false);
+		clearScreen();
 		QuizzesScreen categoryQuizzesScreen = new QuizzesScreen(this);
 		ArrayList<Quiz> quizzes = new ArrayList<Quiz>();
 		for(int i=0;i<10;i++){ 
@@ -89,24 +89,22 @@ public class UserMainController  extends AppController implements OnInitializati
 				return super.onData(s);
 			}
 		});
-		showScreen(categoryQuizzesScreen);
+		insertScreen(categoryQuizzesScreen);
 	}
 	
 	public void onQuizSelected(Quiz quiz){
-		clearScreen(false);
+		clearScreen();
 		QuestionScreen questionScreen = new QuestionScreen(this);
 		
 		ArrayList<Quiz> quizzes = new ArrayList<Quiz>();
 		for(int i=0;i<10;i++){ 
 			quizzes.add(Quiz.createDummy());
 		}
-		showScreen(questionScreen);
+		insertScreen(questionScreen);
 	}
 	
-	
-	
 	private void showUserHomeScreen() {
-		clearScreen(true);
+		clearScreen();
 		HomeScreen cs= new HomeScreen(this);
 		ArrayList<Category> categories = new ArrayList<Category>();
 		for(int i=0;i<10;i++){
@@ -123,25 +121,25 @@ public class UserMainController  extends AppController implements OnInitializati
 			}
 		});
 		*/
-		showScreen(cs);
+		insertScreen(cs);
 	}
 	
 
 	@Override
-	public void clearScreen(boolean remove) {
-		if(getCurrentScreen() instanceof WelcomeScreen){
+	public void beforeScreenRemove(Screen screen) {
+		if(screen instanceof WelcomeScreen){
 			onRemoveWelcomeScreen();
 		}
-		super.clearScreen(remove);
 	}
 	
     public void onRemoveWelcomeScreen() {//destroy msocialNetwork
     	if(mSocialNetworkManager.getSocialNetwork(GooglePlusSocialNetwork.ID).isConnected()){
-    		
+    		mSocialNetworkManager.getGooglePlusSocialNetwork().cancelAll();
     	}
     	if(mSocialNetworkManager.getSocialNetwork(FacebookSocialNetwork.ID).isConnected()){
-    		
+    		mSocialNetworkManager.getFacebookSocialNetwork().cancelAll();
     	}
+    	
     }
 	
 	public WelcomeScreen showWelcomeScreen(){
@@ -183,7 +181,7 @@ public class UserMainController  extends AppController implements OnInitializati
 			}
 		});
 		
-        showScreen(welcomeScreen);
+        insertScreen(welcomeScreen);
         return welcomeScreen;
 	}
 
@@ -196,15 +194,10 @@ public class UserMainController  extends AppController implements OnInitializati
 		quizApp.setUser(user);
 		checkAndShowCategories();
 	}
- 
-	@Override
-	public boolean onBackPressed() {
-		return super.onBackPressed();
-	}
 
 	@Override
 	public void onDestroy() {
-		Screen screen = popScreen();
+		Screen screen = quizApp.peekCurrentScreen();
 		while(screen!=null){
 			if(screen instanceof WelcomeScreen){
 				onRemoveWelcomeScreen();
