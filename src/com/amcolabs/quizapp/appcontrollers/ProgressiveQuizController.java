@@ -9,11 +9,11 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
 import com.amcolabs.quizapp.AppController;
-import com.amcolabs.quizapp.Question;
 import com.amcolabs.quizapp.QuizApp;
 import com.amcolabs.quizapp.Screen;
-import com.amcolabs.quizapp.ShortUserInfo;
+import com.amcolabs.quizapp.User;
 import com.amcolabs.quizapp.UserDeviceManager;
+import com.amcolabs.quizapp.databaseutils.Question;
 import com.amcolabs.quizapp.widgets.TimerView;
 
 public class ProgressiveQuizController extends AppController{
@@ -39,10 +39,10 @@ public class ProgressiveQuizController extends AppController{
 	private boolean allUsersResponded;
 		
 	public void showWaitingScreen(){
-		showClashScreen(quizApp.getUser().getShortUserInfo() , null);
+		showClashScreen(quizApp.getUser() , null);
 	}
  	
-	private void showClashScreen(ShortUserInfo ... users) {
+	private void showClashScreen(User ... users) {
 		
 	}
 	
@@ -56,10 +56,10 @@ public class ProgressiveQuizController extends AppController{
 	}
 	
 	public void showNextQuestion(){
-		currentQuestion.fadeView();
+		//currentQuestion.fadeView();
 		currentQuestion = getNextQuestion();
 		questionView.removeAllViews();
-		questionView.addView(currentQuestion.drawView());
+		//questionView.addView(currentQuestion.drawView());
 	}
 	
 	private Question getNextQuestion() {

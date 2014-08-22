@@ -11,17 +11,15 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.ActionBarActivity;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
 import android.widget.FrameLayout;
 
-import com.amcolabs.quizapp.UserDeviceManager.AppRunningState;
 import com.amcolabs.quizapp.appcontrollers.UserMainController;
 import com.amcolabs.quizapp.configuration.Config;
 import com.amcolabs.quizapp.databaseutils.DatabaseHelper;
@@ -74,7 +72,6 @@ public class QuizApp extends Fragment implements AnimationListener {
 			uiUtils = new UiUtils(this);
 			serverCalls = new ServerCalls(this);
 			appControllerStack = new Stack<AppController>();
-			appControllerStack.setSize(3);
 			loadingView = userDeviceManager.getLoadingView(this.getActivity());
 			disposeScreens = new LinkedList<Screen>();
 		}
@@ -90,6 +87,9 @@ public class QuizApp extends Fragment implements AnimationListener {
 	
 	public AppController loadAppController(Class<? extends AppController> clazz){
 		AppController appController=null; 
+		if(appControllerStack.size()>0 && appControllerStack.peek().getClass().equals(clazz)){
+			return appControllerStack.peek();
+		}
 		try {
 			Constructor<?> constructor = clazz.getConstructor(QuizApp.class);
 			appController =(AppController) constructor.newInstance(this);
@@ -158,12 +158,16 @@ public class QuizApp extends Fragment implements AnimationListener {
 		}
 		return dbHelper;
 	}
-
+	
 	public void onBackPressed() {
 		try{
 				if(!appControllerStack.peek().onBackPressed()){
 					AppController c = appControllerStack.pop();
-					animateScreenIn(c.getCurrentScreen(), FROM_LEFT);
+					Screen screen = c.popScreen();
+					if(screen!=null)
+						animateScreenIn(screen, FROM_LEFT);
+					else
+						onBackPressed();
 				}
 			}
 			catch(EmptyStackException e) {
@@ -186,10 +190,9 @@ public class QuizApp extends Fragment implements AnimationListener {
 		if(fromRight)
 			newScreen.startAnimation(getUiUtils().getAnimationSlideInRight());
 		else
-			newScreen.startAnimation(getUiUtils().getAnimationSlideInLeft());
-				
+			newScreen.startAnimation(getUiUtils().getAnimationSlideInLeft());		
 	}
-		public void animateScreenRemove(Screen currentScreen , boolean toLeft) {
+	public void animateScreenRemove(Screen currentScreen , boolean toLeft) {
 		if(toLeft){
 			currentScreen.startAnimation(getUiUtils().getAnimationSlideOutLeft());
 		}
@@ -206,8 +209,11 @@ public class QuizApp extends Fragment implements AnimationListener {
 	@Override
 	public void onAnimationEnd(Animation animation) {
 		try{
-			Screen screen = disposeScreens.remove();
-			removeView(screen);
+			new Handler().post(new Runnable() {
+		        public void run() {
+		        	removeView(disposeScreens.remove());
+		        }
+			});
 		}
 		catch(NoSuchElementException e){
 			e.printStackTrace();

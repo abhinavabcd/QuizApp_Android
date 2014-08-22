@@ -25,11 +25,7 @@ public class User {
 	public ArrayList<Integer> badges;
 	public HashMap<String,Integer> stats;
 	public HashMap<String, Integer[]>winsLosses;
-	
-	public ShortUserInfo getShortUserInfo() {
-		return null;
-	}	
-	
+
 	public String getFacebookAuthToken(){
 		return facebook;
 	}
@@ -41,4 +37,6 @@ public class User {
 		// TODO Auto-generated method stub
 		return null;
 	}
+	
 }
+

@@ -61,6 +61,13 @@ public class Config{
 	public static final String NOTIFICATION_KEY_TEXT_MESSAGE = "message";
 	public static final String GOOGLE_PLUS_SERVER_CLIENT_ID = "591807556804-qltit1nk5rga581b5a2j6tuoogum0s79.apps.googleusercontent.com";
 	public static final String CDN_IMAGES_PATH = "http://localhost:8084/images";
+	public static int[] themeColors = new int []{Color.rgb(139, 171,66),
+									    		Color.rgb(232, 93,12),
+									    		Color.rgb(37, 142,161),
+									    		Color.rgb(216, 159,57),
+									    		Color.rgb(58, 129,186),
+										};
+	
 	private QuizApp quizApp;
 
 

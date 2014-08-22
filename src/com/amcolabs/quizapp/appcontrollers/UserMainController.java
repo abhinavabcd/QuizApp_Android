@@ -76,19 +76,24 @@ public class UserMainController  extends AppController implements OnInitializati
 		});// on ACTIVATED, save user quizApp setUser
 	}
 	public void onCategorySelected(Category category){
-		clearScreen();
+		clearScreen(false);
 		QuizzesScreen categoryQuizzesScreen = new QuizzesScreen(this);
-		
 		ArrayList<Quiz> quizzes = new ArrayList<Quiz>();
 		for(int i=0;i<10;i++){ 
 			quizzes.add(Quiz.createDummy());
 		}
-		categoryQuizzesScreen.addQuizzesToList(quizzes);
+		categoryQuizzesScreen.addQuizzesToList(quizzes, new DataInputListener<Quiz>(){
+			@Override
+			public String onData(Quiz s) {
+				onQuizSelected(s);
+				return super.onData(s);
+			}
+		});
 		showScreen(categoryQuizzesScreen);
 	}
 	
 	public void onQuizSelected(Quiz quiz){
-		clearScreen();
+		clearScreen(false);
 		QuestionScreen questionScreen = new QuestionScreen(this);
 		
 		ArrayList<Quiz> quizzes = new ArrayList<Quiz>();
@@ -96,13 +101,12 @@ public class UserMainController  extends AppController implements OnInitializati
 			quizzes.add(Quiz.createDummy());
 		}
 		showScreen(questionScreen);
-
 	}
 	
 	
 	
 	private void showUserHomeScreen() {
-		clearScreen();
+		clearScreen(true);
 		HomeScreen cs= new HomeScreen(this);
 		ArrayList<Category> categories = new ArrayList<Category>();
 		for(int i=0;i<10;i++){
@@ -124,11 +128,11 @@ public class UserMainController  extends AppController implements OnInitializati
 	
 
 	@Override
-	public void clearScreen() {
+	public void clearScreen(boolean remove) {
 		if(getCurrentScreen() instanceof WelcomeScreen){
 			onRemoveWelcomeScreen();
 		}
-		super.clearScreen();
+		super.clearScreen(remove);
 	}
 	
     public void onRemoveWelcomeScreen() {//destroy msocialNetwork

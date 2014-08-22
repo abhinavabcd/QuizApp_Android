@@ -13,14 +13,16 @@ import android.view.MenuItem;
 
 public class MainActivity extends ActionBarActivity {
 
+	QuizApp quizApp;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        if(quizApp==null) quizApp = new QuizApp();
+        
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.container, new QuizApp())
+                    .replace(R.id.container, quizApp)
                     .commit();
         }
 
@@ -31,12 +33,8 @@ public class MainActivity extends ActionBarActivity {
 
     @Override
     public void onBackPressed() {
-        if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
-            getSupportFragmentManager().popBackStack();
-            return;
-        }
-
-        super.onBackPressed();
+        quizApp.onBackPressed();
+//        super.onBackPressed();
     }
 
     @Override

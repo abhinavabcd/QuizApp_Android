@@ -13,15 +13,14 @@ public abstract class AppController {
 	public AppController(QuizApp quizApp) {
 		this.quizApp = quizApp;
 		screenStack = new Stack<Screen>();
-		screenStack.setSize(2);
 	}
 	public Context getContext() {
 		return quizApp.getContext();
 	}
 
-	public void clearScreen() {
+	public void clearScreen(boolean remove) {
 		Screen p = null;
-		while(!screenStack.isEmpty() && (p=screenStack.pop())==null ){
+		while(!screenStack.isEmpty() && (p=remove ? screenStack.pop():screenStack.peek())==null ){
 		}
 		if(p!=null)
 			quizApp.animateScreenRemove(p);//remove to side animation
@@ -33,22 +32,25 @@ public abstract class AppController {
 	}
 	
 	public Screen getCurrentScreen(){
-		return screenStack.peek();
+		if(!screenStack.isEmpty())
+			return screenStack.peek();
+		return null;
 	}
 	
 	public Screen popScreen(){
-		if(!screenStack.isEmpty())
-			return screenStack.pop();
-		return null;
+		Screen p = null;
+		while(!screenStack.isEmpty() && (p=screenStack.pop())==null ){
+		}
+		return p;
 	}
 	
 
 	public boolean onBackPressed(){
 		if(!screenStack.isEmpty()){
-			quizApp.animateScreenRemove(screenStack.pop(), QuizApp.TO_RIGHT);//remove to side animation
+			quizApp.animateScreenRemove(screenStack.pop(), QuizApp.TO_RIGHT);//move screen to right
 		}
 		if(!screenStack.isEmpty()){
-			quizApp.animateScreenIn(screenStack.pop(), QuizApp.TO_LEFT);//remove to side animation
+			quizApp.animateScreenIn(screenStack.pop(), QuizApp.TO_LEFT);//add the old screen
 			return true;
 		}
 		return false;

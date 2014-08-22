@@ -39,7 +39,7 @@ public class Category {
 	
 	
 	
-	
+	//TODO: remove this 
 	public static Category createDummy(){
 		Category c = new Category();
 		c.categoryId = "abcd";
