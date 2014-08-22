@@ -5,6 +5,7 @@ import java.util.HashMap;
 import com.amcolabs.quizapp.databaseutils.Category.CategoryType;
 import com.j256.ormlite.field.DatabaseField;
 
+import android.graphics.Bitmap;
 import android.view.View;
 
 
@@ -73,5 +74,8 @@ public class Question {
 			}
 		}
 		return questionTypeMap.containsKey(value) ? questionTypeMap.get(value):null;
+	}
+	public String[] getMCQOptions(){
+		return this.options.split(",");
 	}
 }

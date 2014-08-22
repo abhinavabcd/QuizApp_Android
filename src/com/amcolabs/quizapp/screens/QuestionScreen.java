@@ -1,11 +1,14 @@
 package com.amcolabs.quizapp.screens;
 
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.Bitmap.CompressFormat;
+import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -18,13 +21,18 @@ import android.widget.TextView;
 import com.amcolabs.quizapp.AppController;
 import com.amcolabs.quizapp.R;
 import com.amcolabs.quizapp.Screen;
+import com.amcolabs.quizapp.configuration.Config;
+import com.amcolabs.quizapp.databaseutils.Question;
 import com.amcolabs.quizapp.widgets.CustomProgressBar;
+import com.amcolabs.quizapp.widgets.ImageViewFiltered;
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 
 public class QuestionScreen extends Screen {
 
 	private String question;
 	private ArrayList<String> options;
-	private Bitmap image;
+	private String imagePath;
 	
 	private LinearLayout headerViewWrapper;
 	private LinearLayout questionViewWrapper;
@@ -36,7 +44,7 @@ public class QuestionScreen extends Screen {
 	private ArrayList<TextView> userScoreViews;
 	
 	private TextView questionTextView;
-	private ImageView questionImageView;
+	private ImageViewFiltered questionImageView;
 	private ArrayList<Button> questionOptionsViews;
 	
 	private LinearLayout fullQuestionLayout;
@@ -59,7 +67,7 @@ public class QuestionScreen extends Screen {
 		
 		
 		questionTextView = (TextView) questionViewWrapper.findViewById(R.id.questionText);
-		questionImageView = (ImageView) questionViewWrapper.findViewById(R.id.questionImage);
+		questionImageView = (ImageViewFiltered) questionViewWrapper.findViewById(R.id.questionImage);
 		
 
 		questionOptionsViews = new ArrayList<Button>();
@@ -90,10 +98,28 @@ public class QuestionScreen extends Screen {
 		}
 	}
 
-	public void loadQuestion(String ques, ArrayList<String> opt, Bitmap img){
-		question = ques;
-		options = opt;
-		image = img;
+	public void loadQuestion(Question ques){
+		question = ques.questionDescription;
+		options = new ArrayList<String>(Arrays.asList(ques.getMCQOptions()));
+		imagePath = ques.pictures.split(",")[0];
+	}
+	
+	public void loadImage(String assetPath,final ImageViewFiltered imgView){
+		Picasso.with(getApp().getContext()).load(Config.CDN_IMAGES_PATH+assetPath).into(new Target() {
+	        @Override
+	        public void onBitmapLoaded(final Bitmap bitmap, Picasso.LoadedFrom from) {
+	            imgView.setImageBitmap(bitmap);
+	        }
+
+			@Override
+			public void onBitmapFailed(Drawable arg0) {
+				// TODO Auto-generated method stub
+			}
+			@Override
+			public void onPrepareLoad(Drawable arg0) {
+				// TODO Auto-generated method stub
+			}
+	    });
 	}
 	
 	// Not needed as of now as we are creating new screen each time
@@ -110,14 +136,14 @@ public class QuestionScreen extends Screen {
 		questionTextView.setText(question);
 		boolean noImageFlag = false;
 		boolean longOptionFlag = false;
-		if (image==null){
+		if (imagePath==null){
 			questionImageView.setVisibility(View.GONE);
 //			img.setImageBitmap(null);
 			noImageFlag = true;
 		}
 		else{
 			questionImageView.setVisibility(View.VISIBLE);
-			questionImageView.setImageBitmap(image);
+			loadImage(imagePath,questionImageView);
 		}
 		if (options == null || options.size()<4)
 			throw new IllegalAccessError();
