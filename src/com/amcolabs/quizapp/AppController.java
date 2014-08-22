@@ -33,9 +33,6 @@ public abstract class AppController {
 	public void beforeScreenRemove(Screen screen){
 		
 	}
-	
-	public void afterScreenRemove(Screen screen){
-		
-	}
+
 	
 }

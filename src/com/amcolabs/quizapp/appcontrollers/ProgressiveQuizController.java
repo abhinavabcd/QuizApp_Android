@@ -14,6 +14,7 @@ import com.amcolabs.quizapp.Screen;
 import com.amcolabs.quizapp.User;
 import com.amcolabs.quizapp.UserDeviceManager;
 import com.amcolabs.quizapp.databaseutils.Question;
+import com.amcolabs.quizapp.screens.QuestionScreen;
 import com.amcolabs.quizapp.widgets.TimerView;
 
 public class ProgressiveQuizController extends AppController{
@@ -38,6 +39,13 @@ public class ProgressiveQuizController extends AppController{
 	Question currentQuestion=null;
 	private boolean allUsersResponded;
 		
+	
+	public void initlializeQuiz() {
+		QuestionScreen questionScreen = new QuestionScreen(this);
+		insertScreen(questionScreen);
+	}
+
+	
 	public void showWaitingScreen(){
 		showClashScreen(quizApp.getUser() , null);
 	}
@@ -94,8 +102,16 @@ public class ProgressiveQuizController extends AppController{
 	
 	@Override
 	public void onDestroy() {
-		// TODO Auto-generated method stub
-		
 	}
+	
+	int backPressedCount = 0;
+	@Override
+	public boolean onBackPressed() {
+		backPressedCount++;
+		if(backPressedCount>1)
+			return true;
+		return false;
+	}
+
 
 }

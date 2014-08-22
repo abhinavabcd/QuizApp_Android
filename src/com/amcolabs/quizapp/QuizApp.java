@@ -168,6 +168,7 @@ public class QuizApp extends Fragment implements AnimationListener {
 					this.getActivity().moveTaskToBack(true);
 				}
 				if(screen!=null && !screen.controller.onBackPressed()){
+					screen.controller.beforeScreenRemove(screen);
 					animateScreenRemove(screen , TO_RIGHT, new AnimationListener() {
 						@Override
 						public void onAnimationStart(Animation animation) {

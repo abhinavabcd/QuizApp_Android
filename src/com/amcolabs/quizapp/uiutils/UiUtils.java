@@ -283,7 +283,7 @@ public class UiUtils {
 		return animationSlideInRight;
 	}        
 	
-	public void loadImageIntoView(Context ctx , final ImageView imgView , String assetPath){
+	public void loadImageIntoView(Context ctx , final ImageView imgView , final String assetPath){
 		if(assetPath==null || assetPath.isEmpty())
 			return;
 		try{
@@ -307,7 +307,7 @@ public class UiUtils {
 			                    {
 			                        file.createNewFile();
 			                        FileOutputStream ostream = new FileOutputStream(file);
-			                        bitmap.compress(CompressFormat.PNG, 75, ostream);
+			                        bitmap.compress(assetPath.endsWith(".png")?CompressFormat.PNG:CompressFormat.JPEG, 75, ostream);
 			                        ostream.close();
 			                    }
 			                    catch (Exception e)

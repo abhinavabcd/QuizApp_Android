@@ -18,7 +18,7 @@ public class Question {
 	@DatabaseField
     public String questionDescription; // question description in json , contains image links
 	@DatabaseField
-    public String pictures; // comma seperated
+    public String pictures; // comma seperated paths
 	@DatabaseField
     public String options; //json
 	@DatabaseField
@@ -31,6 +31,12 @@ public class Question {
     public double time; // time in seconds
 	@DatabaseField
     public int xp;
+	
+	
+	public String[] getAssetPaths(){
+		return pictures.split(",");
+	}
+	
 	
 	public static enum QuestionType{
 		MCQ(0),
