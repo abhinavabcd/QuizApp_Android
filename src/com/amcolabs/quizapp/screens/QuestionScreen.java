@@ -137,13 +137,10 @@ public class QuestionScreen extends Screen {
 		boolean noImageFlag = false;
 		boolean longOptionFlag = false;
 		if (imagePath==null){
-			questionImageView.setVisibility(View.GONE);
-//			img.setImageBitmap(null);
 			noImageFlag = true;
 		}
 		else{
-			questionImageView.setVisibility(View.VISIBLE);
-			loadImage(imagePath,questionImageView);
+			noImageFlag = false;
 		}
 		if (options == null || options.size()<4)
 			throw new IllegalAccessError();
@@ -153,11 +150,15 @@ public class QuestionScreen extends Screen {
 				break;
 			}
 		}
-		if (longOptionFlag && noImageFlag){
+		// TODO: should use longoptionflag to change layout
+		if (noImageFlag){ //longOptionFlag ||
 			optionsViewWrapper.setOrientation(LinearLayout.VERTICAL);
+			questionImageView.setVisibility(View.GONE);
 		}
 		else{
 			optionsViewWrapper.setOrientation(LinearLayout.HORIZONTAL);
+			questionImageView.setVisibility(View.VISIBLE);
+			loadImage(imagePath,questionImageView);
 		}
 		for(int i=0;i<4;i++){
 			Button opt = questionOptionsViews.get(i);
