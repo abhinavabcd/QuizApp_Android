@@ -29,6 +29,7 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.RemoteException;
 import android.provider.ContactsContract;
 import android.provider.ContactsContract.CommonDataKinds.Email;
@@ -289,7 +290,7 @@ public class UiUtils {
 	
 	
 	
-	public void loadImageIntoView(Context ctx , final ImageView imgView , final String assetPath){
+	public void loadImageIntoView(Context ctx , final ImageView imgView , final String assetPath , boolean downloadToAssets){
 		if(assetPath==null || assetPath.isEmpty())
 			return;
 		try{
@@ -342,26 +343,9 @@ public class UiUtils {
 	}
 	
 	
-	public void loadImageAsBg(Context ctx , final View view , final String assetPath){
+	public void loadImageAsBg(Context ctx , final Target target , final String assetPath){
 		if(assetPath==null || assetPath.isEmpty())
 			return;
-		
-		Target target = new Target(){
-
-			@Override
-			public void onBitmapFailed(Drawable arg0) {
-			}
-
-			@Override
-			public void onBitmapLoaded(Bitmap arg0, LoadedFrom arg1) {
-				view.setBackgroundDrawable(new BitmapDrawable(quizApp.getResources(), arg0));
-			}
-
-			@Override
-			public void onPrepareLoad(Drawable arg0) {
-			}
-			
-		};
 		try{
 		    InputStream ims = ctx.getAssets().open(assetPath);
 		    Picasso.with(ctx).load("file:///android_asset/"+assetPath).into(target);
@@ -393,7 +377,7 @@ public class UiUtils {
 			 
 			                }
 			            }).start();
-			            view.setBackgroundDrawable(new BitmapDrawable(quizApp.getResources(), bitmap));
+			           target.onBitmapLoaded(bitmap, from);
 			        }
 
 					@Override
@@ -407,8 +391,6 @@ public class UiUtils {
 			    });
 			}
 		}		 
-		catch (Exception e) {
-		}
 	}
 
 }

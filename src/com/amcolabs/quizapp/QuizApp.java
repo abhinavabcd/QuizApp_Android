@@ -54,13 +54,11 @@ public class QuizApp extends Fragment implements AnimationListener {
 
 	private boolean initialized = false;
 	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-			Bundle savedInstanceState) {
+	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		mainFrame = (FrameLayout)getActivity().getLayoutInflater().inflate(R.layout.activity_main,null);
 		mainFrame.addView(loadingView);
 		((UserMainController)loadAppController(UserMainController.class))
 		.checkAndShowCategories();
-
 		return mainFrame;
 	}
 	

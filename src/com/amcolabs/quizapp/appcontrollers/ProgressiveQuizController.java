@@ -13,7 +13,7 @@ import com.amcolabs.quizapp.User;
 import com.amcolabs.quizapp.databaseutils.Question;
 import com.amcolabs.quizapp.databaseutils.Quiz;
 import com.amcolabs.quizapp.screens.QuestionScreen;
-import com.amcolabs.quizapp.screens.UserClashScreen;
+import com.amcolabs.quizapp.screens.ClashScreen;
 import com.amcolabs.quizapp.serverutils.ServerResponse;
 import com.amcolabs.quizapp.serverutils.ServerResponse.MessageType;
 import com.amcolabs.quizapp.widgets.TimerView;
@@ -54,8 +54,8 @@ public class ProgressiveQuizController extends AppController{
 	
 	public void showWaitingScreen(){
 		clearScreen();
-		UserClashScreen clashingScreen = new UserClashScreen(this);
-		
+		ClashScreen clashingScreen = new ClashScreen(this);
+		clashingScreen.setClashCount(2);
 		clashingScreen.updateClashScreen(User.getDummyUser(quizApp)/*quizApp.getUser()*/, 0);//TODO: change to quizApp.getUser()
 		insertScreen(clashingScreen);
 	}
