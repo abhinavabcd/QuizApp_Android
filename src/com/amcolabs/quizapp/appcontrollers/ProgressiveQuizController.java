@@ -55,8 +55,9 @@ public class ProgressiveQuizController extends AppController{
 	public void showWaitingScreen(){
 		clearScreen();
 		UserClashScreen clashingScreen = new UserClashScreen(this);
-		clashingScreen.setClashCount(2);
 		
+		clashingScreen.updateClashScreen(User.getDummyUser(quizApp)/*quizApp.getUser()*/, 0);//TODO: change to quizApp.getUser()
+		insertScreen(clashingScreen);
 	}
 		
 	private void finalizeClashScreen(){

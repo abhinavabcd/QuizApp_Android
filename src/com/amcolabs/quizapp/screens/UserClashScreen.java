@@ -25,18 +25,18 @@ public class UserClashScreen extends Screen {
 	}
 	
 	ArrayList<View> userInfoViews = new ArrayList<View>();
-	private void updateClashScreen(User users , int index){
+	public void updateClashScreen(User user , int index){
 		for(int i=userInfoViews.size();i<index;i++){
 			WaitingForUserView waitingView = new WaitingForUserView(getApp());
 			userInfoViews.add(waitingView);
 			this.addView(waitingView,i);
 		}
 		if(index==userInfoViews.size()){
-			addView(new UserInfoCard(getApp(), "images/bg_1.jpg"), index);
+			addView(new UserInfoCard(getApp(), "images/bg_1.jpg", user), index);
 		}
 		else{
 			userInfoViews.get(index).setVisibility(View.INVISIBLE);
-			addView(new UserInfoCard(getApp(), "images/bg_1.jpg"), index);
+			addView(new UserInfoCard(getApp(), "images/bg_1.jpg",user), index);
 		}
 	}
 }
