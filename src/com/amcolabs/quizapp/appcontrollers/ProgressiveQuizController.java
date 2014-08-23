@@ -4,56 +4,61 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import android.content.Context;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
 import com.amcolabs.quizapp.AppController;
 import com.amcolabs.quizapp.QuizApp;
 import com.amcolabs.quizapp.Screen;
 import com.amcolabs.quizapp.User;
-import com.amcolabs.quizapp.UserDeviceManager;
 import com.amcolabs.quizapp.databaseutils.Question;
+import com.amcolabs.quizapp.databaseutils.Quiz;
 import com.amcolabs.quizapp.screens.QuestionScreen;
+import com.amcolabs.quizapp.screens.UserClashScreen;
+import com.amcolabs.quizapp.serverutils.ServerResponse;
+import com.amcolabs.quizapp.serverutils.ServerResponse.MessageType;
 import com.amcolabs.quizapp.widgets.TimerView;
+import com.amcolabs.quizapp.widgets.UserInfoCard;
+import com.google.gson.reflect.TypeToken;
+
+import de.tavendo.autobahn.WebSocketConnection;
 
 public class ProgressiveQuizController extends AppController{
+	User user;
+	User user2;
 	
-	public ProgressiveQuizController(QuizApp quizApp) {
-		super(quizApp);
-		// TODO Auto-generated constructor stub
-	}
-
-
-	int nPeople;
-	int nQuestions;
-    String quizType = "progressive";
-    String name = null;
-    
-	public Screen clashScreen;
-	private Screen questionView;
-	private Screen headerView;
-	private Map<String , ProgressBar> userProgressBars = new HashMap<String, ProgressBar>();
+	private WebSocketConnection serverSocket;
+	
+   	private Map<String , ProgressBar> userProgressBars = new HashMap<String, ProgressBar>();
 	private TimerView timerView = null;
 	
 	Question currentQuestion=null;
 	private boolean allUsersResponded;
+	private Quiz quiz;
 		
+
 	
-	public void initlializeQuiz() {
-		QuestionScreen questionScreen = new QuestionScreen(this);
-		insertScreen(questionScreen);
+	public ProgressiveQuizController(QuizApp quizApp) {
+		super(quizApp);
 	}
 
 	
-	public void showWaitingScreen(){
-		showClashScreen(quizApp.getUser() , null);
+	public void initlializeQuiz(Quiz quiz) {
+		this.quiz = quiz;
+//		QuestionScreen questionScreen = new QuestionScreen(this);
+//		insertScreen(questionScreen);
+		showWaitingScreen();
 	}
- 	
-	private void showClashScreen(User ... users) {
+
+	
+	ArrayList<User> clashingUsers = new ArrayList<User>();
+	
+	public void showWaitingScreen(){
+		clearScreen();
+		UserClashScreen clashingScreen = new UserClashScreen(this);
+		clashingScreen.setClashCount(2);
 		
 	}
-	
+		
 	private void finalizeClashScreen(){
 		//animate for a second and start questions
 	}
@@ -66,7 +71,6 @@ public class ProgressiveQuizController extends AppController{
 	public void showNextQuestion(){
 		//currentQuestion.fadeView();
 		currentQuestion = getNextQuestion();
-		questionView.removeAllViews();
 		//questionView.addView(currentQuestion.drawView());
 	}
 	
@@ -109,8 +113,42 @@ public class ProgressiveQuizController extends AppController{
 	public boolean onBackPressed() {
 		backPressedCount++;
 		if(backPressedCount>1)
-			return true;
-		return false;
+			quizApp.getActivity().moveTaskToBack(true);
+		return true;
+	}
+
+
+	public void startSocketConnection(WebSocketConnection mConnection) {
+		serverSocket = mConnection;
+	}
+
+
+	public void onMessageRecieved(MessageType messageType, ServerResponse response, String data) {
+		switch(messageType){
+	    	case USER_ANSWERED_QUESTION:
+	    		break; 
+	    	case GET_NEXT_QUESTION://client trigger
+	    		break; 
+	    	case STARTING_QUESTIONS:// start questions
+	    		User user2 = quizApp.getConfig().getGson().fromJson(response.payload,User.class);
+	    		//pre download assets if ever its possible 
+	    		ArrayList<Question> questions = quizApp.getConfig().getGson().fromJson(response.payload1,new TypeToken<ArrayList<Question>>(){}.getType());
+	    		
+	    		break; 
+	    	case ANNOUNCING_WINNER:
+	    		break; 
+	    	case USER_DISCONNECTED:
+	    		break; 
+	    	case NEXT_QUESTION:
+	    		break; 
+	    	case START_QUESTIONS:
+	    		break; 
+	    	case STATUS_WHAT_USER_GOT:
+	    		break; 
+			default:
+				break;
+		}
+
 	}
 
 

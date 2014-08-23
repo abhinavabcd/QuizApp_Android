@@ -1,6 +1,5 @@
 package com.amcolabs.quizapp.serverutils;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -10,30 +9,33 @@ import org.apache.http.Header;
 import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
+import android.util.Log;
 
 import com.amcolabs.quizapp.QuizApp;
+import com.amcolabs.quizapp.R;
 import com.amcolabs.quizapp.User;
+import com.amcolabs.quizapp.appcontrollers.ProgressiveQuizController;
 import com.amcolabs.quizapp.configuration.Config;
 import com.amcolabs.quizapp.databaseutils.Category;
 import com.amcolabs.quizapp.datalisteners.DataInputListener;
 import com.amcolabs.quizapp.popups.StaticPopupDialogBoxes;
 import com.amcolabs.quizapp.serverutils.ServerResponse.MessageType;
-import com.amcolabs.quizapp.uiutils.UiUtils;
 import com.amcolabs.quizapp.uiutils.UiUtils.UiText;
 import com.google.android.gcm.GCMRegistrar;
-import com.google.android.gms.drive.internal.h;
-import com.google.android.gms.tagmanager.DataLayer;
 import com.google.gson.reflect.TypeToken;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.loopj.android.http.SyncHttpClient;
 
+import de.tavendo.autobahn.WebSocketConnection;
+import de.tavendo.autobahn.WebSocketConnectionHandler;
+import de.tavendo.autobahn.WebSocketException;
+
 public class ServerCalls {
 
 	public static final String SERVER_URL = Config.IS_TEST_BUILD? "http://192.168.0.10:8084/func":"http://quizapp-main.amcolabs.com/func";
-
+	public static final String QUIZ_WEBSOCKET_IP_PORT = "ws://192.168.0.10:8084"; 
 	private static final String GET_ENCODEDKEY_URL = SERVER_URL+"?task=getEncodedKey";
 	private static final String SET_GCM_KEY_URL = SERVER_URL+"?task=setGCMRegistrationId";
 	private static final String GET_USER_INFO =  SERVER_URL+"?task=getUserInfo";
@@ -394,4 +396,37 @@ public class ServerCalls {
 			}
 		},false);
 	}
+	
+	 private void startProgressiveQuiz(final ProgressiveQuizController pController) {
+		  final String TAG = "autoBahn::";
+		  final WebSocketConnection mConnection = new WebSocketConnection();
+		  final String wsuri = QUIZ_WEBSOCKET_IP_PORT +"/progressiveQuiz";
+
+	      try {
+	         mConnection.connect(wsuri, new WebSocketConnectionHandler() {
+
+	            @Override
+	            public void onOpen() {
+	               Log.d(TAG, "Status: Connected to " + wsuri);
+//	               mConnection.sendTextMessage("Hello, world!");
+	               pController.startSocketConnection(mConnection);
+	            } 
+
+	            @Override
+	            public void onTextMessage(String data) {
+	            	ServerResponse s = quizApp.getConfig().getGson().fromJson(data, ServerResponse.class);
+	            	MessageType messageType = s.getMessageType();
+	            	pController.onMessageRecieved(messageType , s , data);
+	            }
+
+	            @Override
+	            public void onClose(int code, String reason) {
+	               Log.d(TAG, "Connection lost.");
+	            }
+	         });
+	      } catch (WebSocketException e) {
+
+	         Log.d(TAG, e.toString());
+	      }
+	   }
 }

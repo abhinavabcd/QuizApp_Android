@@ -68,7 +68,7 @@ public class ServerResponse {
 		
 		private MessageType(int value){
 			this.setValue(value);
-			//statusCodeMap.put(value, this);
+			//messageTypeMap.put(value, this);
 		}
 
 		public int getValue() {
@@ -81,43 +81,36 @@ public class ServerResponse {
 
 	};
 	
-	private static HashMap<Integer , MessageType> statusCodeMap = null;//new HashMap<Integer , MessageType>();;
-		
-	public MessageType getStatusCode(){
-		return this.getStatusCode(this.messageType);
+	private static HashMap<Integer , MessageType> messageTypeMap = null;//new HashMap<Integer , MessageType>();;
+	
+	
+	
+	public MessageType getMessageType(){
+		return this.getMessageType(this.messageType);
 	}
-	public MessageType getStatusCode(int value){
-		if(statusCodeMap==null){
-			statusCodeMap = new HashMap<Integer, ServerResponse.MessageType>();
+	
+	
+	public MessageType getMessageType(int value){
+		if(messageTypeMap==null){
+			messageTypeMap = new HashMap<Integer, ServerResponse.MessageType>();
 			for(MessageType s : MessageType.values()){
-				statusCodeMap.put(s.getValue(), s);
+				messageTypeMap.put(s.getValue(), s);
 			}
 		}
-		return statusCodeMap.containsKey(value) ? statusCodeMap.get(value):MessageType.DUMMY;
-	}
-	public MessageType getStatusCode(Activity activity){ //ui based function can be removed when switching to new projects
-		int value = this.messageType;
-		MessageType s= this.getStatusCode(value);
-		// do any necessary processing
-		switch(s){
-		case ACTIVATED:
-			break;
-		case FAILED:
-			//show standard diaogue for
-			break;
-		case NOT_ACTIVATED:
-			break;
-		case NOT_AUTHORIZED:
-			//show standard diaogue for
-			break;
-		case OK:
-			break;
-		default:
-			break;
-		}
-		return s;
+		return messageTypeMap.containsKey(value) ? messageTypeMap.get(value):MessageType.DUMMY;
 	}
 
+	
+	@Deprecated
+	public MessageType getStatusCode(){
+		return getMessageType();
+	}
+	
+	@Deprecated
+	public MessageType getStatusCode(int value){
+		return getMessageType(value);
+	}
+	
 	public long getResponseTime() {
 		return responseTime;
 	}

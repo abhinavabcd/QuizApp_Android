@@ -24,6 +24,7 @@ import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
@@ -50,10 +51,12 @@ import com.amcolabs.quizapp.Screen;
 import com.amcolabs.quizapp.configuration.Config;
 import com.amcolabs.quizapp.datalisteners.DataInputListener;
 import com.amcolabs.quizapp.notificationutils.NotificationReciever;
+import com.amcolabs.quizapp.widgets.UserInfoCard;
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.j256.ormlite.dao.RuntimeExceptionDao;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
+import com.squareup.picasso.Picasso.LoadedFrom;
 
 
 public class UiUtils {
@@ -283,6 +286,9 @@ public class UiUtils {
 		return animationSlideInRight;
 	}        
 	
+	
+	
+	
 	public void loadImageIntoView(Context ctx , final ImageView imgView , final String assetPath){
 		if(assetPath==null || assetPath.isEmpty())
 			return;
@@ -334,4 +340,75 @@ public class UiUtils {
 		catch (Exception e) {
 		}
 	}
+	
+	
+	public void loadImageAsBg(Context ctx , final View view , final String assetPath){
+		if(assetPath==null || assetPath.isEmpty())
+			return;
+		
+		Target target = new Target(){
+
+			@Override
+			public void onBitmapFailed(Drawable arg0) {
+			}
+
+			@Override
+			public void onBitmapLoaded(Bitmap arg0, LoadedFrom arg1) {
+				view.setBackgroundDrawable(new BitmapDrawable(quizApp.getResources(), arg0));
+			}
+
+			@Override
+			public void onPrepareLoad(Drawable arg0) {
+			}
+			
+		};
+		try{
+		    InputStream ims = ctx.getAssets().open(assetPath);
+		    Picasso.with(ctx).load("file:///android_asset/"+assetPath).into(target);
+		    return;
+		}
+		catch(IOException ex) {
+			final File file = new File(ctx.getFilesDir().getParentFile().getPath()+"/images/"+assetPath);
+			if(file.exists()){
+				Picasso.with(ctx).load(file).into(target);
+			}
+			else{
+				Picasso.with(ctx).load(Config.CDN_IMAGES_PATH+assetPath).into(new Target() {
+			        @Override
+			        public void onBitmapLoaded(final Bitmap bitmap, Picasso.LoadedFrom from) {
+			            new Thread(new Runnable() {
+			                @Override
+			                public void run() {               
+			                    try
+			                    {
+			                        file.createNewFile();
+			                        FileOutputStream ostream = new FileOutputStream(file);
+			                        bitmap.compress(assetPath.endsWith(".png")?CompressFormat.PNG:CompressFormat.JPEG, 75, ostream);
+			                        ostream.close();
+			                    }
+			                    catch (Exception e)
+			                    {
+			                        e.printStackTrace();
+			                    }
+			 
+			                }
+			            }).start();
+			            view.setBackgroundDrawable(new BitmapDrawable(quizApp.getResources(), bitmap));
+			        }
+
+					@Override
+					public void onBitmapFailed(Drawable arg0) {
+						// TODO Auto-generated method stub
+					}
+					@Override
+					public void onPrepareLoad(Drawable arg0) {
+						// TODO Auto-generated method stub
+					}
+			    });
+			}
+		}		 
+		catch (Exception e) {
+		}
+	}
+
 }

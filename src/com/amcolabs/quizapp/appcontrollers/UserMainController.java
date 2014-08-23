@@ -95,7 +95,7 @@ public class UserMainController  extends AppController implements OnInitializati
 	public void onQuizSelected(Quiz quiz){
 		clearScreen();
 		ProgressiveQuizController progressiveQuiz = (ProgressiveQuizController) quizApp.loadAppController(ProgressiveQuizController.class);
-		progressiveQuiz.initlializeQuiz();
+		progressiveQuiz.initlializeQuiz(null);
 	}
 	
 	private void showUserHomeScreen() {
