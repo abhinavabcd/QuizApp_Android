@@ -55,7 +55,7 @@ public  class CategoryItemListAdapter extends ArrayAdapter<Category>{
 				holder = (CategoryViewHolder) convertView.getTag();
 			}
 			
-			quizApp.getUiUtils().loadImageIntoView(quizApp.getContext(), holder.imageView, getItem(position).assetPath);
+			quizApp.getUiUtils().loadImageIntoView(quizApp.getContext(), holder.imageView, getItem(position).assetPath,true);
 			holder.categoryName.setText(category.description);
 			holder.shortCategoryDescription.setText(category.shortDescription);
 			holder.additionalText.setText("a");

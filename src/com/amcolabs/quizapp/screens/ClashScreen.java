@@ -11,9 +11,9 @@ import com.amcolabs.quizapp.appcontrollers.ProgressiveQuizController;
 import com.amcolabs.quizapp.widgets.UserInfoCard;
 import com.amcolabs.quizapp.widgets.WaitingForUserView;
 
-public class UserClashScreen extends Screen {
+public class ClashScreen extends Screen {
 	
-	public UserClashScreen(AppController controller) {
+	public ClashScreen(AppController controller) {
 		super(controller);
 	}
 	ProgressiveQuizController getController(){
@@ -27,16 +27,26 @@ public class UserClashScreen extends Screen {
 	ArrayList<View> userInfoViews = new ArrayList<View>();
 	public void updateClashScreen(User user , int index){
 		for(int i=userInfoViews.size();i<index;i++){
-			WaitingForUserView waitingView = new WaitingForUserView(getApp());
+			WaitingForUserView waitingView = new WaitingForUserView(getApp());	
 			userInfoViews.add(waitingView);
 			this.addView(waitingView,i);
 		}
 		if(index==userInfoViews.size()){
-			addView(new UserInfoCard(getApp(), "images/bg_1.jpg", user), index);
+			UserInfoCard userInfoCard = new UserInfoCard(getApp(), "images/bg_2.jpg", user);
+			userInfoViews.add(userInfoCard);
+			addView(userInfoCard, index);
 		}
 		else{
 			userInfoViews.get(index).setVisibility(View.INVISIBLE);
-			addView(new UserInfoCard(getApp(), "images/bg_1.jpg",user), index);
+			UserInfoCard userInfoCard = new UserInfoCard(getApp(), "images/bg_2.jpg",user);
+			userInfoViews.set(index,userInfoCard); 
+			addView(new UserInfoCard(getApp(), "images/bg_2.jpg",user), index);
+		}
+		
+		for(int i=userInfoViews.size();i<clashCount;i++){
+			WaitingForUserView waitingView = new WaitingForUserView(getApp());
+			userInfoViews.add(waitingView);
+			this.addView(waitingView,i);
 		}
 	}
 }
