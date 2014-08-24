@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
@@ -20,7 +19,9 @@ import com.amcolabs.quizapp.configuration.Config;
 import com.amcolabs.quizapp.fileandcommonutils.FileHelper;
 import com.j256.ormlite.android.apptools.OrmLiteSqliteOpenHelper;
 import com.j256.ormlite.dao.Dao;
+import com.j256.ormlite.dao.Dao.CreateOrUpdateStatus;
 import com.j256.ormlite.dao.RuntimeExceptionDao;
+import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 
@@ -220,5 +221,60 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
         usageCounter.incrementAndGet();
         return helper;
     }
+    
+    /**
+     * To get Maximum of modifiedTimeStamp values in Quiz Table 
+     * Returns value if successful else -1
+     */
+    public double getMaxTimeStampQuiz(){
+    	double max = -1;
+		try {
+			max = (Double) getQuizDao().queryRaw("select max(modifiedTimeStamp) from Quiz",new DataType[]{DataType.DOUBLE}).closeableIterator().next()[0];
+		} catch (SQLException e){
+			e.printStackTrace();
+		}
+		return max;
+    }
 	
+    /**
+     * To get Maximum of modifiedTimeStamp values in Category Table 
+     * Returns value if successful else -1
+     */
+    public double getMaxTimeStampCategory(){
+    	double max = -1;
+		try {
+			max = (Double) getCategoryDao().queryRaw("select max(modifiedTimeStamp) from Category",new DataType[]{DataType.DOUBLE}).closeableIterator().next()[0];
+		} catch (SQLException e){
+			e.printStackTrace();
+		}
+		return max;
+	}
+    
+    /**
+     * To Create or update a category by its ID
+     * Returns true successful else false
+     */
+    public boolean createOrUpdateCategory(Category cat){
+    	CreateOrUpdateStatus tmp=null;
+    	try {
+			tmp = getCategoryDao().createOrUpdate(cat);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return tmp!=null?true:false; //tmp.isCreated()
+    }
+    
+    /**
+     * To Create or update a Quiz by its ID
+     * Returns true successful else false
+     */
+    public boolean createOrUpdateQuiz(Quiz qz){
+    	CreateOrUpdateStatus tmp=null;
+    	try {
+			tmp = getQuizDao().createOrUpdate(qz);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return tmp!=null?true:false;
+    }
 }
