@@ -16,9 +16,9 @@ import com.amcolabs.quizapp.databaseutils.Quiz;
 import com.amcolabs.quizapp.datalisteners.DataInputListener;
 import com.amcolabs.quizapp.widgets.GothamTextView;
 
-class QuizItemViewHolder {
-	ImageView imageView;
-	GothamTextView categoryName;
+class QuizItemViewHolder{
+	ImageView imageView ;
+	GothamTextView quizName;
 	GothamTextView shortCategoryDescription;
 	GothamTextView additionalText;
 	Quiz item;
@@ -45,15 +45,11 @@ public class QuizItemListAdapter extends ArrayAdapter<Quiz> {
 			convertView = quizApp.getActivity().getLayoutInflater()
 					.inflate(R.layout.list_item_layout, null);
 			holder = new QuizItemViewHolder();
-			holder.imageView = (ImageView) convertView
-					.findViewById(R.id.imageView1);
-			holder.categoryName = (GothamTextView) convertView
-					.findViewById(R.id.category_item_name);
-			holder.shortCategoryDescription = (GothamTextView) convertView
-					.findViewById(R.id.category_short_name);
-			holder.additionalText = (GothamTextView) convertView
-					.findViewById(R.id.additional_text);
-			if (clickListener != null) {
+			holder.imageView = (ImageView)convertView.findViewById(R.id.imageView1);
+			holder.quizName = (GothamTextView) convertView.findViewById(R.id.category_item_name);
+			holder.shortCategoryDescription = (GothamTextView) convertView.findViewById(R.id.category_short_name);
+			holder.additionalText = (GothamTextView) convertView.findViewById(R.id.additional_text);
+			if(clickListener!=null){
 				convertView.setOnClickListener(new OnClickListener() {
 					@Override
 					public void onClick(View v) {
@@ -67,10 +63,9 @@ public class QuizItemListAdapter extends ArrayAdapter<Quiz> {
 		} else {
 			holder = (QuizItemViewHolder) convertView.getTag();
 		}
-		holder.item = quiz;// on every reset
-		quizApp.getUiUtils().loadImageIntoView(quizApp.getContext(),
-				holder.imageView, getItem(position).assetPath, true);
-		holder.categoryName.setText(quiz.name);
+		holder.item = quiz;//on every reset
+		quizApp.getUiUtils().loadImageIntoView(quizApp.getContext(), holder.imageView, getItem(position).assetPath,true);
+		holder.quizName.setText(quiz.name);
 		holder.shortCategoryDescription.setText(quiz.shortDescription);
 		holder.additionalText.setText("a");
 		return convertView;

@@ -32,12 +32,23 @@ public class Category {
 	@DatabaseField
 	public String assetPath;  //could be cdn or a direct url
 	@DatabaseField
-	public int categoryType;
+	public int type;
 	@DatabaseField
 	public double modifiedTimestamp;
 
+	Category(){
+		// needed by ormlite
+	}
 	
-	
+	public Category(String catId,String shortDesc, String desc,String qList,String aPath,int cType,double mTimeStamp){
+		this.categoryId = catId;
+		this.shortDescription = shortDesc;
+		this.description = desc;
+		this.quizList = qList;
+		this.assetPath = aPath;
+		this.type = cType;
+		this.modifiedTimestamp = mTimeStamp;
+	}
 	
 	//TODO: remove this 
 	public static Category createDummy(){
@@ -46,7 +57,7 @@ public class Category {
 		c.shortDescription = "Time to go on";
 		c.description = "Do something";
 		c.quizList = "1,2,3,4,5";
-		c.categoryType = 2;
+		c.type = 2;
 		c.modifiedTimestamp = 0;
 		
 		return c;
@@ -74,7 +85,7 @@ public class Category {
 	private static HashMap<Integer , CategoryType> categoryTypeMap = null;//new HashMap<Integer , MessageType>();;
 		
 	public CategoryType getCategoryType(){
-		return this.getCategoryType(this.categoryType);
+		return this.getCategoryType(this.type);
 	}
 	public  CategoryType getCategoryType(int value){
 		if(categoryTypeMap==null){

@@ -21,6 +21,23 @@ public class Quiz {
 	public int nPeople;
 	@DatabaseField
 	public double modifiedTimestamp;
+	
+	Quiz(){
+		// needed by ormlite
+	}
+	
+	public Quiz(String qId,String qType,String qName,String sDesc,String aPath,String qTags,int nQues,int nCount,double mTimeStamp){
+		this.quizId = qId;
+		this.quizType = qType;
+		this.name = qName;
+		this.shortDescription = sDesc;
+		this.assetPath = aPath;
+		this.tags = qTags;
+		this.nQuestions = nQues;
+		this.nPeople = nCount;
+		this.modifiedTimestamp = mTimeStamp;
+	}
+	
 	public static Quiz createDummy() {
 		
 		Quiz c = new Quiz();
