@@ -82,7 +82,7 @@ public class UserMainController  extends AppController implements OnInitializati
 		for(int i=0;i<10;i++){ 
 			quizzes.add(Quiz.createDummy());
 		}
-		categoryQuizzesScreen.addQuizzesToList(quizzes, new DataInputListener<Quiz>(){
+		categoryQuizzesScreen.addQuizzesToList(category.description , quizzes, new DataInputListener<Quiz>(){
 			@Override
 			public String onData(Quiz s) {
 				onQuizSelected(s);

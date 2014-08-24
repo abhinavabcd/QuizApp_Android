@@ -5,9 +5,9 @@
     android:versionName="0.1b" >
 
     <uses-sdk
-        android:minSdkVersion="9"
+        android:minSdkVersion="11"
         android:targetSdkVersion="19"
-        android:maxSdkVersion="29" />
+        android:maxSdkVersion="29" /><!-- use 9  as min -->
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.USE_CREDENTIALS" />

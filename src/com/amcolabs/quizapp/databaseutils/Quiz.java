@@ -30,4 +30,9 @@ public class Quiz {
 		c.modifiedTimestamp = 0;
 		return c;
 	}
+	@Override
+	public String toString() {
+		// TODO Auto-generated method stub
+		return name + " "+shortDescription;
+	}
 }

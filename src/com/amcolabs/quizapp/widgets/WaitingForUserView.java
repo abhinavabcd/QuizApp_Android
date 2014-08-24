@@ -16,11 +16,9 @@ public class WaitingForUserView extends LinearLayout {
 		setGravity(Gravity.CENTER);
 		addView(view);	
 		startAnimating();
-
 	}
 
 	private void startAnimating() {
-		// TODO Auto-generated method stub
 		
 	}
 }

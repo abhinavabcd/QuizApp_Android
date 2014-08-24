@@ -18,6 +18,8 @@ public class User {
 	public double birthday;
 	public String place;
 	public boolean isActivated =false;
+	public double createdAt;
+	public String country; 
 	public String status;
 	public String googlePlus;
 	public String facebook;

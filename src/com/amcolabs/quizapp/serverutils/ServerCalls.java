@@ -8,15 +8,14 @@ import org.apache.http.Header;
 
 import android.content.Context;
 import android.content.pm.PackageInfo;
-import android.os.Bundle;
 import android.util.Log;
 
 import com.amcolabs.quizapp.QuizApp;
-import com.amcolabs.quizapp.R;
 import com.amcolabs.quizapp.User;
 import com.amcolabs.quizapp.appcontrollers.ProgressiveQuizController;
 import com.amcolabs.quizapp.configuration.Config;
 import com.amcolabs.quizapp.databaseutils.Category;
+import com.amcolabs.quizapp.databaseutils.Quiz;
 import com.amcolabs.quizapp.datalisteners.DataInputListener;
 import com.amcolabs.quizapp.popups.StaticPopupDialogBoxes;
 import com.amcolabs.quizapp.serverutils.ServerResponse.MessageType;
@@ -35,7 +34,6 @@ import de.tavendo.autobahn.WebSocketException;
 public class ServerCalls {
 
 	public static final String SERVER_URL = Config.IS_TEST_BUILD? "http://192.168.0.10:8084/func":"http://quizapp-main.amcolabs.com/func";
-	public static final String QUIZ_WEBSOCKET_IP_PORT = "ws://192.168.0.10:8084"; 
 	private static final String GET_ENCODEDKEY_URL = SERVER_URL+"?task=getEncodedKey";
 	private static final String SET_GCM_KEY_URL = SERVER_URL+"?task=setGCMRegistrationId";
 	private static final String GET_USER_INFO =  SERVER_URL+"?task=getUserInfo";
@@ -46,6 +44,9 @@ public class ServerCalls {
 	private static final String GET_LOGIN_WITH_GOOGLPLUS = SERVER_URL+"?task=registerWithGoogle";
 
 	private static final String GET_LOGIN_WITH_FACEBOOK= SERVER_URL+"?task=registerWithFacebook";
+	
+	
+	public String QUIZ_WEBSOCKET_IP_PORT = "ws://192.168.0.10:8084"; 
 	
 	private int serverErrorMsgShownCount =0;
 	//encodedKey=YWJjZGVmZ2h8YWJoaW5hdmFiY2RAZ21haWwuY29t|1393389556|37287ef4a1261b927e8a98d639035d81f0e7eb2c
@@ -322,7 +323,7 @@ public class ServerCalls {
 	}
 
 
-	public void getNewCategories(double lastTimeStamp , final DataInputListener<List<Category>> categoriesListener) {
+	public void getAndUpdateNewCategoriesAndQuizzes(double lastTimeStamp , final DataInputListener<List<Category>> categoriesListener) {
 		String url = GET_NEW_CATEGORIES;
 		url+="&encodedKey="+quizApp.getUserDeviceManager().getEncodedKey();
 		url+="&lastTimeStamp="+Double.toString(lastTimeStamp);
@@ -330,8 +331,12 @@ public class ServerCalls {
 			@Override
 			public void onServerResponse(MessageType messageType, ServerResponse response) {
 				switch(messageType){
-					case OK_CATEGORIES:
-						List<Category> categories = quizApp.getConfig().getGson().fromJson(response.payload, new TypeToken<List<Category>>(){}.getType());
+					case OK_QUIZZES_CATEGORIES:
+						List<Category> categories = quizApp.getConfig().getGson().fromJson(response.payload1, new TypeToken<List<Category>>(){}.getType());
+						List<Quiz> quizzes = quizApp.getConfig().getGson().fromJson(response.payload, new TypeToken<List<Quiz>>(){}.getType());
+						for(Category c : categories){
+						
+						}
 						if(categoriesListener!=null && categories.size()>0){
 							categoriesListener.onData(categories);
 						}

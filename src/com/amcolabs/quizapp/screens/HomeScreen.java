@@ -2,6 +2,7 @@ package com.amcolabs.quizapp.screens;
 
 import java.util.ArrayList;
 
+import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 
@@ -12,6 +13,7 @@ import com.amcolabs.quizapp.adapters.CategoryItemListAdapter;
 import com.amcolabs.quizapp.appcontrollers.UserMainController;
 import com.amcolabs.quizapp.databaseutils.Category;
 import com.amcolabs.quizapp.datalisteners.DataInputListener;
+import com.amcolabs.quizapp.widgets.GothamTextView;
 
 public class HomeScreen extends Screen { 
 	ArrayList<Category> categories = new ArrayList<Category>();
@@ -32,8 +34,10 @@ public class HomeScreen extends Screen {
 		});
 		
 		LinearLayout lView = (LinearLayout) getApp().getActivity().getLayoutInflater().inflate(R.layout.block_list_view, null);
-			((ListView) lView.findViewById(R.id.listView)).setAdapter(categoryAdaptor);
-			addView(lView);
+		lView.setBackgroundColor(getApp().getConfig().getAThemeColor());
+		lView.findViewById(R.id.search_bar).setVisibility(View.GONE);
+		((ListView) lView.findViewById(R.id.listView)).setAdapter(categoryAdaptor);
+		addView(lView);
 	}
 	
 	
