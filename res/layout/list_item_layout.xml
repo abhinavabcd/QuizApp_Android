@@ -9,7 +9,9 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_gravity="left"
         android:background="@drawable/list_item_bg"
+        android:gravity="left"
         android:orientation="horizontal"
         android:padding="3dp"
         android:textColor="#ffffff" >
@@ -19,16 +21,19 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_gravity="left"
-            android:layout_weight="0.1"
+            android:layout_weight="0.0"
+            android:maxWidth="50dp"
             android:src="@drawable/abc_ab_bottom_solid_dark_holo" />
 
         <LinearLayout
             android:id="@+id/item_details"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
+            android:layout_marginLeft="10dp"
             android:layout_weight="0.8"
-            android:orientation="vertical" >
+            android:gravity="center_vertical"
+            android:orientation="vertical"
+            android:padding="5dp" >
 
             <com.amcolabs.quizapp.widgets.GothamTextView
                 android:id="@+id/category_item_name"
@@ -36,6 +41,7 @@
                 android:layout_height="wrap_content"
                 android:text="Large Text"
                 android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textSize="16sp"
                 android:textStyle="bold" />
 
             <com.amcolabs.quizapp.widgets.GothamTextView
@@ -49,16 +55,15 @@
             android:id="@+id/additional_container"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_gravity="right"
-            android:layout_weight="0.1" >
+            android:layout_gravity="right|center_vertical"
+            android:padding="5dp" >
 
             <com.amcolabs.quizapp.widgets.GothamTextView
                 android:id="@+id/additional_text"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:gravity="center"
-                android:padding="10dp"
-                android:text="4"
+                android:padding="5dp"
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:textStyle="bold" />
         </FrameLayout>

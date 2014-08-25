@@ -1,5 +1,8 @@
 package com.amcolabs.quizapp;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.amcolabs.quizapp.UserDeviceManager.AppRunningState;
 import com.amcolabs.quizapp.appcontrollers.UserMainPageController;
 
@@ -7,7 +10,12 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.MenuItem;
+import com.amcolabs.quizapp.R;
+import android.view.ext.SatelliteMenu;
+import android.view.ext.SatelliteMenuItem;
+import android.view.ext.SatelliteMenu.SateliteClickedListener;
 
 
 
@@ -20,6 +28,37 @@ public class MainActivity extends ActionBarActivity {
         setContentView(R.layout.activity_main);
         if(quizApp==null) quizApp = new QuizApp();
         
+        
+        SatelliteMenu menu = (SatelliteMenu) findViewById(R.id.menu);
+        
+//		  Set from XML, possible to programmatically set        
+//        float distance = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 170, getResources().getDisplayMetrics());
+//        menu.setSatelliteDistance((int) distance);
+//        menu.setExpandDuration(500);
+//        menu.setCloseItemsOnClick(false);
+//        menu.setTotalSpacingDegree(60);
+        
+        List<SatelliteMenuItem> items = new ArrayList<SatelliteMenuItem>();
+        items.add(new SatelliteMenuItem(quizApp.MENU_FRIENDS, R.drawable.friends));
+        items.add(new SatelliteMenuItem(quizApp.MENU_BADGES, R.drawable.badges));
+        items.add(new SatelliteMenuItem(quizApp.MENU_ALL_QUIZZES, R.drawable.all_quizzes));
+        items.add(new SatelliteMenuItem(quizApp.MENU_MESSAGES, R.drawable.messages));
+        items.add(new SatelliteMenuItem(quizApp.MENU_HOME, R.drawable.home));
+//        items.add(new SatelliteMenuItem(5, R.drawable.sat_item));
+        menu.addItems(items);        
+        
+        menu.setOnItemClickedListener(new SateliteClickedListener() {
+			
+			public void eventOccured(int id) {
+				quizApp.onMenuClick(id);
+			}
+		});
+        
+        quizApp.setMenu(menu);
+        
+
+        
+        
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.container, quizApp)
@@ -29,6 +68,9 @@ public class MainActivity extends ActionBarActivity {
         if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
+        
+        
+        
     }
 
     @Override

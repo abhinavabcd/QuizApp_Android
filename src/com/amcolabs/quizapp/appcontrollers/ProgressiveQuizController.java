@@ -113,8 +113,10 @@ public class ProgressiveQuizController extends AppController{
 	@Override
 	public boolean onBackPressed() {
 		backPressedCount++;
-		if(backPressedCount>1)
-			quizApp.getActivity().moveTaskToBack(true);
+		if(backPressedCount>1){
+			backPressedCount = 0;
+			return false;
+		}
 		return true;
 	}
 

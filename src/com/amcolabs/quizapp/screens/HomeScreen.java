@@ -63,7 +63,7 @@ public class HomeScreen extends Screen {
 		addView(lView);
 	}
 
-	public void addUserQuizzesView(List<Quiz> quizzes, boolean b) {
+	public void addUserQuizzesView(List<Quiz> quizzes, boolean showViewMore) {
 		final QuizItemListAdapter quizAdaptor = new QuizItemListAdapter(getApp(),0,quizzes, new DataInputListener<Quiz>(){
 			@Override
 			public String onData(Quiz quiz) {
@@ -77,6 +77,21 @@ public class HomeScreen extends Screen {
 		GothamTextView titleView = (GothamTextView) lView.findViewById(R.id.title_text_view);
 		titleView.setText(UiText.USER_FAVOURITES.getValue());
 		((ListView) lView.findViewById(R.id.listView)).setAdapter(quizAdaptor);
+		FrameLayout viewMore = (FrameLayout) lView.findViewById(R.id.view_all_wrapper);
+		if(!showViewMore){
+			viewMore.setVisibility(View.GONE);
+		}
+		else{
+			viewMore.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) { 
+					userMainController.showAllUserQuizzes();
+				}
+			});
+		}
+
+		
+		
 		addView(lView);
 	}
 }

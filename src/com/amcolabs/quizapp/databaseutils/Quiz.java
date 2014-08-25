@@ -22,6 +22,10 @@ public class Quiz {
 	@DatabaseField
 	public double modifiedTimestamp;
 	
+	@DatabaseField
+	public double userXp;
+	
+	
 	Quiz(){
 		// needed by ormlite
 	}

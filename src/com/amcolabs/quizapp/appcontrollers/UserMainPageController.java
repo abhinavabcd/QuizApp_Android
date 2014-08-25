@@ -309,9 +309,13 @@ public class UserMainPageController  extends AppController implements OnInitiali
 	public void onError(int socialNetworkID, String requestID,String errorMessage, Object data) {
 		StaticPopupDialogBoxes.alertPrompt(quizApp.getFragmentManager(), requestID+errorMessage, null);
 	}
-
+	
+	
 	public void showAllCategories() {
-		// TODO Auto-generated method stub
+		
+	}
+
+	public void showAllUserQuizzes() {
 		
 	}
 }

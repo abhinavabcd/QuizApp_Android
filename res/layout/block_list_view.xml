@@ -5,27 +5,29 @@
     android:background="@color/blue_light"
     android:orientation="vertical" >
 
-	<EditText
-	    android:id="@+id/search_text"
-	    android:layout_width="match_parent"
-	    android:layout_height="wrap_content"
-	    android:layout_marginTop="10dp"
-	    android:drawableLeft="@drawable/abc_ic_search" 
-	    android:hint="Search"/>
+    <EditText
+        android:id="@+id/search_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:drawableLeft="@drawable/abc_ic_search"
+        android:hint="Search" />
 
-	<com.amcolabs.quizapp.widgets.GothamTextView
-	    android:id="@+id/title_text_view"
-	    android:layout_width="wrap_content"
-	    android:layout_height="wrap_content"
-	    android:layout_gravity="center"
-	    android:text="TextView"
-	    android:textAllCaps="true"
-	    android:textSize="15sp" />
+    <com.amcolabs.quizapp.widgets.GothamTextView
+        android:id="@+id/title_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_margin="10dp"
+        android:text="TextView"
+        android:textAllCaps="true"
+        android:textSize="20dp" />
 
     <ListView
         android:id="@+id/listView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
         android:listSelector="@android:color/transparent"
@@ -33,5 +35,23 @@
         android:scrollbars="none" >
 
     </ListView>
+
+    <FrameLayout
+        android:id="@+id/view_all_wrapper"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|right"
+        android:layout_marginRight="30dp"
+        android:background="@color/black" >
+
+        <com.amcolabs.quizapp.widgets.GothamTextView
+            android:id="@+id/view_more"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="View all >"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="@color/white" 
+	        android:textSize="20dp" />
+    </FrameLayout>
 
 </LinearLayout>

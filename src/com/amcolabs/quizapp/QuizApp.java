@@ -18,6 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
+import android.view.ext.SatelliteMenu;
 import android.widget.FrameLayout;
 
 import com.amcolabs.quizapp.appcontrollers.UserMainPageController;
@@ -39,6 +40,13 @@ public class QuizApp extends Fragment implements AnimationListener {
 	static final boolean FROM_RIGHT = true;
 	static final boolean TO_LEFT = true;
 	static final boolean TO_RIGHT = false;
+
+	public static final int MENU_HOME = 1;
+	public static final int MENU_BADGES = 2;
+	public static final int MENU_ALL_QUIZZES = 3;
+	public static final int MENU_FRIENDS = 4;
+	public static final int MENU_MESSAGES=5;
+	
 	
 	private User currentUser;
 	private AppController currentAppController;
@@ -55,7 +63,7 @@ public class QuizApp extends Fragment implements AnimationListener {
 	private boolean initialized = false;
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		mainFrame = (FrameLayout)getActivity().getLayoutInflater().inflate(R.layout.activity_main,null);
+		mainFrame = (FrameLayout)getActivity().getLayoutInflater().inflate(R.layout.quizapp_layout,null);
 		mainFrame.addView(loadingView);
 		((UserMainPageController)loadAppController(UserMainPageController.class))
 		.checkAndShowCategories();
@@ -208,6 +216,9 @@ public class QuizApp extends Fragment implements AnimationListener {
 	
 	private Object uiSync = new Object();
 	Stack<Screen> screenStack = new Stack<Screen>();
+
+	private SatelliteMenu satelliteMenu;
+
 	public Screen popCurrentScreen(){
 		if(screenStack.isEmpty())
 			return null;
@@ -293,5 +304,25 @@ public class QuizApp extends Fragment implements AnimationListener {
             fragment.onActivityResult(requestCode, resultCode, data);
         }
     }
+
+	public void onMenuClick(int id) {
+		screenStack.clear();
+		switch(id){
+			case MENU_HOME:
+				break;
+			case MENU_MESSAGES:
+				break;
+			case MENU_ALL_QUIZZES:
+				break;
+			case MENU_BADGES:
+				break;
+			case MENU_FRIENDS:
+				break;
+		}
+	}
+
+	public void setMenu(SatelliteMenu menu) {
+		this.satelliteMenu = menu;
+	}
 
 }

@@ -66,7 +66,14 @@ public class QuizItemListAdapter extends ArrayAdapter<Quiz> {
 		holder.item = quiz;//on every reset
 		quizApp.getUiUtils().loadImageIntoView(quizApp.getContext(), holder.imageView, quiz.assetPath,true);
 		holder.quizName.setText(quiz.name);
+		if(quiz.shortDescription==null || quiz.shortDescription.trim().equalsIgnoreCase("")){
+//			holder.shortCategoryDescription.setVisibility(View.GONE);
+		}
+		else{
+//			holder.shortCategoryDescription.setVisibility(View.VISIBLE);
+		}
 		holder.shortCategoryDescription.setText(quiz.shortDescription);
+
 		holder.additionalText.setText("a");
 		return convertView;
 	}
