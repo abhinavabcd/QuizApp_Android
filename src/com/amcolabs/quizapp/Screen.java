@@ -25,5 +25,10 @@ public class Screen extends LinearLayout {
 		if(isInViewPort)
 			super.onDraw(canvas);
 	}
+	
+	protected void onReInit(){
+		
+	}
+	
 
 }

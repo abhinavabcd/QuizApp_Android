@@ -1,6 +1,7 @@
 package com.amcolabs.quizapp.screens;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -18,18 +19,18 @@ import com.amcolabs.quizapp.widgets.GothamTextView;
 
 public class QuizzesScreen extends Screen {
 
-	private ArrayList<Quiz> quizzes;
+	private List<Quiz> quizzes;
 
 
 	public QuizzesScreen(AppController controller) {
 		super(controller);
 	}
 	
-	public void addQuizzesToList(String title ,ArrayList<Quiz> quizzes , DataInputListener<Quiz> clickListener){
+	public void addQuizzesToList(String title ,List<Quiz> quizzes , DataInputListener<Quiz> clickListener){
 		this.quizzes = quizzes;
 		final QuizItemListAdapter quizAdaptor = new QuizItemListAdapter(getApp(),0,quizzes, clickListener);
 		LinearLayout lView = (LinearLayout) getApp().getActivity().getLayoutInflater().inflate(R.layout.block_list_view, null);
-		EditText searchText = (EditText) lView.findViewById(R.id.search_bar);
+		EditText searchText = (EditText) lView.findViewById(R.id.search_text);
 		GothamTextView titleView = (GothamTextView) lView.findViewById(R.id.title_text_view);
 		titleView.setText(title);
 		searchText.addTextChangedListener(new TextWatcher() {

@@ -41,7 +41,7 @@ public class ServerCalls {
 	private static final String GET_ENCODEDKEY_URL = SERVER_URL+"?task=getEncodedKey";
 	private static final String SET_GCM_KEY_URL = SERVER_URL+"?task=setGCMRegistrationId";
 	private static final String GET_USER_INFO =  SERVER_URL+"?task=getUserInfo";
-	private static final String GET_NEW_CATEGORIES =  SERVER_URL+"?task=getNewCategories";
+	private static final String GET_ALL_UPDATES =  SERVER_URL+"?task=getAllUpdates";
 
 	private static final String GET_RATING_URL = SERVER_URL+"?task=updateUserRating";
 
@@ -327,11 +327,10 @@ public class ServerCalls {
 	}
 
 
-	public void getAllUpdates(double maxQuizTimestamp , double maxCategoryTimestamp ,final DataInputListener<Boolean> onFinishListener) {
-		String url = GET_NEW_CATEGORIES;
+	public void getAllUpdates(double maxQuizTimestamp ,final DataInputListener<Boolean> onFinishListener) {
+		String url = GET_ALL_UPDATES;
 		url+="&encodedKey="+quizApp.getUserDeviceManager().getEncodedKey();
-		url+="&maxQuizTimeStamp="+Double.toString(maxQuizTimestamp);
-		url+="&maxCategoryTimeStamp="+Double.toString(maxCategoryTimestamp);
+		url+="&maxQuizTimestamp="+maxQuizTimestamp;
 		makeServerCall(url, new ServerNotifier() {
 			@Override
 			public void onServerResponse(MessageType messageType, ServerResponse response) {
@@ -358,11 +357,12 @@ public class ServerCalls {
 						List<UserFeed> userFeeds = quizApp.getConfig().getGson().fromJson(response.payload2, new TypeToken<List<UserFeed>>(){}.getType());
 						List<UserInboxMessage> inboxMessages = quizApp.getConfig().getGson().fromJson(response.payload3, new TypeToken<List<UserInboxMessage>>(){}.getType());
 						List<UserChallenege> userChalleneges = quizApp.getConfig().getGson().fromJson(response.payload4, new TypeToken<List<UserChallenege>>(){}.getType());
+						onFinishListener.onData(true);
 						break; 
 					default:
+						onFinishListener.onData(false);
 						break;
 				}
-				onFinishListener.onData(true);
 			}
 		});
 	}

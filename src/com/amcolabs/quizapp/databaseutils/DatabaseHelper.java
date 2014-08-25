@@ -16,6 +16,7 @@ import android.util.Log;
 import com.amcolabs.quizapp.QuizApp;
 import com.amcolabs.quizapp.R;
 import com.amcolabs.quizapp.configuration.Config;
+import com.amcolabs.quizapp.databaseutils.Category.CategoryType;
 import com.amcolabs.quizapp.fileandcommonutils.FileHelper;
 import com.j256.ormlite.android.apptools.OrmLiteSqliteOpenHelper;
 import com.j256.ormlite.dao.Dao;
@@ -93,16 +94,33 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
         return mDb;
     }
     
-    public ArrayList<Category> getCategories(){
-    	return null;
+    public List<Category> getCategories(int quantity){
+    		try {
+				return getCategoryDao().queryBuilder().limit((long)quantity).orderBy("modifiedTimestamp", false).query();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+    		return new ArrayList<Category>();
     }
     
-    public ArrayList<Category> getCategoryByType(){
-    	return null;
+    public Quiz getQuizById(String quizId){
+		try {
+			return getQuizDao().queryBuilder().where().eq("quizId", quizId).queryForFirst();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
     }
-    
-    public ArrayList<Quiz> getAllQuizzesInCategory(String categoryId){
-    	return null;
+
+    public List<Quiz> getAllQuizzes(long q){
+		try {
+			return getQuizDao().queryBuilder().limit(q).query();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
     }
     
     

@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import com.google.android.gms.plus.model.people.Person;
-import com.google.android.gms.plus.model.people.PersonBuffer;
+import com.google.gson.reflect.TypeToken;
 
 public class User {
 	public String uid;
@@ -24,10 +24,22 @@ public class User {
 	public String googlePlus;
 	public String facebook;
 	public String solvedId;
-	public ArrayList<Integer> badges;
-	public HashMap<String,Integer> stats;
-	public HashMap<String, Integer[]>winsLosses;
+	private String badges;
+	private String stats;
+	private String winsLosses;
 
+	public HashMap<String,Integer> getStats(QuizApp quizApp){
+		return quizApp.getConfig().getGson().fromJson(stats, new TypeToken<HashMap<String,Integer>>(){}.getType());
+	}
+	
+	public HashMap<String, Integer[]> getWinsAndLoses(QuizApp quizApp){
+		return quizApp.getConfig().getGson().fromJson(winsLosses, new TypeToken<HashMap<String, Integer[]>>(){}.getType());		
+	}
+	public ArrayList<Integer> getBadges(QuizApp quizApp){
+		return quizApp.getConfig().getGson().fromJson(winsLosses, new TypeToken<ArrayList<Integer>>(){}.getType());		
+	}
+	
+	
 	public String getFacebookAuthToken(){
 		return facebook;
 	}

@@ -29,8 +29,15 @@ public class Category {
 		// needed by ormlite
 	}
 	
-	public ArrayList<String> getQuizzes(QuizApp quizApp){
-		return quizApp.getConfig().getGson().fromJson(quizList, new TypeToken<List<String>>(){}.getType());
+	public List<Quiz> getQuizzes(QuizApp quizApp){
+		List<Quiz> allQuiz = new ArrayList<Quiz>();
+		List<String> quizIds = quizApp.getConfig().getGson().fromJson(quizList, new TypeToken<List<String>>(){}.getType());
+		for(String quizId : quizIds){
+			Quiz a = quizApp.getDataBaseHelper().getQuizById(quizId);
+			if(a!=null)
+				allQuiz.add(a);
+		}
+		return allQuiz;
 	}
 	
 	public Category(String catId,String shortDesc, String desc,String qList,String aPath,int cType,double mTimeStamp){

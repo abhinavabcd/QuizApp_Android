@@ -93,7 +93,15 @@ public class UiUtils {
 	}
 	
 	public static enum UiText{
-		NO_PREVIOUS_MESSAGES("No Previous Messages"), TEXT_LOADING("loading.."), INVITE_DIALOG_TITLE("Invite your Friends"), SERVER_ERROR("Could not connect."), FETCHING_USER("Fetching User..");
+		NO_PREVIOUS_MESSAGES("No Previous Messages"), 
+		TEXT_LOADING("loading.."), 
+		INVITE_DIALOG_TITLE("Invite your Friends"), 
+		SERVER_ERROR("Could not connect."), 
+		FETCHING_USER("Fetching User.."),
+		COULD_NOT_CONNECT("Could not fetch Updates"),
+		CATEGORIES("categories"),
+		USER_FAVOURITES("Quick Play");
+		
 		String value = null;
 		UiText(String value){
 			this.value = value;

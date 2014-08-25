@@ -1,5 +1,8 @@
 package com.amcolabs.quizapp;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+
 import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Context;
@@ -150,7 +153,14 @@ public class UserDeviceManager {
 	public String getEncodedKey() {
 		if(encodedKey==null)
 			encodedKey = getPreference(Config.PREF_ENCODED_KEY, null);
-		return encodedKey;
+		try {
+			if(encodedKey==null) return null;
+			return URLEncoder.encode(encodedKey,"UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}
 	}	
 	
 }

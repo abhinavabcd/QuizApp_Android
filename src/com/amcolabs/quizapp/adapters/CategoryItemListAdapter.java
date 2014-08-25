@@ -20,6 +20,7 @@ class CategoryViewHolder{
 		GothamTextView shortCategoryDescription;
 		GothamTextView additionalText;
 		Category item;
+		public Category category;
 	}
 
 public  class CategoryItemListAdapter extends ArrayAdapter<Category>{
@@ -47,14 +48,14 @@ public  class CategoryItemListAdapter extends ArrayAdapter<Category>{
 					convertView.setOnClickListener(new OnClickListener() {
 						@Override
 						public void onClick(View v) {
-							clickListener.onData(((CategoryViewHolder)v.getTag()).item);
+							clickListener.onData(((CategoryViewHolder)v.getTag()).category);
 						}
 					});
 			}
 			else{
 				holder = (CategoryViewHolder) convertView.getTag();
 			}
-			
+			holder.category = category;
 			quizApp.getUiUtils().loadImageIntoView(quizApp.getContext(), holder.imageView, getItem(position).assetPath,true);
 			holder.categoryName.setText(category.description);
 			holder.shortCategoryDescription.setText(category.shortDescription);

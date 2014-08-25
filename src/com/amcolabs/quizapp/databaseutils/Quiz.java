@@ -3,7 +3,7 @@ package com.amcolabs.quizapp.databaseutils;
 import com.j256.ormlite.field.DatabaseField;
 
 public class Quiz {
-	@DatabaseField(index=true, unique=true)
+	@DatabaseField(id=true , index=true, unique=true)
     public String quizId;
 	@DatabaseField
 	public String quizType;
