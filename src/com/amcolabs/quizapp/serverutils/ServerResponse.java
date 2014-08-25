@@ -14,6 +14,10 @@ public class ServerResponse {
 	public String payload1;
 	public String payload2;
 	public String payload3;
+	public String payload4;
+	public String payload5;
+	
+	
 	public long responseTime;
 	
 		

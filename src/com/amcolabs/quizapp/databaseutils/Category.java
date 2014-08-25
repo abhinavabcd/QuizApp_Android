@@ -1,23 +1,12 @@
 package com.amcolabs.quizapp.databaseutils;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
-import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.Bitmap.CompressFormat;
-import android.graphics.drawable.Drawable;
-import android.os.Environment;
-import android.widget.ImageView;
-
-import com.amcolabs.quizapp.configuration.Config;
-import com.amcolabs.quizapp.fileandcommonutils.FileHelper;
+import com.amcolabs.quizapp.QuizApp;
+import com.google.gson.reflect.TypeToken;
 import com.j256.ormlite.field.DatabaseField;
-import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Target;
 
 public class Category {
 
@@ -38,6 +27,10 @@ public class Category {
 
 	Category(){
 		// needed by ormlite
+	}
+	
+	public ArrayList<String> getQuizzes(QuizApp quizApp){
+		return quizApp.getConfig().getGson().fromJson(quizList, new TypeToken<List<String>>(){}.getType());
 	}
 	
 	public Category(String catId,String shortDesc, String desc,String qList,String aPath,int cType,double mTimeStamp){

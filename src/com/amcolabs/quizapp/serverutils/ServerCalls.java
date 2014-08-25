@@ -1,5 +1,6 @@
 package com.amcolabs.quizapp.serverutils;
 
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,6 +17,9 @@ import com.amcolabs.quizapp.appcontrollers.ProgressiveQuizController;
 import com.amcolabs.quizapp.configuration.Config;
 import com.amcolabs.quizapp.databaseutils.Category;
 import com.amcolabs.quizapp.databaseutils.Quiz;
+import com.amcolabs.quizapp.databaseutils.UserChallenege;
+import com.amcolabs.quizapp.databaseutils.UserFeed;
+import com.amcolabs.quizapp.databaseutils.UserInboxMessage;
 import com.amcolabs.quizapp.datalisteners.DataInputListener;
 import com.amcolabs.quizapp.popups.StaticPopupDialogBoxes;
 import com.amcolabs.quizapp.serverutils.ServerResponse.MessageType;
@@ -323,7 +327,7 @@ public class ServerCalls {
 	}
 
 
-	public void getAndUpdateNewCategoriesAndQuizzes(double lastTimeStamp , final DataInputListener<List<Category>> categoriesListener) {
+	public void getAndUpdateNewCategoriesAndQuizzes(double lastTimeStamp , final DataInputListener<Boolean> onFinishListener) {
 		String url = GET_NEW_CATEGORIES;
 		url+="&encodedKey="+quizApp.getUserDeviceManager().getEncodedKey();
 		url+="&lastTimeStamp="+Double.toString(lastTimeStamp);
@@ -334,16 +338,33 @@ public class ServerCalls {
 					case OK_QUIZZES_CATEGORIES:
 						List<Category> categories = quizApp.getConfig().getGson().fromJson(response.payload1, new TypeToken<List<Category>>(){}.getType());
 						List<Quiz> quizzes = quizApp.getConfig().getGson().fromJson(response.payload, new TypeToken<List<Quiz>>(){}.getType());
-						for(Category c : categories){
 						
+						for(Quiz q : quizzes){
+							try {
+								quizApp.getDataBaseHelper().getQuizDao().createOrUpdate(q);
+							} catch (SQLException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
 						}
-						if(categoriesListener!=null && categories.size()>0){
-							categoriesListener.onData(categories);
+						
+						for(Category c : categories){
+							try {
+								quizApp.getDataBaseHelper().getCategoryDao().createOrUpdate(c);
+							} catch (SQLException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
 						}
-						 break;
+						List<UserFeed> userFeeds = quizApp.getConfig().getGson().fromJson(response.payload2, new TypeToken<List<UserFeed>>(){}.getType());
+						List<UserInboxMessage> inboxMessages = quizApp.getConfig().getGson().fromJson(response.payload3, new TypeToken<List<UserInboxMessage>>(){}.getType());
+						List<UserChallenege> userChalleneges = quizApp.getConfig().getGson().fromJson(response.payload4, new TypeToken<List<UserChallenege>>(){}.getType());
+						break; 
+						
 					default:
 						break;
 				}
+				onFinishListener.onData(true);
 			}
 		});
 	}
