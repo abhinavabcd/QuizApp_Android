@@ -52,7 +52,7 @@ public class ServerResponse {
 				OK_QUESTIONS ( 502),
 				OK_QUESTION ( 503),
 				OK_SERVER_DETAILS ( 504),
-				OK_QUIZZES_CATEGORIES ( 505),
+				OK_UPDATES ( 505),
 				FACEBOOK_USER_SAVED ( 506),
 				GPLUS_USER_SAVED ( 507),
 
