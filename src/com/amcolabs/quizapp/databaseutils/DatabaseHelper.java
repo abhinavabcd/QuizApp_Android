@@ -35,7 +35,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 	// name of the database file for your application -- change to something appropriate for your app
 	private static final String DATABASE_NAME = "quizApp.db";
 	// any time you make changes to your database objects, you may have to increase the database version
-	private static final int DATABASE_VERSION = 1;
+	private static final int DATABASE_VERSION = 3;
 	private static String DATABASE_PATH = "/data/data/com.amcolabs.quizapp/databases/";
 
 	// the DAO object we use to access the Category table
@@ -54,7 +54,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 //    	if(Config.IS_TEST_BUILD)
 //    		FileHelper.deleteFile("databases", DATABASE_NAME);//delete the existing db file
     	
-        boolean dbexist = FileHelper.isFileExists(quizApp.getContext() , "databases" , DATABASE_NAME); 
+        boolean dbexist = true;//FileHelper.isFileExists(quizApp.getContext() , "databases" , DATABASE_NAME); 
         if (!dbexist || (quizApp!=null && quizApp.getUserDeviceManager().hasJustInstalled)) {
             try {
                 InputStream myinput = quizApp.getContext().getAssets().open(DATABASE_NAME);
@@ -163,17 +163,17 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 	@Override
 	public void onUpgrade(SQLiteDatabase db, ConnectionSource connectionSource, int oldVersion, int newVersion) {
 		// Not Needed as of now - should be used in future
-//		try {
-//			Log.i(DatabaseHelper.class.getName(), "onUpgrade");
-//			TableUtils.dropTable(connectionSource, Quiz.class, true);
-//			TableUtils.dropTable(connectionSource, Category.class, true);
-//			TableUtils.dropTable(connectionSource, UserPreferences.class, true);
-//			// after we drop the old databases, we create the new ones
-//			onCreate(db, connectionSource);
-//		} catch (SQLException e) {
-//			Log.e(DatabaseHelper.class.getName(), "Can't drop databases", e);
-//			throw new RuntimeException(e);
-//		}
+		try {
+			Log.i(DatabaseHelper.class.getName(), "onUpgrade");
+			TableUtils.dropTable(connectionSource, Quiz.class, true);
+			TableUtils.dropTable(connectionSource, Category.class, true);
+			TableUtils.dropTable(connectionSource, UserPreferences.class, true);
+			// after we drop the old databases, we create the new ones
+			onCreate(db, connectionSource);
+		} catch (SQLException e) {
+			Log.e(DatabaseHelper.class.getName(), "Can't drop databases", e);
+			throw new RuntimeException(e);
+		}
 	}
 
 	/**
