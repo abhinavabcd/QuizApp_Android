@@ -78,7 +78,7 @@ public class UiUtils {
 		FETCHING_USER("Fetching User.."),
 		COULD_NOT_CONNECT("Could not fetch Updates"),
 		CATEGORIES("categories"),
-		USER_FAVOURITES("Quick Play");
+		USER_FAVOURITES("Quick Play"), NOT_AUTHORIZED("Invalid Login"), SEARCHING_FOR_OPPONENT("Searching for a matching opponent");
 		
 		String value = null;
 		UiText(String value){
@@ -300,8 +300,8 @@ public class UiUtils {
 		if(assetPath==null || assetPath.isEmpty())
 			return;
 		try{
-		    InputStream ims = ctx.getAssets().open(assetPath);
-		    Picasso.with(ctx).load("file:///android_asset/"+assetPath).into(imgView);
+		    InputStream ims = ctx.getAssets().open("images/"+assetPath);
+		    Picasso.with(ctx).load("file:///android_asset/images/"+assetPath).into(imgView);
 		    return;
 		}
 		catch(IOException ex) {

@@ -3,19 +3,18 @@ package com.amcolabs.quizapp;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.amcolabs.quizapp.UserDeviceManager.AppRunningState;
-import com.amcolabs.quizapp.appcontrollers.UserMainPageController;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBarActivity;
-import android.util.Log;
+import android.util.TypedValue;
 import android.view.MenuItem;
-import com.amcolabs.quizapp.R;
 import android.view.ext.SatelliteMenu;
-import android.view.ext.SatelliteMenuItem;
 import android.view.ext.SatelliteMenu.SateliteClickedListener;
+import android.view.ext.SatelliteMenuItem;
+
+import com.amcolabs.quizapp.UserDeviceManager.AppRunningState;
+import com.amcolabs.quizapp.appcontrollers.UserMainPageController;
 
 
 
@@ -37,6 +36,8 @@ public class MainActivity extends ActionBarActivity {
 //        menu.setExpandDuration(500);
 //        menu.setCloseItemsOnClick(false);
 //        menu.setTotalSpacingDegree(60);
+        menu.setTotalSpacingDegree(80);
+        menu.setSatelliteDistance((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 180, getResources().getDisplayMetrics()));
         
         List<SatelliteMenuItem> items = new ArrayList<SatelliteMenuItem>();
         items.add(new SatelliteMenuItem(quizApp.MENU_FRIENDS, R.drawable.friends));

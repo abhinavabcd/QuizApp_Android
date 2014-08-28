@@ -13,6 +13,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
+import com.amcolabs.quizapp.Badge;
 import com.amcolabs.quizapp.QuizApp;
 import com.amcolabs.quizapp.R;
 import com.amcolabs.quizapp.configuration.Config;
@@ -41,11 +42,15 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 	// the DAO object we use to access the Category table
 	private Dao<Category, Integer> categoriesDao = null;
 	private Dao<Quiz, Integer> quizDao = null;
+	private Dao<Badge, Integer> badgesDao = null;
+	
 	private Dao<UserPreferences, Integer> userPreferencesDao = null;
 	
 	private RuntimeExceptionDao<Category, Integer> categoriesRuntimeExceptionDao = null;
 	private RuntimeExceptionDao<Quiz, Integer> quizRuntimeExceptionDao = null;
+	private RuntimeExceptionDao<Badge, Integer> badgesExceptionDao = null;
 	private RuntimeExceptionDao<UserPreferences, Integer> userPreferencesRuntimeDao;
+	
 
 	QuizApp quizApp = null;
     public DatabaseHelper(QuizApp quizApp) {
@@ -126,7 +131,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
     
     
     public double getServerTimeDiffFromDB(){
-    	RuntimeExceptionDao<UserPreferences, Integer> userPreferencesTable = getUserPreferencesDataDao();
+    	RuntimeExceptionDao<UserPreferences, Integer> userPreferencesTable = getUserPreferencesExceptionDao();
     	List<UserPreferences> serverTimeDiff = userPreferencesTable.queryForEq("property", Config.PREF_SERVER_TIME_DIFF);
     	return Double.parseDouble(serverTimeDiff==null||serverTimeDiff.size()==0 ? "0" :serverTimeDiff.get(0).getData());
     }
@@ -193,6 +198,14 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 		}
 		return quizDao;
 	}
+	
+	public Dao<Badge, Integer> getBadgesDao() throws SQLException {
+		if (badgesDao == null) {
+			badgesDao = getDao(Badge.class); 
+		}
+		return badgesDao;
+	}
+
 
 	public Dao<UserPreferences, Integer> getUserPreferencesDao() throws SQLException {
 		if (userPreferencesDao == null) {
@@ -201,25 +214,34 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 		return userPreferencesDao;
 	}
 	
+	
+	
 	/**
 	 * Returns the RuntimeExceptionDao (Database Access Object) version of a Dao for our Category class. It will
 	 * create it or just give the cached value. RuntimeExceptionDao only through RuntimeExceptions.
 	 */
-	public RuntimeExceptionDao<Category, Integer> getCategoryDataDao() {
+	public RuntimeExceptionDao<Category, Integer> getCategoryExceptionDao() {
 		if (categoriesRuntimeExceptionDao == null) {
 			categoriesRuntimeExceptionDao = getRuntimeExceptionDao(Category.class);
 		}
 		return categoriesRuntimeExceptionDao;
 	}
 	
-	public RuntimeExceptionDao<Quiz, Integer> getQuizDataDao() {
+	public RuntimeExceptionDao<Quiz, Integer> getQuizDataExceptionDao() {
 		if (quizRuntimeExceptionDao == null) {
 			quizRuntimeExceptionDao = getRuntimeExceptionDao(Quiz.class);
 		}
 		return quizRuntimeExceptionDao;
 	}
 
-	public RuntimeExceptionDao<UserPreferences, Integer> getUserPreferencesDataDao() {
+	public RuntimeExceptionDao<Badge, Integer> getBadgesExceptionDao() {
+		if (badgesExceptionDao == null) {
+			badgesExceptionDao = getRuntimeExceptionDao(Badge.class);
+		}
+		return badgesExceptionDao;
+	}
+	
+	public RuntimeExceptionDao<UserPreferences, Integer> getUserPreferencesExceptionDao() {
 		// TODO Auto-generated method stub
 		if (userPreferencesRuntimeDao == null) {
 			userPreferencesRuntimeDao = getRuntimeExceptionDao(UserPreferences.class);
@@ -254,6 +276,16 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 		return max;
     }
 	
+    public double getMaxTimeStampBadges(){
+    	double max = -1;
+		try {
+			max = (Double) getBadgesDao().queryRaw("select max(modifiedTimestamp) from badge",new DataType[]{DataType.DOUBLE}).closeableIterator().next()[0];
+		} catch (SQLException e){
+			e.printStackTrace();
+		}
+		return max;
+    }
+    
     /**
      * To get Maximum of modifiedTimeStamp values in Category Table 
      * Returns value if successful else -1
