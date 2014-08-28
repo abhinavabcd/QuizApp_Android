@@ -2,6 +2,7 @@ package com.amcolabs.quizapp;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.EmptyStackException;
 import java.util.LinkedList;
 import java.util.NoSuchElementException;
@@ -24,8 +25,6 @@ import android.widget.FrameLayout;
 import com.amcolabs.quizapp.appcontrollers.UserMainPageController;
 import com.amcolabs.quizapp.configuration.Config;
 import com.amcolabs.quizapp.databaseutils.DatabaseHelper;
-import com.amcolabs.quizapp.datalisteners.DataInputListener;
-import com.amcolabs.quizapp.screens.WelcomeScreen;
 import com.amcolabs.quizapp.serverutils.ServerCalls;
 import com.amcolabs.quizapp.uiutils.UiUtils;
 import com.amcolabs.quizapp.uiutils.UiUtils.UiText;
@@ -56,7 +55,7 @@ public class QuizApp extends Fragment implements AnimationListener {
 	private DatabaseHelper dbHelper;
 	private boolean initializedDb;
 	private Config config;
-	private LinkedList<Screen> disposeScreens;
+	private ArrayList<Screen> disposeScreens;
 
 	private View loadingView;
 
@@ -73,24 +72,30 @@ public class QuizApp extends Fragment implements AnimationListener {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		if(!initialized){
+		reinit(false);
+	}
+	
+	public void reinit(boolean force) {
+		if(!initialized || force){
 			initialized = true;
 			userDeviceManager = new UserDeviceManager(this);//initialized preferences , device id , pertaining to device
 			config = new Config(this);
 			uiUtils = new UiUtils(this);
 			serverCalls = new ServerCalls(this);
 			loadingView = userDeviceManager.getLoadingView(this.getActivity());
-			disposeScreens = new LinkedList<Screen>();
+			disposeScreens = new ArrayList<Screen>();
 		}
 	}
+
 
 	private void addView(Screen screen) {
 		mainFrame.addView(screen);
 		screenStack.push(screen);
 	}
 
-	private void removeView(Screen screen) {
-		mainFrame.removeView(screen);
+	private void disposeViews() {
+		while(!disposeScreens.isEmpty())
+			mainFrame.removeView(disposeScreens.remove(0));
 	}
 	
 	public AppController loadAppController(Class<? extends AppController> clazz){
@@ -169,34 +174,16 @@ public class QuizApp extends Fragment implements AnimationListener {
 	public void onBackPressed() {
 		try{		
 				
-				Screen screen = popCurrentScreen();
+				Screen screen = peekCurrentScreen();
 				if(screen==null){
 					this.getActivity().moveTaskToBack(true);
 				}
 				if(screen!=null && !screen.controller.onBackPressed()){
+					screen = popCurrentScreen();
 					screen.controller.beforeScreenRemove(screen);
-					screen.onReInit();
-					animateScreenRemove(screen , TO_RIGHT, new AnimationListener() {
-						@Override
-						public void onAnimationStart(Animation animation) {
-						}
-						
-						@Override
-						public void onAnimationRepeat(Animation animation) {
-						}
-						
-						@Override
-						public void onAnimationEnd(Animation animation) {
-							QuizApp.this.onAnimationEnd(animation);//remove the disposed screen
-							loadingView.setVisibility(View.INVISIBLE);
-							Screen oldScreen = popCurrentScreen();
-							if(oldScreen!=null)
-								animateScreenIn(oldScreen, FROM_LEFT);
-							else{
-								getActivity().moveTaskToBack(true);
-							}
-						}
-					});
+					animateScreenRemove(screen , TO_RIGHT,null);
+					Screen oldScreen = popCurrentScreen();
+					animateScreenIn(oldScreen);
 				}
 			}
 			catch(EmptyStackException e) {
@@ -273,7 +260,7 @@ public class QuizApp extends Fragment implements AnimationListener {
 		try{
 			new Handler().post(new Runnable() {
 		        public void run() {
-		        	removeView(disposeScreens.remove());
+		        	disposeViews();
 		        }
 			});
 		}
@@ -324,5 +311,6 @@ public class QuizApp extends Fragment implements AnimationListener {
 	public void setMenu(SatelliteMenu menu) {
 		this.satelliteMenu = menu;
 	}
+
 
 }

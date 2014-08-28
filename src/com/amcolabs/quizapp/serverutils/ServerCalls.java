@@ -11,13 +11,14 @@ import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.util.Log;
 
+import com.amcolabs.quizapp.Badge;
 import com.amcolabs.quizapp.QuizApp;
 import com.amcolabs.quizapp.User;
 import com.amcolabs.quizapp.appcontrollers.ProgressiveQuizController;
 import com.amcolabs.quizapp.configuration.Config;
 import com.amcolabs.quizapp.databaseutils.Category;
 import com.amcolabs.quizapp.databaseutils.Quiz;
-import com.amcolabs.quizapp.databaseutils.UserChallenege;
+import com.amcolabs.quizapp.databaseutils.OfflineChallenge;
 import com.amcolabs.quizapp.databaseutils.UserFeed;
 import com.amcolabs.quizapp.databaseutils.UserInboxMessage;
 import com.amcolabs.quizapp.datalisteners.DataInputListener;
@@ -112,9 +113,21 @@ public class ServerCalls {
 		}
 		switch(code){
 			case FAILED:
-				if(serverErrorMsgShownCount++%4==0)
+				if(serverErrorMsgShownCount++%2==0)
 					StaticPopupDialogBoxes.alertPrompt(quizApp.getFragmentManager(), UiText.SERVER_ERROR.getValue(), null);
 				break;
+			case NOT_AUTHORIZED:
+				StaticPopupDialogBoxes.alertPrompt(quizApp.getFragmentManager(), UiText.NOT_AUTHORIZED.getValue(), new DataInputListener<Boolean>(){
+					@Override
+					public String onData(Boolean s) {
+						if(s){
+							quizApp.getUserDeviceManager().clearUserPreferences();
+							quizApp.reinit(true);
+						}
+						return null;
+					}
+				});
+				
 		default:
 			break;
 		}
@@ -326,11 +339,18 @@ public class ServerCalls {
 	public static void clearAllStaticVariables() {
 	}
 
-
-	public void getAllUpdates(double maxQuizTimestamp ,final DataInputListener<Boolean> onFinishListener) {
+	public double lastLoginTime = 0d;
+	public void getAllUpdates(final DataInputListener<Boolean> onFinishListener) {
 		String url = GET_ALL_UPDATES;
 		url+="&encodedKey="+quizApp.getUserDeviceManager().getEncodedKey();
-		url+="&maxQuizTimestamp="+maxQuizTimestamp;
+		if(quizApp.getConfig().getCurrentTimeStamp() - lastLoginTime  >3600){
+			lastLoginTime = quizApp.getConfig().getCurrentTimeStamp();
+			url+="&isLogin=true";
+			url+="&maxQuizTimestamp="+Double.toString(quizApp.getDataBaseHelper().getMaxTimeStampQuiz());
+			url+="&maxBadgesTimestamp="+Double.toString(quizApp.getDataBaseHelper().getMaxTimeStampBadges());
+		}
+		
+		
 		makeServerCall(url, new ServerNotifier() {
 			@Override
 			public void onServerResponse(MessageType messageType, ServerResponse response) {
@@ -338,6 +358,7 @@ public class ServerCalls {
 					case OK_UPDATES:
 						List<Category> categories = quizApp.getConfig().getGson().fromJson(response.payload1, new TypeToken<List<Category>>(){}.getType());
 						List<Quiz> quizzes = quizApp.getConfig().getGson().fromJson(response.payload, new TypeToken<List<Quiz>>(){}.getType());
+						List<Badge> badges = quizApp.getConfig().getGson().fromJson(response.payload5, new TypeToken<List<Badge>>(){}.getType());
 						
 						for(Quiz q : quizzes){
 							try {
@@ -354,9 +375,16 @@ public class ServerCalls {
 								e.printStackTrace();
 							}
 						}
+						for( Badge b : badges){
+							try {
+								quizApp.getDataBaseHelper().getBadgesDao().createOrUpdate(b);
+							} catch (SQLException e) {
+								e.printStackTrace();
+							}
+						}
 						List<UserFeed> userFeeds = quizApp.getConfig().getGson().fromJson(response.payload2, new TypeToken<List<UserFeed>>(){}.getType());
 						List<UserInboxMessage> inboxMessages = quizApp.getConfig().getGson().fromJson(response.payload3, new TypeToken<List<UserInboxMessage>>(){}.getType());
-						List<UserChallenege> userChalleneges = quizApp.getConfig().getGson().fromJson(response.payload4, new TypeToken<List<UserChallenege>>(){}.getType());
+						List<OfflineChallenge> offlineChalleneges = quizApp.getConfig().getGson().fromJson(response.payload4, new TypeToken<List<OfflineChallenge>>(){}.getType());
 						onFinishListener.onData(true);
 						break; 
 					default:

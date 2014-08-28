@@ -54,7 +54,7 @@ public class UserMainPageController  extends AppController implements OnInitiali
 		String encodedKey = quizApp.getUserDeviceManager().getPreference(Config.PREF_ENCODED_KEY, null);
 		if(encodedKey!=null){
 			//on fetch update new categories and draw the categories
-			quizApp.getServerCalls().getAllUpdates(quizApp.getDataBaseHelper().getMaxTimeStampQuiz(), new DataInputListener<Boolean>(){
+			quizApp.getServerCalls().getAllUpdates(new DataInputListener<Boolean>(){
 				@Override
 				public String onData(Boolean s) {
 					if(s){

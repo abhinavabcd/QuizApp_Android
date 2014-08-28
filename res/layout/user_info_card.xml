@@ -2,15 +2,16 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_gravity="center"
-    android:orientation="vertical"
-    android:padding="30dp" >
+    android:orientation="vertical" >
 
     <LinearLayout
-        android:id="@+id/LinearLayout1"
+        android:id="@+id/info_card_wrapper"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical" >
+        android:background="#55000000"
+        android:gravity="center_vertical"
+        android:orientation="vertical"
+        android:padding="15dp" >
 
         <LinearLayout
             android:id="@+id/LinearLayout2"
@@ -39,19 +40,22 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Medium Text"
+                    android:textColor="@color/white"
                     android:textAppearance="?android:attr/textAppearanceMedium" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" >
 
-                    <TextView
-                        android:id="@+id/status_msg"
+                    <com.amcolabs.quizapp.widgets.GothamTextView
+                        android:id="@+id/user_status_msg"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Medium Text"
+                        android:text="user status message"
                         android:textAppearance="?android:attr/textAppearanceMedium"
-                        android:textSize="12dp" />
+	                    android:textColor="@color/white"
+                        android:textSize="12dp" 
+                     />
 
                 </LinearLayout>
             </LinearLayout>
@@ -71,11 +75,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content" >
 
-            <CheckedTextView
-                android:id="@+id/checkedTextView1"
+            <com.amcolabs.quizapp.widgets.GothamTextView
+                android:id="@+id/user_more_info"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="User from India" />
+                android:text=""
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="@color/white" />
+
         </LinearLayout>
 
         <LinearLayout
@@ -83,12 +90,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal" >
-
-            <CheckedTextView
-                android:id="@+id/badges_ll"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="recent Badges Goes Here" />
 
         </LinearLayout>
     </LinearLayout>

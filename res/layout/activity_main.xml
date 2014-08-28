@@ -24,8 +24,8 @@
         sat:closeOnClick="true"
         sat:expandDuration="500"
         sat:mainImage="@drawable/ic_launcher"
-        sat:satelliteDistance="170dp"
-        sat:totalSpacingDegree="90" >
+        sat:satelliteDistance="210dp"
+        sat:totalSpacingDegree="80" >
 
     </android.view.ext.SatelliteMenu>
      

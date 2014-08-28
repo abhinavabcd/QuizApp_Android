@@ -110,14 +110,21 @@ public class ProgressiveQuizController extends AppController{
 	}
 	
 	int backPressedCount = 0;
+	
 	@Override
 	public boolean onBackPressed() {
-		backPressedCount++;
-		if(backPressedCount>1){
-			backPressedCount = 0;
+		if(quizApp.peekCurrentScreen() instanceof QuestionScreen){
+			backPressedCount++;
+			if(backPressedCount>1){
+				backPressedCount = 0;
+				return false;
+			}
+			return true;
+		}
+		
+		else{
 			return false;
 		}
-		return true;
 	}
 
 

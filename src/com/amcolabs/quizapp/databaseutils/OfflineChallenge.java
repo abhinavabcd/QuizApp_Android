@@ -1,5 +1,5 @@
 package com.amcolabs.quizapp.databaseutils;
 
-public class UserChallenege {
+public class OfflineChallenge {
 
 }
