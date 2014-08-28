@@ -2,5 +2,7 @@
 <resources>
  
     <string name="app_name">quizApp</string>
-
+	<string name="main_empty_list">There is no recent conversation, write new message
+		to start one.</string>
+	<string name="chat_error_message"> -- Sorry, Unable to load Chat History -- </string>
 </resources>

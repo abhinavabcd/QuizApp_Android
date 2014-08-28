@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/chat_row_dummy"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:id="@+id/chat_row_wrapper"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="left"
+        android:layout_margin="5dp"
+        android:background="@drawable/bubble_left"
+        android:orientation="vertical" >
+
+        <TextView
+            android:id="@+id/message_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="left"
+            android:layout_margin="5dp"
+            android:gravity="left"
+            android:lineSpacingExtra="1dp"
+            android:shadowColor="@color/textShadow"
+            android:shadowDx="1"
+            android:shadowDy="1"
+            android:text="@string/chat_error_message"
+            android:textColor="@color/black"
+            android:textSize="13sp" />
+
+        <TextView
+            android:id="@+id/message_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right|bottom"
+            android:text="12:00 AM"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textColor="@color/grey_cloud"
+            android:textSize="10sp" />
+
+    </LinearLayout>
+
+</LinearLayout>

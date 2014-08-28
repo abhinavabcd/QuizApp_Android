@@ -4,9 +4,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -16,48 +15,27 @@ import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.ProgressDialog;
-import android.content.ContentProviderOperation;
 import android.content.Context;
 import android.content.Intent;
-import android.content.OperationApplicationException;
-import android.database.Cursor;
-import android.database.DatabaseUtils;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.RemoteException;
-import android.provider.ContactsContract;
-import android.provider.ContactsContract.CommonDataKinds.Email;
-import android.provider.ContactsContract.CommonDataKinds.Phone;
-import android.provider.ContactsContract.CommonDataKinds.StructuredName;
-import android.provider.ContactsContract.Data;
-import android.provider.ContactsContract.PhoneLookup;
 import android.support.v4.app.NotificationCompat;
-import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
-import android.view.animation.Animation.AnimationListener;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.amcolabs.quizapp.QuizApp;
 import com.amcolabs.quizapp.R;
-import com.amcolabs.quizapp.Screen;
 import com.amcolabs.quizapp.configuration.Config;
 import com.amcolabs.quizapp.datalisteners.DataInputListener;
 import com.amcolabs.quizapp.notificationutils.NotificationReciever;
-import com.amcolabs.quizapp.widgets.UserInfoCard;
-import com.j256.ormlite.android.apptools.OpenHelperManager;
-import com.j256.ormlite.dao.RuntimeExceptionDao;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
-import com.squareup.picasso.Picasso.LoadedFrom;
 
 
 public class UiUtils {
@@ -278,6 +256,26 @@ public class UiUtils {
 		 
 		
 		return 	ret;
+	}
+	
+	public static String formatChatTime(double timestamp){
+		String ret = "";
+		Calendar today = Calendar.getInstance();
+		Calendar dt = Calendar.getInstance();
+		dt.setTimeInMillis((long) timestamp);
+		if (dt.get(Calendar.DAY_OF_MONTH)==today.get(Calendar.DAY_OF_MONTH)){
+			ret = String.valueOf(today.get(Calendar.HOUR_OF_DAY))+":"+String.valueOf(today.get(Calendar.MINUTE))+" "+String.valueOf((today.get(Calendar.AM_PM)==Calendar.AM)?"AM":"PM");
+		}
+		else if(dt.get(Calendar.DAY_OF_MONTH)==today.get(Calendar.DAY_OF_MONTH)){
+			ret = "Yesterday ";
+			ret = ret + String.valueOf(today.get(Calendar.HOUR_OF_DAY))+":"+String.valueOf(today.get(Calendar.MINUTE))+" "+String.valueOf(today.get(Calendar.AM_PM));
+		}
+		else{
+			SimpleDateFormat dtformat = new SimpleDateFormat("yyyy-MM-dd");
+			ret = dtformat.format(dt.getTime());
+		}
+//		System.currentTimeMillis()-timestamp<
+		return ret;
 	}
 
 	public Animation getAnimationSlideOutRight() {

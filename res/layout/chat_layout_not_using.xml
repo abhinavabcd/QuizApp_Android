@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="vertical" android:layout_height="match_parent" android:layout_width="match_parent">
+       
+        <LinearLayout
+                android:id="@+id/LinearLayoutChatOtherUserDetails"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_gravity="top">
+               
+                <ImageView
+                        android:id="@+id/ImageViewChatOtherUserPicture"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="left">
+                </ImageView>
+               
+                <TextView
+                        android:text="Other User's Details"
+                        android:id="@+id/TextViewChatOtherUserDetails"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
+                </TextView>
+        </LinearLayout>
+
+               
+        <EditText
+                android:id="@+id/EditTextChatConversation"
+                android:inputType="none"
+                android:layout_width="match_parent" android:layout_height="match_parent" android:layout_weight="1" android:clickable="false" android:focusable="false" android:focusableInTouchMode="false" android:longClickable="false">
+        </EditText>
+       
+        <LinearLayout
+                android:id="@+id/LinearLayoutChatMyDetails"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal" android:layout_gravity="bottom">
+       
+                <ImageView
+                        android:id="@+id/ImageViewChatMyPicture"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" android:layout_gravity="left" android:layout_weight="0">
+                </ImageView>
+               
+                <EditText
+                        android:id="@+id/EditTextChatMyMessage"
+                        android:layout_height="wrap_content" android:layout_width="wrap_content" android:layout_weight="100" android:minLines="2" android:maxLines="4" android:hint="Enter A Message Here">
+                </EditText>
+               
+                <Button
+                        android:text="Send"
+                        android:id="@+id/ButtonChatSend"
+                        android:layout_height="wrap_content" android:layout_width="wrap_content" android:layout_weight="0" android:layout_gravity="right|center_vertical" android:minWidth="60sp">
+                </Button>
+               
+       
+</LinearLayout>
+
+
+
+</LinearLayout>
