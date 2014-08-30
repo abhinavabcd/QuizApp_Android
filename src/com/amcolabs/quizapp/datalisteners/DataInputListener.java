@@ -6,7 +6,9 @@ import com.amcolabs.quizapp.serverutils.ServerResponse.MessageType;
 
 
 public class DataInputListener<T> implements IDataInputListener<T> {
+	
 
+	
 	@Override
 	public void onClick(View v) {
 	}

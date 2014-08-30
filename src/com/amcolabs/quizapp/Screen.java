@@ -30,5 +30,12 @@ public class Screen extends LinearLayout {
 		
 	}
 	
+	public void beforeRemove(){
+		
+	}
+	
+	public boolean showOnBackPressed(){
+		return true;
+	}
 
 }

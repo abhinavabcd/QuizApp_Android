@@ -16,6 +16,8 @@ public class ServerResponse {
 	public String payload3;
 	public String payload4;
 	public String payload5;
+	public String payload6;
+	public String payload7;
 	
 	
 	public long responseTime;
@@ -34,7 +36,6 @@ public class ServerResponse {
 				USER_NOT_EXISTS ( 204),
 				USER_SAVED ( 205),
 				OK_IMMUTABLE ( 206),
-				OK_FEED ( 207),
 				OK_INIT ( 208),
 				FAILED(300),
 				DUPLICATE_USER ( 301),
@@ -55,7 +56,11 @@ public class ServerResponse {
 				OK_UPDATES ( 505),
 				FACEBOOK_USER_SAVED ( 506),
 				GPLUS_USER_SAVED ( 507),
-
+				OK_MESSAGES(508),
+				OK_FEED(509),
+				OK_CHALLENGES(510),
+				OK_ACTIVATING_BOT(511),
+				
 //				################################# dict values/commands for payload type definition
 				USER_ANSWERED_QUESTION ( 1),
 				GET_NEXT_QUESTION ( 2),
@@ -64,7 +69,7 @@ public class ServerResponse {
 				USER_DISCONNECTED ( 5),
 				NEXT_QUESTION (6),
 				START_QUESTIONS ( 7),
-				STATUS_WHAT_USER_GOT ( 8);
+				STATUS_WHAT_USER_GOT ( 8), ACTIVATE_BOT(9);
 
 
 				

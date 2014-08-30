@@ -1,9 +1,15 @@
 package com.amcolabs.quizapp.serverutils;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 import org.apache.http.Header;
 
@@ -17,11 +23,12 @@ import com.amcolabs.quizapp.User;
 import com.amcolabs.quizapp.appcontrollers.ProgressiveQuizController;
 import com.amcolabs.quizapp.configuration.Config;
 import com.amcolabs.quizapp.databaseutils.Category;
-import com.amcolabs.quizapp.databaseutils.Quiz;
 import com.amcolabs.quizapp.databaseutils.OfflineChallenge;
+import com.amcolabs.quizapp.databaseutils.Quiz;
 import com.amcolabs.quizapp.databaseutils.UserFeed;
 import com.amcolabs.quizapp.databaseutils.UserInboxMessage;
 import com.amcolabs.quizapp.datalisteners.DataInputListener;
+import com.amcolabs.quizapp.datalisteners.DataInputListener2;
 import com.amcolabs.quizapp.popups.StaticPopupDialogBoxes;
 import com.amcolabs.quizapp.serverutils.ServerResponse.MessageType;
 import com.amcolabs.quizapp.uiutils.UiUtils.UiText;
@@ -36,22 +43,61 @@ import de.tavendo.autobahn.WebSocketConnection;
 import de.tavendo.autobahn.WebSocketConnectionHandler;
 import de.tavendo.autobahn.WebSocketException;
 
+
+class Item<T> {
+    int reletiveProb;
+    T name;
+    
+    Item(int prob, T n){
+    	reletiveProb = prob;
+    	name = n;
+    }
+}
+class RandomSelector <T>{
+    List<Item<T>> items = new ArrayList<Item<T>>();
+    Random rand = new Random();
+    int totalSum = 0;
+
+    RandomSelector(List<Item<T>> items) {
+    	this.items = items;
+        for(Item<T> item : items) {
+            totalSum = totalSum + item.reletiveProb;
+        }
+    }
+
+    public Item<T> getRandom() {
+
+        int index = rand.nextInt(totalSum);
+        int sum = 0;
+        int i=0;
+        while(sum < index ) {
+             sum = sum + items.get(i++).reletiveProb;
+        }
+        return items.get(i-1);
+    }
+}
+
 public class ServerCalls {
 
-	public static final String SERVER_URL = Config.IS_TEST_BUILD? "http://192.168.0.10:8084/func":"http://quizapp-main.amcolabs.com/func";
-	private static final String GET_ENCODEDKEY_URL = SERVER_URL+"?task=getEncodedKey";
-	private static final String SET_GCM_KEY_URL = SERVER_URL+"?task=setGCMRegistrationId";
-	private static final String GET_USER_INFO =  SERVER_URL+"?task=getUserInfo";
-	private static final String GET_ALL_UPDATES =  SERVER_URL+"?task=getAllUpdates";
-
-	private static final String GET_RATING_URL = SERVER_URL+"?task=updateUserRating";
-
-	private static final String GET_LOGIN_WITH_GOOGLPLUS = SERVER_URL+"?task=registerWithGoogle";
-
-	private static final String GET_LOGIN_WITH_FACEBOOK= SERVER_URL+"?task=registerWithFacebook";
+	public static final String SERVER_ADDR = Config.IS_TEST_BUILD? "http://192.168.0.10:8084":"http://quizapp-main.amcolabs.com";
+//	public static final String SERVER_URL = Config.IS_TEST_BUILD? "http://192.168.0.10:8084/func":"http://quizapp-main.amcolabs.com/func";
 	
 	
-	public String QUIZ_WEBSOCKET_IP_PORT = "ws://192.168.0.10:8084"; 
+	
+//	private static final String GET_ENCODEDKEY_URL = SERVER_URL+"?task=getEncodedKey";
+//	private static final String SET_GCM_KEY_URL = SERVER_URL+"?task=setGCMRegistrationId";
+//	private static final String GET_USER_INFO =  SERVER_URL+"?task=getUserInfo";
+//	private static final String GET_ALL_UPDATES =  SERVER_URL+"?task=getAllUpdates";
+//
+//	private static final String GET_RATING_URL = SERVER_URL+"?task=updateUserRating";
+//
+//	private static final String GET_LOGIN_WITH_GOOGLPLUS = SERVER_URL+"?task=registerWithGoogle";
+//
+//	private static final String GET_LOGIN_WITH_FACEBOOK= SERVER_URL+"?task=registerWithFacebook";
+	public double lastLoginTime = 0d;
+	
+	private HashMap<String, String> serverMap;
+	
 	
 	private int serverErrorMsgShownCount =0;
 	//encodedKey=YWJjZGVmZ2h8YWJoaW5hdmFiY2RAZ21haWwuY29t|1393389556|37287ef4a1261b927e8a98d639035d81f0e7eb2c
@@ -59,12 +105,16 @@ public class ServerCalls {
 	private  SyncHttpClient sClinet;
 
 	private QuizApp quizApp;
+	private RandomSelector<String> randomServerSelector;
 	//public static DatabaseHelper dbhelper = Config.getDbhelper();
 	public ServerCalls(QuizApp quizApp){
 		this.quizApp = quizApp;
 		client  = new AsyncHttpClient();
 		client.setMaxRetriesAndTimeout(3, 10);
 		sClinet = new SyncHttpClient();
+		serverMap = new HashMap<String, String>();
+		serverMap.put("master", SERVER_ADDR);
+		setSeverMap(serverMap);
 	}
 	
 	
@@ -260,9 +310,15 @@ public class ServerCalls {
 	public void makeServerPostCall(String url, HashMap<String, String> postData , ServerNotifier serverNotifier){
 		makeServerPostCall(url,postData,serverNotifier,false);
 	}
+	public String getAServerAddr(){
+		return randomServerSelector.getRandom().name;
+	}
+	public String getMasterServerAddr(){
+		return serverMap.get("master");
+	}
 	
 	public void getEncodedKey(final String deviceId, final String phoneNumber, ServerNotifier serverNotifier) {
-		String url = GET_ENCODEDKEY_URL;
+		String url = getAServerAddr()+"/func?task=getEncodedKey";
 		url+="&deviceId="+deviceId+"&phoneNumber="+phoneNumber;
 		makeServerCall(url,serverNotifier,true);
 	}
@@ -270,7 +326,7 @@ public class ServerCalls {
 
 
 	public void setUserGCMKey(final Context context, String registrationId, final DataInputListener<Boolean> dataInputListener) {
-		String url = SET_GCM_KEY_URL;
+		String url = getAServerAddr()+"/func?task=setGCMRegistrationId";
 		url+="&encodedKey="+quizApp.getUserDeviceManager().getEncodedKey()+"&regId="+registrationId;
 		makeServerCall(url,new ServerNotifier() {
 			
@@ -300,7 +356,7 @@ public class ServerCalls {
 	}
  
 	public void getUserInfo(final DataInputListener<String> dataInputListener) {
-			String url = GET_USER_INFO;
+			String url = getAServerAddr()+"/func?task=getUserInfo";
 			url+="&encodedKey="+quizApp.getUserDeviceManager().getEncodedKey();
 			makeServerCall(url,new ServerNotifier() {			
 			@Override
@@ -317,7 +373,7 @@ public class ServerCalls {
 	}		
 
 	public void updateUserRating(final float rating, final DataInputListener<Boolean> dataInputListener) {
-		String url = GET_RATING_URL;
+		String url = getAServerAddr()+"/func?task=updateUserRating";
 		url+="&rating="+rating;
 		url+="&encodedKey="+quizApp.getUserDeviceManager().getEncodedKey();
 		makeServerCall(url,new ServerNotifier() {
@@ -328,9 +384,10 @@ public class ServerCalls {
 						quizApp.getUserDeviceManager().setDoublePreference(Config.PREF_APP_RATING, rating);
 						dataInputListener.onData(true);
 						break;
+					default:
+						break;
 				}
 			}
-			
 		});
 	}
 	
@@ -339,15 +396,21 @@ public class ServerCalls {
 	public static void clearAllStaticVariables() {
 	}
 
-	public double lastLoginTime = 0d;
-	public void getAllUpdates(final DataInputListener<Boolean> onFinishListener) {
-		String url = GET_ALL_UPDATES;
+	public void getAllUpdates(final DataInputListener2<List<UserFeed> ,List<UserInboxMessage> ,List<OfflineChallenge>, Boolean> onFinishListener) {
+
+
+		String url = getAServerAddr()+"/func?task=getAllUpdates";
 		url+="&encodedKey="+quizApp.getUserDeviceManager().getEncodedKey();
+		final boolean isLogin;
 		if(quizApp.getConfig().getCurrentTimeStamp() - lastLoginTime  >3600){
+			isLogin = true;
 			lastLoginTime = quizApp.getConfig().getCurrentTimeStamp();
 			url+="&isLogin=true";
 			url+="&maxQuizTimestamp="+Double.toString(quizApp.getDataBaseHelper().getMaxTimeStampQuiz());
 			url+="&maxBadgesTimestamp="+Double.toString(quizApp.getDataBaseHelper().getMaxTimeStampBadges());
+		}
+		else{
+			isLogin = false;
 		}
 		
 		
@@ -356,43 +419,65 @@ public class ServerCalls {
 			public void onServerResponse(MessageType messageType, ServerResponse response) {
 				switch(messageType){
 					case OK_UPDATES:
-						List<Category> categories = quizApp.getConfig().getGson().fromJson(response.payload1, new TypeToken<List<Category>>(){}.getType());
-						List<Quiz> quizzes = quizApp.getConfig().getGson().fromJson(response.payload, new TypeToken<List<Quiz>>(){}.getType());
-						List<Badge> badges = quizApp.getConfig().getGson().fromJson(response.payload5, new TypeToken<List<Badge>>(){}.getType());
-						
-						for(Quiz q : quizzes){
-							try {
-								quizApp.getDataBaseHelper().getQuizDao().createOrUpdate(q);
-							} catch (SQLException e) {
-								e.printStackTrace();
+						if(isLogin){
+							List<Quiz> quizzes = quizApp.getConfig().getGson().fromJson(response.payload, new TypeToken<List<Quiz>>(){}.getType());
+							List<Category> categories = quizApp.getConfig().getGson().fromJson(response.payload1, new TypeToken<List<Category>>(){}.getType());
+							List<Badge> badges = quizApp.getConfig().getGson().fromJson(response.payload2, new TypeToken<List<Badge>>(){}.getType());
+							
+							for(Quiz q : quizzes){
+								try {
+									quizApp.getDataBaseHelper().getQuizDao().createOrUpdate(q);
+								} catch (SQLException e) {
+									e.printStackTrace();
+								}
+							}
+							
+							for(Category c : categories){
+								try {
+									quizApp.getDataBaseHelper().getCategoryDao().createOrUpdate(c);
+								} catch (SQLException e) {
+									e.printStackTrace();
+								}
+							}
+							for( Badge b : badges){
+								try {
+									quizApp.getDataBaseHelper().getBadgesDao().createOrUpdate(b);
+								} catch (SQLException e) {
+									e.printStackTrace();
+								}
 							}
 						}
-						
-						for(Category c : categories){
-							try {
-								quizApp.getDataBaseHelper().getCategoryDao().createOrUpdate(c);
-							} catch (SQLException e) {
-								e.printStackTrace();
-							}
+						quizApp.setUser(quizApp.getConfig().getGson().fromJson(response.payload7 , User.class));
+						List<UserFeed> userFeeds = quizApp.getConfig().getGson().fromJson(response.payload3, new TypeToken<List<UserFeed>>(){}.getType());
+						List<UserInboxMessage> inboxMessages = quizApp.getConfig().getGson().fromJson(response.payload4, new TypeToken<List<UserInboxMessage>>(){}.getType());
+						List<OfflineChallenge> offlineChalleneges = quizApp.getConfig().getGson().fromJson(response.payload5, new TypeToken<List<OfflineChallenge>>(){}.getType());
+						if(response.payload6!=null && !response.payload6.trim().equalsIgnoreCase("")){
+							HashMap<String,String> serverMap = quizApp.getConfig().getGson().fromJson(response.payload6, new TypeToken<HashMap<String,String>>(){}.getType());
+							setSeverMap(serverMap);
 						}
-						for( Badge b : badges){
-							try {
-								quizApp.getDataBaseHelper().getBadgesDao().createOrUpdate(b);
-							} catch (SQLException e) {
-								e.printStackTrace();
-							}
-						}
-						List<UserFeed> userFeeds = quizApp.getConfig().getGson().fromJson(response.payload2, new TypeToken<List<UserFeed>>(){}.getType());
-						List<UserInboxMessage> inboxMessages = quizApp.getConfig().getGson().fromJson(response.payload3, new TypeToken<List<UserInboxMessage>>(){}.getType());
-						List<OfflineChallenge> offlineChalleneges = quizApp.getConfig().getGson().fromJson(response.payload4, new TypeToken<List<OfflineChallenge>>(){}.getType());
-						onFinishListener.onData(true);
-						break; 
+						onFinishListener.onData(userFeeds, inboxMessages, offlineChalleneges, true);
+						break;
 					default:
-						onFinishListener.onData(false);
+						onFinishListener.onData(null, null, null,false);
 						break;
 				}
 			}
 		});
+	}
+
+
+	protected void setSeverMap(HashMap<String, String> serverMap) {
+		this.serverMap = serverMap;
+		List<Item<String>> temp = new ArrayList<Item<String>>();
+		for(String key : serverMap.keySet()){
+			if(key.equalsIgnoreCase("master")){ //lower weightage for master server if we may want 
+				temp.add(new Item<String>(20, serverMap.get(key)));
+			}
+			else{
+				temp.add(new Item<String>(20, serverMap.get(key)));
+			}
+		}
+		this.randomServerSelector = new RandomSelector<String>(temp);
 	}
 
 
@@ -403,7 +488,7 @@ public class ServerCalls {
 
 
 	public void doGooglePlusLogin(final User user,final DataInputListener<User> loginListener) {
-		String url = GET_LOGIN_WITH_GOOGLPLUS;
+		String url = getAServerAddr()+"/func?task=registerWithGoogle";
 		Map<String,String > params = new HashMap<String, String>();
 		params.put("userJson",quizApp.getConfig().getGson().toJson(user));
 		makeServerPostCall(url, params, new ServerNotifier() {
@@ -427,7 +512,7 @@ public class ServerCalls {
 
 
 	public void doFacebookLogin(final User user, final DataInputListener<User> loginListener) {
-		String url = GET_LOGIN_WITH_FACEBOOK;
+		String url = getAServerAddr()+"/func?task=registerWithFacebook";
 		Map<String,String > params = new HashMap<String, String>();
 		params.put("userJson",quizApp.getConfig().getGson().toJson(user));
 		makeServerPostCall(url, params, new ServerNotifier() {
@@ -449,36 +534,86 @@ public class ServerCalls {
 		},false);
 	}
 	
-	 private void startProgressiveQuiz(final ProgressiveQuizController pController) {
-		  final String TAG = "autoBahn::";
-		  final WebSocketConnection mConnection = new WebSocketConnection();
-		  final String wsuri = QUIZ_WEBSOCKET_IP_PORT +"/progressiveQuiz";
+	public static enum GetServerRequestType{
+		PROGRESSIVE_QUIZ;
+	}
+	
+	public void startProgressiveQuiz(String webSocketAddr , final ProgressiveQuizController pController , final Quiz quiz, String serverId){
+		  String wsuri = webSocketAddr +"/progressiveQuiz";
+		  wsuri+="?encodedKey="+quizApp.getUserDeviceManager().getEncodedKey();
+		  wsuri+="&quizId="+quiz.quizId;
+		  
+		  if(mConnection!=null && mConnection.isConnected()){
+			  mConnection.disconnect();
+		  }
+		  mConnection = new ServerWebSocketConnection(serverId , serverMap.get(serverId));
+			  
+	    try {
+	       mConnection.connect(wsuri, new WebSocketConnectionHandler() {
+	
+	          @Override
+	          public void onOpen() { 
+	             pController.startSocketConnection(mConnection , quiz);
+	          } 
+	
+	          @Override
+	          public void onTextMessage(String data) {
+	          	ServerResponse s = quizApp.getConfig().getGson().fromJson(data, ServerResponse.class);
+	          	MessageType messageType = s.getMessageType();
+	          	pController.onMessageRecieved(messageType , s , data);
+	          }
+	
+	          @Override
+	          public void onClose(int code, String reason) {
+	             Log.d("autobahn", "Connection lost.");
+	             pController.onSocketClosed();
+	          }
+	       });
+	    } catch (WebSocketException e) {
+	       Log.d("autobahn", e.toString());
+	    }
+	}
+	
+	
+	 ServerWebSocketConnection mConnection = null;
+	 public void startProgressiveQuiz(final ProgressiveQuizController pController, final Quiz quiz) {
+		 String url = getMasterServerAddr()+"/func?task=getServer";
+		 url+="&type="+GetServerRequestType.PROGRESSIVE_QUIZ.ordinal()+"&quizId="+quiz.quizId;
+		 
+		 url+="&encodedKey="+quizApp.getUserDeviceManager().getEncodedKey();
+			
+		  makeServerCall(url , new ServerNotifier(){
+			@Override
+			public void onServerResponse(MessageType messageType, ServerResponse response) {
+				switch(messageType){
+					case OK_SERVER_DETAILS:
+						String sid= response.payload1;
+						String addr = response.payload2;
+						if(!serverMap.containsKey(sid)){
+							//WTFFFF
+							serverMap.put(sid, addr);
+							setSeverMap(serverMap);
+						}
+					URI uri;
+					try {
+						uri = new URI(response.payload2);
+						startProgressiveQuiz("ws://"+uri.getHost()+":"+uri.getPort() , pController, quiz , sid);
+					} catch (URISyntaxException e) {
+						e.printStackTrace();
+					}
+					default:
+						pController.ohNoDammit();
+				}
+			}
+		});
+	 }
 
-	      try {
-	         mConnection.connect(wsuri, new WebSocketConnectionHandler() {
 
-	            @Override
-	            public void onOpen() {
-	               Log.d(TAG, "Status: Connected to " + wsuri);
-//	               mConnection.sendTextMessage("Hello, world!");
-	               pController.startSocketConnection(mConnection);
-	            } 
-
-	            @Override
-	            public void onTextMessage(String data) {
-	            	ServerResponse s = quizApp.getConfig().getGson().fromJson(data, ServerResponse.class);
-	            	MessageType messageType = s.getMessageType();
-	            	pController.onMessageRecieved(messageType , s , data);
-	            }
-
-	            @Override
-	            public void onClose(int code, String reason) {
-	               Log.d(TAG, "Connection lost.");
-	            }
-	         });
-	      } catch (WebSocketException e) {
-
-	         Log.d(TAG, e.toString());
-	      }
-	   }
+	public void informActivatingBot(Quiz quiz, String sid) {
+		makeServerCall(getMasterServerAddr()+"/func?task=activatingBotPQuiz&quizId="+quiz.quizId+"&sid="+sid , new ServerNotifier() {
+			@Override
+			public void onServerResponse(MessageType messageType, ServerResponse response) {
+			}
+		});
+	}
 }

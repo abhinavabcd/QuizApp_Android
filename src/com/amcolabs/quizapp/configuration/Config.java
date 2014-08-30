@@ -98,7 +98,7 @@ public class Config{
 		return userTimeStamp - serverTimeZoneDiff;
 	}
 	
-	public static double getCurrentTimeStamp(){
+	public static  double getCurrentTimeStamp(){
 		return System.currentTimeMillis()*1.0d / 1000; //(new Date()).getTime()/1000;
 	}
 

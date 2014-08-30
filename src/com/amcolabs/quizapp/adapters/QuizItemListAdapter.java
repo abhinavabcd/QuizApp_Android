@@ -32,7 +32,7 @@ public class QuizItemListAdapter extends ArrayAdapter<Quiz> {
 	public QuizItemListAdapter(QuizApp quizApp, int resource,
 			List<Quiz> objects, DataInputListener<Quiz> onClickListener) {
 		super(quizApp.getActivity(), resource, objects);
-		this.quizList = objects;
+		this.quizList = new ArrayList<Quiz>(objects);
 		this.quizApp = quizApp;
 		this.clickListener = onClickListener;
 	}

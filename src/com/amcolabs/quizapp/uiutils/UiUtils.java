@@ -160,14 +160,14 @@ public class UiUtils {
 	static class MyTimer extends Timer{
 		
 	}
-	public static Timer setInterval(final Context c ,  int millis , final DataInputListener<Integer> listener) {
+	public Timer setInterval(int millis , final DataInputListener<Integer> listener) {
 		// TODO Auto-generated constructor stub
 		Timer timer = (new Timer());
 		timer.schedule(new TimerTask() {
 					int count =0;
 					@Override
 					public void run() {
-					      ((Activity)c).runOnUiThread(new Runnable(){
+					      (quizApp.getActivity()).runOnUiThread(new Runnable(){
 	
 					       @Override
 					       public void run() {
