@@ -79,7 +79,7 @@ class RandomSelector <T>{
 
 public class ServerCalls {
 
-	public static final String SERVER_ADDR = Config.IS_TEST_BUILD? "http://192.168.0.10:8084":"http://quizapp-main.amcolabs.com";
+	public static final String SERVER_ADDR = Config.IS_TEST_BUILD? "http://192.168.0.100:8084":"http://quizapp-main.amcolabs.com";
 //	public static final String SERVER_URL = Config.IS_TEST_BUILD? "http://192.168.0.10:8084/func":"http://quizapp-main.amcolabs.com/func";
 	
 	

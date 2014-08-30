@@ -83,6 +83,11 @@ public class Config{
 		return themeColors[++tempThemeCount%themeColors.length];
 	}
 	
+	private int tempBgIndex = 0;
+	public String getRandomImageBg(){
+		return "images/bg_2.jpg";
+	}
+	
 	private static double serverTime = 0;
 	public static double serverTimeZoneDiff = 0;
 	

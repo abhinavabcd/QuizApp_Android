@@ -38,10 +38,11 @@ public class ClashScreen extends Screen {
 			addView(userInfoCard, index);
 		}
 		else{
-			userInfoViews.get(index).setVisibility(View.INVISIBLE);
+			userInfoViews.get(index).setVisibility(View.GONE);
 			UserInfoCard userInfoCard = new UserInfoCard(getApp(), null,user);
 			userInfoViews.set(index,userInfoCard); 
 			addView(userInfoCard, index);
+			userInfoCard.setAnimation(getApp().getUiUtils().getAnimationSlideInLeft());
 		}
 		
 		for(int i=userInfoViews.size();i<clashCount;i++){

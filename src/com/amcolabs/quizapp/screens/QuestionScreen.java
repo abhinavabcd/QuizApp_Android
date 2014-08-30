@@ -97,7 +97,7 @@ public class QuestionScreen extends Screen {
 	public void loadQuestion(Question ques){
 		question = ques.questionDescription;
 		options = new ArrayList<String>(Arrays.asList(ques.getMCQOptions()));
-		imagePath = ques.pictures.split(",")[0];
+		imagePath = ques.getAssetPaths().size()>0?ques.getAssetPaths().get(0):null;
 	}
 	
 	public void loadImage(String assetPath,final ImageViewFiltered imgView){

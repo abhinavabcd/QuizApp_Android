@@ -19,6 +19,7 @@ import com.amcolabs.quizapp.serverutils.ServerResponse;
 import com.amcolabs.quizapp.serverutils.ServerResponse.MessageType;
 import com.amcolabs.quizapp.serverutils.ServerWebSocketConnection;
 import com.amcolabs.quizapp.widgets.TimerView;
+import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 
 public class ProgressiveQuizController extends AppController{
@@ -59,12 +60,31 @@ public class ProgressiveQuizController extends AppController{
 	
 	
 	public void showQuestionScreen(ArrayList<User> users, Question firstQuestion){
-		clearScreen();
-		clashingScreen = null; // dispose of it 
+		for(User user: currentUsers){
+			int index = 0;
+			if(user.uid!=quizApp.getUser().uid){
+				try{
+					clashingScreen.updateClashScreen(user, ++index);
+				}
+				catch(NullPointerException e){
+					e.printStackTrace();
+				}
+			}
+		}
+		//pre download assets if ever its possible
 		questionScreen = new QuestionScreen(this);
 		questionScreen.loadUserInfo(users);
 		questionScreen.loadQuestion(firstQuestion);
-		insertScreen(questionScreen);
+		//animate TODO:
+		new Handler().postDelayed(new Runnable() {
+			
+			@Override
+			public void run() {
+				clearScreen();
+				clashingScreen = null; // dispose of it 
+				insertScreen(questionScreen);
+			}
+		}, 2000);
 	}
 	
 	@Override
@@ -147,7 +167,6 @@ public class ProgressiveQuizController extends AppController{
 	
 	public ArrayList<Question> currentQuestions = new ArrayList<Question>();
 	public ArrayList<User> currentUsers = new ArrayList<User>();
-	private ArrayList<Question> questions = null;
 	
 	public void onMessageRecieved(MessageType messageType, ServerResponse response, String data) {
 		switch(messageType){
@@ -158,26 +177,8 @@ public class ProgressiveQuizController extends AppController{
 	    	case STARTING_QUESTIONS:// start questions // user finalised
 	    		noResponseFromServer = false;
 	    		currentUsers = quizApp.getConfig().getGson().fromJson(response.payload1,new TypeToken<ArrayList<User>>(){}.getType());
-	    		for(User user: currentUsers){
-	    			int index = 0;
-	    			if(user.uid!=quizApp.getUser().uid){
-	    				try{
-	    					clashingScreen.updateClashScreen(user, ++index);
-	    				}
-	    				catch(NullPointerException e){
-	    					e.printStackTrace();
-	    				}
-	    			}
-	    		}
-	    		//pre download assets if ever its possible 
-	    		 questions  = quizApp.getConfig().getGson().fromJson(response.payload2,new TypeToken<ArrayList<Question>>(){}.getType());
-	    		new Handler().postDelayed(new Runnable() {
-					
-					@Override
-					public void run() {
-			    		showQuestionScreen(currentUsers , questions.remove(0));
-					}
-				}, 2000);
+	    		currentQuestions  = quizApp.getConfig().getGson().fromJson(response.payload2,new TypeToken<ArrayList<Question>>(){}.getType());
+	    		showQuestionScreen(currentUsers, currentQuestions.remove(0));
 	    		break; 
 	    	case ANNOUNCING_WINNER:
 	    		break; 
@@ -192,9 +193,16 @@ public class ProgressiveQuizController extends AppController{
 	    	case OK_ACTIVATING_BOT: 
 	    		quizApp.getServerCalls().informActivatingBot(quiz, serverSocket.serverId); 
 	    		currentQuestions = quizApp.getConfig().getGson().fromJson(response.payload1, new TypeToken<List<Question>>(){}.getType());
-	    		currentUsers = quizApp.getConfig().getGson().fromJson(response.payload, new TypeToken<List<User>>(){}.getType());
+	    		try{
+	    			currentUsers = quizApp.getConfig().getGson().fromJson(response.payload, new TypeToken<List<User>>(){}.getType());
+	    		}
+	    		catch(JsonSyntaxException ex){
+	    			currentUsers.add(quizApp.getUser());
+	    			currentUsers.add((User) quizApp.getConfig().getGson().fromJson(response.payload, new TypeToken<User>(){}.getType()));
+	    		}
 	    		setBotMode(true);
 	    		serverSocket.disconnect();
+	    		showQuestionScreen(currentUsers, currentQuestions.remove(0));
 	    		break;
 			default:
 				break;

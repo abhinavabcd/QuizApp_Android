@@ -24,7 +24,7 @@ public class UserInfoCard extends LinearLayout implements Target,IViewType{
 		this.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,0,1f));
 		setGravity(Gravity.CENTER);
 		if(bgAssetPath==null){
-			bgAssetPath = (user.coverUrl!=null && !user.coverUrl.trim().equalsIgnoreCase(""))?user.coverUrl:getRandomImageBg();
+			bgAssetPath = (user.coverUrl!=null && !user.coverUrl.trim().equalsIgnoreCase(""))?user.coverUrl:quizApp.getConfig().getRandomImageBg();
 		}
 		quizApp.getUiUtils().loadImageAsBg(quizApp.getContext(), this, bgAssetPath);
 		
@@ -43,10 +43,7 @@ public class UserInfoCard extends LinearLayout implements Target,IViewType{
 		addView(mainView);
 	}
 
-	public String getRandomImageBg(){
-		return "images/bg_2.jpg";
-	}
-	
+
 	@Override
 	public void onBitmapFailed(Drawable arg0) {
 		

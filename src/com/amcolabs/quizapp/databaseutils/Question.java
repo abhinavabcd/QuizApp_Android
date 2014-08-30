@@ -1,6 +1,8 @@
 package com.amcolabs.quizapp.databaseutils;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import com.amcolabs.quizapp.databaseutils.Category.CategoryType;
 import com.j256.ormlite.field.DatabaseField;
@@ -19,7 +21,7 @@ public class Question {
 	@DatabaseField
     public String questionDescription; // question description in json , contains image links
 	@DatabaseField
-    public String pictures; // comma seperated paths
+    public List<String> pictures; // comma seperated paths
 	@DatabaseField
     public String options; //json
 	@DatabaseField
@@ -33,11 +35,9 @@ public class Question {
 	@DatabaseField
     public int xp;
 	
-	
-	public String[] getAssetPaths(){
-		return pictures.split(",");
+	public List<String> getAssetPaths(){
+		return pictures==null?new ArrayList<String>():pictures;
 	}
-	
 	
 	public static enum QuestionType{
 		MCQ(0),
