@@ -38,7 +38,7 @@ import de.tavendo.autobahn.WebSocketException;
 
 public class ServerCalls {
 
-	public static final String SERVER_URL = Config.IS_TEST_BUILD? "http://192.168.0.10:8084/func":"http://quizapp-main.amcolabs.com/func";
+	public static final String SERVER_URL = Config.IS_TEST_BUILD? "http://192.168.0.11:8084/func":"http://quizapp-main.amcolabs.com/func";
 	private static final String GET_ENCODEDKEY_URL = SERVER_URL+"?task=getEncodedKey";
 	private static final String SET_GCM_KEY_URL = SERVER_URL+"?task=setGCMRegistrationId";
 	private static final String GET_USER_INFO =  SERVER_URL+"?task=getUserInfo";
