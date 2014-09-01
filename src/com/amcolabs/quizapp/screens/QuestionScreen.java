@@ -2,12 +2,14 @@ package com.amcolabs.quizapp.screens;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 
-import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.Animation.AnimationListener;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -19,33 +21,40 @@ import com.amcolabs.quizapp.R;
 import com.amcolabs.quizapp.Screen;
 import com.amcolabs.quizapp.User;
 import com.amcolabs.quizapp.appcontrollers.ProgressiveQuizController;
-import com.amcolabs.quizapp.configuration.Config;
 import com.amcolabs.quizapp.databaseutils.Question;
 import com.amcolabs.quizapp.widgets.CustomProgressBar;
-import com.amcolabs.quizapp.widgets.ImageViewFiltered;
+import com.amcolabs.quizapp.widgets.TimerView;
 import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Target;
 
-public class QuestionScreen extends Screen {
+class UserProgressViewHolder{
 
-	private String question;
-	private ArrayList<String> options;
-	private String imagePath;
+	public TextView userNameView;
+	public ImageView userImageView;
+	public CustomProgressBar userProgressView;
+	public TextView userScoreView;
+}
+
+public class QuestionScreen extends Screen implements View.OnClickListener{
+
 	private ProgressiveQuizController controller;
 	private LinearLayout headerViewWrapper;
 	private LinearLayout questionViewWrapper;
 	private LinearLayout optionsViewWrapper;
 	
-	private ArrayList<TextView> userNameViews;
-	private ArrayList<ImageView> userImageViews;
-	private ArrayList<CustomProgressBar> userProgressViews;
-	private ArrayList<TextView> userScoreViews;
-	
 	private TextView questionTextView;
-	private ImageViewFiltered questionImageView;
+	private ImageView questionImageView;
 	private ArrayList<Button> questionOptionsViews;
-	
+	public HashMap<String , UserProgressViewHolder> userViews = new HashMap<String, UserProgressViewHolder>();
 	private LinearLayout fullQuestionLayout;
+	private Animation animFadeOut;
+	private TextView preQuestionText1;
+	private TextView preQuestionText2;
+	private TextView preQuestionText3;
+	private LinearLayout preQuestionView;
+	private LinearLayout questionAndOptionsViewWrapper;
+	private TimerView timerView;
+	private Animation animTextScale;
+	
 	
 	public QuestionScreen(AppController controller) {
 		super(controller);
@@ -53,20 +62,18 @@ public class QuestionScreen extends Screen {
 		LayoutInflater tmp = getApp().getActivity().getLayoutInflater();
 		fullQuestionLayout = (LinearLayout) tmp.inflate(R.layout.quiz_full_question, null);
 		headerViewWrapper = (LinearLayout) fullQuestionLayout.findViewById(R.id.quizHeader);
-		questionViewWrapper = (LinearLayout) fullQuestionLayout.findViewById(R.id.quizQuestion);
-		optionsViewWrapper = (LinearLayout) fullQuestionLayout.findViewById(R.id.quizOptions);
+		preQuestionView = (LinearLayout)fullQuestionLayout.findViewById(R.id.question_pre_text);
+		questionAndOptionsViewWrapper = (LinearLayout) fullQuestionLayout.findViewById(R.id.question_options_wrapper);
+		questionAndOptionsViewWrapper.setVisibility(View.INVISIBLE);
+		questionViewWrapper = (LinearLayout) questionAndOptionsViewWrapper.findViewById(R.id.quizQuestion);
+		optionsViewWrapper = (LinearLayout) questionAndOptionsViewWrapper.findViewById(R.id.quizOptions);
+		setTimerView((TimerView) headerViewWrapper.findViewById(R.id.timerView));
 		
-		userNameViews = new ArrayList<TextView>();
-		userImageViews = new ArrayList<ImageView>();
-		userProgressViews = new ArrayList<CustomProgressBar>();
-		userScoreViews = new ArrayList<TextView>();
 		
-		addUserViews((RelativeLayout) headerViewWrapper.findViewById(R.id.user1));
-		addUserViews((RelativeLayout) headerViewWrapper.findViewById(R.id.user2));
 		
 		
 		questionTextView = (TextView) questionViewWrapper.findViewById(R.id.questionText);
-		questionImageView = (ImageViewFiltered) questionViewWrapper.findViewById(R.id.questionImage);
+		questionImageView = (ImageView) questionViewWrapper.findViewById(R.id.questionImage);
 		
 
 		questionOptionsViews = new ArrayList<Button>();
@@ -74,107 +81,132 @@ public class QuestionScreen extends Screen {
 		questionOptionsViews.add((Button) optionsViewWrapper.findViewById(R.id.optionB));
 		questionOptionsViews.add((Button) optionsViewWrapper.findViewById(R.id.optionC));
 		questionOptionsViews.add((Button) optionsViewWrapper.findViewById(R.id.optionD));
+		for(Button optionView: questionOptionsViews){
+			optionView.setOnClickListener(this);
+		}
+		
+		animFadeOut = AnimationUtils.loadAnimation(getApp().getContext(), R.anim.fade_out_animation);
+		animTextScale = AnimationUtils.loadAnimation(getApp().getContext(), R.anim.xp_points_animation);
+		preQuestionText1 = (TextView) preQuestionView.findViewById(R.id.textView1);
+		preQuestionText2 = (TextView) preQuestionView.findViewById(R.id.textView2);
+		preQuestionText3 = (TextView) preQuestionView.findViewById(R.id.textView3);
 		
 		addView(fullQuestionLayout);
 	}
 	
-	public void addUserViews(RelativeLayout user){
-		userNameViews.add((TextView)user.findViewById(R.id.userName));
-		userImageViews.add((ImageView)user.findViewById(R.id.userImageSmall));
-		userProgressViews.add((CustomProgressBar)user.findViewById(R.id.userProgress));
-		userScoreViews.add((TextView)user.findViewById(R.id.userPointsEarned));
-	}
 
-	public void loadUserInfo(ArrayList<User> uNames) {
-		for(int i=0;i<userNameViews.size();i++){
-			userNameViews.get(i).setText(uNames.get(i).name);
-			userImageViews.get(i).setImageResource(R.drawable.small_logo);
-			userProgressViews.get(i).setProgress(0);
-			userScoreViews.get(i).setText("+0XP");
+	public void showUserInfo(ArrayList<User> uNames) {
+		int index = 0;
+		for(RelativeLayout userView : Arrays.asList((RelativeLayout) headerViewWrapper.findViewById(R.id.user1), (RelativeLayout) headerViewWrapper.findViewById(R.id.user2))){
+			User user = uNames.get(index++);
+			UserProgressViewHolder userProgressView = new UserProgressViewHolder();
+			
+			userProgressView.userNameView = ((TextView)userView.findViewById(R.id.userName));
+			userProgressView.userImageView =  (ImageView)userView.findViewById(R.id.userImageSmall);
+			
+			userProgressView.userProgressView = (CustomProgressBar)userView.findViewById(R.id.userProgress);
+			userProgressView.userScoreView = (TextView)userView.findViewById(R.id.userPointsEarned);
+			userViews.put(user.uid, userProgressView);
+			
+			userProgressView.userNameView.setText(user.name);
+			Picasso.with(getApp().getContext()).load(user.pictureUrl).into(userProgressView.userImageView);
+			userProgressView.userProgressView.setProgress(0);
+			userProgressView.userScoreView.setText("+0XP");
 		}
-	}
-
-	public void loadQuestion(Question ques){
-		question = ques.questionDescription;
-		options = new ArrayList<String>(Arrays.asList(ques.getMCQOptions()));
-		imagePath = ques.getAssetPaths().size()>0?ques.getAssetPaths().get(0):null;
 	}
 	
-	public void loadImage(String assetPath,final ImageViewFiltered imgView){
-		Picasso.with(getApp().getContext()).load(Config.CDN_IMAGES_PATH+assetPath).into(new Target() {
-	        @Override
-	        public void onBitmapLoaded(final Bitmap bitmap, Picasso.LoadedFrom from) {
-	            imgView.setImageBitmap(bitmap);
-	        }
-
-			@Override
-			public void onBitmapFailed(Drawable arg0) {
-				// TODO Auto-generated method stub
-			}
-			@Override
-			public void onPrepareLoad(Drawable arg0) {
-				// TODO Auto-generated method stub
-			}
-	    });
+	public void animateXpPoints(String uid,  int xpPoints){
+		userViews.get(uid).userScoreView.setText(xpPoints+" xp");
+		userViews.get(uid).userScoreView.setAnimation(animTextScale);
+		
 	}
 	
-	// Not needed as of now as we are creating new screen each time
-	public void resetScreenForNewQuiz(){
-		headerViewWrapper.findViewById(R.id.user1);
-	}
+	private boolean isOptionSelected = true;
+	protected Question currentQuestion;
 	
-	public void showNextQuestion(){
-		animateQuestionChange();
-	}
-
-	private void animateQuestionChange() {
-		// TODO Animation
-		questionTextView.setText(question);
-		boolean noImageFlag = false;
-		boolean longOptionFlag = false;
-		if (imagePath==null){
-			noImageFlag = true;
-		}
-		else{
-			noImageFlag = false;
-		}
-		if (options == null || options.size()<4)
-			throw new IllegalAccessError();
-		for(int i=0;i<4;i++){
-			if (options.get(i).length()>50){
-				longOptionFlag = true;
-				break;
-			}
-		}
+	private void showQuestion(Question ques){
+		isOptionSelected = false;
+		preQuestionView.setVisibility(View.INVISIBLE);
+		questionAndOptionsViewWrapper.setVisibility(View.VISIBLE);
+		questionTextView.setText(ques.questionDescription);
 		// TODO: should use longoptionflag to change layout
-		if (noImageFlag){ //longOptionFlag ||
+		if (ques.getAssetPaths().size()==0){ //longOptionFlag ||
 			optionsViewWrapper.setOrientation(LinearLayout.VERTICAL);
 			questionImageView.setVisibility(View.GONE);
-		}
+		} 
 		else{
 			optionsViewWrapper.setOrientation(LinearLayout.HORIZONTAL);
 			questionImageView.setVisibility(View.VISIBLE);
-			loadImage(imagePath,questionImageView);
+			getApp().getUiUtils().loadImageIntoView(getApp().getContext(), questionImageView, ques.getAssetPaths().get(0), false);
 		}
-		for(int i=0;i<4;i++){
+		String[] mcqOptions = ques.getMCQOptions();
+		for(int i=0;i<questionOptionsViews.size();i++){
 			Button opt = questionOptionsViews.get(i);
-			opt.setText(options.get(0));
-			// to reset options
+			opt.setText(mcqOptions[i]);
+			opt.setTag(ques.isCorrectAnwer(mcqOptions[i]));
 			opt.setTextColor(Color.BLACK);
-			opt.setBackgroundResource(R.drawable.quiz_option_background);
 		}
 	}
+	
+	public void animateQuestionChange(String titleInfo1, String titleInfo2, final Question ques){
+		questionAndOptionsViewWrapper.setVisibility(View.INVISIBLE);
+		getTimerView().resetTimer(ques.getTime());
+		preQuestionText1.setText(titleInfo1);
+		preQuestionText2.setText(titleInfo2);
+		preQuestionText3.setText(null);
+		
+		preQuestionView.setAnimation(animFadeOut);
+		animFadeOut.setAnimationListener(new AnimationListener() {
+			@Override
+			public void onAnimationStart(Animation animation) {
+			}
+			
+			@Override
+			public void onAnimationRepeat(Animation animation) {
+			}
+			
+			@Override
+			public void onAnimationEnd(Animation animation) {
+				currentQuestion = ques;
+				showQuestion(ques);
+			}
+		});
+	}
 
-	public void onOptionSelected(int id,boolean isCorrect){
-		Button opt = questionOptionsViews.get(id);
-		if (opt!=null){
-			opt.setBackgroundResource(R.drawable.quiz_option_background_checked);
-			if(isCorrect){
-				opt.setTextColor(Color.GREEN);
-			}
-			else{
-				opt.setTextColor(Color.RED);
-			}
+	private void highlightCorrectAnswer(){
+		for(Button b:questionOptionsViews){
+			if((Boolean) b.getTag())
+				b.setTextColor(Color.GREEN);
 		}
-	}	
+	}
+	
+	@Override
+	public void onClick(View optionView) {
+		if(isOptionSelected) return;
+		isOptionSelected = true;
+		double timeElapsed = getTimerView().stopPressed();
+		Button b = (Button)optionView;
+		Boolean isAnwer = (Boolean) b.getTag();
+		if(isAnwer){
+			b.setTextColor(Color.RED);
+			highlightCorrectAnswer();
+		}
+		else{
+			b.setTextColor(Color.GREEN);
+		}
+		controller.onOptionSelected(isAnwer,(String) b.getText(), timeElapsed , currentQuestion);
+	}
+
+	public TimerView getTimerView() {
+		return timerView;
+	}
+
+	public void setTimerView(TimerView timerView) {
+		this.timerView = timerView;
+	}
+	
+	@Override
+	public boolean showOnBackPressed() {
+		return false;
+	}
 }

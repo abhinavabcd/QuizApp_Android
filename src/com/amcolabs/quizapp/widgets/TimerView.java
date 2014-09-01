@@ -241,6 +241,19 @@ public class TimerView extends View{
         return;
     }
     
+    private void addNewTimer(int elapsedTime){
+    	if(nTimers>9) return;
+    	int barColor = barColors[nTimers];
+    	Paint barPaint = barPaints[nTimers] = new Paint();
+    	nProgress[nTimers]= (int) (((timerInSeconds-elapsedTime)*1.0f/timerInSeconds)*360);
+    	barPaint.setColor(barColor);
+        barPaint.setAntiAlias(true);
+        barPaint.setStyle(Style.STROKE);
+        barPaint.setStrokeWidth(barWidth);
+        nTimers++;
+        return;
+    }
+    
     /**
      * Set the properties of the paints we're using to
      * draw the progress wheel
@@ -429,9 +442,17 @@ public class TimerView extends View{
     /**
      * Increment the progress by 1 (of 360) of the last timer running 
      */
-    public void stopPressed(){
+    public double stopPressed(){
     	addNewTimer();
+    	return elapsedTimeInSeconds;
     }
+    
+    public double stopPressed(int elapsedTime){// only in seconds
+    	addNewTimer(elapsedTime);
+    	return elapsedTimeInSeconds;
+    }
+    
+    
     public void incrementProgress() {
         isSpinning = false;
         if (nProgress[nTimers-1] < 360){

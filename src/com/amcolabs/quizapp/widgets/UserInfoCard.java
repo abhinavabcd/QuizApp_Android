@@ -28,7 +28,6 @@ public class UserInfoCard extends LinearLayout implements Target,IViewType{
 		}
 		quizApp.getUiUtils().loadImageAsBg(quizApp.getContext(), this, bgAssetPath);
 		
-		
 		GothamTextView name = (GothamTextView)mainView.findViewById(R.id.user_card_name);
 		ImageView imgView = (ImageView) mainView.findViewById(R.id.user_card_small_pic);
 		GothamTextView statusMsg = (GothamTextView)mainView.findViewById(R.id.user_status_msg);

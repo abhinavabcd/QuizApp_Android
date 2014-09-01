@@ -5,24 +5,38 @@
     android:gravity="center_horizontal"
     android:orientation="vertical" >
 
-    <com.amcolabs.quizapp.widgets.ImageViewFiltered
-        android:id="@+id/questionImage"
-        style="android:imageViewStyle"
-        android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:layout_gravity="top"
-        android:layout_marginBottom="20dp"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
-        android:adjustViewBounds="true"
-        android:scaleType="center" />
-
     <TextView
         android:id="@+id/questionText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
+        android:layout_marginBottom="10dp"
         android:gravity="center"
         android:text="Identify the Actor in above image" />
+
+      <ImageView
+          android:id="@+id/questionImage"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:maxWidth="300dp"
+          android:maxHeight="200dp"
+           />
+ 
+<!--     <com.amcolabs.quizapp.widgets.ImageViewFiltered -->
+<!--         android:id="@+id/questionImage" -->
+<!--         style="android:imageViewStyle" -->
+<!--         android:layout_width="match_parent" -->
+<!--         android:layout_height="200dp" -->
+<!--         android:layout_gravity="top" -->
+<!--         android:layout_marginBottom="20dp" -->
+<!--         android:layout_marginLeft="20dp" -->
+<!--         android:layout_marginRight="20dp" -->
+<!--         android:adjustViewBounds="true" -->
+<!--         android:scaleType="center" /> -->
+
+      <ImageView
+          android:id="@+id/imageView1"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:src="@drawable/abc_ab_bottom_solid_dark_holo" />
 
 </LinearLayout>
