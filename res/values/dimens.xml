@@ -8,4 +8,15 @@
     <dimen name="small_padding">8dip</dimen>
     <dimen name="large_padding">32dip</dimen>
 
+    
+    <dimen name="width">2dp</dimen>
+	<dimen name="textSize">20sp</dimen>
+	<dimen name="metricSize">14sp</dimen>
+	<dimen name="metricPaddingY">10sp</dimen>
+	
+	
+    <dimen name="timer_first_width">30dp</dimen>
+    <dimen name="timer_second_width">40dp</dimen>
+    <dimen name="tmer_third_width">4dp</dimen>
+	
 </resources>

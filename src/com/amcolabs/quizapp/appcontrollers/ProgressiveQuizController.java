@@ -1,6 +1,7 @@
 package com.amcolabs.quizapp.appcontrollers;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
@@ -90,8 +91,11 @@ public class ProgressiveQuizController extends AppController{
 		        userAnswers = new HashMap<String , UserAnswer>();
 		        userAnswersStack.clear();
 		        currentScore = 0;
-		        
-				questionScreen.animateQuestionChange(UiText.GET_READY.getValue(), UiText.FOR_YOUR_FIRST_QUESTION.getValue() ,currentQuestions.remove(0));
+				Question currentQuestion = currentQuestions.remove(0);
+				questionScreen.animateQuestionChange( UiText.GET_READY.getValue(), UiText.FOR_YOUR_FIRST_QUESTION.getValue() ,currentQuestion);
+				if(isBotMode())
+					scheduleBotAnswer(currentQuestion);
+
 			}
 		}, 4000);
 	}
@@ -141,7 +145,7 @@ public class ProgressiveQuizController extends AppController{
 	private ArrayList<Question> currentQuestions = new ArrayList<Question>();
 	private ArrayList<User> currentUsers = new ArrayList<User>();
 	private HashMap<String ,UserAnswer> userAnswers;
-	private HashMap<String ,ArrayList<UserAnswer>> userAnswersStack = new HashMap<String, ArrayList<UserAnswer>>();
+	private HashMap<String ,List<UserAnswer>> userAnswersStack = new HashMap<String, List<UserAnswer>>();
 	
 	private int currentScore = 0;
 	private int botScore =0;
@@ -214,52 +218,67 @@ public class ProgressiveQuizController extends AppController{
 		if(userAnswersStack.containsKey(userAnswer.uid)){
 			userAnswersStack.get(userAnswer.uid).add(userAnswer);
 		}
+		else{
+			List<UserAnswer> temp = new ArrayList<UserAnswer>();
+			temp.add(userAnswer);
+			userAnswersStack.put(userAnswer.uid , temp);
+		}
 		if(currentUsers.size() == userAnswers.keySet().size()){//every one answered 
+    		questionScreen.getTimerView().resetTimer();
 			for(String u: userAnswers.keySet()){
 				questionScreen.animateXpPoints(u, userAnswers.get(u).whatUserGot); 
 			}
-			if(currentQuestions.size()>0){
-				new Handler().postDelayed(new Runnable() {
-					
-					@Override
-					public void run() {
-							Question currentQuestion = currentQuestions.remove(0);
-							questionScreen.animateQuestionChange(UiText.QUESTION.getValue(currentQuestions), UiText.GET_READY.getValue(), currentQuestion);
-							for(User user:currentUsers){ // check for any bots and schedule
-								if(!user.isBotUser()) continue;
-								
-								int elapsedTime = rand.nextInt(10*Math.max(0, (100-quizApp.getUser().getLevel(quiz))/100)); 
-								boolean isRightAnswer = rand.nextInt(2)==1? false:true;
-								if(isRightAnswer){
-									botScore+=Math.ceil(currentQuestion.getTime() - elapsedTime)*multiplyFactor();
-								}
-								final UserAnswer botAnswer = new UserAnswer(currentQuestion.questionId, user.uid, isRightAnswer?currentQuestion.getCorrectAnswer():currentQuestion.getWrongRandomAnswer(rand),
-										 	elapsedTime, botScore);
-								
-								new Handler().postDelayed( new Runnable() {
-									
-									@Override
-									public void run() {
-										checkAndProceedToNextQuestion(botAnswer);
-									}
-								}, 2000+elapsedTime*1000);
-							}
+			new Handler().postDelayed(new Runnable() {
+				@Override
+				public void run() {
+					if(currentQuestions.size()>0){ // more questions
+						Question currentQuestion = currentQuestions.remove(0);
+						questionScreen.animateQuestionChange(UiText.QUESTION.getValue(quiz.nQuestions - currentQuestions.size()), UiText.GET_READY.getValue(), currentQuestion);
+						if(isBotMode())
+							scheduleBotAnswer(currentQuestion);
+						
+				        userAnswers.clear();
 					}
-				}, 1500);
-			}
-			else if(isBotMode()){
-				new Handler().postDelayed(new Runnable() {
-					@Override
-					public void run() {
+					else{
 						validateAndShowWinningScreen();
 					}
-				}, 2000);
-			}
+				}
+			}, 2000);
 		}
 	}
 	
+	private void scheduleBotAnswer(final Question currentQuestion) {
+		new Handler().postDelayed(new Runnable() {
+			
+			@Override
+			public void run() {
+					for(User user:currentUsers){ // check for any bots and schedule
+						if(!user.isBotUser()) continue;
+						
+						int elapsedTime = rand.nextInt(10*Math.max(0, (100-quizApp.getUser().getLevel(quiz))/100)); 
+						boolean isRightAnswer = rand.nextInt(2)==1? false:true;
+						if(isRightAnswer){
+							botScore+=Math.ceil(currentQuestion.getTime() - elapsedTime)*multiplyFactor();
+						}
+						final UserAnswer botAnswer = new UserAnswer(currentQuestion.questionId, user.uid, isRightAnswer?currentQuestion.getCorrectAnswer():currentQuestion.getWrongRandomAnswer(rand),
+								 	elapsedTime, botScore);
+						
+						new Handler().postDelayed( new Runnable() {
+							
+							@Override
+							public void run() {
+								checkAndProceedToNextQuestion(botAnswer);
+							}
+						}, 2000+elapsedTime*1000);
+					}
+			}
+		}, 1500);
+
+	}
+
+
 	public void validateAndShowWinningScreen(){
-		ArrayList<UserAnswer> l = userAnswersStack.get(quizApp.getUser().uid);
+		List<UserAnswer> l = userAnswersStack.get(quizApp.getUser().uid);
 		System.out.println(l.toString());
 	}
 	
@@ -268,7 +287,7 @@ public class ProgressiveQuizController extends AppController{
 	    	case USER_ANSWERED_QUESTION:
 	    		UserAnswer userAnswer = quizApp.getConfig().getGson().fromJson(response.payload, UserAnswer.class);
 	    		//questionId , self.uid, userAnswer,elapsedTime , whatUserGot
-	    		questionScreen.getTimerView().stopPressed((int)userAnswer.elapsedTime);
+	    		questionScreen.getTimerView().stopPressed(2);
 	    		checkAndProceedToNextQuestion(userAnswer);
 	    		break;
 	    	case GET_NEXT_QUESTION://client trigger
@@ -340,4 +359,3 @@ public class ProgressiveQuizController extends AppController{
 		checkAndProceedToNextQuestion(payload);
 	}
 }
-

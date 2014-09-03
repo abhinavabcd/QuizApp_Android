@@ -73,7 +73,7 @@ class RandomSelector <T>{
         while(sum < index ) {
              sum = sum + items.get(i++).reletiveProb;
         }
-        return items.get(i-1);
+        return items.get(i==0?0:i-1);
     }
 }
 
@@ -607,7 +607,9 @@ public class ServerCalls {
 
 
 	public void informActivatingBot(Quiz quiz, String sid) {
-		makeServerCall(getMasterServerAddr()+"/func?task=activatingBotPQuiz&quizId="+quiz.quizId+"&sid="+sid , new ServerNotifier() {
+		String url =getMasterServerAddr()+"/func?task=activatingBotPQuiz&quizId="+quiz.quizId+"&sid="+sid;
+		url+="&encodedKey="+quizApp.getUserDeviceManager().getEncodedKey();
+		makeServerCall(url , new ServerNotifier() {
 			@Override
 			public void onServerResponse(MessageType messageType, ServerResponse response) {
 			}

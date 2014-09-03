@@ -7,6 +7,7 @@ import java.io.InputStreamReader;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -84,8 +85,9 @@ public class Config{
 	}
 	
 	private int tempBgIndex = 0;
+	private List<String> userBgAssets = Arrays.asList("images/bg_2.jpg" , "images/bg_1.jpg");
 	public String getRandomImageBg(){
-		return "images/bg_2.jpg";
+		return userBgAssets.get(tempBgIndex++%userBgAssets.size());
 	}
 	
 	private static double serverTime = 0;

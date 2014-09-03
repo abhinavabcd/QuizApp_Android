@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 
 import android.graphics.Color;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.Animation;
@@ -17,13 +18,14 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.amcolabs.quizapp.AppController;
+import com.amcolabs.quizapp.QuizApp;
 import com.amcolabs.quizapp.R;
 import com.amcolabs.quizapp.Screen;
 import com.amcolabs.quizapp.User;
 import com.amcolabs.quizapp.appcontrollers.ProgressiveQuizController;
 import com.amcolabs.quizapp.databaseutils.Question;
 import com.amcolabs.quizapp.widgets.CustomProgressBar;
-import com.amcolabs.quizapp.widgets.TimerView;
+import com.amcolabs.quizapp.widgets.CircularCounter;
 import com.squareup.picasso.Picasso;
 
 class UserProgressViewHolder{
@@ -34,7 +36,7 @@ class UserProgressViewHolder{
 	public TextView userScoreView;
 }
 
-public class QuestionScreen extends Screen implements View.OnClickListener{
+public class QuestionScreen extends Screen implements View.OnClickListener, AnimationListener{
 
 	private ProgressiveQuizController controller;
 	private LinearLayout headerViewWrapper;
@@ -52,7 +54,7 @@ public class QuestionScreen extends Screen implements View.OnClickListener{
 	private TextView preQuestionText3;
 	private LinearLayout preQuestionView;
 	private LinearLayout questionAndOptionsViewWrapper;
-	private TimerView timerView;
+	private CircularCounter timerView;
 	private Animation animTextScale;
 	
 	
@@ -67,7 +69,7 @@ public class QuestionScreen extends Screen implements View.OnClickListener{
 		questionAndOptionsViewWrapper.setVisibility(View.INVISIBLE);
 		questionViewWrapper = (LinearLayout) questionAndOptionsViewWrapper.findViewById(R.id.quizQuestion);
 		optionsViewWrapper = (LinearLayout) questionAndOptionsViewWrapper.findViewById(R.id.quizOptions);
-		setTimerView((TimerView) headerViewWrapper.findViewById(R.id.timerView));
+		setTimerView((CircularCounter) headerViewWrapper.findViewById(R.id.timerView));
 		
 		
 		
@@ -86,6 +88,8 @@ public class QuestionScreen extends Screen implements View.OnClickListener{
 		}
 		
 		animFadeOut = AnimationUtils.loadAnimation(getApp().getContext(), R.anim.fade_out_animation);
+		animFadeOut.setAnimationListener(this);
+
 		animTextScale = AnimationUtils.loadAnimation(getApp().getContext(), R.anim.xp_points_animation);
 		preQuestionText1 = (TextView) preQuestionView.findViewById(R.id.textView1);
 		preQuestionText2 = (TextView) preQuestionView.findViewById(R.id.textView2);
@@ -124,7 +128,7 @@ public class QuestionScreen extends Screen implements View.OnClickListener{
 	private boolean isOptionSelected = true;
 	protected Question currentQuestion;
 	
-	private void showQuestion(Question ques){
+	private void showQuestion(final Question ques){
 		isOptionSelected = false;
 		preQuestionView.setVisibility(View.INVISIBLE);
 		questionAndOptionsViewWrapper.setVisibility(View.VISIBLE);
@@ -146,31 +150,22 @@ public class QuestionScreen extends Screen implements View.OnClickListener{
 			opt.setTag(ques.isCorrectAnwer(mcqOptions[i]));
 			opt.setTextColor(Color.BLACK);
 		}
+		new Handler().postDelayed(new Runnable() {
+			@Override
+			public void run() {
+				getTimerView().startTimer(ques.getTime());
+			}
+		}, 500);
 	}
 	
-	public void animateQuestionChange(String titleInfo1, String titleInfo2, final Question ques){
+	public void animateQuestionChange(String titleInfo1, String titleInfo2, Question ques){
+		currentQuestion = ques;
 		questionAndOptionsViewWrapper.setVisibility(View.INVISIBLE);
-		getTimerView().resetTimer(ques.getTime());
+		getTimerView().resetTimer();
 		preQuestionText1.setText(titleInfo1);
 		preQuestionText2.setText(titleInfo2);
 		preQuestionText3.setText(null);
-		
-		preQuestionView.setAnimation(animFadeOut);
-		animFadeOut.setAnimationListener(new AnimationListener() {
-			@Override
-			public void onAnimationStart(Animation animation) {
-			}
-			
-			@Override
-			public void onAnimationRepeat(Animation animation) {
-			}
-			
-			@Override
-			public void onAnimationEnd(Animation animation) {
-				currentQuestion = ques;
-				showQuestion(ques);
-			}
-		});
+		preQuestionView.startAnimation(animFadeOut);
 	}
 
 	private void highlightCorrectAnswer(){
@@ -184,10 +179,10 @@ public class QuestionScreen extends Screen implements View.OnClickListener{
 	public void onClick(View optionView) {
 		if(isOptionSelected) return;
 		isOptionSelected = true;
-		double timeElapsed = getTimerView().stopPressed();
+		double timeElapsed = getTimerView().stopPressed(1);
 		Button b = (Button)optionView;
 		Boolean isAnwer = (Boolean) b.getTag();
-		if(isAnwer){
+		if(!isAnwer){
 			b.setTextColor(Color.RED);
 			highlightCorrectAnswer();
 		}
@@ -197,16 +192,49 @@ public class QuestionScreen extends Screen implements View.OnClickListener{
 		controller.onOptionSelected(isAnwer,(String) b.getText(), timeElapsed , currentQuestion);
 	}
 
-	public TimerView getTimerView() {
+	public CircularCounter getTimerView() {
 		return timerView;
 	}
 
-	public void setTimerView(TimerView timerView) {
+	public void setTimerView(CircularCounter timerView) {
 		this.timerView = timerView;
+		timerView.setFirstWidth(getResources().getDimension(R.dimen.timer_first_width))
+		.setFirstColor(getApp().getConfig().getAThemeColor())
+
+		.setSecondWidth(getResources().getDimension(R.dimen.timer_second_width))
+		.setSecondColor(getApp().getConfig().getAThemeColor())
+	
+//		.setThirdWidth(getResources().getDimension(R.dimen.third))
+//		.setThirdColor(Color.parseColor(colors[2]))
+		
+		.setBackgroundColor(-14606047);
+
+		timerView.resetTimer(10);
 	}
 	
 	@Override
 	public boolean showOnBackPressed() {
 		return false;
+	}
+
+
+	@Override
+	public void onAnimationStart(Animation animation) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public void onAnimationEnd(Animation animation) {
+		if(animation==animFadeOut){
+			showQuestion(currentQuestion);
+		}
+	}
+
+
+	@Override
+	public void onAnimationRepeat(Animation animation) {
+
 	}
 }

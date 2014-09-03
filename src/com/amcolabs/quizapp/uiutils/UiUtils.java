@@ -34,6 +34,7 @@ import com.amcolabs.quizapp.R;
 import com.amcolabs.quizapp.configuration.Config;
 import com.amcolabs.quizapp.datalisteners.DataInputListener;
 import com.amcolabs.quizapp.notificationutils.NotificationReciever;
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
@@ -297,52 +298,33 @@ public class UiUtils {
 	
 	
 	
-	public void loadImageIntoView(Context ctx , final ImageView imgView , final String assetPath , boolean downloadToAssets){
+	public void loadImageIntoView(Context ctx , final ImageView imgView , final String assetPath , final boolean downloadToAssets){
 		if(assetPath==null || assetPath.isEmpty())
 			return;
 		try{
+			if(assetPath.startsWith("http://") || assetPath.startsWith("https://")){
+				Picasso.with(ctx).load(assetPath).into(imgView);
+			    return;
+			}
+			
 		    InputStream ims = ctx.getAssets().open("images/"+assetPath);
 		    Picasso.with(ctx).load("file:///android_asset/images/"+assetPath).into(imgView);
 		    return;
 		}
 		catch(IOException ex) {
-			final File file = new File(ctx.getFilesDir().getParentFile().getPath()+"/images/"+assetPath);
+			File file = new File(ctx.getFilesDir().getParentFile().getPath()+"/images/"+assetPath);
 			if(file.exists()){
 				Picasso.with(ctx).load(file).into(imgView);
 			}
 			else{
-				Picasso.with(ctx).load(Config.CDN_IMAGES_PATH+assetPath).into(new Target() {
-			        @Override
-			        public void onBitmapLoaded(final Bitmap bitmap, Picasso.LoadedFrom from) {
-			            new Thread(new Runnable() {
-			                @Override
-			                public void run() {               
-			                    try
-			                    {
-			                        file.createNewFile();
-			                        FileOutputStream ostream = new FileOutputStream(file);
-			                        bitmap.compress(assetPath.endsWith(".png")?CompressFormat.PNG:CompressFormat.JPEG, 75, ostream);
-			                        ostream.close();
-			                    }
-			                    catch (Exception e)
-			                    {
-			                        e.printStackTrace();
-			                    }
-			 
-			                }
-			            }).start();
-			            imgView.setImageBitmap(bitmap);
-			        }
-
-					@Override
-					public void onBitmapFailed(Drawable arg0) {
-						// TODO Auto-generated method stub
-					}
-					@Override
-					public void onPrepareLoad(Drawable arg0) {
-						// TODO Auto-generated method stub
-					}
-			    });
+				if(downloadToAssets){
+					imgView.setTag(new LoadAndSave(imgView, file, assetPath, downloadToAssets));
+					Picasso.with(ctx).load(Config.CDN_IMAGES_PATH+assetPath).into((LoadAndSave)imgView.getTag());
+				}
+				else{
+					Picasso.with(ctx).load(Config.CDN_IMAGES_PATH+assetPath).into(imgView);//directly
+					
+				}
 			}
 		}		 
 		catch (Exception e) {

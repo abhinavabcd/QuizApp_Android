@@ -77,7 +77,7 @@ public class Question {
 	}
 	public boolean isCorrectAnwer(String answer){
 		if(getQuestionType()==QuestionType.MCQ){
-			if(answer.trim().equalsIgnoreCase(answer.trim())){
+			if(this.answer.trim().equalsIgnoreCase(answer.trim())){
 				return true;
 			}
 		}
