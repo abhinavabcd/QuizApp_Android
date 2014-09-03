@@ -381,5 +381,22 @@ public class UiUtils {
 			}
 		}		 
 	}
+	
+	public double getLevelFromPoints(double points){
+		return points;
+//		2+n/3
+//		increment: 3 3 4 4 4 5 5 5 6 6 6 7 7 7
+//		sigma(3+k/3)
+//		3 + k
+//		3 6 10 14 18 23 28 33 39 45 51 58 65 72
+//		3*n+(n/3)0 0 1 2 3 5 7 9 12 15 18 22 26)   (3*n+(n/3)+ N-1 shit)
+//		2+(0 0 1 1 1 3 3 3 6 6 6 ) = 3+9*(1+2+3 ..) 3+9*(n*(n-1))/2 ;; 400+3*(1 2 3) (level-2)*(level-3)/2+(level-2)
+//		200 400 700 1000 1300 1800 2300 2800 3600 4400 5200 ..
+//		2 4 7 10 13 18 23 18 36 44 52
+	}
+	
+	public double getPointsFromLevel(double level){
+		return 100*(2*level + (level*level - level)/6);
+	}
 
 }

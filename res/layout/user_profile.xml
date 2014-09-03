@@ -6,7 +6,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical" >
 
         <include layout="@layout/user_info_card" />
@@ -42,10 +42,13 @@
 
         </LinearLayout>
 
-        <com.jjoe64.graphview.LineGraphView
-            android:id="@+id/user_progress_graph"
+        <LinearLayout
+            android:id="@+id/chart"
             android:layout_width="match_parent"
-            android:layout_height="300dp" />
+            android:layout_height="400dp"
+            android:background="@color/grey"
+            android:orientation="vertical">
+        </LinearLayout>
 
         <com.amcolabs.quizapp.widgets.SeperatorView
             android:id="@+id/seperatorView2"

@@ -23,6 +23,7 @@ import com.amcolabs.quizapp.popups.StaticPopupDialogBoxes;
 import com.amcolabs.quizapp.screens.QuestionScreen;
 import com.amcolabs.quizapp.screens.QuizzesScreen;
 import com.amcolabs.quizapp.screens.HomeScreen;
+import com.amcolabs.quizapp.screens.UserProfileScreen;
 import com.amcolabs.quizapp.screens.WelcomeScreen;
 import com.amcolabs.quizapp.uiutils.UiUtils.UiText;
 import com.androidsocialnetworks.lib.AccessToken;
@@ -56,7 +57,7 @@ public class UserMainPageController  extends AppController implements OnInitiali
 	 
 	public void checkAndShowCategories(){
 		String encodedKey = quizApp.getUserDeviceManager().getPreference(Config.PREF_ENCODED_KEY, null);
-		if(encodedKey!=null){
+		if(encodedKey==null){
 			//on fetch update new categories and draw the categories
 			quizApp.getServerCalls().getAllUpdates(new DataInputListener2<List<UserFeed> ,List<UserInboxMessage> ,List<OfflineChallenge>, Boolean>(){
 				@Override
