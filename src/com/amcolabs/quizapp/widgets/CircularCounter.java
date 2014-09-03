@@ -471,6 +471,9 @@ public class CircularCounter extends View {
 
 	protected float val3 = 0;
 
+
+	protected float elapsedTimeInSeconds;
+
 	public double stopPressed(int id, float elapsedTime){//1 , 2 , 3
 		int t = 1<<(id);
 		stopCounterBits|=t;
@@ -479,13 +482,13 @@ public class CircularCounter extends View {
 			val2 = elapsedTime;
 		}
 
-		return Config.getElapsedTimeInSec(Config.getCurrentNanos()  - startTime);
+		return elapsedTimeInSeconds;
 	}
 
 	public double stopPressed(int id){//1 , 2 , 3
 		int t = 1<<(id);
 		stopCounterBits|=t;
-		return Config.getElapsedTimeInSec(Config.getCurrentNanos()  - startTime);
+		return elapsedTimeInSeconds;
 	}
 	
 	public void resetTimer(float mRange){
@@ -500,6 +503,7 @@ public class CircularCounter extends View {
 		val2=0;
 		val3=0;
 		stopCounterBits = 0;
+		elapsedTimeInSeconds = 0;
 	}
 	
 	
@@ -514,7 +518,7 @@ public class CircularCounter extends View {
 		startTime = Config.getCurrentNanos();
 		r = new Runnable(){
 	        public void run(){
-	        	float elapsedTimeInSeconds = (float)Config.getElapsedTimeInSec(Config.getCurrentNanos() - startTime);
+	        	elapsedTimeInSeconds = (float)Config.getElapsedTimeInSec(Config.getCurrentNanos() - startTime);
 				if((stopCounterBits&(1<<1))==0)
 	        		val1 = elapsedTimeInSeconds;
 				if((stopCounterBits&(1<<2))==0)
