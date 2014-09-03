@@ -85,7 +85,7 @@ public class Question {
 	}
 	public int getTime() {
 		if(getQuestionType()==QuestionType.MCQ){
-				return 10;
+				return (int) (time==0?10d:time);
 		}
 		return 10;
 	}

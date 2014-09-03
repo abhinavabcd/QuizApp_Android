@@ -6,11 +6,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
+import android.graphics.Color;
 import android.os.Handler;
 
 import com.amcolabs.quizapp.AppController;
 import com.amcolabs.quizapp.QuizApp;
 import com.amcolabs.quizapp.User;
+import com.amcolabs.quizapp.configuration.Config;
 import com.amcolabs.quizapp.databaseutils.Question;
 import com.amcolabs.quizapp.databaseutils.Quiz;
 import com.amcolabs.quizapp.screens.ClashScreen;
@@ -82,7 +84,7 @@ public class ProgressiveQuizController extends AppController{
 				clashingScreen = null; // dispose of it 
 				insertScreen(questionScreen);
 			}
-		}, 2000);
+		}, Config.CLASH_SCREEN_DELAY);
 		
 		new Handler().postDelayed(new Runnable() {
 			
@@ -97,7 +99,7 @@ public class ProgressiveQuizController extends AppController{
 					scheduleBotAnswer(currentQuestion);
 
 			}
-		}, 4000);
+		}, Config.CLASH_SCREEN_DELAY+Config.PREQUESTION_FADE_OUT_ANIMATIOTION_TIME);
 	}
 	
 	@Override
@@ -177,8 +179,8 @@ public class ProgressiveQuizController extends AppController{
 
 
 	public void startSocketConnection(ServerWebSocketConnection mConnection, final Quiz quiz) {
-		serverSocket = mConnection;
-		waitinStartTime = quizApp.getConfig().getCurrentTimeStamp();
+		serverSocket = mConnection; 
+		waitinStartTime = Config.getCurrentTimeStamp();
 
 		new Handler().postDelayed(new Runnable() {
 			@Override
@@ -187,7 +189,7 @@ public class ProgressiveQuizController extends AppController{
 					serverSocket.sendTextMessage(constructSocketMessage(MessageType.ACTIVATE_BOT, null, null));
 				}
 			}
-		}, 5000);
+		}, Config.BOT_INTIALIZE_AFTER_NO_USER_TIME);
 	}
 	
 	static class UserAnswer{
@@ -224,10 +226,15 @@ public class ProgressiveQuizController extends AppController{
 			userAnswersStack.put(userAnswer.uid , temp);
 		}
 		if(currentUsers.size() == userAnswers.keySet().size()){//every one answered 
+			
     		questionScreen.getTimerView().resetTimer();
 			for(String u: userAnswers.keySet()){
 				questionScreen.animateXpPoints(u, userAnswers.get(u).whatUserGot); 
 			}
+			for(String uid: userAnswers.keySet()){
+				questionScreen.highlightOtherUsersOption(uid, userAnswers.get(uid).userAnswer);
+			}
+			
 			new Handler().postDelayed(new Runnable() {
 				@Override
 				public void run() {
@@ -243,7 +250,7 @@ public class ProgressiveQuizController extends AppController{
 						validateAndShowWinningScreen();
 					}
 				}
-			}, 2000);
+			}, Config.QUESTION_END_DELAY_TIME);
 		}
 	}
 	
@@ -262,17 +269,18 @@ public class ProgressiveQuizController extends AppController{
 						}
 						final UserAnswer botAnswer = new UserAnswer(currentQuestion.questionId, user.uid, isRightAnswer?currentQuestion.getCorrectAnswer():currentQuestion.getWrongRandomAnswer(rand),
 								 	elapsedTime, botScore);
-						
+			    		
 						new Handler().postDelayed( new Runnable() {
 							
 							@Override
 							public void run() {
+								questionScreen.getTimerView().stopPressed(2, botAnswer.elapsedTime);
 								checkAndProceedToNextQuestion(botAnswer);
 							}
-						}, 2000+elapsedTime*1000);
+						}, elapsedTime*1000);
 					}
 			}
-		}, 1500);
+		}, Config.PREQUESTION_FADE_OUT_ANIMATIOTION_TIME);
 
 	}
 
@@ -287,7 +295,7 @@ public class ProgressiveQuizController extends AppController{
 	    	case USER_ANSWERED_QUESTION:
 	    		UserAnswer userAnswer = quizApp.getConfig().getGson().fromJson(response.payload, UserAnswer.class);
 	    		//questionId , self.uid, userAnswer,elapsedTime , whatUserGot
-	    		questionScreen.getTimerView().stopPressed(2);
+	    		questionScreen.getTimerView().stopPressed(2, userAnswer.elapsedTime);
 	    		checkAndProceedToNextQuestion(userAnswer);
 	    		break;
 	    	case GET_NEXT_QUESTION://client trigger
@@ -350,12 +358,26 @@ public class ProgressiveQuizController extends AppController{
 		return 1;
 	}
 	
-	public void onOptionSelected(Boolean isAnwer, String answer , double timeElapsed, Question currentQuestion) {
+	public void onOptionSelected(Boolean isAnwer, String answer , Question currentQuestion) {
 		UserAnswer payload =null; 
-		currentScore += ( Math.ceil(currentQuestion.getTime()-timeElapsed)* multiplyFactor());
+		double timeElapsed = questionScreen.getTimerView().stopPressed(1);
+		if(isAnwer){
+			currentScore += ( Math.ceil(currentQuestion.getTime()-timeElapsed)* multiplyFactor());
+		}
 		payload = new UserAnswer(currentQuestion.questionId, quizApp.getUser().uid, answer, (int)timeElapsed, currentScore);
 		if(!isBotMode())
 			serverSocket.sendTextMessage(quizApp.getConfig().getGson().toJson(payload));
 		checkAndProceedToNextQuestion(payload);
+	}
+
+
+	public String onNoAnswer(Question currentQuestion) {
+		UserAnswer payload =null; 
+		currentScore += 0;
+		payload = new UserAnswer(currentQuestion.questionId, quizApp.getUser().uid, "", currentQuestion.getTime(), currentScore);//all time elapsed
+		if(!isBotMode())
+			serverSocket.sendTextMessage(quizApp.getConfig().getGson().toJson(payload));
+		checkAndProceedToNextQuestion(payload);
+		return null;
 	}
 }

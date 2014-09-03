@@ -62,6 +62,10 @@ public class Config{
 	public static final String NOTIFICATION_KEY_TEXT_MESSAGE = "message";
 	public static final String GOOGLE_PLUS_SERVER_CLIENT_ID = "591807556804-qltit1nk5rga581b5a2j6tuoogum0s79.apps.googleusercontent.com";
 	public static final String CDN_IMAGES_PATH = "http://192.168.0.10:8081/images/";
+	public static final long CLASH_SCREEN_DELAY = 2000;
+	public static final long PREQUESTION_FADE_OUT_ANIMATIOTION_TIME = 2000;
+	public static final long BOT_INTIALIZE_AFTER_NO_USER_TIME = 5000;
+	public static final long QUESTION_END_DELAY_TIME = 3000;
 	public static int[] themeColors = new int []{Color.rgb(139, 171,66),
 									    		Color.rgb(232, 93,12),
 									    		Color.rgb(37, 142,161),
@@ -69,7 +73,7 @@ public class Config{
 									    		Color.rgb(58, 129,186),
 										};
 	
-	
+	public static int  TIMER_SLIGHT_DELAY_START = 500;
 	private QuizApp quizApp;
 	
 

@@ -2,6 +2,7 @@ package com.amcolabs.quizapp.widgets;
 
 import com.amcolabs.quizapp.R;
 import com.amcolabs.quizapp.configuration.Config;
+import com.amcolabs.quizapp.datalisteners.DataInputListener;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -146,13 +147,6 @@ public class CircularCounter extends View {
 	private long startTime;
 
 
-	private float val1;
-
-
-	private float val2;
-
-
-	private float val3;
 
 	
 	
@@ -354,19 +348,23 @@ public class CircularCounter extends View {
 	public void setValues(float v1, float v2, float v3) {
 
 		if (v1 <= mRange)
-			mOneDegrees = Math.round(((float) v1 * 360) / mRange);
-		else
+			mOneDegrees = Math.round((v1 * 360.0f) / mRange);
+		else{
 			mOneDegrees = 360;
+		}
 
-		if (v2 <= mRange)
-			mTwoDegrees = Math.round(((float) v2 * 360) / mRange);
-		else
+		if (v2 <= mRange){
+			mTwoDegrees = Math.round((v2 * 360.0f) / mRange);
+		}
+		else{
 			mTwoDegrees = 360;
+		}
 
 		if (v3 <= mRange)
-			mThreeDegrees = Math.round(((float) v3 * 360) / mRange);
-		else
+			mThreeDegrees = Math.round((v3 * 360.0f) / mRange);
+		else{
 			mThreeDegrees = 360;
+		}
 
 		mOneValue = v1;
 
@@ -465,11 +463,29 @@ public class CircularCounter extends View {
 	int stopCounterBits =1;
 
 
-	protected float elapsedTimeInSeconds;	
+	protected float val1 = 0;
+
+
+	protected float val2 = 0;
+
+
+	protected float val3 = 0;
+
+	public double stopPressed(int id, float elapsedTime){//1 , 2 , 3
+		int t = 1<<(id);
+		stopCounterBits|=t;
+		if(id==1){val1 = elapsedTime;}
+		if(id==2){
+			val2 = elapsedTime;
+		}
+
+		return Config.getElapsedTimeInSec(Config.getCurrentNanos()  - startTime);
+	}
+
 	public double stopPressed(int id){//1 , 2 , 3
 		int t = 1<<(id);
 		stopCounterBits|=t;
-		return elapsedTimeInSeconds;
+		return Config.getElapsedTimeInSec(Config.getCurrentNanos()  - startTime);
 	}
 	
 	public void resetTimer(float mRange){
@@ -481,8 +497,8 @@ public class CircularCounter extends View {
 			handler.removeCallbacks(r);
 		}
 		val1 = 0;
-		val2 = 0;
-		val3 = 0;
+		val2=0;
+		val3=0;
 		stopCounterBits = 0;
 	}
 	
@@ -495,21 +511,36 @@ public class CircularCounter extends View {
 		if(time!=null)
 			this.mRange = time;
 		handler = new Handler();
+		startTime = Config.getCurrentNanos();
 		r = new Runnable(){
 	        public void run(){
-	        	elapsedTimeInSeconds = (float)Config.getElapsedTimeInSec(Config.getCurrentNanos() - startTime);
-	        	if((stopCounterBits&2)==0)
+	        	float elapsedTimeInSeconds = (float)Config.getElapsedTimeInSec(Config.getCurrentNanos() - startTime);
+				if((stopCounterBits&(1<<1))==0)
 	        		val1 = elapsedTimeInSeconds;
-	        	if((stopCounterBits&4)==0)
+				if((stopCounterBits&(1<<2))==0)
 	        		val2 = elapsedTimeInSeconds;
-	        	if((stopCounterBits&8)==8)
+				if((stopCounterBits&(1<<3))==0)
 	        		val3 = 0;//elapsedTimeInSeconds;
 	        	
 	        	setValues(val1,val2, val3);
+	        	if(elapsedTimeInSeconds> mRange){
+	        		onTimerEnd();
+	        		return;
+	        	}
 	            handler.postDelayed(this, 50);
 	        }
 	    };
 	    
 		handler.postDelayed(r, 500);
+	}
+
+	DataInputListener<Boolean> onTimerEndListener = null;
+	public void setTimerEndListener(DataInputListener<Boolean> endListener){
+		onTimerEndListener = endListener;
+	}
+	protected void onTimerEnd() {
+		if(onTimerEndListener!=null){
+			onTimerEndListener.onData(true);
+		}
 	}
 }

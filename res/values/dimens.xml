@@ -15,8 +15,8 @@
 	<dimen name="metricPaddingY">10sp</dimen>
 	
 	
-    <dimen name="timer_first_width">30dp</dimen>
-    <dimen name="timer_second_width">40dp</dimen>
-    <dimen name="tmer_third_width">4dp</dimen>
+    <dimen name="timer_first_width">5dp</dimen>
+    <dimen name="timer_second_width">5dp</dimen>
+    <dimen name="timer_third_width">5dp</dimen>
 	
 </resources>
