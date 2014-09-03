@@ -23,7 +23,9 @@ import com.amcolabs.quizapp.R;
 import com.amcolabs.quizapp.Screen;
 import com.amcolabs.quizapp.User;
 import com.amcolabs.quizapp.appcontrollers.ProgressiveQuizController;
+import com.amcolabs.quizapp.configuration.Config;
 import com.amcolabs.quizapp.databaseutils.Question;
+import com.amcolabs.quizapp.datalisteners.DataInputListener;
 import com.amcolabs.quizapp.widgets.CustomProgressBar;
 import com.amcolabs.quizapp.widgets.CircularCounter;
 import com.squareup.picasso.Picasso;
@@ -38,7 +40,7 @@ class UserProgressViewHolder{
 
 public class QuestionScreen extends Screen implements View.OnClickListener, AnimationListener{
 
-	private ProgressiveQuizController controller;
+	private ProgressiveQuizController pQuizController;
 	private LinearLayout headerViewWrapper;
 	private LinearLayout questionViewWrapper;
 	private LinearLayout optionsViewWrapper;
@@ -56,11 +58,12 @@ public class QuestionScreen extends Screen implements View.OnClickListener, Anim
 	private LinearLayout questionAndOptionsViewWrapper;
 	private CircularCounter timerView;
 	private Animation animTextScale;
+	private DataInputListener<Boolean> onQuestionTimeEnd;
 	
 	
 	public QuestionScreen(AppController controller) {
 		super(controller);
-		this.controller = (ProgressiveQuizController)controller;
+		this.pQuizController = (ProgressiveQuizController)controller;
 		LayoutInflater tmp = getApp().getActivity().getLayoutInflater();
 		fullQuestionLayout = (LinearLayout) tmp.inflate(R.layout.quiz_full_question, null);
 		headerViewWrapper = (LinearLayout) fullQuestionLayout.findViewById(R.id.quizHeader);
@@ -94,11 +97,15 @@ public class QuestionScreen extends Screen implements View.OnClickListener, Anim
 		preQuestionText1 = (TextView) preQuestionView.findViewById(R.id.textView1);
 		preQuestionText2 = (TextView) preQuestionView.findViewById(R.id.textView2);
 		preQuestionText3 = (TextView) preQuestionView.findViewById(R.id.textView3);
-		
+		onQuestionTimeEnd = new DataInputListener<Boolean>(){
+			public String onData(Boolean s) {
+				return pQuizController.onNoAnswer(currentQuestion);
+			};
+		};
+		timerView.setTimerEndListener(onQuestionTimeEnd);
 		addView(fullQuestionLayout);
 	}
 	
-
 	public void showUserInfo(ArrayList<User> uNames) {
 		int index = 0;
 		for(RelativeLayout userView : Arrays.asList((RelativeLayout) headerViewWrapper.findViewById(R.id.user1), (RelativeLayout) headerViewWrapper.findViewById(R.id.user2))){
@@ -147,7 +154,7 @@ public class QuestionScreen extends Screen implements View.OnClickListener, Anim
 		for(int i=0;i<questionOptionsViews.size();i++){
 			Button opt = questionOptionsViews.get(i);
 			opt.setText(mcqOptions[i]);
-			opt.setTag(ques.isCorrectAnwer(mcqOptions[i]));
+			opt.setTag(mcqOptions[i]);
 			opt.setTextColor(Color.BLACK);
 		}
 		new Handler().postDelayed(new Runnable() {
@@ -155,7 +162,7 @@ public class QuestionScreen extends Screen implements View.OnClickListener, Anim
 			public void run() {
 				getTimerView().startTimer(ques.getTime());
 			}
-		}, 500);
+		}, Config.TIMER_SLIGHT_DELAY_START);
 	}
 	
 	public void animateQuestionChange(String titleInfo1, String titleInfo2, Question ques){
@@ -170,8 +177,16 @@ public class QuestionScreen extends Screen implements View.OnClickListener, Anim
 
 	private void highlightCorrectAnswer(){
 		for(Button b:questionOptionsViews){
-			if((Boolean) b.getTag())
+			if(currentQuestion.isCorrectAnwer((String)b.getTag()))
 				b.setTextColor(Color.GREEN);
+		}
+	}
+	public void highlightOtherUsersOption(String uid , String option){
+		for(Button b:questionOptionsViews){
+			if(((String)b.getTag()).equalsIgnoreCase(option)){
+				if(!currentQuestion.isCorrectAnwer((String)b.getTag()))
+					b.setTextColor(Color.RED);					
+			}
 		}
 	}
 	
@@ -179,9 +194,8 @@ public class QuestionScreen extends Screen implements View.OnClickListener, Anim
 	public void onClick(View optionView) {
 		if(isOptionSelected) return;
 		isOptionSelected = true;
-		double timeElapsed = getTimerView().stopPressed(1);
 		Button b = (Button)optionView;
-		Boolean isAnwer = (Boolean) b.getTag();
+		Boolean isAnwer = currentQuestion.isCorrectAnwer((String)b.getTag());
 		if(!isAnwer){
 			b.setTextColor(Color.RED);
 			highlightCorrectAnswer();
@@ -189,7 +203,7 @@ public class QuestionScreen extends Screen implements View.OnClickListener, Anim
 		else{
 			b.setTextColor(Color.GREEN);
 		}
-		controller.onOptionSelected(isAnwer,(String) b.getText(), timeElapsed , currentQuestion);
+		pQuizController.onOptionSelected(isAnwer,(String) b.getText() , currentQuestion);
 	}
 
 	public CircularCounter getTimerView() {
@@ -204,8 +218,8 @@ public class QuestionScreen extends Screen implements View.OnClickListener, Anim
 		.setSecondWidth(getResources().getDimension(R.dimen.timer_second_width))
 		.setSecondColor(getApp().getConfig().getAThemeColor())
 	
-//		.setThirdWidth(getResources().getDimension(R.dimen.third))
-//		.setThirdColor(Color.parseColor(colors[2]))
+		.setThirdWidth(getResources().getDimension(R.dimen.timer_third_width))
+		.setThirdColor(getApp().getConfig().getAThemeColor())
 		
 		.setBackgroundColor(-14606047);
 
