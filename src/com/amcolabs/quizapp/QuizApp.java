@@ -90,12 +90,16 @@ public class QuizApp extends Fragment implements AnimationListener {
 
 	private void addView(Screen screen) {
 		mainFrame.addView(screen);
+		screen.controller.setActive(true);
 		screenStack.push(screen);
 	}
 
 	private void disposeViews() {
-		while(!disposeScreens.isEmpty())
-			mainFrame.removeView(disposeScreens.remove(0));
+		while(!disposeScreens.isEmpty()){
+			Screen screen = disposeScreens.remove(0);
+			screen.controller.setActive(false);
+			mainFrame.removeView(screen);
+		}
 	}
 	
 	public AppController loadAppController(Class<? extends AppController> clazz){
@@ -125,6 +129,7 @@ public class QuizApp extends Fragment implements AnimationListener {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		appController.setActive(true);
 		return appController;
 	}
 	
@@ -133,7 +138,7 @@ public class QuizApp extends Fragment implements AnimationListener {
 	}
 	
 	public User getUser(){
-		return currentUser;
+		return currentUser==null?User.getDummyUser(this):currentUser;
 	}
 
 	public void setUser(User user) {
@@ -180,9 +185,13 @@ public class QuizApp extends Fragment implements AnimationListener {
 				}
 				if(screen!=null && !screen.controller.onBackPressed()){
 					screen = popCurrentScreen();
-					screen.controller.beforeScreenRemove(screen);
+					screen.beforeRemove();
 					animateScreenRemove(screen , TO_RIGHT,null);
+					
 					Screen oldScreen = popCurrentScreen();
+					while(!oldScreen.showOnBackPressed()){
+						oldScreen = popCurrentScreen();
+					}
 					animateScreenIn(oldScreen);
 				}
 			}

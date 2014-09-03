@@ -28,11 +28,13 @@ public abstract class AppController {
 	
 	public void clearScreen() {
 		quizApp.animateScreenRemove();
-	}
-
-	public void beforeScreenRemove(Screen screen){
-		
-	}
-
+	}	
 	
+	private boolean isActive;
+	public boolean isActive(){
+		return isActive;
+	}
+	public void setActive(boolean b) {
+		isActive = b;
+	}
 }

@@ -34,6 +34,7 @@ import com.amcolabs.quizapp.R;
 import com.amcolabs.quizapp.configuration.Config;
 import com.amcolabs.quizapp.datalisteners.DataInputListener;
 import com.amcolabs.quizapp.notificationutils.NotificationReciever;
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
@@ -78,7 +79,8 @@ public class UiUtils {
 		FETCHING_USER("Fetching User.."),
 		COULD_NOT_CONNECT("Could not fetch Updates"),
 		CATEGORIES("categories"),
-		USER_FAVOURITES("Quick Play"), NOT_AUTHORIZED("Invalid Login"), SEARCHING_FOR_OPPONENT("Searching for a matching opponent");
+		USER_FAVOURITES("Quick Play"), NOT_AUTHORIZED("Invalid Login"), SEARCHING_FOR_OPPONENT("Searching for a matching opponent"),
+		GET_READY("Get Ready"), FOR_YOUR_FIRST_QUESTION("For your first Question"), QUESTION("Question %s");
 		
 		String value = null;
 		UiText(String value){
@@ -160,14 +162,14 @@ public class UiUtils {
 	static class MyTimer extends Timer{
 		
 	}
-	public static Timer setInterval(final Context c ,  int millis , final DataInputListener<Integer> listener) {
+	public Timer setInterval(int millis , final DataInputListener<Integer> listener) {
 		// TODO Auto-generated constructor stub
 		Timer timer = (new Timer());
 		timer.schedule(new TimerTask() {
 					int count =0;
 					@Override
 					public void run() {
-					      ((Activity)c).runOnUiThread(new Runnable(){
+					      (quizApp.getActivity()).runOnUiThread(new Runnable(){
 	
 					       @Override
 					       public void run() {
@@ -296,52 +298,33 @@ public class UiUtils {
 	
 	
 	
-	public void loadImageIntoView(Context ctx , final ImageView imgView , final String assetPath , boolean downloadToAssets){
+	public void loadImageIntoView(Context ctx , final ImageView imgView , final String assetPath , final boolean downloadToAssets){
 		if(assetPath==null || assetPath.isEmpty())
 			return;
 		try{
+			if(assetPath.startsWith("http://") || assetPath.startsWith("https://")){
+				Picasso.with(ctx).load(assetPath).into(imgView);
+			    return;
+			}
+			
 		    InputStream ims = ctx.getAssets().open("images/"+assetPath);
 		    Picasso.with(ctx).load("file:///android_asset/images/"+assetPath).into(imgView);
 		    return;
 		}
 		catch(IOException ex) {
-			final File file = new File(ctx.getFilesDir().getParentFile().getPath()+"/images/"+assetPath);
+			File file = new File(ctx.getFilesDir().getParentFile().getPath()+"/images/"+assetPath);
 			if(file.exists()){
 				Picasso.with(ctx).load(file).into(imgView);
 			}
 			else{
-				Picasso.with(ctx).load(Config.CDN_IMAGES_PATH+assetPath).into(new Target() {
-			        @Override
-			        public void onBitmapLoaded(final Bitmap bitmap, Picasso.LoadedFrom from) {
-			            new Thread(new Runnable() {
-			                @Override
-			                public void run() {               
-			                    try
-			                    {
-			                        file.createNewFile();
-			                        FileOutputStream ostream = new FileOutputStream(file);
-			                        bitmap.compress(assetPath.endsWith(".png")?CompressFormat.PNG:CompressFormat.JPEG, 75, ostream);
-			                        ostream.close();
-			                    }
-			                    catch (Exception e)
-			                    {
-			                        e.printStackTrace();
-			                    }
-			 
-			                }
-			            }).start();
-			            imgView.setImageBitmap(bitmap);
-			        }
-
-					@Override
-					public void onBitmapFailed(Drawable arg0) {
-						// TODO Auto-generated method stub
-					}
-					@Override
-					public void onPrepareLoad(Drawable arg0) {
-						// TODO Auto-generated method stub
-					}
-			    });
+				if(downloadToAssets){
+					imgView.setTag(new LoadAndSave(imgView, file, assetPath, downloadToAssets));
+					Picasso.with(ctx).load(Config.CDN_IMAGES_PATH+assetPath).into((LoadAndSave)imgView.getTag());
+				}
+				else{
+					Picasso.with(ctx).load(Config.CDN_IMAGES_PATH+assetPath).into(imgView);//directly
+					
+				}
 			}
 		}		 
 		catch (Exception e) {

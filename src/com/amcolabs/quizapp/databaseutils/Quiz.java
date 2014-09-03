@@ -56,4 +56,5 @@ public class Quiz {
 		// TODO Auto-generated method stub
 		return name + " "+shortDescription;
 	}
+	
 }

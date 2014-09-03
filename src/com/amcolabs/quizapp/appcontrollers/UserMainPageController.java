@@ -13,8 +13,12 @@ import com.amcolabs.quizapp.User;
 import com.amcolabs.quizapp.UserDeviceManager;
 import com.amcolabs.quizapp.configuration.Config;
 import com.amcolabs.quizapp.databaseutils.Category;
+import com.amcolabs.quizapp.databaseutils.OfflineChallenge;
 import com.amcolabs.quizapp.databaseutils.Quiz;
+import com.amcolabs.quizapp.databaseutils.UserFeed;
+import com.amcolabs.quizapp.databaseutils.UserInboxMessage;
 import com.amcolabs.quizapp.datalisteners.DataInputListener;
+import com.amcolabs.quizapp.datalisteners.DataInputListener2;
 import com.amcolabs.quizapp.popups.StaticPopupDialogBoxes;
 import com.amcolabs.quizapp.screens.QuestionScreen;
 import com.amcolabs.quizapp.screens.QuizzesScreen;
@@ -55,17 +59,16 @@ public class UserMainPageController  extends AppController implements OnInitiali
 		String encodedKey = quizApp.getUserDeviceManager().getPreference(Config.PREF_ENCODED_KEY, null);
 		if(encodedKey==null){
 			//on fetch update new categories and draw the categories
-			quizApp.getServerCalls().getAllUpdates(new DataInputListener<Boolean>(){
+			quizApp.getServerCalls().getAllUpdates(new DataInputListener2<List<UserFeed> ,List<UserInboxMessage> ,List<OfflineChallenge>, Boolean>(){
 				@Override
-				public String onData(Boolean s) {
-					insertScreen(new UserProfileScreen(UserMainPageController.this));
+				public void onData(List<UserFeed> feeds,List<UserInboxMessage> inboxMessages,List<OfflineChallenge> offlineChallenges, Boolean s) {
 					if(s){
 						showUserHomeScreen();
 					}
 					else{
 						StaticPopupDialogBoxes.alertPrompt(quizApp.getFragmentManager(), UiText.COULD_NOT_CONNECT.getValue(), null);
 					}
-					return super.onData(s);
+					return;
 				}
 			});
 		}
@@ -106,7 +109,7 @@ public class UserMainPageController  extends AppController implements OnInitiali
 	public void onQuizSelected(Quiz quiz){
 		clearScreen();
 		ProgressiveQuizController progressiveQuiz = (ProgressiveQuizController) quizApp.loadAppController(ProgressiveQuizController.class);
-		progressiveQuiz.initlializeQuiz(null);
+		progressiveQuiz.initlializeQuiz(quiz);
 	}
 	
 	private void showUserHomeScreen() {
@@ -129,12 +132,6 @@ public class UserMainPageController  extends AppController implements OnInitiali
 	}
 	
 
-	@Override
-	public void beforeScreenRemove(Screen screen) {
-		if(screen instanceof WelcomeScreen){
-			onRemoveWelcomeScreen();
-		}
-	}
 	
     public void onRemoveWelcomeScreen() {//destroy msocialNetwork
     	if(mSocialNetworkManager.getSocialNetwork(GooglePlusSocialNetwork.ID).isConnected()){

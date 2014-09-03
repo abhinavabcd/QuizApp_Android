@@ -23,19 +23,17 @@
             layout="@layout/user_quiz_progress" />
     </LinearLayout>
 
-    <com.amcolabs.quizapp.widgets.TimerView
-        android:id="@+id/timerView"
-        android:layout_gravity="right|bottom"
-        android:layout_weight="1" 
+    <com.amcolabs.quizapp.widgets.CircularCounter
+        xmlns:meter="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/meter"
         android:layout_width="70dp"
         android:layout_height="70dp"
-        ProgressWheel:barColor="#339BB9"
-        ProgressWheel:barLength="30dp"
-        ProgressWheel:barWidth="10dp"
-        ProgressWheel:rimColor="#44000000"
-        ProgressWheel:rimWidth="10dp"
-        ProgressWheel:spinSpeed="3dp"
-        ProgressWheel:textColor="#222222"
-        ProgressWheel:textSize="14sp"/>
-
+        android:padding="5dp"
+        meter:range="60"
+        meter:textSize="100sp"
+        meter:textColor="#ffffff"
+        meter:metricSize="20sp"
+        meter:metricText="metric"
+	/>
+    
 </LinearLayout>

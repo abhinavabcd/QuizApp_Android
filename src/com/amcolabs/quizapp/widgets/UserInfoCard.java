@@ -15,7 +15,7 @@ import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Picasso.LoadedFrom;
 import com.squareup.picasso.Target;
 
-public class UserInfoCard extends LinearLayout implements Target{
+public class UserInfoCard extends LinearLayout implements Target,IViewType{
 
 	public UserInfoCard(final QuizApp quizApp, String bgAssetPath, User user) {
 		super(quizApp.getContext());
@@ -23,6 +23,9 @@ public class UserInfoCard extends LinearLayout implements Target{
 		mainView.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.WRAP_CONTENT));
 		this.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,0,1f));
 		setGravity(Gravity.CENTER);
+		if(bgAssetPath==null){
+			bgAssetPath = (user.coverUrl!=null && !user.coverUrl.trim().equalsIgnoreCase(""))?user.coverUrl:quizApp.getConfig().getRandomImageBg();
+		}
 		quizApp.getUiUtils().loadImageAsBg(quizApp.getContext(), this, bgAssetPath);
 		
 		GothamTextView name = (GothamTextView)mainView.findViewById(R.id.user_card_name);
@@ -39,6 +42,7 @@ public class UserInfoCard extends LinearLayout implements Target{
 		addView(mainView);
 	}
 
+
 	@Override
 	public void onBitmapFailed(Drawable arg0) {
 		
@@ -52,5 +56,11 @@ public class UserInfoCard extends LinearLayout implements Target{
 	@Override
 	public void onPrepareLoad(Drawable arg0) {
 		
+	}
+
+	@Override
+	public ViewType getViewType() {
+		// TODO Auto-generated method stub
+		return ViewType.USER_INFO_CARD;
 	}
 }

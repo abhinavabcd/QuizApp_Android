@@ -1,12 +1,11 @@
 package com.amcolabs.quizapp.databaseutils;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Random;
 
-import com.amcolabs.quizapp.databaseutils.Category.CategoryType;
 import com.j256.ormlite.field.DatabaseField;
-
-import android.graphics.Bitmap;
-import android.view.View;
 
 
 
@@ -19,7 +18,7 @@ public class Question {
 	@DatabaseField
     public String questionDescription; // question description in json , contains image links
 	@DatabaseField
-    public String pictures; // comma seperated paths
+    public List<String> pictures; // comma seperated paths
 	@DatabaseField
     public String options; //json
 	@DatabaseField
@@ -33,11 +32,9 @@ public class Question {
 	@DatabaseField
     public int xp;
 	
-	
-	public String[] getAssetPaths(){
-		return pictures.split(",");
+	public List<String> getAssetPaths(){
+		return pictures==null?new ArrayList<String>():pictures;
 	}
-	
 	
 	public static enum QuestionType{
 		MCQ(0),
@@ -78,4 +75,36 @@ public class Question {
 	public String[] getMCQOptions(){
 		return this.options.split(",");
 	}
+	public boolean isCorrectAnwer(String answer){
+		if(getQuestionType()==QuestionType.MCQ){
+			if(this.answer.trim().equalsIgnoreCase(answer.trim())){
+				return true;
+			}
+		}
+		return false;
+	}
+	public int getTime() {
+		if(getQuestionType()==QuestionType.MCQ){
+				return 10;
+		}
+		return 10;
+	}
+	public String getCorrectAnswer() {
+		// TODO Auto-generated method stub
+		return answer;
+	}
+	public String getWrongRandomAnswer(Random rand) {
+		if(getQuestionType()==QuestionType.MCQ){
+			String[] mcqOptions = getMCQOptions();
+			while(true){
+				String a = mcqOptions[rand.nextInt(mcqOptions.length)];
+				if(!isCorrectAnwer(a)){
+					return a;
+				}
+			}
+		}
+		return null;
+	}
+
+	
 }

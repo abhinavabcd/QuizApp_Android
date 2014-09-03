@@ -31,5 +31,12 @@ public class Screen extends ScrollView {
 		
 	}
 	
+	public void beforeRemove(){
+		
+	}
+	
+	public boolean showOnBackPressed(){
+		return true;
+	}
 
 }

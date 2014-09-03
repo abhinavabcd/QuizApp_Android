@@ -7,6 +7,7 @@ import java.io.InputStreamReader;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -60,7 +61,7 @@ public class Config{
 	public static final String NOTIFICATION_KEY_MESSAGE_TYPE = "notificationType";
 	public static final String NOTIFICATION_KEY_TEXT_MESSAGE = "message";
 	public static final String GOOGLE_PLUS_SERVER_CLIENT_ID = "591807556804-qltit1nk5rga581b5a2j6tuoogum0s79.apps.googleusercontent.com";
-	public static final String CDN_IMAGES_PATH = "http://localhost:8081/images";
+	public static final String CDN_IMAGES_PATH = "http://192.168.0.10:8081/images/";
 	public static int[] themeColors = new int []{Color.rgb(139, 171,66),
 									    		Color.rgb(232, 93,12),
 									    		Color.rgb(37, 142,161),
@@ -83,6 +84,12 @@ public class Config{
 		return themeColors[++tempThemeCount%themeColors.length];
 	}
 	
+	private int tempBgIndex = 0;
+	private List<String> userBgAssets = Arrays.asList("images/bg_2.jpg" , "images/bg_1.jpg");
+	public String getRandomImageBg(){
+		return userBgAssets.get(tempBgIndex++%userBgAssets.size());
+	}
+	
 	private static double serverTime = 0;
 	public static double serverTimeZoneDiff = 0;
 	
@@ -98,7 +105,7 @@ public class Config{
 		return userTimeStamp - serverTimeZoneDiff;
 	}
 	
-	public static double getCurrentTimeStamp(){
+	public static  double getCurrentTimeStamp(){
 		return System.currentTimeMillis()*1.0d / 1000; //(new Date()).getTime()/1000;
 	}
 
