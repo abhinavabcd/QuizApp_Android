@@ -57,7 +57,7 @@ public class UserMainPageController  extends AppController implements OnInitiali
 	 
 	public void checkAndShowCategories(){
 		String encodedKey = quizApp.getUserDeviceManager().getPreference(Config.PREF_ENCODED_KEY, null);
-		if(encodedKey==null){
+		if(encodedKey!=null){
 			//on fetch update new categories and draw the categories
 			quizApp.getServerCalls().getAllUpdates(new DataInputListener2<List<UserFeed> ,List<UserInboxMessage> ,List<OfflineChallenge>, Boolean>(){
 				@Override
