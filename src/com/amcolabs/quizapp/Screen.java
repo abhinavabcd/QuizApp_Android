@@ -8,13 +8,13 @@ import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TableLayout;
 
-public class Screen extends ScrollView {
+public class Screen extends LinearLayout {
 	protected AppController controller = null;
 	protected boolean isInViewPort = true;
 	public Screen(AppController controller) {
 		super(controller.getContext());
 		this.controller = controller;
-//		this.setOrientation(LinearLayout.VERTICAL);
+		this.setOrientation(LinearLayout.VERTICAL);
 		setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.MATCH_PARENT,1));
 	}
 	
