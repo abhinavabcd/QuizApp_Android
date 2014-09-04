@@ -27,6 +27,7 @@ import android.widget.FrameLayout;
 import com.amcolabs.quizapp.appcontrollers.UserMainPageController;
 import com.amcolabs.quizapp.configuration.Config;
 import com.amcolabs.quizapp.databaseutils.DatabaseHelper;
+import com.amcolabs.quizapp.gameutils.GameUtils;
 import com.amcolabs.quizapp.serverutils.ServerCalls;
 import com.amcolabs.quizapp.uiutils.UiUtils;
 import com.amcolabs.quizapp.uiutils.UiUtils.UiText;
@@ -63,6 +64,8 @@ public class QuizApp extends Fragment implements AnimationListener {
 
 	private boolean initialized = false;
 	private MainActivity ref = null;
+
+	private GameUtils gameUtils;
 	 
 	public void setMainActivity(MainActivity mainActivity) {
 		ref = mainActivity;
@@ -89,10 +92,16 @@ public class QuizApp extends Fragment implements AnimationListener {
 			userDeviceManager = new UserDeviceManager(this);//initialized preferences , device id , pertaining to device
 			config = new Config(this);
 			uiUtils = new UiUtils(this);
+			gameUtils = new GameUtils(this);
 			serverCalls = new ServerCalls(this);
 			loadingView = userDeviceManager.getLoadingView(this.getActivity());
 			disposeScreens = new ArrayList<Screen>();
 		}
+	}
+
+
+	public GameUtils getGameUtils() {
+		return gameUtils;
 	}
 
 
