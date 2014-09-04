@@ -8,6 +8,7 @@ import java.util.Random;
 
 import android.graphics.Color;
 import android.os.Handler;
+import android.view.View;
 
 import com.amcolabs.quizapp.AppController;
 import com.amcolabs.quizapp.QuizApp;
@@ -40,6 +41,7 @@ public class ProgressiveQuizController extends AppController{
 	
 	public ProgressiveQuizController(QuizApp quizApp) {
 		super(quizApp);
+		quizApp.getMenu().setVisibility(View.GONE);
 	}
 
 	
@@ -117,6 +119,7 @@ public class ProgressiveQuizController extends AppController{
 			backPressedCount++;
 			if(backPressedCount>1){
 				backPressedCount = 0;
+				quizApp.getMenu().setVisibility(View.VISIBLE);
 				gracefullyCloseSocket();
 				return false;
 			}

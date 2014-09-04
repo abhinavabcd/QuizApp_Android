@@ -12,9 +12,9 @@ import android.widget.ListView;
 import com.amcolabs.quizapp.AppController;
 import com.amcolabs.quizapp.R;
 import com.amcolabs.quizapp.Screen;
+import com.amcolabs.quizapp.User;
 import com.amcolabs.quizapp.chat.ChatViewAdapter;
 import com.amcolabs.quizapp.chat.Message;
-import com.amcolabs.quizapp.chat.Utility;
 
 /**
  * ChatScreen is a screen which show chat log and enables chatting
@@ -38,14 +38,12 @@ public class ChatScreen extends Screen {
 		
 		text = (EditText) chatLayout.findViewById(R.id.text);
 		text.setOnClickListener(new OnClickListener() {
-			
 			@Override
 			public void onClick(View v) {
 				sendMessage(v);
 			}
 		});
 		
-		sender = Utility.sender[rand.nextInt( Utility.sender.length-1)];
 //		this.setTitle(sender);
 		messages = new ArrayList<Message>();
 
@@ -66,6 +64,11 @@ public class ChatScreen extends Screen {
 		addNewMessage(new Message("mmm, well, using 9 patches png to show them.", -1, true));
 		addView(chatLayout);
 	}
+	
+	public void setUsers(User user1 , User user){
+		
+	}
+	
 	
 	public void sendMessage(View v){
 		String newMessage = text.getText().toString().trim(); 
@@ -100,9 +103,7 @@ public class ChatScreen extends Screen {
 			}
 			
 			
-			return Utility.messages[rand.nextInt(Utility.messages.length-1)];
-			
-			
+			return "";
 		}
 		@Override
 		public void onProgressUpdate(String... v) {

@@ -210,11 +210,11 @@ public class QuizApp extends Fragment implements AnimationListener {
 					if(oldScreen==null){
 						if(++wantsToExitCount>1){
 							getActivity().finish();//all controllers finished
-							return;
 						}
 						else{
 							reinit(false);//should show first screen fetching updates and shit again
 						}
+						return;
 					}
 					while(!oldScreen.showOnBackPressed()){
 						oldScreen = popCurrentScreen();
@@ -348,6 +348,9 @@ public class QuizApp extends Fragment implements AnimationListener {
 		this.satelliteMenu = menu;
 	}
 
+	public SatelliteMenu getMenu() {
+		return this.satelliteMenu;
+	}
 	public void hideTitleBar(){
 		ref.getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         ref.getWindow().clearFlags(

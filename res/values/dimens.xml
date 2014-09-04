@@ -18,5 +18,9 @@
     <dimen name="timer_first_width">5dp</dimen>
     <dimen name="timer_second_width">5dp</dimen>
     <dimen name="timer_third_width">5dp</dimen>
+    
+    <dimen name="one_dp">1dp</dimen>
+    <dimen name="one_sp">1sp</dimen>
+    
 	
 </resources>

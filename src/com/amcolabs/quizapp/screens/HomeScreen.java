@@ -3,11 +3,12 @@ package com.amcolabs.quizapp.screens;
 import java.util.ArrayList;
 import java.util.List;
 
-import android.os.UserHandle;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -60,10 +61,33 @@ public class HomeScreen extends Screen {
 			});
 		}
 		((ListView) lView.findViewById(R.id.listView)).setAdapter(categoryAdaptor);
-		addView(lView);
+		addToScrollView(lView);
 	}
 
-	public void addUserQuizzesView(List<Quiz> quizzes, boolean showViewMore) {
+	public static ListView setListViewHeightBasedOnChildren(ListView listView) {
+	    ListAdapter listAdapter = listView.getAdapter();
+	    if (listAdapter == null)
+	        return listView;
+
+	    int desiredWidth = MeasureSpec.makeMeasureSpec(listView.getWidth(), MeasureSpec.UNSPECIFIED);
+	    int totalHeight = 0;
+	    View view = null;
+	    for (int i = 0; i < listAdapter.getCount(); i++) {
+	        view = listAdapter.getView(i, view, listView);
+	        if (i == 0)
+	            view.setLayoutParams(new ViewGroup.LayoutParams(desiredWidth, LayoutParams.WRAP_CONTENT));
+
+	        view.measure(desiredWidth, MeasureSpec.UNSPECIFIED);
+	        totalHeight += view.getMeasuredHeight();
+	    }
+	    ViewGroup.LayoutParams params = listView.getLayoutParams();
+	    params.height = totalHeight + (listView.getDividerHeight() * (listAdapter.getCount() - 1));
+	    listView.setLayoutParams(params);
+	    listView.requestLayout();
+	    return listView;
+	}
+	
+	public void addUserQuizzesView(List<Quiz> quizzes, boolean showViewMore , String text) {
 		final QuizItemListAdapter quizAdaptor = new QuizItemListAdapter(getApp(),0,quizzes, new DataInputListener<Quiz>(){
 			@Override
 			public String onData(Quiz quiz) {
@@ -72,11 +96,16 @@ public class HomeScreen extends Screen {
 			}
 		});
 		LinearLayout lView = (LinearLayout) getApp().getActivity().getLayoutInflater().inflate(R.layout.block_list_view, null);
+		lView.setBackgroundColor(getApp().getConfig().getAThemeColor());
 		EditText searchText = (EditText) lView.findViewById(R.id.search_text);
 		searchText.setVisibility(View.GONE);
 		GothamTextView titleView = (GothamTextView) lView.findViewById(R.id.title_text_view);
-		titleView.setText(UiText.USER_FAVOURITES.getValue());
-		((ListView) lView.findViewById(R.id.listView)).setAdapter(quizAdaptor);
+		titleView.setText(text);
+		ListView listView = (ListView) lView.findViewById(R.id.listView);
+		listView.setAdapter(quizAdaptor);
+
+		setListViewHeightBasedOnChildren(listView);
+		
 		FrameLayout viewMore = (FrameLayout) lView.findViewById(R.id.view_all_wrapper);
 		if(!showViewMore){
 			viewMore.setVisibility(View.GONE);
@@ -84,14 +113,11 @@ public class HomeScreen extends Screen {
 		else{
 			viewMore.setOnClickListener(new OnClickListener() {
 				@Override
-				public void onClick(View v) { 
+				public void onClick(View v) {
 					userMainController.showAllUserQuizzes();
 				}
 			});
 		}
-
-		
-		
-		addView(lView);
+		addToScrollView(lView);
 	}
 }

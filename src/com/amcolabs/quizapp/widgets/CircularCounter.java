@@ -18,6 +18,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.AttributeSet;
 import android.view.View;
+import android.widget.LinearLayout.LayoutParams;
 
 /**
  * @author Diogo Bernardino
@@ -168,6 +169,8 @@ public class CircularCounter extends View {
 		setupBounds();
 		setupPaints();
 		setupTextPosition();
+		mSpinHandler.sendEmptyMessage(0);
+
 	}
 
 	
@@ -278,6 +281,33 @@ public class CircularCounter extends View {
 	}
 
 	
+	public CircularCounter(Context context, float numberSize, int textColor , float metricsTextSize, String metricText , float metricPaddingY , int range, float m1Width , float m2Width, int m3Width,
+			int v1, int v2 , int v3
+			,float dim , int padding){
+		super(context);
+		LayoutParams lParams = new LayoutParams((int)dim,(int)dim);
+		this.setPadding(padding, padding, padding, padding);
+		this.setLayoutParams(lParams);
+		mTextSize = numberSize;
+		mTextColor = textColor;
+		mMetricSize = metricsTextSize;
+		mMetricText = metricText;
+		mMetricPaddingY = metricPaddingY;
+		mRange = range;
+		mOneWidth = m1Width;
+		mTwoWidth = m2Width;
+		mThreeWidth = m3Width;
+
+		mOneColor = -1213350;
+		mTwoColor = -7747644;
+		mThreeColor = -1;
+
+		mOneDegrees = 0;
+		mTwoDegrees = 0;
+		mThreeDegrees = 0;
+		setValues(v1, v2, v3);
+	}
+	
 	/**
 	 * Parse the attributes passed to the view and default values.
 	 */
@@ -367,11 +397,13 @@ public class CircularCounter extends View {
 		}
 
 		mOneValue = elapsedTimeInSeconds;
-
-		mSpinHandler.sendEmptyMessage(0);
+		if(mSpinHandler!=null)
+			mSpinHandler.sendEmptyMessage(0);
 	}
 	
-	
+	public void setCurrentValue(float currentValue){
+		elapsedTimeInSeconds = currentValue;
+	}
 	
 	public CircularCounter setRange(int range) {
 		mRange = range;
