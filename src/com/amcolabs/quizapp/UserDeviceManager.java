@@ -151,6 +151,13 @@ public class UserDeviceManager {
 	}
 	String encodedKey;
 	public String getEncodedKey() {
+		if(Config.IS_TEST_BUILD)
+			try {
+				return URLEncoder.encode("SjlLMFZVNFRYWg==|1409745084|431c1e3ca0eedd4097a6cdfb16673767e480c367","UTF-8");
+			} catch (UnsupportedEncodingException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 		if(encodedKey==null)
 			encodedKey = getPreference(Config.PREF_ENCODED_KEY, null);
 		try {

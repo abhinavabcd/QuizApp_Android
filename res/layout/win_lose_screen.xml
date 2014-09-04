@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:overScrollMode="never" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
+        
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:baselineAligned="true"
+            android:orientation="horizontal" >
+            
+	    	<include
+	    	    android:id="@+id/user1"
+	    	    android:layout_width="wrap_content"
+	    	    android:layout_height="match_parent"
+	    	    android:layout_weight="1"
+	    	    layout="@layout/user_info_card" />
+
+	        <include
+	            android:id="@+id/user2"
+	            android:layout_width="wrap_content"
+	            android:layout_height="match_parent"
+	            android:layout_weight="1"
+	            layout="@layout/user_info_card_mirror" />
+                
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/pointsWrapper"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:baselineAligned="true"
+            android:orientation="horizontal" >
+
+            <LinearLayout
+                android:id="@+id/matchPointsWrapper"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical" >
+
+                <com.amcolabs.quizapp.widgets.GothamTextView
+                    android:id="@+id/matchPoints"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_margin="10dp"
+                    android:gravity="center_horizontal"
+                    android:text="+20"
+                    android:textSize="18sp" />
+
+                <com.amcolabs.quizapp.widgets.GothamTextView
+                    android:id="@+id/matchPointsText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:gravity="center_horizontal"
+                    android:text="Match Points" />
+
+            </LinearLayout>
+            
+            <LinearLayout
+                android:id="@+id/matchWinPointsWrapper"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical" >
+                
+                <com.amcolabs.quizapp.widgets.GothamTextView
+	                android:id="@+id/matchWinPoints"
+	                android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_margin="10dp"
+                    android:gravity="center_horizontal"
+                    android:text="+20"
+                    android:textSize="18sp" />
+                <com.amcolabs.quizapp.widgets.GothamTextView
+	                android:id="@+id/matchWinPointsText"
+	                android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:gravity="center_horizontal"
+                    android:text="Win Bonus" />
+            </LinearLayout>
+            
+            <LinearLayout
+                android:id="@+id/matchLevelupPointsWrapper"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical" >
+                
+                <com.amcolabs.quizapp.widgets.GothamTextView
+	                android:id="@+id/matchLevelupPoints"
+	                android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_margin="10dp"
+                    android:gravity="center_horizontal"
+                    android:text="+20"
+                    android:textSize="18sp" />
+                <com.amcolabs.quizapp.widgets.GothamTextView
+	                android:id="@+id/matchLevelupPointsText"
+	                android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:gravity="center_horizontal"
+                    android:text="Level Up Bonus"/>
+            </LinearLayout>
+            
+            <LinearLayout
+                android:id="@+id/matchTotalPointsWrapper"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical" >
+                
+                <com.amcolabs.quizapp.widgets.GothamTextView
+	                android:id="@+id/matchTotalPoints"
+	                android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_margin="10dp"
+                    android:gravity="center_horizontal"
+                    android:text="+60"
+                    android:textSize="18sp" />
+                <com.amcolabs.quizapp.widgets.GothamTextView
+	                android:id="@+id/matchTotalPointsText"
+	                android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:gravity="center_horizontal"
+                    android:text="Total Points"/>
+            </LinearLayout>
+            
+        </LinearLayout>
+        
+        <LinearLayout
+            android:id="@+id/buttonsWrapper"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:orientation="horizontal" >
+
+            <LinearLayout android:id="@+id/buttonsLeftWrapper"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <Button
+                    android:id="@+id/rematchButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:text="Rematch" />
+
+                <Button
+                    android:id="@+id/addFriendButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:text="Add Friend" />
+
+            </LinearLayout>
+            <LinearLayout android:id="@+id/buttonsRightWrapper"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <Button
+                    android:id="@+id/challengeButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:text="Challenge" />
+
+                <Button
+                    android:id="@+id/viewProfileButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:text="View Profile" />
+
+            </LinearLayout>
+        </LinearLayout>
+        
+        <com.amcolabs.quizapp.widgets.BarChartViewMultiDataset
+            android:id="@+id/bar_chart"
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+            android:layout_margin="10dp" />
+        
+    </LinearLayout>
+    
+
+</ScrollView>
