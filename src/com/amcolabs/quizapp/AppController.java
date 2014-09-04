@@ -8,7 +8,7 @@ import android.widget.LinearLayout;
 
 public abstract class AppController {
 	
-	protected QuizApp quizApp;
+	public QuizApp quizApp;
 	public AppController(QuizApp quizApp) {
 		this.quizApp = quizApp;
 	}

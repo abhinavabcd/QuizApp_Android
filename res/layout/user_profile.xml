@@ -2,7 +2,8 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/user_profile_wrapper"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" >
+    android:layout_height="match_parent"
+    android:overScrollMode="never" >
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -40,14 +41,28 @@
                 android:gravity="center"
                 android:text="10 Lost" />
 
+            <TextView
+                android:id="@+id/tie_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="2 Tie" />
+
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/chart"
+            android:id="@+id/chartWrapper"
             android:layout_width="match_parent"
             android:layout_height="400dp"
             android:background="@color/grey"
-            android:orientation="vertical">
+            android:orientation="vertical" >
+
+            <com.amcolabs.quizapp.widgets.PieChartView
+                android:id="@+id/pie_chart"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
         </LinearLayout>
 
         <com.amcolabs.quizapp.widgets.SeperatorView

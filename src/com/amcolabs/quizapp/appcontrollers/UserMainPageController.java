@@ -25,6 +25,7 @@ import com.amcolabs.quizapp.screens.QuizzesScreen;
 import com.amcolabs.quizapp.screens.HomeScreen;
 import com.amcolabs.quizapp.screens.UserProfileScreen;
 import com.amcolabs.quizapp.screens.WelcomeScreen;
+import com.amcolabs.quizapp.screens.WinOrLoseScreen;
 import com.amcolabs.quizapp.uiutils.UiUtils.UiText;
 import com.androidsocialnetworks.lib.AccessToken;
 import com.androidsocialnetworks.lib.SocialNetworkManager;
@@ -129,6 +130,8 @@ public class UserMainPageController  extends AppController implements OnInitiali
 //		cs.addQuizzes();
 		
 		insertScreen(cs);
+//		insertScreen(new UserProfileScreen(this));
+//		insertScreen(new WinOrLoseScreen(this));
 	}
 	
 

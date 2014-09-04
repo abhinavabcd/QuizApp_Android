@@ -48,6 +48,10 @@ public class User {
 		return 0;
 	}
 	
+	public double getPoints(Quiz quiz){
+		return 0;
+	}
+	
 	public boolean isBotUser(){
 		return uid.startsWith("0");
 	}
