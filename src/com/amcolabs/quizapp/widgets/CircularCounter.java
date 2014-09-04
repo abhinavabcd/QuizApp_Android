@@ -366,7 +366,7 @@ public class CircularCounter extends View {
 			mThreeDegrees = 360;
 		}
 
-		mOneValue = v1;
+		mOneValue = elapsedTimeInSeconds;
 
 		mSpinHandler.sendEmptyMessage(0);
 	}

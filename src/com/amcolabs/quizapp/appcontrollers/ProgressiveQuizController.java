@@ -15,8 +15,10 @@ import com.amcolabs.quizapp.User;
 import com.amcolabs.quizapp.configuration.Config;
 import com.amcolabs.quizapp.databaseutils.Question;
 import com.amcolabs.quizapp.databaseutils.Quiz;
+import com.amcolabs.quizapp.screens.ChatScreen;
 import com.amcolabs.quizapp.screens.ClashScreen;
 import com.amcolabs.quizapp.screens.QuestionScreen;
+import com.amcolabs.quizapp.screens.UserProfileScreen;
 import com.amcolabs.quizapp.serverutils.ServerResponse;
 import com.amcolabs.quizapp.serverutils.ServerResponse.MessageType;
 import com.amcolabs.quizapp.serverutils.ServerWebSocketConnection;
@@ -104,6 +106,7 @@ public class ProgressiveQuizController extends AppController{
 	
 	@Override
 	public void onDestroy() {
+		gracefullyCloseSocket();
 	}
 	
 	int backPressedCount = 0;
@@ -287,7 +290,11 @@ public class ProgressiveQuizController extends AppController{
 
 	public void validateAndShowWinningScreen(){
 		List<UserAnswer> l = userAnswersStack.get(quizApp.getUser().uid);
-		System.out.println(l.toString());
+		
+		clearScreen();
+		ChatScreen winORLostScreen = new ChatScreen(this);
+		insertScreen(winORLostScreen);
+
 	}
 	
 	public void onMessageRecieved(MessageType messageType, ServerResponse response, String data) {
@@ -377,6 +384,7 @@ public class ProgressiveQuizController extends AppController{
 		payload = new UserAnswer(currentQuestion.questionId, quizApp.getUser().uid, "", currentQuestion.getTime(), currentScore);//all time elapsed
 		if(!isBotMode())
 			serverSocket.sendTextMessage(quizApp.getConfig().getGson().toJson(payload));
+		questionScreen.highlightCorrectAnswer();
 		checkAndProceedToNextQuestion(payload);
 		return null;
 	}

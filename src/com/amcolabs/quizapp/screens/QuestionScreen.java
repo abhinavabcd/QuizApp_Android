@@ -128,7 +128,8 @@ public class QuestionScreen extends Screen implements View.OnClickListener, Anim
 	
 	public void animateXpPoints(String uid,  int xpPoints){
 		userViews.get(uid).userScoreView.setText(xpPoints+" xp");
-		userViews.get(uid).userScoreView.setAnimation(animTextScale);
+		animTextScale.reset();
+		userViews.get(uid).userScoreView.startAnimation(animTextScale);
 		
 	}
 	
@@ -172,10 +173,11 @@ public class QuestionScreen extends Screen implements View.OnClickListener, Anim
 		preQuestionText1.setText(titleInfo1);
 		preQuestionText2.setText(titleInfo2);
 		preQuestionText3.setText(null);
+		animFadeOut.reset();
 		preQuestionView.startAnimation(animFadeOut);
 	}
 
-	private void highlightCorrectAnswer(){
+	public void highlightCorrectAnswer(){
 		for(Button b:questionOptionsViews){
 			if(currentQuestion.isCorrectAnwer((String)b.getTag()))
 				b.setTextColor(Color.GREEN);

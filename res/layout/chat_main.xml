@@ -1,89 +1,121 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/FrameLayout1"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:background="@color/white"
-    android:orientation="vertical" >
+    android:background="@color/white" >
 
     <LinearLayout
-        android:id="@+id/bottom_write_bar"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:background="@drawable/message_bar" >
-
-        <EditText
-            android:id="@+id/text"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:layout_margin="5sp"
-            android:layout_weight="1"
-            android:background="@drawable/message_field"
-            android:hint="Write here"
-            android:padding="8dp"
-            android:textColor="@color/textFieldColor" />
-
-        <Button
-            android:id="@+id/send_button"
-            android:layout_width="wrap_content"
-            android:layout_height="fill_parent"
-            android:layout_margin="5sp"
-            android:background="@drawable/send_button"
-            android:paddingBottom="5sp"
-            android:paddingLeft="15sp"
-            android:paddingRight="15sp"
-            android:paddingTop="5sp"
-            android:text="Send"
-            android:textColor="#FFF" />
-
-    </LinearLayout>
-    
-    <LinearLayout android:id="@+id/userImagesBar"
-        android:orientation="horizontal"
+        android:id="@+id/userImagesBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true">
-        
-        <ImageView
-            android:id="@+id/user1"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_gravity="left"
-            android:layout_weight="1"
-            android:contentDescription="user1"
-            android:src="@drawable/ic_launcher" />
+        android:background="#55000000"
+        android:orientation="horizontal" >
 
-        <ImageView
-            android:id="@+id/user2"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_gravity="right"
+        <LinearLayout
+            android:id="@+id/user1view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:contentDescription="user2"
-            android:src="@drawable/kajal" />
+            android:gravity="left" >
 
+            <ImageView
+                android:id="@+id/user1"
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left"
+                android:contentDescription="user1"
+                android:src="@drawable/ic_launcher" />
+
+            <TextView
+                android:id="@+id/textView1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:text="Medium Text"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/user2view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="right" >
+
+            <TextView
+                android:id="@+id/textView2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:text="Medium Text"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+
+            <ImageView
+                android:id="@+id/user2"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:contentDescription="user2"
+                android:src="@drawable/ic_launcher" />
+        </LinearLayout>
     </LinearLayout>
 
-    <ListView
-        android:id="@+id/chat_list_view"
-        android:layout_width="fill_parent"
-        android:layout_height="0dip"
-        android:layout_above="@id/bottom_write_bar"
-        android:layout_alignParentTop="false"
-        android:layout_below="@id/userImagesBar"
-        android:cacheColorHint="#00000000"
-        android:divider="#00000000"
-        android:listSelector="#00000000" >
+    <LinearLayout
+        android:id="@+id/wrapper_chatlist_bottom_write"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical" >
 
-    </ListView>
+        <ListView
+            android:id="@+id/chat_list_view"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:cacheColorHint="#00000000"
+            android:divider="#00000000"
+            android:paddingTop="45dp"
+		    android:clipToPadding="false"
+            android:listSelector="#00000000" >
+        </ListView>
+
+        <LinearLayout
+            android:id="@+id/bottom_write_bar"
+            android:layout_width="match_parent"
+            android:layout_height="55dp"
+            android:background="@drawable/message_bar"         
+            android:orientation="horizontal" >
+
+            <EditText
+                android:id="@+id/text"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_margin="5sp"
+                android:layout_weight="1"
+                android:background="@drawable/chat_send_message_field"
+                android:hint="Write here"
+                android:padding="8dp"
+                android:textColor="@color/textFieldColor" />
+
+            <Button
+                android:id="@+id/send_button"
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:layout_margin="5sp"
+                android:background="@drawable/chat_send_button"
+                android:paddingBottom="5sp"
+                android:paddingLeft="15sp"
+                android:paddingRight="15sp"
+                android:paddingTop="5sp"
+                android:text="Send"
+                android:textColor="#FFF" />
+        </LinearLayout>
+    </LinearLayout>
 
     <TextView
         android:id="@+id/empty"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:layout_above="@id/bottom_write_bar"
-        android:layout_alignParentTop="true"
         android:gravity="center_vertical|center_horizontal"
         android:text="@string/main_empty_list" />
 
-</RelativeLayout>
+</FrameLayout>

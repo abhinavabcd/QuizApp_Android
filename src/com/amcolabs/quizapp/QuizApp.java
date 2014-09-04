@@ -17,6 +17,8 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
 import android.view.ext.SatelliteMenu;
@@ -60,6 +62,12 @@ public class QuizApp extends Fragment implements AnimationListener {
 	private View loadingView;
 
 	private boolean initialized = false;
+	private MainActivity ref = null;
+	 
+	public void setMainActivity(MainActivity mainActivity) {
+		ref = mainActivity;
+	}
+
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		mainFrame = (FrameLayout)getActivity().getLayoutInflater().inflate(R.layout.quizapp_layout,null);
@@ -176,6 +184,7 @@ public class QuizApp extends Fragment implements AnimationListener {
 		return dbHelper;
 	}
 	
+	private int wantsToExitCount = 0;
 	public void onBackPressed() {
 		try{		
 				
@@ -189,6 +198,15 @@ public class QuizApp extends Fragment implements AnimationListener {
 					animateScreenRemove(screen , TO_RIGHT,null);
 					
 					Screen oldScreen = popCurrentScreen();
+					if(oldScreen==null){
+						if(++wantsToExitCount>1){
+							getActivity().finish();//all controllers finished
+							return;
+						}
+						else{
+							reinit(false);//should show first screen fetching updates and shit again
+						}
+					}
 					while(!oldScreen.showOnBackPressed()){
 						oldScreen = popCurrentScreen();
 					}
@@ -321,5 +339,25 @@ public class QuizApp extends Fragment implements AnimationListener {
 		this.satelliteMenu = menu;
 	}
 
+	public void hideTitleBar(){
+		ref.getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        ref.getWindow().clearFlags(
+                        WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
+
+	}
+	
+	public void showTitleBar(){
+		ref.getWindow().addFlags(
+                WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
+		ref.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+	}
+
+
+	public void destroyAllScreens() {
+		Screen s = null;
+		while( (s = popCurrentScreen())!=null){
+			s.controller.onDestroy();
+		}
+	}
 
 }

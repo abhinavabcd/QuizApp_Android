@@ -9,6 +9,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBarActivity;
 import android.util.TypedValue;
 import android.view.MenuItem;
+import android.view.Window;
 import android.view.ext.SatelliteMenu;
 import android.view.ext.SatelliteMenu.SateliteClickedListener;
 import android.view.ext.SatelliteMenuItem;
@@ -24,9 +25,11 @@ public class MainActivity extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+		requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_main);
         if(quizApp==null) quizApp = new QuizApp();
-        
+        quizApp.setMainActivity(this);
+
         
         SatelliteMenu menu = (SatelliteMenu) findViewById(R.id.menu);
         
@@ -115,6 +118,7 @@ public class MainActivity extends ActionBarActivity {
 	
 	@Override
 	protected void onDestroy() {
+		quizApp.destroyAllScreens();
 		UserDeviceManager.setAppRunningState(AppRunningState.IS_DESTROYED);
 		super.onDestroy();
 	}

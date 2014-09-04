@@ -28,7 +28,8 @@ public class User {
 	public ArrayList<Integer> badges;
 	public HashMap<String,Integer> stats;
 	public HashMap<String, Integer[]>winsLosses;
-
+	private int userType;
+	
 	public String getFacebookAuthToken(){
 		return facebook;
 	}

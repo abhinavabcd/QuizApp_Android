@@ -67,8 +67,7 @@ public class ChatScreen extends Screen {
 		addView(chatLayout);
 	}
 	
-	public void sendMessage(View v)
-	{
+	public void sendMessage(View v){
 		String newMessage = text.getText().toString().trim(); 
 		if(newMessage.length() > 0)
 		{
