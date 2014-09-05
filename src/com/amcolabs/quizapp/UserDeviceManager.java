@@ -15,6 +15,7 @@ import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
 
 import com.amcolabs.quizapp.configuration.Config;
+import com.amcolabs.quizapp.notificationutils.NotificationReciever;
 
 public class UserDeviceManager {
 
@@ -134,6 +135,7 @@ public class UserDeviceManager {
 	}
 	public static void setAppRunningState(AppRunningState state) {
 		 currentState = state;
+		 NotificationReciever.destroyAllListeners();
 	}
 	public static boolean isRunning() {
 		// TODO Auto-generated method stub

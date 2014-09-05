@@ -207,17 +207,24 @@ public class QuizApp extends Fragment implements AnimationListener {
 					animateScreenRemove(screen , TO_RIGHT,null);
 					
 					Screen oldScreen = popCurrentScreen();
+					while(oldScreen!=null && !oldScreen.showOnBackPressed()){
+						oldScreen = popCurrentScreen();
+					}
+					
 					if(oldScreen==null){
 						if(++wantsToExitCount>1){
 							getActivity().finish();//all controllers finished
 						}
 						else{
 							reinit(false);//should show first screen fetching updates and shit again
+							new Handler().postDelayed(new Runnable() {
+								@Override
+								public void run() {
+									wantsToExitCount = 0;
+								}
+							}, 3000);
 						}
 						return;
-					}
-					while(!oldScreen.showOnBackPressed()){
-						oldScreen = popCurrentScreen();
 					}
 					animateScreenIn(oldScreen);
 				}

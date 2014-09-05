@@ -293,11 +293,10 @@ public class ProgressiveQuizController extends AppController{
 
 	public void validateAndShowWinningScreen(){
 		List<UserAnswer> l = userAnswersStack.get(quizApp.getUser().uid);
-		
 		clearScreen();
-		ChatScreen winORLostScreen = new ChatScreen(this);
-		insertScreen(winORLostScreen);
-
+		ProfileAndChatController profileAndChat = (ProfileAndChatController) quizApp.loadAppController(ProfileAndChatController.class);
+		profileAndChat.loadChatScreen(user2, -1, true);
+		
 	}
 	
 	public void onMessageRecieved(MessageType messageType, ServerResponse response, String data) {

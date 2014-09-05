@@ -611,4 +611,43 @@ public class ServerCalls {
 			}
 		});
 	}
+
+
+	public void getMessages(User user2, int toIndex, final DataInputListener<List<UserInboxMessage>> dataInputListener) {
+		String url = getAServerAddr()+"/func?task=getPreviousMessages";
+		url+="&encodedKey="+quizApp.getUserDeviceManager().getEncodedKey()+"&toIndex="+toIndex;
+		makeServerCall(url, new ServerNotifier() {
+			
+			@Override
+			public void onServerResponse(MessageType messageType,ServerResponse response) {
+				switch(messageType){
+				case OK_MESSAGES:
+					List<UserInboxMessage> messages = quizApp.getConfig().getGson().fromJson(response.payload, new TypeToken<List<UserInboxMessage>>(){}.getType());
+					dataInputListener.onData(messages);
+					break;
+				default:
+					dataInputListener.onData(new ArrayList<UserInboxMessage>());
+					break;
+				}
+			}
+		});
+	}
+
+
+	public void sendChatMessage(User user2, String string) {
+		String url = getAServerAddr()+"/func?task=sendUnboxMessage";
+		url+="&encodedKey="+quizApp.getUserDeviceManager().getEncodedKey();
+
+		Map<String,String > params = new HashMap<String, String>();
+		params.put("toUser",user2.uid);
+		params.put("textMessage",string);
+		makeServerPostCall(url, params , new ServerNotifier() {
+			@Override
+			public void onServerResponse(MessageType messageType,ServerResponse response) {
+				switch(messageType){
+					
+				}
+			}
+		}, false);
+	}
 }
