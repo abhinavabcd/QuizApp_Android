@@ -126,8 +126,6 @@ public class ChatScreen extends Screen {
 			
 			addNewMessage(new Message(text,-1, false)); // add the original message from server.
 		}
-		
-
 	}
 	
 	void addNewMessage(Message m)

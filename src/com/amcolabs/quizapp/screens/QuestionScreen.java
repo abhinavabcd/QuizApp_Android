@@ -3,6 +3,8 @@ package com.amcolabs.quizapp.screens;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import android.graphics.Color;
 import android.os.Handler;
@@ -26,6 +28,7 @@ import com.amcolabs.quizapp.appcontrollers.ProgressiveQuizController;
 import com.amcolabs.quizapp.configuration.Config;
 import com.amcolabs.quizapp.databaseutils.Question;
 import com.amcolabs.quizapp.datalisteners.DataInputListener;
+import com.amcolabs.quizapp.uiutils.UiUtils;
 import com.amcolabs.quizapp.widgets.CustomProgressBar;
 import com.amcolabs.quizapp.widgets.CircularCounter;
 import com.squareup.picasso.Picasso;
@@ -106,7 +109,7 @@ public class QuestionScreen extends Screen implements View.OnClickListener, Anim
 		addView(fullQuestionLayout);
 	}
 	
-	public void showUserInfo(ArrayList<User> uNames) {
+	public void showUserInfo(ArrayList<User> uNames,int maxScore) {
 		int index = 0;
 		for(RelativeLayout userView : Arrays.asList((RelativeLayout) headerViewWrapper.findViewById(R.id.user1), (RelativeLayout) headerViewWrapper.findViewById(R.id.user2))){
 			User user = uNames.get(index++);
@@ -122,6 +125,7 @@ public class QuestionScreen extends Screen implements View.OnClickListener, Anim
 			userProgressView.userNameView.setText(user.name);
 			Picasso.with(getApp().getContext()).load(user.pictureUrl).into(userProgressView.userImageView);
 			userProgressView.userProgressView.setProgress(0);
+			userProgressView.userProgressView.setMax(maxScore);
 			userProgressView.userScoreView.setText("+0XP");
 		}
 	}
@@ -133,6 +137,36 @@ public class QuestionScreen extends Screen implements View.OnClickListener, Anim
 		
 	}
 	
+	public void animateProgressView(final String uid,final int newProgress){
+		final CustomProgressBar pbar = userViews.get(uid).userProgressView;
+		if(pbar==null)
+			return;
+//		getApp().getUiUtils().setInterval(1000, new DataInputListener<Integer>(){
+//			@Override
+//			public String onData(Integer s) {
+//				int tmp = pbar.getSecondaryProgress();
+//				if(tmp>=newProgress){
+//					pbar.setProgress(newProgress);
+//					this.cancel();
+//				}
+//				pbar.setSecondaryProgress(s);	
+//				return super.onData(s);
+//			}
+//		});
+		Timer tim = new Timer();
+		tim.schedule(new TimerTask() {
+			@Override
+			public void run() {
+				int tmp = pbar.getSecondaryProgress();
+				if(tmp>=newProgress){
+					pbar.setProgress(newProgress);
+					this.cancel();
+				}
+				pbar.setSecondaryProgress(tmp+1);	
+			}
+		}, 100); 
+	}
+	
 	private boolean isOptionSelected = true;
 	protected Question currentQuestion;
 	
@@ -141,6 +175,7 @@ public class QuestionScreen extends Screen implements View.OnClickListener, Anim
 		preQuestionView.setVisibility(View.INVISIBLE);
 		questionAndOptionsViewWrapper.setVisibility(View.VISIBLE);
 		questionTextView.setText(ques.questionDescription);
+		
 		// TODO: should use longoptionflag to change layout
 		if (ques.getAssetPaths().size()==0){ //longOptionFlag ||
 			optionsViewWrapper.setOrientation(LinearLayout.VERTICAL);
