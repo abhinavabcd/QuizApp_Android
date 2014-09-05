@@ -1,9 +1,8 @@
 package com.amcolabs.quizapp.appcontrollers;
-
+ 
 import java.util.ArrayList;
 import java.util.List;
 
-import twitter4j.examples.geo.ReverseGeoCode;
 import android.view.View;
 import android.view.View.OnClickListener;
 

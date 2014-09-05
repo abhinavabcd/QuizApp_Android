@@ -122,14 +122,13 @@
                 android:gravity="right"
                 android:orientation="vertical" >
 
-                <com.amcolabs.quizapp.widgets.GothamTextView 
-                    android:id="@+id/user_card_name_2" 
-                    android:layout_width="wrap_content" 
-                    android:layout_height="wrap_content" 
-                    android:text="Medium Text" 
-                    android:textColor="@color/white" 
-                    android:textAppearance="?android:attr/textAppearanceMedium" 
-                />
+                <com.amcolabs.quizapp.widgets.GothamTextView
+                    android:id="@+id/user_name_2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Medium Text"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textColor="@color/white" />
 
                 <com.amcolabs.quizapp.widgets.GothamTextView 
                     android:id="@+id/user_status_msg_2" 

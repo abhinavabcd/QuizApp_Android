@@ -7,6 +7,7 @@ import android.os.AsyncTask;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
 
 import com.amcolabs.quizapp.AppController;
@@ -15,6 +16,8 @@ import com.amcolabs.quizapp.Screen;
 import com.amcolabs.quizapp.User;
 import com.amcolabs.quizapp.chat.ChatViewAdapter;
 import com.amcolabs.quizapp.chat.Message;
+import com.amcolabs.quizapp.widgets.GothamTextView;
+import com.squareup.picasso.Picasso;
 
 /**
  * ChatScreen is a screen which show chat log and enables chatting
@@ -29,6 +32,12 @@ public class ChatScreen extends Screen {
 	ChatViewAdapter adapter;
 	ListView chatView;
 	EditText text;
+	private GothamTextView user1Name;
+	private GothamTextView user1Status;
+	private GothamTextView user2Name;
+	private GothamTextView user2Status;
+	private ImageView user1Image;
+	private ImageView user2Image;
 	static Random rand = new Random();	
 	static String sender;
 	
@@ -43,6 +52,17 @@ public class ChatScreen extends Screen {
 				sendMessage(v);
 			}
 		});
+		
+		
+		user1Name = (GothamTextView)chatLayout.findViewById(R.id.user_name);
+		user1Status = (GothamTextView)chatLayout.findViewById(R.id.user_status_msg);
+		user1Image = (ImageView)chatLayout.findViewById(R.id.user1);
+		
+		user2Name = (GothamTextView)chatLayout.findViewById(R.id.user_name_2);
+		user2Status = (GothamTextView)chatLayout.findViewById(R.id.user_status_msg_2);
+		user2Image = (ImageView)chatLayout.findViewById(R.id.user2);
+		
+		
 		
 //		this.setTitle(sender);
 		messages = new ArrayList<Message>();
@@ -65,8 +85,18 @@ public class ChatScreen extends Screen {
 		addView(chatLayout);
 	}
 	
-	public void setUsers(User user1 , User user){
+	public void showUsers(User user2 , User user){
+		user1Status.setText(user.status);
+		user1Name.setText(user.name);
+		if(user.pictureUrl!=null){
+			Picasso.with(getApp().getContext()).load(user.pictureUrl).into(user1Image);
+		}
 		
+		user2Status.setText(user2.status);
+		user2Name.setText(user2.name);
+		if(user2.pictureUrl!=null){
+			Picasso.with(getApp().getContext()).load(user2.pictureUrl).into(user2Image);
+		}
 	}
 	
 	
@@ -79,6 +109,7 @@ public class ChatScreen extends Screen {
 			new SendMessage().execute();
 		}
 	}
+	
 	private class SendMessage extends AsyncTask<Void, String, String>
 	{
 		@Override
