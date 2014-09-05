@@ -20,6 +20,7 @@ import com.amcolabs.quizapp.screens.ChatScreen;
 import com.amcolabs.quizapp.screens.ClashScreen;
 import com.amcolabs.quizapp.screens.QuestionScreen;
 import com.amcolabs.quizapp.screens.UserProfileScreen;
+import com.amcolabs.quizapp.screens.WinOrLoseScreen;
 import com.amcolabs.quizapp.serverutils.ServerResponse;
 import com.amcolabs.quizapp.serverutils.ServerResponse.MessageType;
 import com.amcolabs.quizapp.serverutils.ServerWebSocketConnection;
@@ -63,6 +64,15 @@ public class ProgressiveQuizController extends AppController{
 		quizApp.getServerCalls().startProgressiveQuiz(this, quiz);
 	}	
 	
+	public int getMaxScore(){
+		if(currentQuestions==null || currentQuestions.size()==0)
+			return 0;
+		int mscore = 0;
+		for(int i=0;i<currentQuestions.size();i++){
+			mscore += currentQuestions.get(i).xp;
+		}
+		return mscore;
+	}
 	
 	public void showQuestionScreen(ArrayList<User> users){
 		for(User user: currentUsers){
@@ -76,9 +86,10 @@ public class ProgressiveQuizController extends AppController{
 				}
 			}
 		}
+
 		//pre download assets if ever its possible
 		questionScreen = new QuestionScreen(this);
-		questionScreen.showUserInfo(users);
+		questionScreen.showUserInfo(users,getMaxScore());
 		//animate TODO:
 		new Handler().postDelayed(new Runnable() {
 			
@@ -103,7 +114,7 @@ public class ProgressiveQuizController extends AppController{
 					scheduleBotAnswer(currentQuestion);
 
 			}
-		}, Config.CLASH_SCREEN_DELAY+Config.PREQUESTION_FADE_OUT_ANIMATIOTION_TIME);
+		}, Config.CLASH_SCREEN_DELAY+Config.PREQUESTION_FADE_OUT_ANIMATION_TIME);
 	}
 	
 	@Override
@@ -198,19 +209,19 @@ public class ProgressiveQuizController extends AppController{
 		}, Config.BOT_INTIALIZE_AFTER_NO_USER_TIME);
 	}
 	
-	static class UserAnswer{
+	public static class UserAnswer{
 		@SerializedName(MESSAGE_TYPE)
-		int messageType = MessageType.USER_ANSWERED_QUESTION.getValue();
+		public int messageType = MessageType.USER_ANSWERED_QUESTION.getValue();
 	    @SerializedName(QUESTION_ID)
-		String questionId;
+	    public String questionId;
 	    @SerializedName("uid")
-		String uid;
+	    public String uid;
 	    @SerializedName(USER_ANSWER)
-		String userAnswer;
+	    public String userAnswer;
 	    @SerializedName(ELAPSED_TIME)
-		int elapsedTime;
+	    public int elapsedTime;
 	    @SerializedName(WHAT_USER_HAS_GOT)
-		int whatUserGot;
+	    public int whatUserGot;
 		
 		public UserAnswer(String questionId, String uid, String userAnswer, int elapsedTime, int whatUserGot) {
 			this.questionId = questionId;
@@ -223,6 +234,7 @@ public class ProgressiveQuizController extends AppController{
 	
 	private void checkAndProceedToNextQuestion(UserAnswer userAnswer){
 		userAnswers.put(userAnswer.uid,  userAnswer);
+		questionScreen.animateProgressView(userAnswer.uid, userAnswer.whatUserGot);
 		if(userAnswersStack.containsKey(userAnswer.uid)){
 			userAnswersStack.get(userAnswer.uid).add(userAnswer);
 		}
@@ -235,7 +247,7 @@ public class ProgressiveQuizController extends AppController{
 			
     		questionScreen.getTimerView().resetTimer();
 			for(String u: userAnswers.keySet()){
-				questionScreen.animateXpPoints(u, userAnswers.get(u).whatUserGot); 
+				questionScreen.animateXpPoints(u, userAnswers.get(u).whatUserGot);
 			}
 			for(String uid: userAnswers.keySet()){
 				questionScreen.highlightOtherUsersOption(uid, userAnswers.get(uid).userAnswer);
@@ -286,7 +298,7 @@ public class ProgressiveQuizController extends AppController{
 						}, elapsedTime*1000);
 					}
 			}
-		}, Config.PREQUESTION_FADE_OUT_ANIMATIOTION_TIME);
+		}, Config.PREQUESTION_FADE_OUT_ANIMATION_TIME);
 
 	}
 
@@ -297,6 +309,10 @@ public class ProgressiveQuizController extends AppController{
 		ProfileAndChatController profileAndChat = (ProfileAndChatController) quizApp.loadAppController(ProfileAndChatController.class);
 		profileAndChat.loadChatScreen(user2, -1, true);
 		
+//		WinOrLoseScreen resultScreen = new WinOrLoseScreen(this);
+//		resultScreen.showResultInChart(currentUsers,userAnswersStack);
+//		insertScreen(resultScreen);
+
 	}
 	
 	public void onMessageRecieved(MessageType messageType, ServerResponse response, String data) {

@@ -96,7 +96,6 @@ public class ChatScreen extends Screen {
 		if(user.pictureUrl!=null){
 			Picasso.with(getApp().getContext()).load(user.pictureUrl).into(user1Image);
 		}
-		
 		user2Status.setText(user2.status);
 		user2Name.setText(user2.name);
 		if(user2.pictureUrl!=null){
