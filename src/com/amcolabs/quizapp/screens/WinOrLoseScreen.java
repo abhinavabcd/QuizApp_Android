@@ -6,7 +6,12 @@ import java.util.List;
 
 import android.content.Context;
 import android.view.LayoutInflater;
+import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.Animation.AnimationListener;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 
@@ -49,9 +54,11 @@ public class WinOrLoseScreen extends Screen{
 		quizResult = (ScrollView) LayoutInflater.from(controller.getContext()).inflate(R.layout.win_lose_screen, null);
 		LinearLayout users = (LinearLayout) quizResult.findViewById(R.id.users);
 		userViews = new ArrayList<LinearLayout>();
+		LinearLayout tmp;
 		for (int i=0;i<users.getChildCount();i++){
-			userViews.add((LinearLayout) users.getChildAt(i));
-			setSampleData(this.getContext(),(PieChartView) userViews.get(i).findViewById(R.id.user_chart));
+			tmp = (LinearLayout) users.getChildAt(i);
+			userViews.add(tmp);
+			setSampleData(this.getContext(),(PieChartView) tmp.findViewById(R.id.user_chart));
 		}
 		
 		mChart = (BarChartViewMultiDataset) quizResult.findViewById(R.id.bar_chart);
@@ -77,12 +84,64 @@ public class WinOrLoseScreen extends Screen{
 //		addView(chatScreen);
 	}
 	
-	public void showResult(User currenUser , User user2 , boolean hasWon){
+	public void showResult(ArrayList<User> currentUsers, HashMap<String, List<UserAnswer>> userAnswersStack,int whoWon){
 	  // Show whether user has won or not
 	  // rematch button , addFriend button , challenge with points button ,  seeProfile button
 	// for these buttons , will use the same layout we used for category view ,list_item_layout.xml
 	  // and load the profileViewLayout of both users in block , one after the other
 	  //  will have place for chat block there itself users can live chat there itself
+		
+		LinearLayout tmp;
+		ImageView imgView;
+		for(int i=0;i<userViews.size();i++){
+			tmp = userViews.get(i);
+			imgView = (ImageView)tmp.findViewById(R.id.user_card_small_pic);
+			imgView.setTag(currentUsers.get(i));
+			imgView.setOnClickListener(new OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					User user = (User) v.getTag();
+					UserProfileScreen uScreen = new UserProfileScreen(controller);
+					uScreen.showUser(user);
+					controller.insertScreen(uScreen);
+				}
+			});
+		}
+		animatePoints(20,20,20);
+		showResultInChart(currentUsers, userAnswersStack);
+	}
+
+	private void animatePoints(int qPoints, int qwPoints, int luPoints) {
+		Animation anim = AnimationUtils.loadAnimation(getApp().getContext(), R.anim.abc_slide_in_top);
+		quizPoints.setText(qPoints+" XP");
+		quizPoints.startAnimation(anim);
+		anim.setAnimationListener(new AnimationListener() {
+			
+			@Override
+			public void onAnimationStart(Animation animation) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void onAnimationRepeat(Animation animation) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void onAnimationEnd(Animation animation) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
+		quizWinPoints.setText(qwPoints+" XP");
+		quizWinPoints.startAnimation(anim);
+		quizLevelupPoints.setText(luPoints+" XP");
+		quizLevelupPoints.startAnimation(anim);
+		quizTotalPoints.setText((qPoints+qwPoints+luPoints)+" XP");
+		quizTotalPoints.startAnimation(anim);
 	}
 
 	public void showAnimationOfCurrentGamePoints(int[] questionPoints, int[] questionBasedBonus , int winBonus){

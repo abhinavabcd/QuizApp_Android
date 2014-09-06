@@ -126,6 +126,8 @@ public class QuestionScreen extends Screen implements View.OnClickListener, Anim
 			Picasso.with(getApp().getContext()).load(user.pictureUrl).into(userProgressView.userImageView);
 			userProgressView.userProgressView.setProgress(0);
 			userProgressView.userProgressView.setMax(maxScore);
+
+			userProgressView.userProgressView.setBackgroundColor(getApp().getConfig().getAThemeColor());
 			userProgressView.userScoreView.setText("+0XP");
 		}
 	}
