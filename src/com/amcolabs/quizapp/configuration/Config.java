@@ -66,6 +66,8 @@ public class Config{
 	public static final long PREQUESTION_FADE_OUT_ANIMATION_TIME = 2000;
 	public static final long BOT_INTIALIZE_AFTER_NO_USER_TIME = 5000;
 	public static final long QUESTION_END_DELAY_TIME = 3000;
+	public static final String KEY_GCM_FROM_USER = "fromUser";
+	public static final String KEY_GCM_TEXT_MESSAGE = "textMessage";
 	public static int[] themeColors = new int []{Color.rgb(139, 171,66),
 									    		Color.rgb(232, 93,12),
 									    		Color.rgb(37, 142,161),

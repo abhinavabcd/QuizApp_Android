@@ -42,7 +42,7 @@ public class PieChartView extends PieChart{
 
         this.setDrawHoleEnabled(true);
         
-        this.setRotationAngle(0);
+       // this.setRotationAngle(0);
 
         // draws the corresponding description value into the slice
         this.setDrawXValues(true);

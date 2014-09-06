@@ -63,11 +63,15 @@ public class NotificationReciever extends BroadcastReceiver{
 				boolean generateNotification = true;
 				if(extras!=null){
 					switch(type){
-					case NOTIFICATION_GCM_INBOX_MESSAGE:
-						if(UserDeviceManager.isRunning()){
-							
-						}
-					}	
+						case NOTIFICATION_GCM_INBOX_MESSAGE:
+							if(UserDeviceManager.isRunning()){
+								if(this.listeners.containsKey(NotificationType.NOTIFICATION_GCM_INBOX_MESSAGE)){
+									listeners.get(NotificationType.NOTIFICATION_GCM_INBOX_MESSAGE).onData(extras);
+								}
+							}
+						default:
+							break;
+					}
 				}
 				if(abortThisRequest)
 					abortBroadcast();
@@ -85,8 +89,11 @@ public class NotificationReciever extends BroadcastReceiver{
 				listeners.clear();
 			}
 
+
 			public static void removeListener(
-					NotificationType notificationGcmInboxMessage) {
+					NotificationType notificationGcmInboxMessage,
+					DataInputListener<Bundle> gcmListener) {
 				listeners.remove(notificationGcmInboxMessage);
+								
 			}
 	}
