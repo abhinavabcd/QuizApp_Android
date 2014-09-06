@@ -45,7 +45,8 @@ public class ChatScreen extends Screen {
 	private ProfileAndChatController pController;
 	private Button sendButton;
 	private User otherUser;
-	private TextView debugTextView;
+
+	private GothamTextView debugTextView;
 	static Random rand = new Random();	
 	static String sender;
 	
@@ -56,7 +57,8 @@ public class ChatScreen extends Screen {
 		View chatLayout = LayoutInflater.from(controller.getContext()).inflate(R.layout.chat_main, null);
 		
 		text = (EditText) chatLayout.findViewById(R.id.text);
-		debugTextView =(TextView) chatLayout.findViewById(R.id.empty);
+
+		debugTextView =(GothamTextView) chatLayout.findViewById(R.id.empty);
 		
 		sendButton = (Button) chatLayout.findViewById(R.id.send_button);
 		sendButton.setOnClickListener(new OnClickListener() {
@@ -102,6 +104,12 @@ public class ChatScreen extends Screen {
 		if(user2.pictureUrl!=null){
 			Picasso.with(getApp().getContext()).load(user2.pictureUrl).into(user2Image);
 		}
+	}
+	
+	@Override
+	public void beforeRemove() {
+		pController.removeChatListeners();
+		super.beforeRemove();
 	}
 	
 	public void addMessage(boolean isCurrentUser , String textData){

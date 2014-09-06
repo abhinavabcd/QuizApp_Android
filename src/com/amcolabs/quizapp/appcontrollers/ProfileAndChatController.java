@@ -2,9 +2,12 @@ package com.amcolabs.quizapp.appcontrollers;
 
 import java.util.List;
 
+import android.os.Bundle;
+
 import com.amcolabs.quizapp.AppController;
 import com.amcolabs.quizapp.QuizApp;
 import com.amcolabs.quizapp.User;
+import com.amcolabs.quizapp.configuration.Config;
 import com.amcolabs.quizapp.databaseutils.UserInboxMessage;
 import com.amcolabs.quizapp.datalisteners.DataInputListener;
 import com.amcolabs.quizapp.notificationutils.NotificationReciever;
@@ -15,7 +18,7 @@ import com.amcolabs.quizapp.uiutils.UiUtils.UiText;
 public class ProfileAndChatController extends AppController {
 
 	private ChatScreen chatScreen;
-	private Object gcmListener;
+	private DataInputListener<Bundle> gcmListener;
 
 	public ProfileAndChatController(QuizApp quizApp) {
 		super(quizApp);
@@ -27,9 +30,7 @@ public class ProfileAndChatController extends AppController {
 
 	@Override
 	public boolean onBackPressed() {
-		if(gcmListener!=null){
-			NotificationReciever.removeListener(NotificationType.NOTIFICATION_GCM_INBOX_MESSAGE);
-		}
+		removeChatListeners();
 		return super.onBackPressed();
 	}
 	
@@ -45,6 +46,15 @@ public class ProfileAndChatController extends AppController {
 				if(chatScreen==null){
 					chatScreen = new ChatScreen(ProfileAndChatController.this, user2);
 					chatScreen.setDebugMessage(UiText.FETCHING_MESSAGES.getValue());
+					gcmListener = new DataInputListener<Bundle>(){
+						public String onData(Bundle extras) {
+							if(extras.getString(Config.KEY_GCM_FROM_USER) == user2.uid){
+								chatScreen.addMessage(false, extras.getString(Config.KEY_GCM_TEXT_MESSAGE));
+							}
+							return null;
+						}
+					};
+					NotificationReciever.setListener(NotificationType.NOTIFICATION_GCM_INBOX_MESSAGE, gcmListener);
 					insertScreen(chatScreen);
 				}
 				for(UserInboxMessage message : userMessages)
@@ -56,5 +66,12 @@ public class ProfileAndChatController extends AppController {
 	
 	public void sendMessage(User user2, String string) {
 		quizApp.getServerCalls().sendChatMessage(user2, string);
+	}
+
+	public void removeChatListeners() {
+		if(gcmListener!=null){
+			NotificationReciever.removeListener(NotificationType.NOTIFICATION_GCM_INBOX_MESSAGE , gcmListener);
+			gcmListener = null;
+		}
 	}
 }

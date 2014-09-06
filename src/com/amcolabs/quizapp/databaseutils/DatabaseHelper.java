@@ -122,7 +122,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
     public List<Quiz> getAllQuizzes(long q , double fromTimeStamp){
 		try {
 			if(fromTimeStamp>0){
-				return getQuizDao().queryBuilder().orderBy("userXp", false).limit(q).where().ge("modifiedTimestamp", fromTimeStamp).query();
+				return getQuizDao().queryBuilder().orderBy("userXp", false).limit(q).where().gt("modifiedTimestamp", fromTimeStamp).query();
 			}
 			return getQuizDao().queryBuilder().orderBy("userXp", false).limit(q).query();
 		} catch (SQLException e) {
