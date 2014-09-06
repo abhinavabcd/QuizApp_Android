@@ -61,7 +61,7 @@ public class UserProfileScreen extends Screen {
 	}
 	
 	public void drawChart(User user){
-		List<Category> categories = controller.quizApp.getDataBaseHelper().getCategories(5);
+		List<Category> categories = getApp().getDataBaseHelper().getCategories(5);
 		
 		ArrayList<Entry> yVals1 = new ArrayList<Entry>();
 		ArrayList<String> xVals = new ArrayList<String>();
@@ -71,11 +71,11 @@ public class UserProfileScreen extends Screen {
 		for(int i=0;i<sz;i++){
 			xVals.add(categories.get(i).shortDescription);
 		}
-		for (int i = 0; i < sz + 1; i++) {
-			List<Quiz> qList = categories.get(i).getQuizzes(controller.quizApp);
+		for (int i = 0; i < sz; i++) {
+			List<Quiz> qList = categories.get(i).getQuizzes(getApp());
 			float totalXP = 0;
 			for(int j=0;j<qList.size();j++){
-				totalXP = totalXP + (float)user.getPoints(qList.get(i));
+				totalXP = totalXP + (float)user.getPoints(qList.get(j));
 			}
             yVals1.add(new Entry((float) (Math.random() * scale) + scale / 5, i));
         }

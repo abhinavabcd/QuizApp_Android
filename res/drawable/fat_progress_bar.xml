@@ -3,13 +3,14 @@
 <item android:id="@android:id/background">
     <shape>
         <corners android:radius="5dip" />
-        <gradient
+        <solid android:color="@color/black"/>
+        <!-- gradient
                 android:startColor="#ff9d9e9d"
                 android:centerColor="#ff5a5d5a"
                 android:centerY="0.75"
                 android:endColor="#ff747674"
                 android:angle="270"
-        />
+        /-->
     </shape>
 </item>
 
@@ -17,13 +18,14 @@
     <clip>
         <shape>
             <corners android:radius="5dip" />
-            <gradient
+            <solid android:color="@color/grey"/>
+            <!-- gradient
                     android:startColor="#80ffd300"
                     android:centerColor="#80ffb600"
                     android:centerY="0.75"
                     android:endColor="#a0ffcb00"
                     android:angle="270"
-            />
+            /-->
         </shape>
     </clip>
 </item>
@@ -34,10 +36,11 @@
         <shape>
             <corners
                 android:radius="5dip" />
-            <gradient
+            <solid android:color="@color/white"/>
+            <!-- gradient
                 android:startColor="#ffd300"
                 android:endColor="#ffb600"
-                android:angle="270" />
+                android:angle="270" /-->
         </shape>
     </clip>
 </item>

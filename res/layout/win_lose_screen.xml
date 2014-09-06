@@ -30,7 +30,7 @@
 		    	    layout="@layout/user_info_card" />
 	            
 		        <com.amcolabs.quizapp.widgets.PieChartView
-		            android:id="@+id/user_chart"
+		            android:id="@id/pie_chart"
 		            android:layout_width="match_parent"
 		            android:layout_height="250dp"
 		            android:layout_margin="5dp" />
@@ -50,7 +50,7 @@
 		            layout="@layout/user_info_card_mirror" />
 		        
 		        <com.amcolabs.quizapp.widgets.PieChartView
-		            android:id="@id/user_chart"
+		            android:id="@id/pie_chart"
 		            android:layout_width="match_parent"
 		            android:layout_height="250dp"
 		            android:layout_margin="5dp" />

@@ -20,6 +20,7 @@ import com.amcolabs.quizapp.R;
 import com.amcolabs.quizapp.Screen;
 import com.amcolabs.quizapp.User;
 import com.amcolabs.quizapp.appcontrollers.ProgressiveQuizController.UserAnswer;
+import com.amcolabs.quizapp.uiutils.UiUtils.UiText;
 import com.amcolabs.quizapp.widgets.BarChartViewMultiDataset;
 import com.amcolabs.quizapp.widgets.GothamTextView;
 import com.amcolabs.quizapp.widgets.PieChartView;
@@ -35,9 +36,8 @@ public class WinOrLoseScreen extends Screen{
 	
 	public ScrollView quizResult;
 	private BarChartViewMultiDataset mChart;
-	private ArrayList<PieChartView> userPieCharts;
 	public ChatScreen chatScreen;
-	private ArrayList<LinearLayout> userViews;
+	private HashMap<String , userViewHolder> userViews;
 	
 	private GothamTextView quizPoints;
 	private GothamTextView quizWinPoints;
@@ -48,19 +48,42 @@ public class WinOrLoseScreen extends Screen{
 	private Button challengeButton;
 	private Button addFriendButton;
 	private Button viewProfileButton;
+	private GothamTextView quizResultMessage;
 	
-	public WinOrLoseScreen(AppController controller) {
+	private ArrayList<User> currentUsers;
+	private HashMap<String, List<UserAnswer>> userAnswersStack;
+	
+	public static class userViewHolder{
+		GothamTextView userNameView;
+		GothamTextView userStatusMessageView;
+		GothamTextView userMoreInfoView;
+		ImageView userImageView;
+		PieChartView userPieChartView;
+	}
+	
+	public WinOrLoseScreen(AppController controller,ArrayList<User> curUsers) {
 		super(controller);
+		currentUsers = curUsers;
 		quizResult = (ScrollView) LayoutInflater.from(controller.getContext()).inflate(R.layout.win_lose_screen, null);
 		LinearLayout users = (LinearLayout) quizResult.findViewById(R.id.users);
-		userViews = new ArrayList<LinearLayout>();
+		userViews = new HashMap<String, userViewHolder>();
 		LinearLayout tmp;
+		userViewHolder uView;
 		for (int i=0;i<users.getChildCount();i++){
 			tmp = (LinearLayout) users.getChildAt(i);
-			userViews.add(tmp);
-			setSampleData(this.getContext(),(PieChartView) tmp.findViewById(R.id.user_chart));
+			uView = new userViewHolder();
+			
+			uView.userNameView = (GothamTextView) tmp.findViewById(R.id.user_card_name);
+			uView.userStatusMessageView = (GothamTextView) tmp.findViewById(R.id.user_status_msg);
+			uView.userMoreInfoView = (GothamTextView) tmp.findViewById(R.id.user_more_info);
+			uView.userImageView = (ImageView) tmp.findViewById(R.id.user_card_small_pic);
+			uView.userPieChartView = (PieChartView) tmp.findViewById(R.id.pie_chart);
+			setSampleData(this.getContext(),uView.userPieChartView);
+			
+			userViews.put(curUsers.get(i).uid,uView);
 		}
 		
+		quizResultMessage = (GothamTextView) quizResult.findViewById(R.id.quizResultMessage);
 		mChart = (BarChartViewMultiDataset) quizResult.findViewById(R.id.bar_chart);
         
         quizPoints = (GothamTextView)quizResult.findViewById(R.id.quizPoints);
@@ -84,18 +107,24 @@ public class WinOrLoseScreen extends Screen{
 //		addView(chatScreen);
 	}
 	
-	public void showResult(ArrayList<User> currentUsers, HashMap<String, List<UserAnswer>> userAnswersStack,int whoWon){
+	/**
+	 * This is the main function to be invoked to display result of a quiz
+	 * @param currentUsers List of Users participated in the quiz
+	 * @param userAnswersStack HashMap of list of answers mapped with users
+	 * @param isWinner has current user who won the quiz
+	 */
+	public void showResult(HashMap<String, List<UserAnswer>> uAnswersStack,boolean isWinner){
 	  // Show whether user has won or not
 	  // rematch button , addFriend button , challenge with points button ,  seeProfile button
 	// for these buttons , will use the same layout we used for category view ,list_item_layout.xml
 	  // and load the profileViewLayout of both users in block , one after the other
 	  //  will have place for chat block there itself users can live chat there itself
-		
-		LinearLayout tmp;
+		userAnswersStack = uAnswersStack;
+		userViewHolder tmp;
 		ImageView imgView;
-		for(int i=0;i<userViews.size();i++){
-			tmp = userViews.get(i);
-			imgView = (ImageView)tmp.findViewById(R.id.user_card_small_pic);
+		for(int i=0;i<currentUsers.size();i++){
+			tmp = userViews.get(currentUsers.get(i).uid);
+			imgView = tmp.userImageView;
 			imgView.setTag(currentUsers.get(i));
 			imgView.setOnClickListener(new OnClickListener() {
 				
@@ -104,17 +133,24 @@ public class WinOrLoseScreen extends Screen{
 					User user = (User) v.getTag();
 					UserProfileScreen uScreen = new UserProfileScreen(controller);
 					uScreen.showUser(user);
+					controller.clearScreen();
 					controller.insertScreen(uScreen);
 				}
 			});
 		}
+		if(isWinner){
+			quizResultMessage.setText(UiText.WON_QUIZ_MESSAGE.getValue());
+		}
+		else{
+			quizResultMessage.setText(UiText.LOST_QUIZ_MESAGE.getValue());
+		}
 		animatePoints(20,20,20);
-		showResultInChart(currentUsers, userAnswersStack);
+		showResultInChart();
 	}
 
 	private void animatePoints(int qPoints, int qwPoints, int luPoints) {
-		Animation anim = AnimationUtils.loadAnimation(getApp().getContext(), R.anim.abc_slide_in_top);
-		quizPoints.setText(qPoints+" XP");
+		Animation anim = AnimationUtils.loadAnimation(getApp().getContext(), R.anim.fadein);
+		quizPoints.setText("+"+qPoints);
 		quizPoints.startAnimation(anim);
 		anim.setAnimationListener(new AnimationListener() {
 			
@@ -136,11 +172,11 @@ public class WinOrLoseScreen extends Screen{
 				
 			}
 		});
-		quizWinPoints.setText(qwPoints+" XP");
+		quizWinPoints.setText("+"+qwPoints);
 		quizWinPoints.startAnimation(anim);
-		quizLevelupPoints.setText(luPoints+" XP");
+		quizLevelupPoints.setText("+"+luPoints);
 		quizLevelupPoints.startAnimation(anim);
-		quizTotalPoints.setText((qPoints+qwPoints+luPoints)+" XP");
+		quizTotalPoints.setText("+"+(qPoints+qwPoints+luPoints));
 		quizTotalPoints.startAnimation(anim);
 	}
 
@@ -200,7 +236,7 @@ public class WinOrLoseScreen extends Screen{
 	 * @param currentUsers List of users participated in the quiz
 	 * @param userAnswersStack HashMap of user answers as List of userAnswer objects mapped with uid's of users
 	 */
-	public void showResultInChart(ArrayList<User> currentUsers, HashMap<String, List<UserAnswer>> userAnswersStack) {
+	public void showResultInChart() {
 		int columns = userAnswersStack.get(currentUsers.get(0).uid).size(); // to get questions size
 		ArrayList<String> xVals = new ArrayList<String>();
         for (int i = 0; i < columns; i++) {

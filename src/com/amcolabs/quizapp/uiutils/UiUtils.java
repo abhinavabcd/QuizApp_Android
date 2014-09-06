@@ -80,7 +80,8 @@ public class UiUtils {
 		COULD_NOT_CONNECT("Could not fetch Updates"),
 		CATEGORIES("categories"),
 		USER_FAVOURITES("Quick Play"), NOT_AUTHORIZED("Invalid Login"), SEARCHING_FOR_OPPONENT("Searching for a matching opponent"),
-		GET_READY("Get Ready"), FOR_YOUR_FIRST_QUESTION("For your first Question"), QUESTION("Question %s"), LEVEL("Level"), RECENT_QUIZZES("Recent Quizzes"), FETCHING_MESSAGES("Fetaching Messages from Server");
+		GET_READY("Get Ready"), FOR_YOUR_FIRST_QUESTION("For your first Question"), QUESTION("Question %s"), LEVEL("Level"), RECENT_QUIZZES("Recent Quizzes"), FETCHING_MESSAGES("Fetaching Messages from Server"),
+		WON_QUIZ_MESSAGE("You Won!"),LOST_QUIZ_MESAGE("You Lost :(");
 		
 		String value = null;
 		UiText(String value){

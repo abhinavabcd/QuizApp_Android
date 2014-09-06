@@ -43,8 +43,8 @@ public class CustomProgressBar extends ProgressBar{
 		super.setProgress(progress);
 	}
 	
-	public void showIncrement(final int pos){
-		System.out.println("check increment anime");
+	public void showAnimatedIncrement(final int pos){
+		
 		this.setSecondaryProgress(pos);
 		Timer timer = (new Timer());
 		timer.schedule(new TimerTask() {
@@ -59,7 +59,7 @@ public class CustomProgressBar extends ProgressBar{
 							this.cancel();
 						}
 					}
-		}, 0, 30);
+		}, 200);
 //		Thread bg = new Thread(new Runnable() {
 //			
 //			@Override
