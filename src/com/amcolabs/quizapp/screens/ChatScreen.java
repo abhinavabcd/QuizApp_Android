@@ -47,7 +47,7 @@ public class ChatScreen extends Screen {
 	private GothamTextView debugTextView;
 	static Random rand = new Random();	
 	static String sender;
-	
+		
 	public ChatScreen(AppController controller , User user2) {
 		super(controller);
 		this.otherUser = user2;
