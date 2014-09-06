@@ -1,21 +1,35 @@
 package com.amcolabs.quizapp;
 
-import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.drawable.GradientDrawable.Orientation;
-import android.util.AttributeSet;
+import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
-import android.widget.TableLayout;
 
 public class Screen extends LinearLayout {
 	protected AppController controller = null;
 	protected boolean isInViewPort = true;
+	private LinearLayout scrollView = null;
 	public Screen(AppController controller) {
 		super(controller.getContext());
 		this.controller = controller;
 		this.setOrientation(LinearLayout.VERTICAL);
 		setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.MATCH_PARENT,1));
+	}
+	
+	
+	public void addToScrollView(View view){
+		if(scrollView==null){
+			ScrollView scrollViewMain = new ScrollView(getApp().getContext());
+			scrollViewMain.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.MATCH_PARENT,1));
+			scrollViewMain.setFillViewport(true);
+			addView(scrollViewMain);
+			scrollView = new LinearLayout(getApp().getContext());
+//			scrollView.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.MATCH_PARENT,1));
+			scrollView.setOrientation(LinearLayout.VERTICAL);
+			scrollViewMain.addView(scrollView);
+		}
+		scrollView.addView(view);
 	}
 	
 	public QuizApp getApp(){

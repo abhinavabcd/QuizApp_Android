@@ -80,7 +80,7 @@ public class UiUtils {
 		COULD_NOT_CONNECT("Could not fetch Updates"),
 		CATEGORIES("categories"),
 		USER_FAVOURITES("Quick Play"), NOT_AUTHORIZED("Invalid Login"), SEARCHING_FOR_OPPONENT("Searching for a matching opponent"),
-		GET_READY("Get Ready"), FOR_YOUR_FIRST_QUESTION("For your first Question"), QUESTION("Question %s");
+		GET_READY("Get Ready"), FOR_YOUR_FIRST_QUESTION("For your first Question"), QUESTION("Question %s"), LEVEL("Level"), RECENT_QUIZZES("Recent Quizzes"), FETCHING_MESSAGES("Fetaching Messages from Server");
 		
 		String value = null;
 		UiText(String value){
@@ -397,6 +397,21 @@ public class UiUtils {
 	
 	public double getPointsFromLevel(double level){
 		return 100*(2*level + (level*level - level)/6);
+	}
+	float oneDp = -1;
+	public float getInDp(int i) {
+		if(oneDp==-1){
+			oneDp = quizApp.getResources().getDimension(R.dimen.one_dp);
+		}
+		return i*oneDp;
+	}
+	
+	float oneSp = -1;
+	public float getInSp(int i) {
+		if(oneSp==-1){
+			oneSp = quizApp.getResources().getDimension(R.dimen.one_sp);
+		}
+		return i*oneSp;
 	}
 
 }

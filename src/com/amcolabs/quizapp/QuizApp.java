@@ -27,6 +27,7 @@ import android.widget.FrameLayout;
 import com.amcolabs.quizapp.appcontrollers.UserMainPageController;
 import com.amcolabs.quizapp.configuration.Config;
 import com.amcolabs.quizapp.databaseutils.DatabaseHelper;
+import com.amcolabs.quizapp.gameutils.GameUtils;
 import com.amcolabs.quizapp.serverutils.ServerCalls;
 import com.amcolabs.quizapp.uiutils.UiUtils;
 import com.amcolabs.quizapp.uiutils.UiUtils.UiText;
@@ -63,6 +64,8 @@ public class QuizApp extends Fragment implements AnimationListener {
 
 	private boolean initialized = false;
 	private MainActivity ref = null;
+
+	private GameUtils gameUtils;
 	 
 	public void setMainActivity(MainActivity mainActivity) {
 		ref = mainActivity;
@@ -89,10 +92,16 @@ public class QuizApp extends Fragment implements AnimationListener {
 			userDeviceManager = new UserDeviceManager(this);//initialized preferences , device id , pertaining to device
 			config = new Config(this);
 			uiUtils = new UiUtils(this);
+			gameUtils = new GameUtils(this);
 			serverCalls = new ServerCalls(this);
 			loadingView = userDeviceManager.getLoadingView(this.getActivity());
 			disposeScreens = new ArrayList<Screen>();
 		}
+	}
+
+
+	public GameUtils getGameUtils() {
+		return gameUtils;
 	}
 
 
@@ -198,17 +207,24 @@ public class QuizApp extends Fragment implements AnimationListener {
 					animateScreenRemove(screen , TO_RIGHT,null);
 					
 					Screen oldScreen = popCurrentScreen();
+					while(oldScreen!=null && !oldScreen.showOnBackPressed()){
+						oldScreen = popCurrentScreen();
+					}
+					
 					if(oldScreen==null){
 						if(++wantsToExitCount>1){
 							getActivity().finish();//all controllers finished
-							return;
 						}
 						else{
 							reinit(false);//should show first screen fetching updates and shit again
+							new Handler().postDelayed(new Runnable() {
+								@Override
+								public void run() {
+									wantsToExitCount = 0;
+								}
+							}, 3000);
 						}
-					}
-					while(!oldScreen.showOnBackPressed()){
-						oldScreen = popCurrentScreen();
+						return;
 					}
 					animateScreenIn(oldScreen);
 				}
@@ -339,6 +355,9 @@ public class QuizApp extends Fragment implements AnimationListener {
 		this.satelliteMenu = menu;
 	}
 
+	public SatelliteMenu getMenu() {
+		return this.satelliteMenu;
+	}
 	public void hideTitleBar(){
 		ref.getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         ref.getWindow().clearFlags(

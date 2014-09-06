@@ -1,5 +1,5 @@
 package com.amcolabs.quizapp.appcontrollers;
-
+ 
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,6 +47,7 @@ public class UserMainPageController  extends AppController implements OnInitiali
     protected boolean mSocialNetworkManagerInitialized = false;
     User user= null;
 	private SocialNetworkManager mSocialNetworkManager;
+	private double currentQuizMaxTimeStamp;
 	public UserMainPageController(QuizApp quizApp) {
 		super(quizApp);
 	}
@@ -60,6 +61,8 @@ public class UserMainPageController  extends AppController implements OnInitiali
 		String encodedKey = quizApp.getUserDeviceManager().getEncodedKey();
 		if(encodedKey!=null){
 			//on fetch update new categories and draw the categories
+			currentQuizMaxTimeStamp = 		quizApp.getDataBaseHelper().getMaxTimeStampQuiz();
+
 			quizApp.getServerCalls().getAllUpdates(new DataInputListener2<List<UserFeed> ,List<UserInboxMessage> ,List<OfflineChallenge>, Boolean>(){
 				@Override
 				public void onData(List<UserFeed> feeds,List<UserInboxMessage> inboxMessages,List<OfflineChallenge> offlineChallenges, Boolean s) {
@@ -123,8 +126,13 @@ public class UserMainPageController  extends AppController implements OnInitiali
 		List<Category> categories = quizApp.getDataBaseHelper().getCategories(5);
 		cs.addCategoriesView(categories, categories.size()>4);
 		 
-		List<Quiz> quizzes = quizApp.getDataBaseHelper().getAllQuizzes(5);
-		cs.addUserQuizzesView(quizzes ,quizzes.size()>4);
+		
+		List<Quiz> quizzes = quizApp.getDataBaseHelper().getAllQuizzes(5, -1);
+		cs.addUserQuizzesView(quizzes ,quizzes.size()>4 , UiText.USER_FAVOURITES.getValue());
+		
+		List<Quiz> recentQuizzes = quizApp.getDataBaseHelper().getAllQuizzes(10, currentQuizMaxTimeStamp);
+		if(recentQuizzes!=null && recentQuizzes.size()>0)
+			cs.addUserQuizzesView(quizzes ,false , UiText.RECENT_QUIZZES.getValue());
 		
 //		cs.addFeedView();
 //		cs.addQuizzes();

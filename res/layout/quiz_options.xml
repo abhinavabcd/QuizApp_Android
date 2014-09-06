@@ -10,7 +10,7 @@
         android:orientation="vertical" 
         android:layout_weight="1">
 
-        <Button
+        <com.amcolabs.quizapp.widgets.GothamButtonView
             android:id="@+id/optionA"
             android:layout_width="match_parent"
             android:layout_height="0dp"
@@ -19,7 +19,7 @@
             android:background="@drawable/quiz_option_background"
             android:text="Button" />
 
-        <Button
+        <com.amcolabs.quizapp.widgets.GothamButtonView
             android:id="@+id/optionB"
             android:layout_width="match_parent"
             android:layout_height="0dp"
@@ -36,7 +36,7 @@
         android:orientation="vertical"
         android:layout_weight="1">
 
-        <Button
+        <com.amcolabs.quizapp.widgets.GothamButtonView
             android:id="@+id/optionC"
             android:layout_width="match_parent"
             android:layout_height="0dp"
@@ -45,7 +45,7 @@
             android:background="@drawable/quiz_option_background"
             android:text="Button" />
 
-        <Button
+        <com.amcolabs.quizapp.widgets.GothamButtonView
             android:id="@+id/optionD"
             android:layout_width="match_parent"
             android:layout_height="0dp"

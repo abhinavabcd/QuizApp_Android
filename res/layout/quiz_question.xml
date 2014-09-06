@@ -5,11 +5,12 @@
     android:gravity="center_horizontal"
     android:orientation="vertical" >
 
-    <TextView
+    <com.amcolabs.quizapp.widgets.GothamTextView
         android:id="@+id/questionText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="10dp"
+        android:textStyle="bold"
         android:gravity="center"
         android:text="Identify the Actor in above image" />
 

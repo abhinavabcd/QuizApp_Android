@@ -6,61 +6,6 @@
     android:background="@color/white" >
 
     <LinearLayout
-        android:id="@+id/userImagesBar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="#55000000"
-        android:orientation="horizontal" >
-
-        <LinearLayout
-            android:id="@+id/user1view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="left" >
-
-            <ImageView
-                android:id="@+id/user1"
-                android:layout_width="50dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="left"
-                android:contentDescription="user1"
-                android:src="@drawable/ic_launcher" />
-
-            <TextView
-                android:id="@+id/textView1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:text="Medium Text"
-                android:textAppearance="?android:attr/textAppearanceMedium" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/user2view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="right" >
-
-            <TextView
-                android:id="@+id/textView2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:text="Medium Text"
-                android:textAppearance="?android:attr/textAppearanceMedium" />
-
-            <ImageView
-                android:id="@+id/user2"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:contentDescription="user2"
-                android:src="@drawable/ic_launcher" />
-        </LinearLayout>
-    </LinearLayout>
-
-    <LinearLayout
         android:id="@+id/wrapper_chatlist_bottom_write"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -108,6 +53,100 @@
                 android:paddingTop="5sp"
                 android:text="Send"
                 android:textColor="#FFF" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/userImagesBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#55000000"
+        android:orientation="horizontal" >
+
+        <LinearLayout
+            android:id="@+id/user1view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="left" >
+
+            <ImageView
+                android:id="@+id/user1"
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left"
+                android:contentDescription="user1"
+                android:src="@drawable/ic_launcher" />
+            
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" >
+
+                <com.amcolabs.quizapp.widgets.GothamTextView
+                    android:id="@+id/user_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Medium Text"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textColor="@color/white" />
+
+                    <com.amcolabs.quizapp.widgets.GothamTextView
+                        android:id="@+id/user_status_msg"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="user status message"
+                        android:textAppearance="?android:attr/textAppearanceSmall"
+	                    android:textColor="@color/white"
+                        android:textSize="8dp" 
+                     />
+
+            </LinearLayout>
+            
+
+        </LinearLayout>
+
+            
+        	
+       	<LinearLayout
+            android:id="@+id/user2view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="right" 
+            >
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="right"
+                android:orientation="vertical" >
+
+                <com.amcolabs.quizapp.widgets.GothamTextView
+                    android:id="@+id/user_name_2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Medium Text"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textColor="@color/white" />
+
+                <com.amcolabs.quizapp.widgets.GothamTextView 
+                    android:id="@+id/user_status_msg_2" 
+                    android:layout_width="wrap_content" 
+                    android:layout_height="wrap_content" 
+                    android:text="user status message" 
+                    android:textAppearance="?android:attr/textAppearanceSmall" 
+                    android:textColor="@color/white" 
+                    android:textSize="8dp" 
+                   />
+
+            </LinearLayout>
+            <ImageView
+                android:id="@+id/user2"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:contentDescription="user2"
+                android:src="@drawable/ic_launcher" ></ImageView>
         </LinearLayout>
     </LinearLayout>
 
