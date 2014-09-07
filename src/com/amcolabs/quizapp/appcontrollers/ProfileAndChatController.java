@@ -45,7 +45,6 @@ public class ProfileAndChatController extends AppController {
 			public String onData(List<UserInboxMessage> userMessages) {
 				if(chatScreen==null){
 					chatScreen = new ChatScreen(ProfileAndChatController.this, user2);
-					chatScreen.setDebugMessage(UiText.FETCHING_MESSAGES.getValue());
 					gcmListener = new DataInputListener<Bundle>(){
 						public String onData(Bundle extras) {
 							if(extras.getString(Config.KEY_GCM_FROM_USER) == user2.uid){
@@ -56,6 +55,9 @@ public class ProfileAndChatController extends AppController {
 					};
 					NotificationReciever.setListener(NotificationType.NOTIFICATION_GCM_INBOX_MESSAGE, gcmListener);
 					insertScreen(chatScreen);
+				}
+				if(userMessages.size()==0){
+					chatScreen.setDebugMessage(UiText.NO_RECENT_MESSAGES.getValue());
 				}
 				for(UserInboxMessage message : userMessages)
 					chatScreen.addMessage(quizApp.getUser().uid==message.fromUid, message.message);

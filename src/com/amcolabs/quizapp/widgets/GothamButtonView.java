@@ -3,30 +3,24 @@ package com.amcolabs.quizapp.widgets;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.util.AttributeSet;
-import android.widget.Button;
+import android.widget.TextView;
 
-public class GothamButtonView extends Button {
+public class GothamButtonView extends GothamTextView{
 
 	public GothamButtonView(Context context) {
 		super(context);
-		init();
+//		init();
 	}
 
 	public GothamButtonView(Context context, AttributeSet attrs) {
 		super(context, attrs);
-		init();
+//		init();
 	}
 
 	public GothamButtonView(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
-		init();
+//		init();
 	}
 	
 
-    private void init() {
-    	if(!isInEditMode()){
-            Typeface tf = Typeface.createFromAsset(getContext().getAssets(), "fonts/gotham-medium.ttf");
-            setTypeface(tf);
-    	}
-    }
 }

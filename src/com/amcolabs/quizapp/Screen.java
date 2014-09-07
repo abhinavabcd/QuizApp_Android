@@ -52,5 +52,8 @@ public class Screen extends LinearLayout {
 	public boolean showOnBackPressed(){
 		return true;
 	}
-
+	
+	public boolean showMenu(){
+		return false;
+	}
 }

@@ -1,21 +1,18 @@
 package com.amcolabs.quizapp;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBarActivity;
-import android.util.TypedValue;
 import android.view.MenuItem;
 import android.view.Window;
-import android.view.ext.SatelliteMenu;
-import android.view.ext.SatelliteMenu.SateliteClickedListener;
-import android.view.ext.SatelliteMenuItem;
+import android.widget.HorizontalScrollView;
+import android.widget.LinearLayout;
 
 import com.amcolabs.quizapp.UserDeviceManager.AppRunningState;
 import com.amcolabs.quizapp.appcontrollers.UserMainPageController;
+import com.amcolabs.quizapp.uiutils.UiUtils.UiText;
+import com.amcolabs.quizapp.widgets.QuizAppMenuItem;
 
 
 
@@ -31,42 +28,42 @@ public class MainActivity extends ActionBarActivity {
         quizApp.setMainActivity(this);
 
         
-        SatelliteMenu menu = (SatelliteMenu) findViewById(R.id.menu);
-        
-//		  Set from XML, possible to programmatically set        
-//        float distance = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 170, getResources().getDisplayMetrics());
-//        menu.setSatelliteDistance((int) distance);
-//        menu.setExpandDuration(500);
-//        menu.setCloseItemsOnClick(false);
-//        menu.setTotalSpacingDegree(60);
-        menu.setTotalSpacingDegree(80);
-        menu.setSatelliteDistance((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 180, getResources().getDisplayMetrics()));
-        
-        List<SatelliteMenuItem> items = new ArrayList<SatelliteMenuItem>();
-        items.add(new SatelliteMenuItem(quizApp.MENU_FRIENDS, R.drawable.friends));
-        items.add(new SatelliteMenuItem(quizApp.MENU_BADGES, R.drawable.badges));
-        items.add(new SatelliteMenuItem(quizApp.MENU_ALL_QUIZZES, R.drawable.all_quizzes));
-        items.add(new SatelliteMenuItem(quizApp.MENU_MESSAGES, R.drawable.messages));
-        items.add(new SatelliteMenuItem(quizApp.MENU_HOME, R.drawable.home));
-//        items.add(new SatelliteMenuItem(5, R.drawable.sat_item));
-        menu.addItems(items);        
-        
-        menu.setOnItemClickedListener(new SateliteClickedListener() {
-			
-			public void eventOccured(int id) {
-				quizApp.onMenuClick(id);
-			}
-		});
-        
-        quizApp.setMenu(menu);
-        
-
-        
-        
+//        SatelliteMenu menu = (SatelliteMenu) findViewById(R.id.menu);
+//        
+////		  Set from XML, possible to programmatically set        
+////        float distance = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 170, getResources().getDisplayMetrics());
+////        menu.setSatelliteDistance((int) distance);
+////        menu.setExpandDuration(500);
+////        menu.setCloseItemsOnClick(false);
+////        menu.setTotalSpacingDegree(60);
+//        menu.setTotalSpacingDegree(80);
+//        menu.setSatelliteDistance((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 180, getResources().getDisplayMetrics()));
+//        
+//        List<SatelliteMenuItem> items = new ArrayList<SatelliteMenuItem>();
+//        items.add(new SatelliteMenuItem(quizApp.MENU_FRIENDS, R.drawable.friends));
+//        items.add(new SatelliteMenuItem(quizApp.MENU_BADGES, R.drawable.badges));
+//        items.add(new SatelliteMenuItem(quizApp.MENU_ALL_QUIZZES, R.drawable.all_quizzes));
+//        items.add(new SatelliteMenuItem(quizApp.MENU_MESSAGES, R.drawable.messages));
+//        items.add(new SatelliteMenuItem(quizApp.MENU_HOME, R.drawable.home));
+////        items.add(new SatelliteMenuItem(5, R.drawable.sat_item));
+//        menu.addItems(items);        
+//        
+//        menu.setOnItemClickedListener(new SateliteClickedListener() {
+//			
+//			public void eventOccured(int id) {
+//				quizApp.onMenuClick(id);
+//			}
+//		});
+//        
+//        quizApp.setMenu(menu);
+       HorizontalScrollView hmenu = (HorizontalScrollView)findViewById(R.id.nav_menu);
+       hmenu.setBackgroundColor(getResources().getColor(R.color.translucent_black));
+   	
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.container, quizApp)
                     .commit();
+            quizApp.setHorizontalMenu(hmenu);             
         }
 
         if (getSupportFragmentManager().getBackStackEntryCount() > 0) {

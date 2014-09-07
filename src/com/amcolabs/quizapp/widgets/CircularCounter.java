@@ -356,7 +356,7 @@ public class CircularCounter extends View {
 		canvas.drawArc(mTwoBounds, START_DEGREES, mTwoDegrees, false, mTwoPaint);
 		canvas.drawArc(mThreeBounds, START_DEGREES, mThreeDegrees, false,mThreePaint);
 
-		canvas.drawText(Integer.toString((int)mOneValue), mOneBounds.centerX(),
+		canvas.drawText(Integer.toString((int)Math.ceil(mOneValue)), mOneBounds.centerX(),
 				mTextPosY, mTextPaint);
 		canvas.drawText(mMetricText, mOneBounds.centerX(), mMetricPosY,
 				mMetricPaint);
@@ -395,8 +395,10 @@ public class CircularCounter extends View {
 		else{
 			mThreeDegrees = 360;
 		}
-
-		mOneValue = elapsedTimeInSeconds;
+		if(showReverse)
+			mOneValue = mRange  - elapsedTimeInSeconds;
+		else
+			mOneValue = elapsedTimeInSeconds;
 		if(mSpinHandler!=null)
 			mSpinHandler.sendEmptyMessage(0);
 	}
@@ -506,6 +508,9 @@ public class CircularCounter extends View {
 
 	protected float elapsedTimeInSeconds;
 
+
+	private boolean showReverse = false;
+
 	public double stopPressed(int id, float elapsedTime){//1 , 2 , 3
 		int t = 1<<(id);
 		stopCounterBits|=t;
@@ -531,9 +536,6 @@ public class CircularCounter extends View {
 		if(handler!=null && r!=null){
 			handler.removeCallbacks(r);
 		}
-		val1 = 0;
-		val2=0;
-		val3=0;
 		stopCounterBits = 0;
 		elapsedTimeInSeconds = 0;
 	}
@@ -542,8 +544,13 @@ public class CircularCounter extends View {
 	public void cleanUp(){
 		resetTimer();
 	}
-	public void startTimer(Integer time) {
+	public void startTimer(Integer time , boolean showReverse) {
 		resetTimer();
+		val1 = 0;
+		val2=0;
+		val3=0;
+
+		this.showReverse = showReverse;
 		if(time!=null)
 			this.mRange = time;
 		handler = new Handler();
@@ -578,5 +585,13 @@ public class CircularCounter extends View {
 		if(onTimerEndListener!=null){
 			onTimerEndListener.onData(true);
 		}
+	}
+
+
+	public void resetValues() {
+		val1 = 0;
+		val2=0;
+		val3=0;
+		setValues(0,0,0);
 	}
 }

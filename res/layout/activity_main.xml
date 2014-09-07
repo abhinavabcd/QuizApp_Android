@@ -1,33 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:sat="http://schemas.android.com/apk/lib/android.view.ext"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/LinearLayout1"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_gravity="center"
+    android:orientation="vertical"
     tools:context="com.amcolabs.quizapp.QuizApp"
     tools:ignore="MergeRootFrame" >
+
+    <include
+        android:id="@+id/nav_menu"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        layout="@layout/nav_menu"
+        android:scrollbarAlwaysDrawVerticalTrack="false" />
 
     <FrameLayout
         android:id="@+id/container"
         android:layout_width="match_parent"
         android:layout_height="match_parent" >
-
     </FrameLayout>
-     
-    <android.view.ext.SatelliteMenu
-        android:id="@+id/menu"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_gravity="bottom|left"
-        android:layout_margin="8dp"
-        sat:closeOnClick="true"
-        sat:expandDuration="500"
-        sat:mainImage="@drawable/ic_launcher"
-        sat:satelliteDistance="210dp"
-        sat:totalSpacingDegree="80" >
 
-    </android.view.ext.SatelliteMenu>
-     
-</FrameLayout>
-
+</LinearLayout>

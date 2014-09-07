@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/FrameLayout1"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:background="@color/white" >
 
     <LinearLayout
@@ -11,23 +11,32 @@
         android:layout_height="match_parent"
         android:orientation="vertical" >
 
-        <ListView
-            android:id="@+id/chat_list_view"
+        <LinearLayout
+            android:id="@+id/chat_list_wrapper_linear"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
+            android:layout_height="match_parent"
             android:layout_weight="1"
-            android:cacheColorHint="#00000000"
-            android:divider="#00000000"
-            android:paddingTop="45dp"
-		    android:clipToPadding="false"
-            android:listSelector="#00000000" >
-        </ListView>
+            android:orientation="vertical" >
+
+            <ListView
+                android:id="@+id/chat_list_view"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:cacheColorHint="#00000000"
+                android:clipToPadding="false"
+                android:divider="#00000000"
+                android:listSelector="#00000000"
+                android:paddingTop="45dp" >
+
+            </ListView>
+        </LinearLayout>
 
         <LinearLayout
             android:id="@+id/bottom_write_bar"
             android:layout_width="match_parent"
             android:layout_height="55dp"
-            android:background="@drawable/message_bar"         
+            android:background="@drawable/message_bar"
             android:orientation="horizontal" >
 
             <EditText
@@ -60,12 +69,12 @@
         android:id="@+id/userImagesBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#55000000"
+        android:background="@color/translucent_black"
         android:orientation="horizontal" >
 
         <LinearLayout
             android:id="@+id/user1view"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="left" >
@@ -73,11 +82,11 @@
             <ImageView
                 android:id="@+id/user1"
                 android:layout_width="50dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="left"
+                android:layout_height="50dp"
+                android:layout_gravity="left|top"
                 android:contentDescription="user1"
                 android:src="@drawable/ic_launcher" />
-            
+
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -89,32 +98,26 @@
                     android:layout_height="wrap_content"
                     android:text="Medium Text"
                     android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:textColor="@color/white" />
+                    android:textColor="@color/white"
+                    android:textSize="14sp" />
 
-                    <com.amcolabs.quizapp.widgets.GothamTextView
-                        android:id="@+id/user_status_msg"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="user status message"
-                        android:textAppearance="?android:attr/textAppearanceSmall"
-	                    android:textColor="@color/white"
-                        android:textSize="8dp" 
-                     />
-
+                <com.amcolabs.quizapp.widgets.GothamTextView
+                    android:id="@+id/user_status_msg"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="user status message"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:textColor="@color/white"
+                    android:textSize="8dp" />
             </LinearLayout>
-            
-
         </LinearLayout>
 
-            
-        	
-       	<LinearLayout
+        <LinearLayout
             android:id="@+id/user2view"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:gravity="right" 
-            >
+            android:gravity="right" >
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -128,32 +131,34 @@
                     android:layout_height="wrap_content"
                     android:text="Medium Text"
                     android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:textColor="@color/white" />
+                    android:textColor="@color/white"
+                    android:textSize="14sp" />
 
-                <com.amcolabs.quizapp.widgets.GothamTextView 
-                    android:id="@+id/user_status_msg_2" 
-                    android:layout_width="wrap_content" 
-                    android:layout_height="wrap_content" 
-                    android:text="user status message" 
-                    android:textAppearance="?android:attr/textAppearanceSmall" 
-                    android:textColor="@color/white" 
-                    android:textSize="8dp" 
-                   />
-
+                <com.amcolabs.quizapp.widgets.GothamTextView
+                    android:id="@+id/user_status_msg_2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="user status message"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:textColor="@color/white"
+                    android:textSize="8dp" />
             </LinearLayout>
+
             <ImageView
                 android:id="@+id/user2"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:contentDescription="user2"
-                android:src="@drawable/ic_launcher" ></ImageView>
+                android:src="@drawable/ic_launcher" >
+            </ImageView>
         </LinearLayout>
     </LinearLayout>
 
     <com.amcolabs.quizapp.widgets.GothamTextView
         android:id="@+id/empty"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
         android:gravity="center_vertical|center_horizontal"
         android:text="@string/main_empty_list" />
 

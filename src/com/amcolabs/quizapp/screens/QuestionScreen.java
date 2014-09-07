@@ -11,7 +11,6 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
 import android.view.animation.AnimationUtils;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -27,6 +26,7 @@ import com.amcolabs.quizapp.databaseutils.Question;
 import com.amcolabs.quizapp.datalisteners.DataInputListener;
 import com.amcolabs.quizapp.widgets.CircularCounter;
 import com.amcolabs.quizapp.widgets.CustomProgressBar;
+import com.amcolabs.quizapp.widgets.GothamButtonView;
 import com.squareup.picasso.Picasso;
 
 class UserProgressViewHolder{
@@ -46,7 +46,7 @@ public class QuestionScreen extends Screen implements View.OnClickListener, Anim
 	
 	private TextView questionTextView;
 	private ImageView questionImageView;
-	private ArrayList<Button> questionOptionsViews;
+	private ArrayList<GothamButtonView> questionOptionsViews;
 	public HashMap<String , UserProgressViewHolder> userViews = new HashMap<String, UserProgressViewHolder>();
 	private LinearLayout fullQuestionLayout;
 	private Animation animFadeOut;
@@ -78,12 +78,12 @@ public class QuestionScreen extends Screen implements View.OnClickListener, Anim
 		questionImageView = (ImageView) questionViewWrapper.findViewById(R.id.questionImage);
 		
 
-		questionOptionsViews = new ArrayList<Button>();
-		questionOptionsViews.add((Button) optionsViewWrapper.findViewById(R.id.optionA));
-		questionOptionsViews.add((Button) optionsViewWrapper.findViewById(R.id.optionB));
-		questionOptionsViews.add((Button) optionsViewWrapper.findViewById(R.id.optionC));
-		questionOptionsViews.add((Button) optionsViewWrapper.findViewById(R.id.optionD));
-		for(Button optionView: questionOptionsViews){
+		questionOptionsViews = new ArrayList<GothamButtonView>();
+		questionOptionsViews.add((GothamButtonView) optionsViewWrapper.findViewById(R.id.optionA));
+		questionOptionsViews.add((GothamButtonView) optionsViewWrapper.findViewById(R.id.optionB));
+		questionOptionsViews.add((GothamButtonView) optionsViewWrapper.findViewById(R.id.optionC));
+		questionOptionsViews.add((GothamButtonView) optionsViewWrapper.findViewById(R.id.optionD));
+		for(GothamButtonView optionView: questionOptionsViews){
 			optionView.setOnClickListener(this);
 		}
 		
@@ -163,7 +163,7 @@ public class QuestionScreen extends Screen implements View.OnClickListener, Anim
 		}
 		String[] mcqOptions = ques.getMCQOptions();
 		for(int i=0;i<questionOptionsViews.size();i++){
-			Button opt = questionOptionsViews.get(i);
+			GothamButtonView opt = questionOptionsViews.get(i);
 			opt.setText(mcqOptions[i]);
 			opt.setTag(mcqOptions[i]);
 			opt.setTextColor(Color.BLACK);
@@ -171,7 +171,7 @@ public class QuestionScreen extends Screen implements View.OnClickListener, Anim
 		new Handler().postDelayed(new Runnable() {
 			@Override
 			public void run() {
-				getTimerView().startTimer(ques.getTime());
+				getTimerView().startTimer(ques.getTime(), true);
 			}
 		}, Config.TIMER_SLIGHT_DELAY_START);
 	}
@@ -179,7 +179,7 @@ public class QuestionScreen extends Screen implements View.OnClickListener, Anim
 	public void animateQuestionChange(String titleInfo1, String titleInfo2, Question ques){
 		currentQuestion = ques;
 		questionAndOptionsViewWrapper.setVisibility(View.INVISIBLE);
-		getTimerView().resetTimer();
+		getTimerView().resetValues();
 		preQuestionText1.setText(titleInfo1);
 		preQuestionText2.setText(titleInfo2);
 		preQuestionText3.setText(null);
@@ -188,13 +188,13 @@ public class QuestionScreen extends Screen implements View.OnClickListener, Anim
 	}
 
 	public void highlightCorrectAnswer(){
-		for(Button b:questionOptionsViews){
+		for(GothamButtonView b:questionOptionsViews){
 			if(currentQuestion.isCorrectAnwer((String)b.getTag()))
 				b.setTextColor(Color.GREEN);
 		}
 	}
 	public void highlightOtherUsersOption(String uid , String option){
-		for(Button b:questionOptionsViews){
+		for(GothamButtonView b:questionOptionsViews){
 			if(((String)b.getTag()).equalsIgnoreCase(option)){
 				if(!currentQuestion.isCorrectAnwer((String)b.getTag()))
 					b.setTextColor(Color.RED);					
@@ -206,7 +206,7 @@ public class QuestionScreen extends Screen implements View.OnClickListener, Anim
 	public void onClick(View optionView) {
 		if(isOptionSelected) return;
 		isOptionSelected = true;
-		Button b = (Button)optionView;
+		GothamButtonView b = (GothamButtonView)optionView;
 		Boolean isAnwer = currentQuestion.isCorrectAnwer((String)b.getTag());
 		if(!isAnwer){
 			b.setTextColor(Color.RED);
