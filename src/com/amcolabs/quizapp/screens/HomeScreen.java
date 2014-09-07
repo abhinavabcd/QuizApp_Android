@@ -120,4 +120,10 @@ public class HomeScreen extends Screen {
 		}
 		addToScrollView(lView);
 	}
+	
+	@Override
+	public boolean showMenu() {
+		// TODO Auto-generated method stub
+		return true;
+	}
 }

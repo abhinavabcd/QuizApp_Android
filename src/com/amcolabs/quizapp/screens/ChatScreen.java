@@ -53,7 +53,7 @@ public class ChatScreen extends Screen {
 		this.otherUser = user2;
 		this.pController = (ProfileAndChatController) controller;
 		View chatLayout = LayoutInflater.from(controller.getContext()).inflate(R.layout.chat_main, null);
-		
+		chatLayout.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.MATCH_PARENT));
 		text = (EditText) chatLayout.findViewById(R.id.text);
 		debugTextView =(GothamTextView) chatLayout.findViewById(R.id.empty);
 		
@@ -120,5 +120,10 @@ public class ChatScreen extends Screen {
 
 	public void setDebugMessage(String value) {
 		debugTextView.setText(value);
+	}
+	@Override
+	public boolean showMenu() {
+		// TODO Auto-generated method stub
+		return true;
 	}
 }

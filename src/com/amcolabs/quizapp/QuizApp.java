@@ -4,7 +4,6 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.EmptyStackException;
-import java.util.LinkedList;
 import java.util.NoSuchElementException;
 import java.util.Stack;
 
@@ -17,12 +16,12 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
-import android.view.ext.SatelliteMenu;
 import android.widget.FrameLayout;
+import android.widget.HorizontalScrollView;
+import android.widget.LinearLayout;
 
 import com.amcolabs.quizapp.appcontrollers.UserMainPageController;
 import com.amcolabs.quizapp.configuration.Config;
@@ -31,8 +30,9 @@ import com.amcolabs.quizapp.gameutils.GameUtils;
 import com.amcolabs.quizapp.serverutils.ServerCalls;
 import com.amcolabs.quizapp.uiutils.UiUtils;
 import com.amcolabs.quizapp.uiutils.UiUtils.UiText;
+import com.amcolabs.quizapp.widgets.QuizAppMenuItem;
 
-public class QuizApp extends Fragment implements AnimationListener {
+public class QuizApp extends Fragment implements AnimationListener , IMenuClickListener {
 
 
 
@@ -96,6 +96,7 @@ public class QuizApp extends Fragment implements AnimationListener {
 			serverCalls = new ServerCalls(this);
 			loadingView = userDeviceManager.getLoadingView(this.getActivity());
 			disposeScreens = new ArrayList<Screen>();
+			addMenuItems();
 		}
 	}
 
@@ -107,6 +108,12 @@ public class QuizApp extends Fragment implements AnimationListener {
 
 	private void addView(Screen screen) {
 		mainFrame.addView(screen);
+		if(screen.showMenu()){
+			this.menu.setVisibility(View.VISIBLE);
+		}
+		else{
+			this.menu.setVisibility(View.GONE);
+		}
 		screen.controller.setActive(true);
 		screenStack.push(screen);
 	}
@@ -247,7 +254,8 @@ public class QuizApp extends Fragment implements AnimationListener {
 	private Object uiSync = new Object();
 	Stack<Screen> screenStack = new Stack<Screen>();
 
-	private SatelliteMenu satelliteMenu;
+	private HorizontalScrollView menu;
+
 
 	public Screen popCurrentScreen(){
 		if(screenStack.isEmpty())
@@ -351,13 +359,6 @@ public class QuizApp extends Fragment implements AnimationListener {
 		}
 	}
 
-	public void setMenu(SatelliteMenu menu) {
-		this.satelliteMenu = menu;
-	}
-
-	public SatelliteMenu getMenu() {
-		return this.satelliteMenu;
-	}
 	public void hideTitleBar(){
 		ref.getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         ref.getWindow().clearFlags(
@@ -378,5 +379,22 @@ public class QuizApp extends Fragment implements AnimationListener {
 			s.controller.onDestroy();
 		}
 	}
+	
+	public void addMenuItems(){
+		LinearLayout buttonsContainer = (LinearLayout) menu.findViewById(R.id.nav_items_container);
+		buttonsContainer.removeAllViews();
+		buttonsContainer.addView(new QuizAppMenuItem(this, QuizApp.MENU_BADGES, R.drawable.badges,UiText.BADGES.getValue()));
+		buttonsContainer.addView(new QuizAppMenuItem(this, QuizApp.MENU_ALL_QUIZZES, R.drawable.all_quizzes, UiText.SHOW_QUIZZES.getValue()));
+		buttonsContainer.addView(new QuizAppMenuItem(this, QuizApp.MENU_MESSAGES, R.drawable.messages , UiText.SHOW_MESSAGES.getValue()));
+		buttonsContainer.addView(new QuizAppMenuItem(this, QuizApp.MENU_HOME, R.drawable.home , UiText.HOME.getValue()));
+	}
+	
+	public void setHorizontalMenu( HorizontalScrollView hmenu) {
+		this.menu = hmenu; 
+	} 
+	public HorizontalScrollView getMenu(){
+		return menu;
+	}
+	
 
 }

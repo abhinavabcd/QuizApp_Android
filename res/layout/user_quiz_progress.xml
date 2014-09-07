@@ -44,9 +44,10 @@
             android:layout_alignBaseline="@id/userImageSmall"
             android:layout_alignLeft="@id/userName"
             android:layout_below="@id/userName"
+            android:paddingTop="5dp"
             android:text="+0XP"
             android:textAppearance="?android:attr/textAppearanceSmall"
-            android:textStyle="bold"
-            android:textSize="13sp" />
+            android:textSize="16sp"
+            android:textStyle="bold" />
 
 </RelativeLayout>

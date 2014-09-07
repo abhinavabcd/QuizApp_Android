@@ -52,4 +52,9 @@ public class QuizzesScreen extends Screen {
 		((ListView) lView.findViewById(R.id.listView)).setAdapter(quizAdaptor);
 		addView(lView);
 	}
+	@Override
+	public boolean showMenu() {
+		// TODO Auto-generated method stub
+		return true;
+	}
 }

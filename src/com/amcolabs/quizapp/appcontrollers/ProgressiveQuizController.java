@@ -42,7 +42,6 @@ public class ProgressiveQuizController extends AppController{
 	
 	public ProgressiveQuizController(QuizApp quizApp) {
 		super(quizApp);
-		quizApp.getMenu().setVisibility(View.GONE);
 	}
 
 	
@@ -130,7 +129,6 @@ public class ProgressiveQuizController extends AppController{
 			backPressedCount++;
 			if(backPressedCount>1){
 				backPressedCount = 0;
-				quizApp.getMenu().setVisibility(View.VISIBLE);
 				gracefullyCloseSocket();
 				return false;
 			}
@@ -280,7 +278,7 @@ public class ProgressiveQuizController extends AppController{
 					for(User user:currentUsers){ // check for any bots and schedule
 						if(!user.isBotUser()) continue;
 						
-						int elapsedTime = rand.nextInt(10*Math.max(0, (100-quizApp.getUser().getLevel(quiz))/100)); 
+						int elapsedTime = rand.nextInt(5*Math.max(0, (100-quizApp.getUser().getLevel(quiz))/100)); 
 						boolean isRightAnswer = rand.nextInt(2)==1? false:true;
 						if(isRightAnswer){
 							botScore+=Math.ceil(currentQuestion.getTime() - elapsedTime)*multiplyFactor();
@@ -302,12 +300,21 @@ public class ProgressiveQuizController extends AppController{
 
 	}
 
-
+	public List<User> getOtherUsers(){
+		ArrayList<User> otherUsers = new ArrayList<User>();
+		for(User user : currentUsers){
+			if(user.uid != quizApp.getUser().uid)
+			otherUsers.add(user);
+		}
+		return otherUsers;
+	}
+	
 	public void validateAndShowWinningScreen(){
 		List<UserAnswer> l = userAnswersStack.get(quizApp.getUser().uid);
 		clearScreen();
 		ProfileAndChatController profileAndChat = (ProfileAndChatController) quizApp.loadAppController(ProfileAndChatController.class);
-		profileAndChat.loadChatScreen(user2, -1, true);
+		
+		profileAndChat.loadChatScreen(getOtherUsers().get(0), -1, true);
 		
 //		WinOrLoseScreen resultScreen = new WinOrLoseScreen(this);
 //		resultScreen.showResultInChart(currentUsers,userAnswersStack);

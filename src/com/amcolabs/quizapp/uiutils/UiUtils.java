@@ -80,7 +80,9 @@ public class UiUtils {
 		COULD_NOT_CONNECT("Could not fetch Updates"),
 		CATEGORIES("categories"),
 		USER_FAVOURITES("Quick Play"), NOT_AUTHORIZED("Invalid Login"), SEARCHING_FOR_OPPONENT("Searching for a matching opponent"),
-		GET_READY("Get Ready"), FOR_YOUR_FIRST_QUESTION("For your first Question"), QUESTION("Question %s"), LEVEL("Level"), RECENT_QUIZZES("Recent Quizzes"), FETCHING_MESSAGES("Fetaching Messages from Server");
+		GET_READY("Get Ready"), FOR_YOUR_FIRST_QUESTION("For your first Question"), QUESTION("Question %s"), LEVEL("Level"), RECENT_QUIZZES("Recent Quizzes"),
+		
+		BADGES("Badges"), SHOW_QUIZZES("Quizzes"), SHOW_MESSAGES("Messages"), HOME("Home"), NO_RECENT_MESSAGES("No Recent Conversations available.");
 		
 		String value = null;
 		UiText(String value){
@@ -151,7 +153,7 @@ public class UiUtils {
 
 	}
 	@SuppressLint("NewApi")
-	public static void setBg(View view , Drawable drawable){
+	public void setBg(View view , Drawable drawable){
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
 	    	view.setBackground(drawable);
 	    } else {

@@ -615,7 +615,7 @@ public class ServerCalls {
 
 	public void getMessages(User user2, int toIndex, final DataInputListener<List<UserInboxMessage>> dataInputListener) {
 		String url = getAServerAddr()+"/func?task=getPreviousMessages";
-		url+="&encodedKey="+quizApp.getUserDeviceManager().getEncodedKey()+"&toIndex="+toIndex;
+		url+="&encodedKey="+quizApp.getUserDeviceManager().getEncodedKey()+"&toIndex="+toIndex+"&uid2="+user2.uid;
 		makeServerCall(url, new ServerNotifier() {
 			
 			@Override
@@ -635,7 +635,7 @@ public class ServerCalls {
 
 
 	public void sendChatMessage(User user2, String string) {
-		String url = getAServerAddr()+"/func?task=sendUnboxMessage";
+		String url = getAServerAddr()+"/func?task=sendInboxMessages";
 		url+="&encodedKey="+quizApp.getUserDeviceManager().getEncodedKey();
 
 		Map<String,String > params = new HashMap<String, String>();
