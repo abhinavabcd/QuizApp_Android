@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import android.content.Context;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.Animation;
@@ -14,6 +15,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
+import android.widget.Toast;
 
 import com.amcolabs.quizapp.AppController;
 import com.amcolabs.quizapp.R;
@@ -108,7 +110,7 @@ public class WinOrLoseScreen extends Screen{
 	}
 	
 	/**
-	 * This is the main function to be invoked to display result of a quiz
+	 * This is the main function to be invoked to display result of a quiz, right after init method
 	 * @param currentUsers List of Users participated in the quiz
 	 * @param userAnswersStack HashMap of list of answers mapped with users
 	 * @param isWinner has current user who won the quiz
@@ -144,40 +146,34 @@ public class WinOrLoseScreen extends Screen{
 		else{
 			quizResultMessage.setText(UiText.LOST_QUIZ_MESAGE.getValue());
 		}
-		animatePoints(20,20,20);
+		boolean levelUp = true;
+		
+		List<UserAnswer> ans = userAnswersStack.get(getApp().getUser().uid);
+		animatePoints(ans.get(ans.size()-1).whatUserGot,isWinner?20:0,levelUp?20:0);
 		showResultInChart();
 	}
 
 	private void animatePoints(int qPoints, int qwPoints, int luPoints) {
-		Animation anim = AnimationUtils.loadAnimation(getApp().getContext(), R.anim.fadein);
+		final Animation anim = AnimationUtils.loadAnimation(getApp().getContext(), R.anim.push_down_in);
+		final Animation fanim = AnimationUtils.loadAnimation(getApp().getContext(), R.anim.fadein);
 		quizPoints.setText("+"+qPoints);
-		quizPoints.startAnimation(anim);
-		anim.setAnimationListener(new AnimationListener() {
-			
-			@Override
-			public void onAnimationStart(Animation animation) {
-				// TODO Auto-generated method stub
-				
-			}
-			
-			@Override
-			public void onAnimationRepeat(Animation animation) {
-				// TODO Auto-generated method stub
-				
-			}
-			
-			@Override
-			public void onAnimationEnd(Animation animation) {
-				// TODO Auto-generated method stub
-				
-			}
-		});
 		quizWinPoints.setText("+"+qwPoints);
-		quizWinPoints.startAnimation(anim);
 		quizLevelupPoints.setText("+"+luPoints);
-		quizLevelupPoints.startAnimation(anim);
 		quizTotalPoints.setText("+"+(qPoints+qwPoints+luPoints));
-		quizTotalPoints.startAnimation(anim);
+		new Handler().postDelayed(new Runnable() {
+			@Override
+			public void run() {
+				quizPoints.startAnimation(anim);
+				quizWinPoints.startAnimation(anim);
+				quizLevelupPoints.startAnimation(anim);
+				new Handler().postDelayed(new Runnable() {
+					@Override
+					public void run() {
+						quizTotalPoints.startAnimation(fanim);
+					}
+				}, 2000);
+			}
+		}, 1000);
 	}
 
 	public void showAnimationOfCurrentGamePoints(int[] questionPoints, int[] questionBasedBonus , int winBonus){

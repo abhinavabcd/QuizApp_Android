@@ -59,7 +59,7 @@ public class CustomProgressBar extends ProgressBar{
 							this.cancel();
 						}
 					}
-		}, 200);
+		}, 400,100);
 //		Thread bg = new Thread(new Runnable() {
 //			
 //			@Override
