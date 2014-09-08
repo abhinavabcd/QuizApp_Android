@@ -15,6 +15,7 @@ import android.widget.LinearLayout.LayoutParams;
 import android.widget.TextView;
 
 import com.amcolabs.quizapp.R;
+import com.amcolabs.quizapp.appcontrollers.ProfileAndChatController;
 import com.amcolabs.quizapp.uiutils.UiUtils;
 /**
  * ChatViewAdapter is a Custom class to implement custom row in ListView
@@ -23,13 +24,15 @@ import com.amcolabs.quizapp.uiutils.UiUtils;
 public class ChatViewAdapter extends BaseAdapter{
 	private Context mContext;
 	private ArrayList<Message> mMessages;
+	private ProfileAndChatController controller;
 
 
 
-	public ChatViewAdapter(Context context, ArrayList<Message> messages) {
+	public ChatViewAdapter(Context context, ArrayList<Message> messages, ProfileAndChatController controller) {
 		super();
 		this.mContext = context;
 		this.mMessages = messages;
+		this.controller = controller;
 		this.notifyDataSetChanged();
 	}
 	@Override
@@ -45,7 +48,7 @@ public class ChatViewAdapter extends BaseAdapter{
 		Message message = (Message) this.getItem(position);
 
 		if(position<5){
-			fetchAndLoadOlderMessages();
+
 		}
 			
 		ViewHolder holder; 
@@ -100,21 +103,6 @@ public class ChatViewAdapter extends BaseAdapter{
 			holder.message.setTextColor(Color.BLACK);
 		}
 		return convertView;
-	}
-	private void fetchAndLoadOlderMessages() {
-		
-		// TODO: Server call here 
-		
-//		loadOlderMessages(msgs,timestamps,isMineList);
-	}
-	private void loadOlderMessages(ArrayList<String> msgs,ArrayList<Double> timestampList,ArrayList<Boolean> isMineList) {
-		int i=msgs.size();
-		Message msg = null;
-		for(;i>=0;i--){
-			msg = new Message(msgs.get(i), timestampList.get(i),isMineList.get(i));
-			mMessages.add(msg);
-		}
-		this.notifyDataSetChanged();
 	}
 	
 	private static class ViewHolder

@@ -4,29 +4,38 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import com.amcolabs.quizapp.databaseutils.Quiz;
+import com.j256.ormlite.field.DatabaseField;
 
 public class User {
-	public String uid;
-	public String password;
+	@DatabaseField(index=true, unique=true)
+    public String uid;
+	@DatabaseField
 	public String name;
 	public String deviceId;
 	public String emailId;
+	@DatabaseField
 	public String pictureUrl;
+	@DatabaseField
 	public String coverUrl;	
+	@DatabaseField
 	public String gender;
+	@DatabaseField
 	public double birthday;
+	@DatabaseField
 	public String place;
 	public boolean isActivated =false;
 	public double createdAt;
 	public String country; 
+	@DatabaseField
 	public String status;
 	public String googlePlus;
 	public String facebook;
-	public String solvedId;
 	public ArrayList<Integer> badges;
 	public HashMap<String,Integer> stats;
 	public HashMap<String, Integer[]>winsLosses;
-	private int userType;
+	private int userType = 0;
+	@DatabaseField
+	private String jsonDump;
 	
 	public String getFacebookAuthToken(){
 		return facebook;
@@ -50,6 +59,10 @@ public class User {
 		return uid.startsWith("0");
 	}
 	
+	public void save(QuizApp quizApp){
+		this.jsonDump = quizApp.getConfig().getGson().toJson(this);
+		quizApp.getDataBaseHelper().saveUser(this);
+	}
 	
 }
 

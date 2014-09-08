@@ -82,7 +82,8 @@ public class UiUtils {
 		USER_FAVOURITES("Quick Play"), NOT_AUTHORIZED("Invalid Login"), SEARCHING_FOR_OPPONENT("Searching for a matching opponent"),
 		GET_READY("Get Ready"), FOR_YOUR_FIRST_QUESTION("For your first Question"), QUESTION("Question %s"), LEVEL("Level"), RECENT_QUIZZES("Recent Quizzes"),
 		
-		BADGES("Badges"), SHOW_QUIZZES("Quizzes"), SHOW_MESSAGES("Messages"), HOME("Home"), NO_RECENT_MESSAGES("No Recent Conversations available.");
+		BADGES("Badges"), SHOW_QUIZZES("Quizzes"), SHOW_MESSAGES("Messages"), HOME("Home"), NO_RECENT_MESSAGES("No Recent Conversations available."), 
+		PREVIOUS_CHATS_USERS("Previous Conversations"), CHATS("Conversations");
 		
 		String value = null;
 		UiText(String value){

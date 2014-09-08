@@ -62,6 +62,7 @@ public class ChatScreen extends Screen {
 			@Override
 			public void onClick(View v) {
  				pController.sendMessage(otherUser, text.getText().toString());
+ 				addMessage(true, -1 , text.getText().toString());
 			}
 		});
 		
@@ -79,8 +80,8 @@ public class ChatScreen extends Screen {
 //		this.setTitle(sender);
 		messages = new ArrayList<Message>();
 
-
-		adapter = new ChatViewAdapter(controller.getContext(), messages);
+  
+		adapter = new ChatViewAdapter(controller.getContext(), messages, pController);
 		chatView = (ListView) chatLayout.findViewById(R.id.chat_list_view);
 		chatView.setAdapter(adapter);
 		chatView.setEmptyView(chatLayout.findViewById(R.id.empty));
@@ -109,8 +110,8 @@ public class ChatScreen extends Screen {
 		super.beforeRemove();
 	}
 	
-	public void addMessage(boolean isCurrentUser , String textData){
-		addNewMessage(new Message(textData, -1, isCurrentUser));
+	public void addMessage(boolean isCurrentUser , double timestamp ,  String textData){
+		addNewMessage(new Message(textData, timestamp, isCurrentUser));
 	}
 		
 	void addNewMessage(Message m){

@@ -399,6 +399,9 @@ public class ServerCalls {
 			isLogin = true;
 			lastLoginTime = quizApp.getConfig().getCurrentTimeStamp();
 			url+="&isLogin=true";
+			if(quizApp.getUserDeviceManager().hasJustInstalled){
+				url+="&isFirstLogin=true";
+			}
 			url+="&maxQuizTimestamp="+Double.toString(quizApp.getDataBaseHelper().getMaxTimeStampQuiz());
 			url+="&maxBadgesTimestamp="+Double.toString(quizApp.getDataBaseHelper().getMaxTimeStampBadges());
 		}
@@ -447,6 +450,13 @@ public class ServerCalls {
 						if(response.payload6!=null && !response.payload6.trim().equalsIgnoreCase("")){
 							HashMap<String,String> serverMap = quizApp.getConfig().getGson().fromJson(response.payload6, new TypeToken<HashMap<String,String>>(){}.getType());
 							setSeverMap(serverMap);
+						}
+						if(response.payload8!=null){
+							// this is users list of conversed people
+							List<String> uids = quizApp.getConfig().getGson().fromJson(response.payload8, new TypeToken<List<String>>(){}.getType());
+							for(String uid : uids){
+								quizApp.getDataBaseHelper().setRecentChat(uid, null, false);//just 
+							}
 						}
 						onFinishListener.onData(userFeeds, inboxMessages, offlineChalleneges, true);
 						break;
@@ -650,4 +660,27 @@ public class ServerCalls {
 			}
 		}, false);
 	}
+
+	public void getUids(List<String> users, final DataInputListener<List<User>> usersInfo, boolean sync) {
+		String url = getAServerAddr()+"/func?task=getUsersInfo";
+		url+="&encodedKey="+quizApp.getUserDeviceManager().getEncodedKey();
+		url+="uidList"+quizApp.getConfig().getGson().toJson(usersInfo);
+		makeServerCall(url, new ServerNotifier() {
+			@Override
+			public void onServerResponse(MessageType messageType, ServerResponse response) {
+				switch(messageType){
+					case OK_USERS_INFO: 
+						usersInfo.onData((List<User>) quizApp.getConfig().getGson().fromJson(response.payload, new TypeToken<List<User>>(){}.getType()));
+						return;
+					default:
+						usersInfo.onData(null);
+						return;
+				}
+			}
+		}, true);
+	}
+	
+	
+	
 }
+
