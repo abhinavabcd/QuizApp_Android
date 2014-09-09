@@ -3,8 +3,6 @@ package com.amcolabs.quizapp.screens;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import android.graphics.Color;
 import android.os.Handler;
@@ -13,14 +11,12 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
 import android.view.animation.AnimationUtils;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.amcolabs.quizapp.AppController;
-import com.amcolabs.quizapp.QuizApp;
 import com.amcolabs.quizapp.R;
 import com.amcolabs.quizapp.Screen;
 import com.amcolabs.quizapp.User;
@@ -28,9 +24,8 @@ import com.amcolabs.quizapp.appcontrollers.ProgressiveQuizController;
 import com.amcolabs.quizapp.configuration.Config;
 import com.amcolabs.quizapp.databaseutils.Question;
 import com.amcolabs.quizapp.datalisteners.DataInputListener;
-import com.amcolabs.quizapp.uiutils.UiUtils;
-import com.amcolabs.quizapp.widgets.CustomProgressBar;
 import com.amcolabs.quizapp.widgets.CircularCounter;
+import com.amcolabs.quizapp.widgets.CustomProgressBar;
 import com.amcolabs.quizapp.widgets.GothamButtonView;
 import com.squareup.picasso.Picasso;
 
@@ -79,8 +74,6 @@ public class QuestionScreen extends Screen implements View.OnClickListener, Anim
 		setTimerView((CircularCounter) headerViewWrapper.findViewById(R.id.timerView));
 		
 		
-		
-		
 		questionTextView = (TextView) questionViewWrapper.findViewById(R.id.questionText);
 		questionImageView = (ImageView) questionViewWrapper.findViewById(R.id.questionImage);
 		
@@ -127,6 +120,10 @@ public class QuestionScreen extends Screen implements View.OnClickListener, Anim
 			Picasso.with(getApp().getContext()).load(user.pictureUrl).into(userProgressView.userImageView);
 			userProgressView.userProgressView.setProgress(0);
 			userProgressView.userProgressView.setMax(maxScore);
+
+			userProgressView.userProgressView.setBackgroundResource(R.drawable.fat_progress_bar);//(getApp().getConfig().getAThemeColor());
+			userProgressView.userProgressView.getProgressDrawable().setColorFilter(getApp().getConfig().getAThemeColor(), android.graphics.PorterDuff.Mode.MULTIPLY);
+			
 			userProgressView.userScoreView.setText("+0XP");
 		}
 	}
@@ -142,30 +139,7 @@ public class QuestionScreen extends Screen implements View.OnClickListener, Anim
 		final CustomProgressBar pbar = userViews.get(uid).userProgressView;
 		if(pbar==null)
 			return;
-//		getApp().getUiUtils().setInterval(1000, new DataInputListener<Integer>(){
-//			@Override
-//			public String onData(Integer s) {
-//				int tmp = pbar.getSecondaryProgress();
-//				if(tmp>=newProgress){
-//					pbar.setProgress(newProgress);
-//					this.cancel();
-//				}
-//				pbar.setSecondaryProgress(s);	
-//				return super.onData(s);
-//			}
-//		});
-		Timer tim = new Timer();
-		tim.schedule(new TimerTask() {
-			@Override
-			public void run() {
-				int tmp = pbar.getSecondaryProgress();
-				if(tmp>=newProgress){
-					pbar.setProgress(newProgress);
-					this.cancel();
-				}
-				pbar.setSecondaryProgress(tmp+1);	
-			}
-		}, 100); 
+		pbar.showAnimatedIncrement(newProgress);
 	}
 	
 	private boolean isOptionSelected = true;

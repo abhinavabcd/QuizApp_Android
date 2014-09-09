@@ -80,10 +80,20 @@ public class UiUtils {
 		COULD_NOT_CONNECT("Could not fetch Updates"),
 		CATEGORIES("categories"),
 		USER_FAVOURITES("Quick Play"), NOT_AUTHORIZED("Invalid Login"), SEARCHING_FOR_OPPONENT("Searching for a matching opponent"),
-		GET_READY("Get Ready"), FOR_YOUR_FIRST_QUESTION("For your first Question"), QUESTION("Question %s"), LEVEL("Level"), RECENT_QUIZZES("Recent Quizzes"),
-		
-		BADGES("Badges"), SHOW_QUIZZES("Quizzes"), SHOW_MESSAGES("Messages"), HOME("Home"), NO_RECENT_MESSAGES("No Recent Conversations available."), 
-		PREVIOUS_CHATS_USERS("Previous Conversations"), CHATS("Conversations");
+		GET_READY("Get Ready"), 
+		FOR_YOUR_FIRST_QUESTION("For your first Question"), 
+		QUESTION("Question %s"), 
+		LEVEL("Level"), 
+		RECENT_QUIZZES("Recent Quizzes"),
+		BADGES("Badges"), 
+		SHOW_QUIZZES("Quizzes"), 
+		SHOW_MESSAGES("Messages"), 
+		HOME("Home"), 
+		NO_RECENT_MESSAGES("No Recent Conversations available."), 
+		PREVIOUS_CHATS_USERS("Previous Conversations"), CHATS("Conversations"),
+		FETCHING_MESSAGES("Fetching Messages from Server"),
+		WON_QUIZ_MESSAGE("You Won!"),
+		LOST_QUIZ_MESAGE("You Lost");
 		
 		String value = null;
 		UiText(String value){

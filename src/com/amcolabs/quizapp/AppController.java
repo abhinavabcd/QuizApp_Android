@@ -26,6 +26,11 @@ public abstract class AppController {
 		return false;
 	}
 	
+	public void showScreen(Screen newScreen){
+		clearScreen();
+		insertScreen(newScreen);
+	}
+	
 	public void clearScreen() {
 		quizApp.animateScreenRemove();
 	}	

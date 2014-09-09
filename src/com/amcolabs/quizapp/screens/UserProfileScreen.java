@@ -13,6 +13,7 @@ import com.amcolabs.quizapp.AppController;
 import com.amcolabs.quizapp.R;
 import com.amcolabs.quizapp.Screen;
 import com.amcolabs.quizapp.User;
+import com.amcolabs.quizapp.configuration.Config;
 import com.amcolabs.quizapp.databaseutils.Category;
 import com.amcolabs.quizapp.databaseutils.Quiz;
 import com.amcolabs.quizapp.widgets.GothamTextView;
@@ -34,9 +35,9 @@ public class UserProfileScreen extends Screen {
 	private GothamTextView userMoreInfo;
 	private AppController controller;
 	
-	public UserProfileScreen(AppController controllr) {
-		super(controllr);
-		controller = controllr;
+	public UserProfileScreen(AppController cont) {
+		super(cont);
+		controller = cont;
 		userProfile = (ScrollView) LayoutInflater.from(controller.getContext()).inflate(R.layout.user_profile, null);
 		userName = (GothamTextView) userProfile.findViewById(R.id.user_card_name);
 		userImage = (ImageView)userProfile.findViewById(R.id.user_card_small_pic);
@@ -60,7 +61,7 @@ public class UserProfileScreen extends Screen {
 	}
 	
 	public void drawChart(User user){
-		List<Category> categories = controller.quizApp.getDataBaseHelper().getCategories(5);
+		List<Category> categories = getApp().getDataBaseHelper().getCategories(5);
 		
 		ArrayList<Entry> yVals1 = new ArrayList<Entry>();
 		ArrayList<String> xVals = new ArrayList<String>();
@@ -70,18 +71,19 @@ public class UserProfileScreen extends Screen {
 		for(int i=0;i<sz;i++){
 			xVals.add(categories.get(i).shortDescription);
 		}
-		for (int i = 0; i < sz + 1; i++) {
-			List<Quiz> qList = categories.get(i).getQuizzes(controller.quizApp);
+		for (int i = 0; i < sz; i++) {
+			List<Quiz> qList = categories.get(i).getQuizzes(getApp());
 			float totalXP = 0;
 			for(int j=0;j<qList.size();j++){
-				totalXP = totalXP + (float)user.getPoints(qList.get(i));
+				totalXP = totalXP + (float)user.getPoints(qList.get(j));
 			}
             yVals1.add(new Entry((float) (Math.random() * scale) + scale / 5, i));
         }
 		PieDataSet set1 = new PieDataSet(yVals1, "Quiz Stats");
 		set1.setSliceSpace(3f);
-        set1.setColors(ColorTemplate.createColors(controller.getContext().getApplicationContext(),
-                ColorTemplate.VORDIPLOM_COLORS));
+		getApp().getConfig();
+		set1.setColors(Config.themeColors);
+//        set1.setColors(ColorTemplate.createColors(controller.getContext().getApplicationContext(),ColorTemplate.VORDIPLOM_COLORS));
         PieData data = new PieData(xVals, set1);
         mChart.setData(data);
 

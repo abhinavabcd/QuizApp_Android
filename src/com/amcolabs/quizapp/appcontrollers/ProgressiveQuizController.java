@@ -1,31 +1,26 @@
 package com.amcolabs.quizapp.appcontrollers;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
-import android.graphics.Color;
 import android.os.Handler;
-import android.view.View;
 
 import com.amcolabs.quizapp.AppController;
 import com.amcolabs.quizapp.QuizApp;
 import com.amcolabs.quizapp.User;
+import com.amcolabs.quizapp.WinOrLoseController;
 import com.amcolabs.quizapp.configuration.Config;
 import com.amcolabs.quizapp.databaseutils.Question;
 import com.amcolabs.quizapp.databaseutils.Quiz;
-import com.amcolabs.quizapp.screens.ChatScreen;
 import com.amcolabs.quizapp.screens.ClashScreen;
 import com.amcolabs.quizapp.screens.QuestionScreen;
-import com.amcolabs.quizapp.screens.UserProfileScreen;
 import com.amcolabs.quizapp.screens.WinOrLoseScreen;
 import com.amcolabs.quizapp.serverutils.ServerResponse;
 import com.amcolabs.quizapp.serverutils.ServerResponse.MessageType;
 import com.amcolabs.quizapp.serverutils.ServerWebSocketConnection;
 import com.amcolabs.quizapp.uiutils.UiUtils.UiText;
-import com.google.android.gms.wallet.Payments;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.annotations.SerializedName;
 import com.google.gson.reflect.TypeToken;
@@ -312,13 +307,16 @@ public class ProgressiveQuizController extends AppController{
 	public void validateAndShowWinningScreen(){
 		List<UserAnswer> l = userAnswersStack.get(quizApp.getUser().uid);
 		clearScreen();
+		
 		ProfileAndChatController profileAndChat = (ProfileAndChatController) quizApp.loadAppController(ProfileAndChatController.class);
 		
 		profileAndChat.loadChatScreen(getOtherUsers().get(0), -1, true);
 		
-//		WinOrLoseScreen resultScreen = new WinOrLoseScreen(this);
-//		resultScreen.showResultInChart(currentUsers,userAnswersStack);
-//		insertScreen(resultScreen);
+		WinOrLoseController resultScreen = (WinOrLoseController) quizApp.loadAppController(WinOrLoseController.class);
+		resultScreen.loadResultScreen();
+//		WinOrLoseScreen resultScreen = new WinOrLoseScreen(this,currentUsers);
+//		resultScreen.showResult(userAnswersStack,true);
+//		showScreen(resultScreen);
 
 	}
 	

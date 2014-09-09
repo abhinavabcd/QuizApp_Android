@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.amcolabs.quizapp.AppController;
 import com.amcolabs.quizapp.R;
@@ -44,6 +45,7 @@ public class ChatScreen extends Screen {
 	private ProfileAndChatController pController;
 	private Button sendButton;
 	private User otherUser;
+
 	private GothamTextView debugTextView;
 	static Random rand = new Random();	
 	static String sender;
@@ -55,6 +57,7 @@ public class ChatScreen extends Screen {
 		View chatLayout = LayoutInflater.from(controller.getContext()).inflate(R.layout.chat_main, null);
 		chatLayout.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.MATCH_PARENT));
 		text = (EditText) chatLayout.findViewById(R.id.text);
+
 		debugTextView =(GothamTextView) chatLayout.findViewById(R.id.empty);
 		
 		sendButton = (Button) chatLayout.findViewById(R.id.send_button);
