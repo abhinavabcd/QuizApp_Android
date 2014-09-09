@@ -56,4 +56,10 @@ public class Screen extends LinearLayout {
 	public boolean showMenu(){
 		return false;
 	}
+
+
+	public void refresh() {
+		// TODO Auto-generated method stub
+		
+	}
 }

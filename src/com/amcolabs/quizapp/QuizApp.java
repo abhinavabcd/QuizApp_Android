@@ -205,9 +205,9 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 		return dbHelper;
 	}
 	
-	private int wantsToExitCount = 0;
+	private double wantsToExitLastTimestamp = 0;
 	public void onBackPressed() {
-		try{		
+			try{
 				// TODO: overridePendingTransition(R.anim.in,R.anim.out); fragment activity to animate screen out and in
 				Screen screen = peekCurrentScreen();
 				if(screen==null){
@@ -224,18 +224,17 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 					}
 					
 					if(oldScreen==null){
-						if(++wantsToExitCount>1){
+						if(Config.getCurrentTimeStamp() - wantsToExitLastTimestamp<2){
+							//pressed twice in 3 seconds
 							getActivity().finish();//all controllers finished
 						}
 						else{
 							reinit(false);//should show first screen fetching updates and shit again
-							new Handler().postDelayed(new Runnable() {
-								@Override
-								public void run() {
-									wantsToExitCount = 0;
-								}
-							}, 3000);
+							((UserMainPageController)loadAppController(UserMainPageController.class))
+							.checkAndShowCategories();
+
 						}
+						wantsToExitLastTimestamp = Config.getCurrentTimeStamp();
 						return;
 					}
 					animateScreenIn(oldScreen);
@@ -351,8 +350,16 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
         }
     }
 
+    int currentActiveMenu = -1;
 	public void onMenuClick(int id) {
-		screenStack.clear();
+		while(screenStack.size()>1){
+			screenStack.remove(0);
+		}
+		if(currentActiveMenu==id){
+			screenStack.peek().refresh();
+			return;
+		}
+		currentActiveMenu = id;
 		switch(id){
 			case MENU_HOME:
 				break;

@@ -5,7 +5,9 @@ import java.util.List;
 
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.View;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 
@@ -23,6 +25,7 @@ import com.amcolabs.quizapp.widgets.GothamTextView;
 public class UserChatListScreen extends Screen{
 
 	private ProfileAndChatController pController;
+	public GothamTextView debugMessageView;
 
 	public UserChatListScreen(AppController controller) {
 		super(controller);
@@ -31,9 +34,16 @@ public class UserChatListScreen extends Screen{
 	}
 	
 	public void showChatList(final ChatListAdapter chatListAdapter){
+					FrameLayout chatListWrapper = (FrameLayout)getApp().getActivity().getLayoutInflater().inflate(R.layout.chat_list_layout, null);
+					chatListWrapper.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.MATCH_PARENT));
+					debugMessageView = (GothamTextView)chatListWrapper.findViewById(R.id.debugMessage);
 					LinearLayout lView = (LinearLayout) getApp().getActivity().getLayoutInflater().inflate(R.layout.block_list_view, null);
+					lView.setBackgroundColor(getApp().getConfig().getAThemeColor());
 					EditText searchText = (EditText) lView.findViewById(R.id.search_text);
 					GothamTextView titleView = (GothamTextView) lView.findViewById(R.id.title_text_view);
+					GothamTextView viewMore = (GothamTextView) lView.findViewById(R.id.view_more);
+					viewMore.setVisibility(View.GONE);
+					
 					titleView.setText(UiText.PREVIOUS_CHATS_USERS.getValue());
 					searchText.addTextChangedListener(new TextWatcher() {
 					    @Override
@@ -52,6 +62,12 @@ public class UserChatListScreen extends Screen{
 				
 					});
 					((ListView) lView.findViewById(R.id.listView)).setAdapter(chatListAdapter);
-					addToScrollView(lView);
+					chatListWrapper.addView(lView,0);
+					addToScrollView(chatListWrapper);
+	}
+	@Override
+	public boolean showMenu() {
+		// TODO Auto-generated method stub
+		return true;
 	}
 }

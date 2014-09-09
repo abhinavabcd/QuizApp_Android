@@ -10,6 +10,8 @@ public class ChatList {
 		timestamp  = currentTimeStamp;
 		unseenMessagesFlag  = hasSeen;
 	}
+	public ChatList(){
+	}
 	@DatabaseField(index=true, unique=true)
     public String uid;
 	@DatabaseField

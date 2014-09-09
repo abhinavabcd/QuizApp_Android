@@ -339,8 +339,8 @@ public class UiUtils {
 		if(assetPath==null || assetPath.isEmpty())
 			return;
 		try{
-		    InputStream ims = ctx.getAssets().open(assetPath);
-		    Picasso.with(ctx).load("file:///android_asset/"+assetPath).into(target);
+		    InputStream ims = ctx.getAssets().open("images/"+assetPath);
+		    Picasso.with(ctx).load("file:///android_asset/images/"+assetPath).into(target);
 		    return;
 		}
 		catch(IOException ex) {

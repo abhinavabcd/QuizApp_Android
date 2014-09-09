@@ -37,6 +37,10 @@ public class User {
 	@DatabaseField
 	private String jsonDump;
 	
+	
+	public User(){
+	}
+	
 	public String getFacebookAuthToken(){
 		return facebook;
 	}

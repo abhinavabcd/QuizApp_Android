@@ -1,9 +1,11 @@
 package com.amcolabs.quizapp.appcontrollers;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
 import android.os.Bundle;
+import android.view.View;
 
 import com.amcolabs.quizapp.AppController;
 import com.amcolabs.quizapp.QuizApp;
@@ -53,8 +55,15 @@ public class ProfileAndChatController extends AppController {
 					chatScreen = new ChatScreen(ProfileAndChatController.this, user2);
 					gcmListener = new DataInputListener<Bundle>(){
 						public String onData(Bundle extras) {
-							if(extras.getString(Config.KEY_GCM_FROM_USER) == user2.uid){
-								chatScreen.addMessage(false, -1 , extras.getString(Config.KEY_GCM_TEXT_MESSAGE));
+							if(extras.getString(Config.KEY_GCM_FROM_USER).equalsIgnoreCase(user2.uid)){
+								 String messageText = extras.getString(Config.KEY_GCM_TEXT_MESSAGE);
+								chatScreen.addMessage(false, -1 ,messageText);
+								try {
+									quizApp.getDataBaseHelper().getChatListDao().createOrUpdate(new ChatList(user2.uid,messageText , Config.getCurrentTimeStamp(), 0));
+								} catch (SQLException e) {
+									// TODO Auto-generated catch block
+									e.printStackTrace();
+								}
 							}
 							return null;
 						}
@@ -72,8 +81,21 @@ public class ProfileAndChatController extends AppController {
 		});
 	}
 	
-	public void sendMessage(User user2, String string) {
-		quizApp.getServerCalls().sendChatMessage(user2, string);
+	public void sendMessage(final User user2, final String string) {
+		quizApp.getServerCalls().sendChatMessage(user2, string, new DataInputListener<Boolean>(){
+			@Override
+			public String onData(Boolean s) {
+				if(s){
+					try {
+						quizApp.getDataBaseHelper().getChatListDao().createOrUpdate(new ChatList(user2.uid,string , Config.getCurrentTimeStamp(), 0));
+					} catch (SQLException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+				return super.onData(s);
+			}
+		});
 	}
 
 	public void removeChatListeners() {
@@ -96,8 +118,6 @@ public class ProfileAndChatController extends AppController {
 			@Override
 			public String onData(Boolean s) {
 				
-				
-				
 					final ChatListAdapter chatListAdapter = new ChatListAdapter(quizApp,0,chatList, 
 					new DataInputListener2<ChatList, User , Void, Void>(){
 						@Override
@@ -107,13 +127,13 @@ public class ProfileAndChatController extends AppController {
 						}
 					});
 					UserChatListScreen chatListScreen = new UserChatListScreen(ProfileAndChatController.this);
+					if(chatList.size()!=0){
+						chatListScreen.debugMessageView.setVisibility(View.GONE);
+					}
 					insertScreen(chatListScreen);
 					chatListScreen.showChatList(chatListAdapter);
-
-		return null;
+					return null;
 		}
 		});
-
-
 	}
 }

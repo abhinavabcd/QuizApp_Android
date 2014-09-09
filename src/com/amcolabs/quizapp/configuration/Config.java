@@ -91,7 +91,7 @@ public class Config{
 	}
 	
 	private int tempBgIndex = 0;
-	private List<String> userBgAssets = Arrays.asList("images/bg_2.jpg" , "images/bg_1.jpg");
+	private List<String> userBgAssets = Arrays.asList("bg/bg_2.jpg" , "bg/bg_1.jpg");
 	public String getRandomImageBg(){
 		return userBgAssets.get(tempBgIndex++%userBgAssets.size());
 	}
