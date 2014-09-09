@@ -16,6 +16,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewParent;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
@@ -107,6 +108,10 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 
 
 	private void addView(Screen screen) {
+		ViewParent tmp = screen.getParent();
+		if(tmp!=null){
+			((ViewGroup) tmp).removeView(screen);
+		}
 		mainFrame.addView(screen);
 		if(screen.showMenu()){
 			this.menu.setVisibility(View.VISIBLE);

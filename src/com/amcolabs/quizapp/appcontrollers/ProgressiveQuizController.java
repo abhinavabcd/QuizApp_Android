@@ -10,6 +10,7 @@ import android.os.Handler;
 import com.amcolabs.quizapp.AppController;
 import com.amcolabs.quizapp.QuizApp;
 import com.amcolabs.quizapp.User;
+import com.amcolabs.quizapp.WinOrLoseController;
 import com.amcolabs.quizapp.configuration.Config;
 import com.amcolabs.quizapp.databaseutils.Question;
 import com.amcolabs.quizapp.databaseutils.Quiz;
@@ -311,9 +312,11 @@ public class ProgressiveQuizController extends AppController{
 		
 		profileAndChat.loadChatScreen(getOtherUsers().get(0), -1, true);
 		
-		WinOrLoseScreen resultScreen = new WinOrLoseScreen(this,currentUsers);
-		resultScreen.showResult(userAnswersStack,true);
-		insertScreen(resultScreen);
+		WinOrLoseController resultScreen = (WinOrLoseController) quizApp.loadAppController(WinOrLoseController.class);
+		resultScreen.loadResultScreen();
+//		WinOrLoseScreen resultScreen = new WinOrLoseScreen(this,currentUsers);
+//		resultScreen.showResult(userAnswersStack,true);
+//		showScreen(resultScreen);
 
 	}
 	

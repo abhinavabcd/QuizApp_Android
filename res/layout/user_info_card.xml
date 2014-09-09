@@ -21,19 +21,21 @@
             android:orientation="horizontal" >
 
             <LinearLayout
-                android:layout_width="60dp"
-                android:layout_height="match_parent" >
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" >
 
                 <ImageView
                     android:id="@+id/user_card_small_pic"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
                     android:src="@drawable/abc_ab_bottom_solid_dark_holo" />
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:orientation="vertical" >
 
                 <com.amcolabs.quizapp.widgets.GothamTextView
@@ -45,7 +47,7 @@
                     android:textAppearance="?android:attr/textAppearanceMedium" />
 
                 <LinearLayout
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content" >
 
                     <com.amcolabs.quizapp.widgets.GothamTextView
@@ -63,8 +65,9 @@
 
             <LinearLayout
                 android:id="@+id/level_more_info"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:orientation="vertical" >
 
             </LinearLayout>
