@@ -669,8 +669,11 @@ public class ServerCalls {
 	public void getUids(List<String> users, final DataInputListener<List<User>> usersInfo, boolean sync) {
 		String url = getAServerAddr()+"/func?task=getUsersInfo";
 		url+="&encodedKey="+quizApp.getUserDeviceManager().getEncodedKey();
-		url+="uidList"+quizApp.getConfig().getGson().toJson(usersInfo);
-		makeServerCall(url, new ServerNotifier() {
+		HashMap<String , String> params = new HashMap<String, String>();
+ 		
+		params.put("uidList",quizApp.getConfig().getGson().toJson(users));
+		
+		makeServerPostCall(url, params, new ServerNotifier() {
 			@Override
 			public void onServerResponse(MessageType messageType, ServerResponse response) {
 				switch(messageType){

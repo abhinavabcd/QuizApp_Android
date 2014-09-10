@@ -26,17 +26,17 @@ public class UserChatListScreen extends Screen{
 
 	private ProfileAndChatController pController;
 	public GothamTextView debugMessageView;
-
+	FrameLayout chatListWrapper = null;
 	public UserChatListScreen(AppController controller) {
 		super(controller);
 		this.pController = (ProfileAndChatController)controller;
+		chatListWrapper = (FrameLayout)getApp().getActivity().getLayoutInflater().inflate(R.layout.chat_list_layout, null);
+		chatListWrapper.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.MATCH_PARENT));
+		debugMessageView = (GothamTextView)chatListWrapper.findViewById(R.id.debugMessage);
 		
 	}
 	
 	public void showChatList(final ChatListAdapter chatListAdapter){
-					FrameLayout chatListWrapper = (FrameLayout)getApp().getActivity().getLayoutInflater().inflate(R.layout.chat_list_layout, null);
-					chatListWrapper.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.MATCH_PARENT));
-					debugMessageView = (GothamTextView)chatListWrapper.findViewById(R.id.debugMessage);
 					LinearLayout lView = (LinearLayout) getApp().getActivity().getLayoutInflater().inflate(R.layout.block_list_view, null);
 					lView.setBackgroundColor(getApp().getConfig().getAThemeColor());
 					EditText searchText = (EditText) lView.findViewById(R.id.search_text);

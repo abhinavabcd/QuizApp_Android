@@ -37,7 +37,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 	// name of the database file for your application -- change to something appropriate for your app
 	private static final String DATABASE_NAME = "quizApp.db";
 	// any time you make changes to your database objects, you may have to increase the database version
-	private static final int DATABASE_VERSION = 6;
+	private static final int DATABASE_VERSION = 8;
 	private static String DATABASE_PATH = "/data/data/com.amcolabs.quizapp/databases/";
 
 	// the DAO object we use to access the Category table
@@ -405,8 +405,12 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
     	ArrayList<String> pendingList = new ArrayList<String>();
     	for(String uid : uids){
     		try {
-    			if(!quizApp.cachedUsers.containsKey(uid))
-    				quizApp.cachedUsers.put( uid , getUsersInfoDao().queryBuilder().where().eq("uid",uid).queryForFirst());
+    			User u = getUsersInfoDao().queryBuilder().where().eq("uid",uid).queryForFirst();
+    			if(!quizApp.cachedUsers.containsKey(uid) && u!=null)
+    				quizApp.cachedUsers.put( uid , u);
+    			else{
+    				pendingList.add(uid);
+    			}
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

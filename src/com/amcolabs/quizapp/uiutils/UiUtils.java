@@ -172,9 +172,7 @@ public class UiUtils {
 	    }
 	}
 	
-	static class MyTimer extends Timer{
-		
-	}
+	
 	public Timer setInterval(int millis , final DataInputListener<Integer> listener) {
 		// TODO Auto-generated constructor stub
 		Timer timer = (new Timer());

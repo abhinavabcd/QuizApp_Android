@@ -7,7 +7,7 @@ import com.amcolabs.quizapp.databaseutils.Quiz;
 import com.j256.ormlite.field.DatabaseField;
 
 public class User {
-	@DatabaseField(index=true, unique=true)
+	@DatabaseField(id=true, index=true, unique=true)
     public String uid;
 	@DatabaseField
 	public String name;

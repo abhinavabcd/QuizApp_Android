@@ -12,7 +12,8 @@ public class ChatList {
 	}
 	public ChatList(){
 	}
-	@DatabaseField(index=true, unique=true)
+	
+	@DatabaseField(id=true, index=true, unique=true)
     public String uid;
 	@DatabaseField
 	public String recentMessage;
