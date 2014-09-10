@@ -75,7 +75,7 @@ class RandomSelector <T>{
 
 public class ServerCalls {
 
-	public static final String SERVER_ADDR = Config.IS_TEST_BUILD? "http://192.168.0.11:8084":"http://quizapp-main.amcolabs.com";
+	public static final String SERVER_ADDR = Config.IS_TEST_BUILD? "http://192.168.0.10:8085":"http://quizapp-main.amcolabs.com";
 //	public static final String SERVER_URL = Config.IS_TEST_BUILD? "http://192.168.0.10:8084/func":"http://quizapp-main.amcolabs.com/func";
 //	private static final String GET_ENCODEDKEY_URL = SERVER_URL+"?task=getEncodedKey";
 //	private static final String SET_GCM_KEY_URL = SERVER_URL+"?task=setGCMRegistrationId";
@@ -399,6 +399,9 @@ public class ServerCalls {
 			isLogin = true;
 			lastLoginTime = quizApp.getConfig().getCurrentTimeStamp();
 			url+="&isLogin=true";
+			if(quizApp.getUserDeviceManager().hasJustInstalled){
+				url+="&isFirstLogin=true";
+			}
 			url+="&maxQuizTimestamp="+Double.toString(quizApp.getDataBaseHelper().getMaxTimeStampQuiz());
 			url+="&maxBadgesTimestamp="+Double.toString(quizApp.getDataBaseHelper().getMaxTimeStampBadges());
 		}
@@ -447,6 +450,13 @@ public class ServerCalls {
 						if(response.payload6!=null && !response.payload6.trim().equalsIgnoreCase("")){
 							HashMap<String,String> serverMap = quizApp.getConfig().getGson().fromJson(response.payload6, new TypeToken<HashMap<String,String>>(){}.getType());
 							setSeverMap(serverMap);
+						}
+						if(response.payload8!=null){
+							// this is users list of conversed people
+							List<String> uids = quizApp.getConfig().getGson().fromJson(response.payload8, new TypeToken<List<String>>(){}.getType());
+							for(String uid : uids){
+								quizApp.getDataBaseHelper().setRecentChat(uid, null, false);//just 
+							}
 						}
 						onFinishListener.onData(userFeeds, inboxMessages, offlineChalleneges, true);
 						break;
@@ -634,7 +644,7 @@ public class ServerCalls {
 	}
 
 
-	public void sendChatMessage(User user2, String string) {
+	public void sendChatMessage(User user2, String string , final DataInputListener<Boolean> isSuccessful) {
 		String url = getAServerAddr()+"/func?task=sendInboxMessages";
 		url+="&encodedKey="+quizApp.getUserDeviceManager().getEncodedKey();
 
@@ -645,9 +655,40 @@ public class ServerCalls {
 			@Override
 			public void onServerResponse(MessageType messageType,ServerResponse response) {
 				switch(messageType){
-					
+					case OK_SEND_MESSAGE:
+					   isSuccessful.onData(true);
+					   break;
+					default:
+          			   isSuccessful.onData(true);
+          			   break;
 				}
 			}
 		}, false);
 	}
+
+	public void getUids(List<String> users, final DataInputListener<List<User>> usersInfo, boolean sync) {
+		String url = getAServerAddr()+"/func?task=getUsersInfo";
+		url+="&encodedKey="+quizApp.getUserDeviceManager().getEncodedKey();
+		HashMap<String , String> params = new HashMap<String, String>();
+ 		
+		params.put("uidList",quizApp.getConfig().getGson().toJson(users));
+		
+		makeServerPostCall(url, params, new ServerNotifier() {
+			@Override
+			public void onServerResponse(MessageType messageType, ServerResponse response) {
+				switch(messageType){
+					case OK_USERS_INFO: 
+						usersInfo.onData((List<User>) quizApp.getConfig().getGson().fromJson(response.payload, new TypeToken<List<User>>(){}.getType()));
+						return;
+					default:
+						usersInfo.onData(null);
+						return;
+				}
+			}
+		}, true);
+	}
+	
+	
+	
 }
+

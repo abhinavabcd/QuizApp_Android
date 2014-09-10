@@ -28,6 +28,13 @@ import com.amcolabs.quizapp.R;
 public class QuizAppMenuItem extends LinearLayout implements OnClickListener {
 
 	private int id;
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
 	private QuizApp quizApp;
 	
     private Context mContext;
@@ -74,6 +81,10 @@ public class QuizAppMenuItem extends LinearLayout implements OnClickListener {
     private  TextView mFontIconView;
     private TextView mTextView;
 
+	private TextView mDirtyTextView;
+
+	private CharSequence isDirtyText = null;
+
 	public QuizAppMenuItem(QuizApp quizApp, int id , int iconDrawable , String text) {
 		super(quizApp.getContext());
 		this.quizApp = quizApp;
@@ -111,13 +122,13 @@ public class QuizAppMenuItem extends LinearLayout implements OnClickListener {
 	        mTextView 		= setupTextView();
 	        mIconView 		= setupIconView();
 	        mFontIconView 	= setupFontIconView();
-
+	        mDirtyTextView = setupDirtyTextView();
 	        int iconIndex,textIndex;
 	        View view1,view2;
 
 	        if(mIconView==null && mFontIconView==null && mTextView==null){
 	            Button tempTextView = new Button(mContext);
-	            tempTextView.setText("Fancy Button");
+	            tempTextView.setText("QuizApp");
 	            this.addView(tempTextView);
 
 	        }else{
@@ -153,13 +164,36 @@ public class QuizAppMenuItem extends LinearLayout implements OnClickListener {
 	                }
 
 	            }
-
+	            views.add(mDirtyTextView);
 	            for(View view : views){
 	                this.addView(view);
 	            }
 	        }
 	    }
-	    public QuizAppMenuItem(Context context, AttributeSet attrs){
+	    
+	    public void setDirtyText(String text){
+	    	if(text!=null  && text.equalsIgnoreCase("")){
+	    		mDirtyTextView.setText(text);
+	    		mDirtyTextView.setVisibility(View.VISIBLE);
+	    	}
+	    	else{
+	    		mDirtyTextView.setVisibility(View.GONE);
+	    	}
+	    }
+	    
+	    private TextView setupDirtyTextView() {
+	    	TextView textView = new TextView(mContext);
+	    	textView.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+	    	textView.setVisibility(View.GONE);
+	    	textView.setText(isDirtyText);
+	    	if(isDirtyText!=null){
+	    		textView.setPadding(3, 3, 3, 3);
+	    	}
+	    	textView.setBackgroundColor(Color.RED);
+			return textView;
+		}
+
+		public QuizAppMenuItem(Context context, AttributeSet attrs){
 	        super(context,attrs);
 	        this.mContext = context;
 

@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -16,9 +17,9 @@ import android.util.Log;
 import com.amcolabs.quizapp.Badge;
 import com.amcolabs.quizapp.QuizApp;
 import com.amcolabs.quizapp.R;
+import com.amcolabs.quizapp.User;
 import com.amcolabs.quizapp.configuration.Config;
-import com.amcolabs.quizapp.databaseutils.Category.CategoryType;
-import com.amcolabs.quizapp.fileandcommonutils.FileHelper;
+import com.amcolabs.quizapp.datalisteners.DataInputListener;
 import com.j256.ormlite.android.apptools.OrmLiteSqliteOpenHelper;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.Dao.CreateOrUpdateStatus;
@@ -36,15 +37,16 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 	// name of the database file for your application -- change to something appropriate for your app
 	private static final String DATABASE_NAME = "quizApp.db";
 	// any time you make changes to your database objects, you may have to increase the database version
-	private static final int DATABASE_VERSION = 4;
+	private static final int DATABASE_VERSION = 8;
 	private static String DATABASE_PATH = "/data/data/com.amcolabs.quizapp/databases/";
 
 	// the DAO object we use to access the Category table
 	private Dao<Category, Integer> categoriesDao = null;
 	private Dao<Quiz, Integer> quizDao = null;
 	private Dao<Badge, Integer> badgesDao = null;
-	
+	private Dao<ChatList,Integer> chatListDao = null;
 	private Dao<UserPreferences, Integer> userPreferencesDao = null;
+	private Dao<User, Integer> usersInfo = null;
 	
 	private RuntimeExceptionDao<Category, Integer> categoriesRuntimeExceptionDao = null;
 	private RuntimeExceptionDao<Quiz, Integer> quizRuntimeExceptionDao = null;
@@ -176,6 +178,20 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 			Log.e(DatabaseHelper.class.getName(), "Can't create database", e);
 			throw new RuntimeException(e);
 		}
+		try {
+			Log.i(DatabaseHelper.class.getName(), "onCreate");
+			TableUtils.createTableIfNotExists(connectionSource, ChatList.class);
+		} catch (SQLException e) {
+			Log.e(DatabaseHelper.class.getName(), "Can't create database", e);
+			throw new RuntimeException(e);
+		}
+		try {
+			Log.i(DatabaseHelper.class.getName(), "onCreate");
+			TableUtils.createTableIfNotExists(connectionSource, User.class);
+		} catch (SQLException e) {
+			Log.e(DatabaseHelper.class.getName(), "Can't create database", e);
+			throw new RuntimeException(e);
+		}
 	}
 	
 	@Override
@@ -186,6 +202,8 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 			TableUtils.dropTable(connectionSource, Quiz.class, true);
 			TableUtils.dropTable(connectionSource, Category.class, true);
 			TableUtils.dropTable(connectionSource, UserPreferences.class, true);
+			TableUtils.dropTable(connectionSource, ChatList.class, true);
+			TableUtils.dropTable(connectionSource, User.class, true);
 			// after we drop the old databases, we create the new ones
 			onCreate(db, connectionSource);
 		} catch (SQLException e) {
@@ -219,7 +237,21 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 		return badgesDao;
 	}
 
+	public Dao<ChatList, Integer> getChatListDao() throws SQLException {
+		if (chatListDao == null) {
+			chatListDao = getDao(ChatList.class); 
+		}
+		return chatListDao;
+	}
+	
+	public Dao<User, Integer> getUsersInfoDao() throws SQLException {
+		if (usersInfo == null) {
+			usersInfo = getDao(User.class); 
+		}
+		return usersInfo;
+	}
 
+	
 	public Dao<UserPreferences, Integer> getUserPreferencesDao() throws SQLException {
 		if (userPreferencesDao == null) {
 			userPreferencesDao = getDao(UserPreferences.class);
@@ -340,4 +372,85 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 		}
 		return tmp!=null?true:false;
     }
+    
+    public void setRecentChat(String uid, String message , boolean unseen){
+    	try {
+			getChatListDao().createOrUpdate(new ChatList(uid, message,Config.getCurrentTimeStamp() , unseen?0:1)); 
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    }
+    public List<ChatList> getUnseenChatList(String uid, String message , boolean unseen){
+    	try {
+			return getChatListDao().queryBuilder().where().eq("unseenMessagesFlag", 1).query();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    	return null;
+    }
+    
+    public List<ChatList> getAllChatList(){
+    	try {
+			return getChatListDao().queryBuilder().query();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    	return null;
+    }
+    
+    
+    public void saveUser(User user){
+    	try {
+			getUsersInfoDao().createOrUpdate(user);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    }
+    
+    public HashMap<String , User> getAllUsersByUid(List<String> uids , final DataInputListener<Boolean> usersListener){
+    	ArrayList<String> pendingList = new ArrayList<String>();
+    	for(String uid : uids){
+    		try {
+    			User u = getUsersInfoDao().queryBuilder().where().eq("uid",uid).queryForFirst();
+    			if(!quizApp.cachedUsers.containsKey(uid) && u!=null)
+    				quizApp.cachedUsers.put( uid , u);
+    			else{
+    				pendingList.add(uid);
+    			}
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				pendingList.add(uid);
+			}
+    	}
+    	
+    	if(pendingList.size()>0){//synchronized call ?	 
+    		quizApp.getServerCalls().getUids(pendingList, new DataInputListener<List<User>>(){
+    			@Override
+    			public String onData(List<User> s) {
+    				for(User user :s){
+    					try {
+							getUsersInfoDao().createOrUpdate(user);
+	        				quizApp.cachedUsers.put(user.uid , user);
+						} catch (SQLException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+    				}
+    				usersListener.onData(true);
+    				return null;
+    			}
+    		}, true); //pending users listener
+    	}
+    	else{
+    		usersListener.onData(true);
+    	}
+    	return quizApp.cachedUsers;
+    }
+    
 }
+

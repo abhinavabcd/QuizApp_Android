@@ -21,10 +21,10 @@ class CategoryViewHolder{
 		GothamTextView additionalText;
 		Category item;
 		public Category category;
-	}
+}
 
 public  class CategoryItemListAdapter extends ArrayAdapter<Category>{
-		QuizApp quizApp ;
+		QuizApp quizApp;
 		private DataInputListener<Category> clickListener;
 		public CategoryItemListAdapter(QuizApp quizApp, int resource,List<Category> objects, DataInputListener<Category> clickListener) {
 			super(quizApp.getActivity(), resource, objects);

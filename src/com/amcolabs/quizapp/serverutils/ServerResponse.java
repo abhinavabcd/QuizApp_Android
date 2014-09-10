@@ -18,10 +18,11 @@ public class ServerResponse {
 	public String payload5;
 	public String payload6;
 	public String payload7;
+	public String payload8;
+	
 	
 	
 	public long responseTime;
-	
 		
 	// below code to enumize the response codes
 	public enum MessageType{
@@ -60,6 +61,9 @@ public class ServerResponse {
 				OK_FEED(509),
 				OK_CHALLENGES(510),
 				OK_ACTIVATING_BOT(511),
+				NO_REPLY_FROM_OTHER_USERS(512),
+				OK_SEND_MESSAGE(513),
+				OK_USERS_INFO(514),
 				
 //				################################# dict values/commands for payload type definition
 				USER_ANSWERED_QUESTION ( 1),

@@ -34,7 +34,6 @@ import com.amcolabs.quizapp.R;
 import com.amcolabs.quizapp.configuration.Config;
 import com.amcolabs.quizapp.datalisteners.DataInputListener;
 import com.amcolabs.quizapp.notificationutils.NotificationReciever;
-import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
@@ -80,9 +79,22 @@ public class UiUtils {
 		COULD_NOT_CONNECT("Could not fetch Updates"),
 		CATEGORIES("categories"),
 		USER_FAVOURITES("Quick Play"), NOT_AUTHORIZED("Invalid Login"), SEARCHING_FOR_OPPONENT("Searching for a matching opponent"),
-		GET_READY("Get Ready"), FOR_YOUR_FIRST_QUESTION("For your first Question"), QUESTION("Question %s"), LEVEL("Level"), RECENT_QUIZZES("Recent Quizzes"), FETCHING_MESSAGES("Fetaching Messages from Server"),
-		WON_QUIZ_MESSAGE("You Won!"),LOST_QUIZ_MESAGE("You Lost :("),TIE_QUIZ_MESAGE("Its A TIE!"),
-		BADGES("Badges"), SHOW_QUIZZES("Quizzes"), SHOW_MESSAGES("Messages"), HOME("Home"), NO_RECENT_MESSAGES("No Recent Conversations available.");
+		GET_READY("Get Ready"), 
+		FOR_YOUR_FIRST_QUESTION("For your first Question"), 
+		QUESTION("Question %s"), 
+		LEVEL("Level"), 
+		RECENT_QUIZZES("Recent Quizzes"),
+		BADGES("Badges"), 
+		SHOW_QUIZZES("Quizzes"), 
+		SHOW_MESSAGES("Messages"), 
+		HOME("Home"), 
+		NO_RECENT_MESSAGES("No Recent Conversations available."), 
+		PREVIOUS_CHATS_USERS("Previous Conversations"), CHATS("Conversations"),
+		FETCHING_MESSAGES("Fetching Messages from Server"),
+		WON_QUIZ_MESSAGE("You Won!"),
+		LOST_QUIZ_MESAGE("You Lost :("),
+		TIE_QUIZ_MESAGE("Its A TIE!");
+
 		
 		String value = null;
 		UiText(String value){
@@ -161,9 +173,7 @@ public class UiUtils {
 	    }
 	}
 	
-	static class MyTimer extends Timer{
-		
-	}
+	
 	public Timer setInterval(int millis , final DataInputListener<Integer> listener) {
 		// TODO Auto-generated constructor stub
 		Timer timer = (new Timer());
@@ -338,8 +348,8 @@ public class UiUtils {
 		if(assetPath==null || assetPath.isEmpty())
 			return;
 		try{
-		    InputStream ims = ctx.getAssets().open(assetPath);
-		    Picasso.with(ctx).load("file:///android_asset/"+assetPath).into(target);
+		    InputStream ims = ctx.getAssets().open("images/"+assetPath);
+		    Picasso.with(ctx).load("file:///android_asset/images/"+assetPath).into(target);
 		    return;
 		}
 		catch(IOException ex) {

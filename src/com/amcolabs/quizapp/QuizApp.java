@@ -3,7 +3,10 @@ package com.amcolabs.quizapp;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.EmptyStackException;
+import java.util.HashMap;
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Stack;
 
@@ -24,6 +27,7 @@ import android.widget.FrameLayout;
 import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 
+import com.amcolabs.quizapp.appcontrollers.ProfileAndChatController;
 import com.amcolabs.quizapp.appcontrollers.UserMainPageController;
 import com.amcolabs.quizapp.configuration.Config;
 import com.amcolabs.quizapp.databaseutils.DatabaseHelper;
@@ -49,7 +53,8 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 	public static final int MENU_ALL_QUIZZES = 3;
 	public static final int MENU_FRIENDS = 4;
 	public static final int MENU_MESSAGES=5;
-	
+	private static final int MENU_CHATS = 6;
+
 	
 	private User currentUser;
 	private AppController currentAppController;
@@ -205,9 +210,9 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 		return dbHelper;
 	}
 	
-	private int wantsToExitCount = 0;
+	private double wantsToExitLastTimestamp = 0;
 	public void onBackPressed() {
-		try{		
+			try{
 				// TODO: overridePendingTransition(R.anim.in,R.anim.out); fragment activity to animate screen out and in
 				Screen screen = peekCurrentScreen();
 				if(screen==null){
@@ -224,18 +229,17 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 					}
 					
 					if(oldScreen==null){
-						if(++wantsToExitCount>1){
+						if(Config.getCurrentTimeStamp() - wantsToExitLastTimestamp<2){
+							//pressed twice in 3 seconds
 							getActivity().finish();//all controllers finished
 						}
 						else{
 							reinit(false);//should show first screen fetching updates and shit again
-							new Handler().postDelayed(new Runnable() {
-								@Override
-								public void run() {
-									wantsToExitCount = 0;
-								}
-							}, 3000);
+							((UserMainPageController)loadAppController(UserMainPageController.class))
+							.checkAndShowCategories();
+
 						}
+						wantsToExitLastTimestamp = Config.getCurrentTimeStamp();
 						return;
 					}
 					animateScreenIn(oldScreen);
@@ -260,6 +264,9 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 	Stack<Screen> screenStack = new Stack<Screen>();
 
 	private HorizontalScrollView menu;
+
+	private List<QuizAppMenuItem> menuItems;
+
 
 
 	public Screen popCurrentScreen(){
@@ -348,8 +355,16 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
         }
     }
 
+    int currentActiveMenu = -1;
 	public void onMenuClick(int id) {
-		screenStack.clear();
+		while(screenStack.size()>1){
+			screenStack.remove(0);
+		}
+		if(currentActiveMenu==id){
+			screenStack.peek().refresh();
+			return;
+		}
+		currentActiveMenu = id;
 		switch(id){
 			case MENU_HOME:
 				break;
@@ -360,6 +375,10 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 			case MENU_BADGES:
 				break;
 			case MENU_FRIENDS:
+				break;
+			case MENU_CHATS:
+				ProfileAndChatController pcontroller = (ProfileAndChatController) loadAppController(ProfileAndChatController.class);
+				pcontroller.showChatScreen();
 				break;
 		}
 	}
@@ -388,10 +407,25 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 	public void addMenuItems(){
 		LinearLayout buttonsContainer = (LinearLayout) menu.findViewById(R.id.nav_items_container);
 		buttonsContainer.removeAllViews();
-		buttonsContainer.addView(new QuizAppMenuItem(this, QuizApp.MENU_BADGES, R.drawable.badges,UiText.BADGES.getValue()));
-		buttonsContainer.addView(new QuizAppMenuItem(this, QuizApp.MENU_ALL_QUIZZES, R.drawable.all_quizzes, UiText.SHOW_QUIZZES.getValue()));
-		buttonsContainer.addView(new QuizAppMenuItem(this, QuizApp.MENU_MESSAGES, R.drawable.messages , UiText.SHOW_MESSAGES.getValue()));
-		buttonsContainer.addView(new QuizAppMenuItem(this, QuizApp.MENU_HOME, R.drawable.home , UiText.HOME.getValue()));
+		menuItems = Arrays.asList(
+				new QuizAppMenuItem(this, QuizApp.MENU_BADGES, R.drawable.badges,UiText.BADGES.getValue()),
+				new QuizAppMenuItem(this, QuizApp.MENU_ALL_QUIZZES, R.drawable.all_quizzes, UiText.SHOW_QUIZZES.getValue()),
+				new QuizAppMenuItem(this, QuizApp.MENU_MESSAGES, R.drawable.messages , UiText.SHOW_MESSAGES.getValue()),
+				new QuizAppMenuItem(this, QuizApp.MENU_HOME, R.drawable.home , UiText.HOME.getValue()),
+				new QuizAppMenuItem(this, QuizApp.MENU_CHATS, R.drawable.home , UiText.CHATS.getValue())
+				);
+		
+		for(QuizAppMenuItem item : menuItems){
+			buttonsContainer.addView(item);
+		}
+	}
+	
+	public void setMenuItemDirty(int id , String text){
+		for(QuizAppMenuItem item : menuItems){
+			if(item.getId()==id){
+				item.setDirtyText(text);
+			}
+		}
 	}
 	
 	public void setHorizontalMenu( HorizontalScrollView hmenu) {
@@ -401,5 +435,6 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 		return menu;
 	}
 	
-
+	public HashMap<String , User> cachedUsers = new HashMap<String, User>();
+	
 }
