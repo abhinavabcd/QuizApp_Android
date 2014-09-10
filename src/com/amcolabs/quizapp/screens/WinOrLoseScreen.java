@@ -9,18 +9,18 @@ import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.Animation;
-import android.view.animation.Animation.AnimationListener;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
-import android.widget.Toast;
 
 import com.amcolabs.quizapp.AppController;
 import com.amcolabs.quizapp.R;
 import com.amcolabs.quizapp.Screen;
 import com.amcolabs.quizapp.User;
+import com.amcolabs.quizapp.WinOrLoseController;
+import com.amcolabs.quizapp.appcontrollers.ProfileAndChatController;
 import com.amcolabs.quizapp.appcontrollers.ProgressiveQuizController.UserAnswer;
 import com.amcolabs.quizapp.configuration.Config;
 import com.amcolabs.quizapp.uiutils.UiUtils.UiText;
@@ -134,9 +134,10 @@ public class WinOrLoseScreen extends Screen{
 				@Override
 				public void onClick(View v) {
 					User user = (User) v.getTag();
-					UserProfileScreen uScreen = new UserProfileScreen(controller);
-					uScreen.showUser(user);
-					controller.showScreen(uScreen);
+					((WinOrLoseController) controller).loadProfile(user);
+//					UserProfileScreen uScreen = new UserProfileScreen(controller);
+//					uScreen.showUser(user);
+//					controller.showScreen(uScreen);
 				}
 			});
 		}

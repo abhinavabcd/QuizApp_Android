@@ -16,8 +16,11 @@ import com.amcolabs.quizapp.User;
 import com.amcolabs.quizapp.configuration.Config;
 import com.amcolabs.quizapp.databaseutils.Category;
 import com.amcolabs.quizapp.databaseutils.Quiz;
+import com.amcolabs.quizapp.widgets.BarChartViewMultiDataset;
 import com.amcolabs.quizapp.widgets.GothamTextView;
 import com.amcolabs.quizapp.widgets.PieChartView;
+import com.github.mikephil.charting.data.BarData;
+import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.PieData;
@@ -29,7 +32,8 @@ public class UserProfileScreen extends Screen {
 	public TextView wonTextView;
 	public TextView lostTextView;
 	public ScrollView userProfile;
-	private PieChartView mChart;
+	private PieChartView mPieChart;
+	private BarChartViewMultiDataset mBarChart;
 	private GothamTextView userName;
 	private ImageView userImage;
 	private GothamTextView userStatusMessage;
@@ -46,7 +50,8 @@ public class UserProfileScreen extends Screen {
 		userMoreInfo = (GothamTextView) userProfile.findViewById(R.id.user_more_info);
 		wonTextView = (TextView) userProfile.findViewById(R.id.win_count);
 		lostTextView = (TextView) userProfile.findViewById(R.id.lose_count);
-		mChart = (PieChartView) userProfile.findViewById(R.id.pie_chart);
+		mPieChart = (PieChartView) userProfile.findViewById(R.id.pie_chart);
+		mPieChart = (PieChartView) userProfile.findViewById(R.id.bar_chart);
         setSampleData(controller.getContext());
 
 		addView(userProfile);
@@ -67,7 +72,6 @@ public class UserProfileScreen extends Screen {
 		ArrayList<BarEntry> yVals2 = new ArrayList<BarEntry>();
 		ArrayList<String> xVals = new ArrayList<String>();
 		int sz = categories.size();
-		float scale = 4;
 		
 		for(int i=0;i<sz;i++){
 			xVals.add(categories.get(i).shortDescription);
@@ -78,73 +82,46 @@ public class UserProfileScreen extends Screen {
 			for(int j=0;j<qList.size();j++){
 				totalXP = totalXP + (float)user.getPoints(qList.get(j));
 			}
-            yVals1.add(new Entry((float) (Math.random() * scale) + scale / 5, i));
+            yVals1.add(new Entry(totalXP, i));
+            yVals2.add(new BarEntry((float)getApp().getGameUtils().getLevelFromXp(totalXP),i));
         }
 		
-		drawUserActivityDistributionChart(null,null);
-		drawCategoryWiseLevelsChart(null,null);
+		drawUserActivityDistributionChart(xVals,yVals1);
+		drawCategoryWiseLevelsChart(xVals,yVals2);
 	}
 	
-	public void drawUserActivityDistributionChart(ArrayList<String> xVals,ArrayList<BarEntry> yVals){
-//			int columns = userAnswersStack.get(currentUsers.get(0).uid).size(); // to get questions size
-//			ArrayList<String> xVals = new ArrayList<String>();
-//	        for (int i = 0; i < columns; i++) {
-//	            xVals.add("Q"+(i+1));
-//	        }
-//	        ArrayList<BarDataSet> dataSets = new ArrayList<BarDataSet>();
-//	        BarDataSet set;
-//	        ArrayList<BarEntry> yVals;
-//			for(int i=0;i<currentUsers.size();i++){
-//				if (userAnswersStack.containsKey(currentUsers.get(i).uid)){
-//					List<UserAnswer> answers = userAnswersStack.get(currentUsers.get(i).uid);
-//					yVals = new ArrayList<BarEntry>();
-//					for(int j=0;j<answers.size();j++){
-//						UserAnswer tmp = answers.get(j);
-//						yVals.add(new BarEntry((float)tmp.whatUserGot,j));
-//					}
-//					set = new BarDataSet(yVals, "User1");
-//					set.setColor(this.getApp().getConfig().getAThemeColor());
-//					dataSets.add(set);
-//				}
-//			}
-//			BarData data = new BarData(xVals, dataSets);
-//			data.setGroupSpace(110f);
-//
-//	        mChart.setData(data);
-//	        mChart.invalidate();
+	public void drawCategoryWiseLevelsChart(ArrayList<String> xVals,ArrayList<BarEntry> yVals){
+	        ArrayList<BarDataSet> dataSets = new ArrayList<BarDataSet>();
+	        BarDataSet set;
+
+			set = new BarDataSet(yVals, "Level");
+			set.setColor(this.getApp().getConfig().getAThemeColor());
+			dataSets.add(set);
+			BarData data = new BarData(xVals, dataSets);
+			data.setGroupSpace(110f);
+
+	        mBarChart.setData(data);
+	        mBarChart.setDescription("Your Current Level in each Category");
+	        mBarChart.invalidate();
 	}
 	
-	public void drawCategoryWiseLevelsChart(ArrayList<String> xVals,ArrayList<Entry> yVals){
-		List<Category> categories = getApp().getDataBaseHelper().getAllCategories();
-		
-		int sz = categories.size();
-		float scale = 4;
-		
-//		for(int i=0;i<sz;i++){
-//			xVals.add(categories.get(i).shortDescription);
-//		}
-//		for (int i = 0; i < sz; i++) {
-//			List<Quiz> qList = categories.get(i).getQuizzes(getApp());
-//			float totalXP = 0;
-//			for(int j=0;j<qList.size();j++){
-//				totalXP = totalXP + (float)user.getPoints(qList.get(j));
-//			}
-//            yVals.add(new Entry((float) (Math.random() * scale) + scale / 5, i));
-//        }
-		PieDataSet set1 = new PieDataSet(yVals, "Quiz Stats");
-		set1.setSliceSpace(3f);
-		getApp().getConfig();
-		set1.setColors(Config.themeColors);
+	public void drawUserActivityDistributionChart(ArrayList<String> xVals,ArrayList<Entry> yVals){
+	
+		PieDataSet set = new PieDataSet(yVals, "Quiz Stats");
+		set.setSliceSpace(3f);
+		set.setColors(Config.themeColors);
 //        set1.setColors(ColorTemplate.createColors(controller.getContext().getApplicationContext(),ColorTemplate.VORDIPLOM_COLORS));
-        PieData data = new PieData(xVals, set1);
-        mChart.setData(data);
+        PieData data = new PieData(xVals, set);
+        mPieChart.setData(data);
 
         // undo all highlights
-        mChart.highlightValues(null);
+        mPieChart.highlightValues(null);
 
         // set a text for the chart center
-        mChart.setCenterText("Total Value\n" + (int) mChart.getYValueSum() + "\n(all slices)");
-        mChart.invalidate();
+        mPieChart.setCenterText("Total \n" + (int) mPieChart.getYValueSum() + "\n(all slices)");
+        
+        mPieChart.setDescription("Total Matches Played in each Category");
+        mPieChart.invalidate();
 	}
 	
 	// TODO : below method must be remove at the end
@@ -181,13 +158,13 @@ public class UserProfileScreen extends Screen {
                 ColorTemplate.VORDIPLOM_COLORS));
 
         PieData data = new PieData(xVals, set1);
-        mChart.setData(data);
+        mPieChart.setData(data);
 
         // undo all highlights
-        mChart.highlightValues(null);
+        mPieChart.highlightValues(null);
 
         // set a text for the chart center
-        mChart.setCenterText("Total Value\n" + (int) mChart.getYValueSum() + "\n(all slices)");
-        mChart.invalidate();
+        mPieChart.setCenterText("Total Value\n" + (int) mPieChart.getYValueSum() + "\n(all slices)");
+        mPieChart.invalidate();
 	 }
 }

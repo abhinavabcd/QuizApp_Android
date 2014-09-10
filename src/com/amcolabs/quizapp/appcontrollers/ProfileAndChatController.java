@@ -47,9 +47,9 @@ public class ProfileAndChatController extends AppController {
 	public void showProfileScreen(User user){
 		if(profileScreen==null){
 			profileScreen = new UserProfileScreen(this);
-			profileScreen.showUser(user);
 		}
 		profileScreen.showUser(user);
+		showScreen(profileScreen);
 	}
 	
 	public void loadChatScreen(final User user2 , int toIndex , boolean isNewLoad){

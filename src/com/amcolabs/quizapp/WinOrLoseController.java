@@ -6,6 +6,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import com.amcolabs.quizapp.appcontrollers.ProfileAndChatController;
 import com.amcolabs.quizapp.appcontrollers.ProgressiveQuizController.UserAnswer;
 import com.amcolabs.quizapp.configuration.Config;
 import com.amcolabs.quizapp.databaseutils.Quiz;
@@ -13,6 +14,7 @@ import com.amcolabs.quizapp.screens.WinOrLoseScreen;
 
 
 public class WinOrLoseController extends AppController {
+	private WinOrLoseScreen quizResultScreen;
 
 	public WinOrLoseController(QuizApp quizApp) {
 		super(quizApp);
@@ -23,7 +25,13 @@ public class WinOrLoseController extends AppController {
 		// TODO Auto-generated method stub
 		
 	}
-
+	
+	/**
+	 * Main method to load result screen after quiz
+	 * @param quiz Current quiz user has played
+	 * @param currentUsers Current list of users who played quiz
+	 * @param userAnswersStack Current user's answers in hashmap mapped with uid's
+	 */
 	public void loadResultScreen(Quiz quiz, ArrayList<User> currentUsers, HashMap<String, List<UserAnswer>> userAnswersStack) {
 		// TODO Auto-generated method stub
 		ArrayList<String> winnersList = whoWon(userAnswersStack);
@@ -39,12 +47,14 @@ public class WinOrLoseController extends AppController {
 		else{
 			quizResult = -1;
 		}
-		WinOrLoseScreen resultScreen = new WinOrLoseScreen(this,currentUsers);
+		if (quizResultScreen==null){
+			quizResultScreen = new WinOrLoseScreen(this,currentUsers);
+		}
 		double cPoints = quizApp.getUser().getPoints(quiz);
 		List<UserAnswer> uAns = userAnswersStack.get(quizApp.getUser().uid);
 		double newPoints = cPoints+uAns.get(uAns.size()-1).whatUserGot+(quizResult>0?Config.QUIZ_WIN_BONUS:0);
-		resultScreen.showResult(userAnswersStack,quizResult,didUserLevelUp(cPoints,newPoints));
-		showScreen(resultScreen);
+		quizResultScreen.showResult(userAnswersStack,quizResult,didUserLevelUp(cPoints,newPoints));
+		showScreen(quizResultScreen);
 	}
 
 	private ArrayList<String> whoWon(HashMap<String, List<UserAnswer>> userAnswersStack){
@@ -79,5 +89,11 @@ public class WinOrLoseController extends AppController {
 	
 	public void evaluateBadges(){
 		// TODO: evaluate all badge conditions and show if unlocked
+	}
+
+	public void loadProfile(User user) {
+		ProfileAndChatController profileAndChat = (ProfileAndChatController) quizApp.loadAppController(ProfileAndChatController.class);
+//		profileAndChat.loadChatScreen(user, -1, true);
+		profileAndChat.showProfileScreen(user);
 	}
 }
