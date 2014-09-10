@@ -7,6 +7,10 @@ import java.util.List;
 import java.util.Set;
 
 import com.amcolabs.quizapp.appcontrollers.ProgressiveQuizController.UserAnswer;
+import com.amcolabs.quizapp.configuration.Config;
+import com.amcolabs.quizapp.databaseutils.Quiz;
+import com.amcolabs.quizapp.screens.WinOrLoseScreen;
+
 
 public class WinOrLoseController extends AppController {
 
@@ -20,20 +24,27 @@ public class WinOrLoseController extends AppController {
 		
 	}
 
-	public void loadResultScreen(HashMap<String, List<UserAnswer>> userAnswersStack) {
+	public void loadResultScreen(Quiz quiz, ArrayList<User> currentUsers, HashMap<String, List<UserAnswer>> userAnswersStack) {
 		// TODO Auto-generated method stub
 		ArrayList<String> winnersList = whoWon(userAnswersStack);
+		int quizResult = 0;
 		if(winnersList.contains(this.quizApp.getUser().uid)){
 			if(winnersList.size()==1){
-				// User has won
+				quizResult = 1;
 			}
-			else{
-				// Tie
-			}
+//			else{ // default value
+//				// Tie
+//			}
 		}
 		else{
-			// User lost
+			quizResult = -1;
 		}
+		WinOrLoseScreen resultScreen = new WinOrLoseScreen(this,currentUsers);
+		double cPoints = quizApp.getUser().getPoints(quiz);
+		List<UserAnswer> uAns = userAnswersStack.get(quizApp.getUser().uid);
+		double newPoints = cPoints+uAns.get(uAns.size()-1).whatUserGot+(quizResult>0?Config.QUIZ_WIN_BONUS:0);
+		resultScreen.showResult(userAnswersStack,quizResult,didUserLevelUp(cPoints,newPoints));
+		showScreen(resultScreen);
 	}
 
 	private ArrayList<String> whoWon(HashMap<String, List<UserAnswer>> userAnswersStack){
@@ -58,7 +69,15 @@ public class WinOrLoseController extends AppController {
 		return winnersList;
 	}
 	
+	public boolean didUserLevelUp(double oldPoints,double newPoints){
+		if (Math.floor(quizApp.getGameUtils().getLevelFromXp(oldPoints))!=
+				Math.floor(quizApp.getGameUtils().getLevelFromXp(newPoints))){
+			return true;
+		}
+		return false;
+	}
+	
 	public void evaluateBadges(){
-		// TODO: evaluate all badge condiitons and show if unlocked
+		// TODO: evaluate all badge conditions and show if unlocked
 	}
 }

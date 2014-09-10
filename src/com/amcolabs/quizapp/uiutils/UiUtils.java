@@ -81,7 +81,7 @@ public class UiUtils {
 		CATEGORIES("categories"),
 		USER_FAVOURITES("Quick Play"), NOT_AUTHORIZED("Invalid Login"), SEARCHING_FOR_OPPONENT("Searching for a matching opponent"),
 		GET_READY("Get Ready"), FOR_YOUR_FIRST_QUESTION("For your first Question"), QUESTION("Question %s"), LEVEL("Level"), RECENT_QUIZZES("Recent Quizzes"), FETCHING_MESSAGES("Fetaching Messages from Server"),
-		WON_QUIZ_MESSAGE("You Won!"),LOST_QUIZ_MESAGE("You Lost :("),		
+		WON_QUIZ_MESSAGE("You Won!"),LOST_QUIZ_MESAGE("You Lost :("),TIE_QUIZ_MESAGE("Its A TIE!"),
 		BADGES("Badges"), SHOW_QUIZZES("Quizzes"), SHOW_MESSAGES("Messages"), HOME("Home"), NO_RECENT_MESSAGES("No Recent Conversations available.");
 		
 		String value = null;

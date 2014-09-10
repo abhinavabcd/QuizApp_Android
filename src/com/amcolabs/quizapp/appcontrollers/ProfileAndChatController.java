@@ -13,11 +13,13 @@ import com.amcolabs.quizapp.datalisteners.DataInputListener;
 import com.amcolabs.quizapp.notificationutils.NotificationReciever;
 import com.amcolabs.quizapp.notificationutils.NotificationReciever.NotificationType;
 import com.amcolabs.quizapp.screens.ChatScreen;
+import com.amcolabs.quizapp.screens.UserProfileScreen;
 import com.amcolabs.quizapp.uiutils.UiUtils.UiText;
 
 public class ProfileAndChatController extends AppController {
 
 	private ChatScreen chatScreen;
+	private UserProfileScreen profileScreen;
 	private DataInputListener<Bundle> gcmListener;
 
 	public ProfileAndChatController(QuizApp quizApp) {
@@ -32,6 +34,14 @@ public class ProfileAndChatController extends AppController {
 	public boolean onBackPressed() {
 		removeChatListeners();
 		return super.onBackPressed();
+	}
+	
+	public void showProfileScreen(User user){
+		if(profileScreen==null){
+			profileScreen = new UserProfileScreen(this);
+			profileScreen.showUser(user);
+		}
+		profileScreen.showUser(user);
 	}
 	
 	public void loadChatScreen(final User user2 , int toIndex , boolean isNewLoad){

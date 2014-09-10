@@ -108,6 +108,16 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 			}
     		return new ArrayList<Category>();
     }
+
+    public List<Category> getAllCategories(){
+    		try {
+				return getCategoryDao().queryBuilder().orderBy("modifiedTimestamp", false).query();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+    		return new ArrayList<Category>();
+    }
     
     public Quiz getQuizById(String quizId){
 		try {

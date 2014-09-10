@@ -22,6 +22,7 @@ import com.amcolabs.quizapp.R;
 import com.amcolabs.quizapp.Screen;
 import com.amcolabs.quizapp.User;
 import com.amcolabs.quizapp.appcontrollers.ProgressiveQuizController.UserAnswer;
+import com.amcolabs.quizapp.configuration.Config;
 import com.amcolabs.quizapp.uiutils.UiUtils.UiText;
 import com.amcolabs.quizapp.widgets.BarChartViewMultiDataset;
 import com.amcolabs.quizapp.widgets.GothamTextView;
@@ -101,22 +102,15 @@ public class WinOrLoseScreen extends Screen{
         
         
         addView(quizResult);
-        
-//		chatScreen = new ChatScreen(controller);
-////		for(int i=0;i<chatScreen.getChildCount();i++){
-////			addView(chatScreen.getChildAt(i));
-////		}
-//		chatScreen.setLayoutParams(new LayoutParams(300, 400));
-//		addView(chatScreen);
 	}
 	
 	/**
 	 * This is the main function to be invoked to display result of a quiz, right after init method
 	 * @param currentUsers List of Users participated in the quiz
 	 * @param userAnswersStack HashMap of list of answers mapped with users
-	 * @param isWinner has current user who won the quiz
+	 * @param matchResult has current user who won the quiz
 	 */
-	public void showResult(HashMap<String, List<UserAnswer>> uAnswersStack,boolean isWinner){
+	public void showResult(HashMap<String, List<UserAnswer>> uAnswersStack,int matchResult,boolean levelUp){
 	  // Show whether user has won or not
 	  // rematch button , addFriend button , challenge with points button ,  seeProfile button
 	// for these buttons , will use the same layout we used for category view ,list_item_layout.xml
@@ -146,16 +140,18 @@ public class WinOrLoseScreen extends Screen{
 				}
 			});
 		}
-		if(isWinner){
+		if(matchResult>0){
 			quizResultMessage.setText(UiText.WON_QUIZ_MESSAGE.getValue());
 		}
-		else{
+		else if(matchResult<0){
 			quizResultMessage.setText(UiText.LOST_QUIZ_MESAGE.getValue());
 		}
-		boolean levelUp = true;
+		else{
+			quizResultMessage.setText(UiText.TIE_QUIZ_MESAGE.getValue());
+		}
 		
 		List<UserAnswer> ans = userAnswersStack.get(getApp().getUser().uid);
-		animatePoints(ans.get(ans.size()-1).whatUserGot,isWinner?20:0,levelUp?20:0);
+		animatePoints((int)Math.floor(ans.get(ans.size()-1).whatUserGot),(int)Math.floor(matchResult>0?Config.QUIZ_WIN_BONUS:0),(int)Math.floor(levelUp?Config.QUIZ_LEVEL_UP_BONUS:0));
 		showResultInChart();
 	}
 
@@ -180,10 +176,6 @@ public class WinOrLoseScreen extends Screen{
 				}, 2000);
 			}
 		}, 1000);
-	}
-
-	public void showAnimationOfCurrentGamePoints(int[] questionPoints, int[] questionBasedBonus , int winBonus){
-	         // just current gain , and all sum of them gained in small boxes
 	}
 	
 	// TODO : below method must be remove at the end

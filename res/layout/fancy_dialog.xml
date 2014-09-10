@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/mainWrapper"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center_vertical"
+    android:layout_margin="10dp"
+    android:background="@color/black" >
+
+    <LinearLayout
+        android:id="@+id/mainLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:background="@color/white"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:padding="10dp" >
+
+        <RelativeLayout
+            android:id="@+id/titleWrapper"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+
+            <com.amcolabs.quizapp.widgets.GothamTextView
+                android:id="@+id/titleText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_centerInParent="false"
+                android:layout_marginBottom="20dp"
+                android:text="Instructions"
+                android:textColor="@color/grey_cloud"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <ImageView
+                android:id="@+id/closeButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentTop="true"
+                android:src="@drawable/abc_ic_clear_holo_light" />
+
+        </RelativeLayout>
+
+        <com.amcolabs.quizapp.widgets.SeperatorView
+            android:id="@+id/seperatorView1"
+            android:layout_width="wrap_content"
+            android:layout_height="2dp"
+            android:layout_margin="5dp" />
+
+    </LinearLayout>
+
+</ScrollView>

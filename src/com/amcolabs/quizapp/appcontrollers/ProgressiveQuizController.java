@@ -309,11 +309,11 @@ public class ProgressiveQuizController extends AppController{
 		clearScreen();
 		
 		ProfileAndChatController profileAndChat = (ProfileAndChatController) quizApp.loadAppController(ProfileAndChatController.class);
-		
+
 		profileAndChat.loadChatScreen(getOtherUsers().get(0), -1, true);
 		
 		WinOrLoseController resultScreen = (WinOrLoseController) quizApp.loadAppController(WinOrLoseController.class);
-		resultScreen.loadResultScreen();
+		resultScreen.loadResultScreen(quiz,currentUsers,userAnswersStack);
 //		WinOrLoseScreen resultScreen = new WinOrLoseScreen(this,currentUsers);
 //		resultScreen.showResult(userAnswersStack,true);
 //		showScreen(resultScreen);

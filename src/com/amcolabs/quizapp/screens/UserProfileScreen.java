@@ -18,6 +18,7 @@ import com.amcolabs.quizapp.databaseutils.Category;
 import com.amcolabs.quizapp.databaseutils.Quiz;
 import com.amcolabs.quizapp.widgets.GothamTextView;
 import com.amcolabs.quizapp.widgets.PieChartView;
+import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
@@ -57,13 +58,13 @@ public class UserProfileScreen extends Screen {
 		userStatusMessage.setText(user.status);
 		userMoreInfo.setText(user.place);
 		
-		drawChart(user);
+		drawUserCharts(user);
 	}
 	
-	public void drawChart(User user){
-		List<Category> categories = getApp().getDataBaseHelper().getCategories(5);
-		
+	public void drawUserCharts(User user){
+		List<Category> categories = getApp().getDataBaseHelper().getAllCategories();
 		ArrayList<Entry> yVals1 = new ArrayList<Entry>();
+		ArrayList<BarEntry> yVals2 = new ArrayList<BarEntry>();
 		ArrayList<String> xVals = new ArrayList<String>();
 		int sz = categories.size();
 		float scale = 4;
@@ -79,7 +80,58 @@ public class UserProfileScreen extends Screen {
 			}
             yVals1.add(new Entry((float) (Math.random() * scale) + scale / 5, i));
         }
-		PieDataSet set1 = new PieDataSet(yVals1, "Quiz Stats");
+		
+		drawUserActivityDistributionChart(null,null);
+		drawCategoryWiseLevelsChart(null,null);
+	}
+	
+	public void drawUserActivityDistributionChart(ArrayList<String> xVals,ArrayList<BarEntry> yVals){
+//			int columns = userAnswersStack.get(currentUsers.get(0).uid).size(); // to get questions size
+//			ArrayList<String> xVals = new ArrayList<String>();
+//	        for (int i = 0; i < columns; i++) {
+//	            xVals.add("Q"+(i+1));
+//	        }
+//	        ArrayList<BarDataSet> dataSets = new ArrayList<BarDataSet>();
+//	        BarDataSet set;
+//	        ArrayList<BarEntry> yVals;
+//			for(int i=0;i<currentUsers.size();i++){
+//				if (userAnswersStack.containsKey(currentUsers.get(i).uid)){
+//					List<UserAnswer> answers = userAnswersStack.get(currentUsers.get(i).uid);
+//					yVals = new ArrayList<BarEntry>();
+//					for(int j=0;j<answers.size();j++){
+//						UserAnswer tmp = answers.get(j);
+//						yVals.add(new BarEntry((float)tmp.whatUserGot,j));
+//					}
+//					set = new BarDataSet(yVals, "User1");
+//					set.setColor(this.getApp().getConfig().getAThemeColor());
+//					dataSets.add(set);
+//				}
+//			}
+//			BarData data = new BarData(xVals, dataSets);
+//			data.setGroupSpace(110f);
+//
+//	        mChart.setData(data);
+//	        mChart.invalidate();
+	}
+	
+	public void drawCategoryWiseLevelsChart(ArrayList<String> xVals,ArrayList<Entry> yVals){
+		List<Category> categories = getApp().getDataBaseHelper().getAllCategories();
+		
+		int sz = categories.size();
+		float scale = 4;
+		
+//		for(int i=0;i<sz;i++){
+//			xVals.add(categories.get(i).shortDescription);
+//		}
+//		for (int i = 0; i < sz; i++) {
+//			List<Quiz> qList = categories.get(i).getQuizzes(getApp());
+//			float totalXP = 0;
+//			for(int j=0;j<qList.size();j++){
+//				totalXP = totalXP + (float)user.getPoints(qList.get(j));
+//			}
+//            yVals.add(new Entry((float) (Math.random() * scale) + scale / 5, i));
+//        }
+		PieDataSet set1 = new PieDataSet(yVals, "Quiz Stats");
 		set1.setSliceSpace(3f);
 		getApp().getConfig();
 		set1.setColors(Config.themeColors);
