@@ -52,9 +52,9 @@
             <include
                 android:id="@+id/quizQuestion"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_weight="1"
+                android:layout_weight="0.8"
                 layout="@layout/quiz_question" />
 
             <include
@@ -62,7 +62,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom"
+                android:layout_weight="0.2"
                 layout="@layout/quiz_options" />
+
         </LinearLayout>
     </FrameLayout>
 

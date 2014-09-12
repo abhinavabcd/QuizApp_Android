@@ -143,7 +143,32 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 		return null;
     }
     
+    public List<Badge> getAllBadges(){
+		try {
+				return getBadgesDao().queryForAll();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
+    }
     
+    public List<Badge> getAllUnAwardedBadges(){
+		try {
+			return getBadgesDao().queryBuilder().where().eq("isAwarded", false).query();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
+    }
+    
+    public List<Badge> getAllAwardedBadges(){
+		try {
+			return getBadgesDao().queryBuilder().where().eq("isAwarded", true).query();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
+    }
     
     public double getServerTimeDiffFromDB(){
     	RuntimeExceptionDao<UserPreferences, Integer> userPreferencesTable = getUserPreferencesExceptionDao();

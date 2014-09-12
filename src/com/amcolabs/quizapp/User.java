@@ -2,6 +2,9 @@ package com.amcolabs.quizapp;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 
 import com.amcolabs.quizapp.databaseutils.Quiz;
 import com.j256.ormlite.field.DatabaseField;
@@ -32,7 +35,7 @@ public class User {
 	public String facebook;
 	public ArrayList<Integer> badges;
 	public HashMap<String,Integer> stats;
-	public HashMap<String, Integer[]>winsLosses;
+	public HashMap<String, Integer[]> winsLosses;
 	private int userType = 0;
 	@DatabaseField
 	private String jsonDump;
@@ -49,8 +52,9 @@ public class User {
 	}
 
 	public static User getDummyUser(QuizApp quizApp) {
-		return quizApp.getConfig().getGson().fromJson("{\"emailId\": \"ramasolipuram@gmail.com\", \"uid\": \"110040773460941325994\", \"isActivated\": true, \"googlePlus\": \"ya29.aACYqyIWDi39LksAAADNOtMCHgeTwAr1HzPWinCQtAq_6cjPmrtbqpwHnfwnK9GJDm4Df6I5_Bgwm8j_H7_m0czGX90AfjVtfPyvSbAp86y5y_DgUWffbXg_9RoF4g\", \"pictureUrl\": \"https://lh3.googleusercontent.com/-TyulralhJFw/AAAAAAAAAAI/AAAAAAAAA9o/8KyUnpS-j_Y/photo.jpg?sz=200\", \"deviceId\": \"31e7d9178c3ca41f\", \"winsLosses\": {}, \"stats\": {}, \"name\": \"Rama Reddy\", \"gender\": \"female\", \"birthday\": 0, \"newDeviceId\": \"31e7d9178c3ca41f\", \"badges\": [], \"activationKey\": \"\"}", User.class);
+		return quizApp.getConfig().getGson().fromJson("{\"emailId\": \"ramasolipuram@gmail.com\", \"uid\": \"110040773460941325994\", \"isActivated\": true, \"googlePlus\": \"ya29.aACYqyIWDi39LksAAADNOtMCHgeTwAr1HzPWinCQtAq_6cjPmrtbqpwHnfwnK9GJDm4Df6I5_Bgwm8j_H7_m0czGX90AfjVtfPyvSbAp86y5y_DgUWffbXg_9RoF4g\", \"pictureUrl\": \"https://lh3.googleusercontent.com/-TyulralhJFw/AAAAAAAAAAI/AAAAAAAAA9o/8KyUnpS-j_Y/photo.jpg?sz=200\", \"deviceId\": \"31e7d9178c3ca41f\", \"winsLosses\": {'2':[5,2,1],'1':[2,6,3]}, \"stats\": {}, \"name\": \"Rama Reddy\", \"gender\": \"female\", \"birthday\": 0, \"newDeviceId\": \"31e7d9178c3ca41f\", \"badges\": [], \"activationKey\": \"\"}", User.class);
 	}
+	
 	public int getLevel(Quiz quiz) {
 		return 0;
 	}
@@ -68,5 +72,36 @@ public class User {
 		quizApp.getDataBaseHelper().saveUser(this);
 	}
 	
+	public int[] getTotalWinsLosses(){
+		int[] totalWinsLosses = new int[3];
+		Iterator<String> itr = this.winsLosses.keySet().iterator();
+		String quizId = null;
+		Integer[] tmpWinsLosses;
+		while(itr.hasNext()){
+			quizId = itr.next();
+			tmpWinsLosses = this.winsLosses.get(quizId);
+			for(int i=0;i<3;i++){
+				totalWinsLosses[i] = totalWinsLosses[i]+tmpWinsLosses[i];
+			}
+		}
+		return totalWinsLosses;
+	}
+	
+	public int[] getWinsLossesSum(List<String> quizList){
+		int[] totalWinsLosses = new int[3];
+		Iterator<String> itr = quizList.iterator();
+		String quizId = null;
+		Integer[] tmpWinsLosses;
+		while(itr.hasNext()){
+			quizId = itr.next();
+			tmpWinsLosses = this.winsLosses.get(quizId);
+			if(tmpWinsLosses!=null){
+				for(int i=0;i<3;i++){
+					totalWinsLosses[i] = totalWinsLosses[i]+tmpWinsLosses[i];
+				}
+			}
+		}
+		return totalWinsLosses;
+	}
 }
 

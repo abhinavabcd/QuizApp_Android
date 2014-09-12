@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center" >
+    
+    <ImageView
+        android:id="@+id/badgeImage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:src="@drawable/ic_launcher" />
+
+    <com.amcolabs.quizapp.widgets.GothamTextView
+        android:id="@+id/badgeName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/badgeImage"
+        android:layout_centerHorizontal="false"
+        android:layout_centerInParent="false"
+        android:layout_marginBottom="20dp"
+        android:gravity="center"
+        android:text="Quiz App Badge"
+        android:textStyle="bold" />
+
+    <com.amcolabs.quizapp.widgets.GothamTextView
+        android:id="@+id/badgeDescription"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/badgeName"
+        android:layout_centerHorizontal="true"
+        android:layout_margin="10dp"
+        android:gravity="center"
+        android:text="This badge gets unlocked when you play Quiz"
+        android:textSize="15sp" />
+
+</RelativeLayout>

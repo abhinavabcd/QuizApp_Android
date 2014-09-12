@@ -93,7 +93,10 @@ public class UiUtils {
 		FETCHING_MESSAGES("Fetching Messages from Server"),
 		WON_QUIZ_MESSAGE("You Won!"),
 		LOST_QUIZ_MESAGE("You Lost :("),
-		TIE_QUIZ_MESAGE("Its A TIE!");
+		TIE_QUIZ_MESAGE("Its A TIE!"), 
+		PROFILE_WON_STATS_TEXT("Won"),
+		PROFILE_LOST_STATS_TEXT("Lost"),
+		PROFILE_TIE_STATS_TEXT("Tie");
 
 		
 		String value = null;

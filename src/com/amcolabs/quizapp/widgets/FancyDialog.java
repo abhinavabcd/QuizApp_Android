@@ -48,7 +48,7 @@ public class FancyDialog extends Dialog implements android.view.View.OnClickList
 	@Override
 	public void setContentView(View view) {
 		setContentView(R.layout.fancy_dialog);
-		((LinearLayout)findViewById(R.id.mainLayout)).addView(view);
+		((LinearLayout)findViewById(R.id.mainLayout)).addView(view,0);
 	}
 	
 	@Override
@@ -72,5 +72,29 @@ public class FancyDialog extends Dialog implements android.view.View.OnClickList
 	@Override
 	public void onClick(View v) {
 		this.cancel();
+	}
+	
+	public void showTitle(){
+		findViewById(R.id.headerWrapper).setVisibility(View.VISIBLE);
+	}
+	
+	public void hideTitle(){
+		findViewById(R.id.headerWrapper).setVisibility(View.GONE);
+	}
+	
+	public void showAlertButtons(){
+		findViewById(R.id.footerWrapper).setVisibility(View.VISIBLE);
+	}
+	
+	public void hideAlertButtons(){
+		findViewById(R.id.footerWrapper).setVisibility(View.GONE);
+	}
+	
+	public void setPositiveButtonListener(android.view.View.OnClickListener l){
+		findViewById(R.id.positiveButton).setOnClickListener(l);
+	}
+	
+	public void setNegativeButtonListener(android.view.View.OnClickListener l){
+		findViewById(R.id.negativeButton).setOnClickListener(l);
 	}
 }

@@ -10,7 +10,10 @@
         android:layout_height="wrap_content"
         android:orientation="vertical" >
 
-        <include layout="@layout/user_info_card" />
+        <include
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            layout="@layout/user_info_card" />
 
         <com.amcolabs.quizapp.widgets.SeperatorView
             android:id="@+id/seperatorView1"
@@ -60,7 +63,7 @@
         <LinearLayout
             android:id="@+id/chartWrapper"
             android:layout_width="match_parent"
-            android:layout_height="400dp"
+            android:layout_height="wrap_content"
             android:orientation="vertical" >
 
             <com.amcolabs.quizapp.widgets.PieChartView

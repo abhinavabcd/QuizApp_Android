@@ -11,6 +11,8 @@ public class Badge {
 	@DatabaseField
 	String description;
 	@DatabaseField
+	String condition;
+	@DatabaseField
 	String assetPath;
 	@DatabaseField
 	String smallAssetPath;
@@ -19,7 +21,7 @@ public class Badge {
 	@DatabaseField		
 	double modifiedTimestamp;
 	@DatabaseField
-	boolean isUserAwarded;
+	boolean isAwarded;
 	
 	public Badge() {
 		// TODO Auto-generated constructor stub

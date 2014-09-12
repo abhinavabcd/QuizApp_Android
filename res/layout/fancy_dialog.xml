@@ -17,38 +17,91 @@
         android:orientation="vertical"
         android:padding="10dp" >
 
-        <RelativeLayout
-            android:id="@+id/titleWrapper"
+        <LinearLayout
+            android:id="@+id/headerWrapper"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" >
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-            <com.amcolabs.quizapp.widgets.GothamTextView
-                android:id="@+id/titleText"
+            <RelativeLayout
+                android:id="@+id/titleWrapper"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" >
+
+                <com.amcolabs.quizapp.widgets.GothamTextView
+                    android:id="@+id/titleText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_centerInParent="false"
+                    android:layout_marginBottom="20dp"
+                    android:text="Instructions"
+                    android:textColor="@color/grey_cloud"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+
+                <ImageView
+                    android:id="@+id/closeButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentTop="true"
+                    android:src="@drawable/abc_ic_clear_holo_light" />
+            </RelativeLayout>
+
+            <com.amcolabs.quizapp.widgets.SeperatorView
+                android:id="@+id/seperatorView1"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:layout_centerInParent="false"
-                android:layout_marginBottom="20dp"
-                android:text="Instructions"
-                android:textColor="@color/grey_cloud"
-                android:textSize="20sp"
-                android:textStyle="bold" />
+                android:layout_height="2dp"
+                android:layout_margin="5dp" />
 
-            <ImageView
-                android:id="@+id/closeButton"
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/contentWrapper"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/footerWrapper"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            
+            <com.amcolabs.quizapp.widgets.SeperatorView
+                android:id="@+id/seperatorView2"
                 android:layout_width="wrap_content"
+                android:layout_height="2dp"
+                android:layout_margin="5dp" />
+
+            <RelativeLayout
+                android:id="@+id/alertButtonWrapper"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentTop="true"
-                android:src="@drawable/abc_ic_clear_holo_light" />
+                android:gravity="center" >
 
-        </RelativeLayout>
+                <com.amcolabs.quizapp.widgets.GothamButtonView
+                    android:id="@+id/positiveButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:text="Yes" />
 
-        <com.amcolabs.quizapp.widgets.SeperatorView
-            android:id="@+id/seperatorView1"
-            android:layout_width="wrap_content"
-            android:layout_height="2dp"
-            android:layout_margin="5dp" />
+                <com.amcolabs.quizapp.widgets.GothamButtonView
+                    android:id="@+id/negativeButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentTop="true"
+                    android:layout_centerHorizontal="true"
+                    android:text="No" />
+                
+            </RelativeLayout>
+
+        </LinearLayout>
 
     </LinearLayout>
 

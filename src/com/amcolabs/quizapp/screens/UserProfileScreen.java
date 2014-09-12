@@ -16,6 +16,7 @@ import com.amcolabs.quizapp.User;
 import com.amcolabs.quizapp.configuration.Config;
 import com.amcolabs.quizapp.databaseutils.Category;
 import com.amcolabs.quizapp.databaseutils.Quiz;
+import com.amcolabs.quizapp.uiutils.UiUtils;
 import com.amcolabs.quizapp.widgets.BarChartViewMultiDataset;
 import com.amcolabs.quizapp.widgets.GothamTextView;
 import com.amcolabs.quizapp.widgets.PieChartView;
@@ -29,8 +30,9 @@ import com.github.mikephil.charting.utils.ColorTemplate;
 import com.squareup.picasso.Picasso;
 
 public class UserProfileScreen extends Screen {
-	public TextView wonTextView;
-	public TextView lostTextView;
+	public GothamTextView wonTextView;
+	public GothamTextView lostTextView;
+	public GothamTextView tieTextView;
 	public ScrollView userProfile;
 	private PieChartView mPieChart;
 	private BarChartViewMultiDataset mBarChart;
@@ -48,10 +50,11 @@ public class UserProfileScreen extends Screen {
 		userImage = (ImageView)userProfile.findViewById(R.id.user_card_small_pic);
 		userStatusMessage = (GothamTextView) userProfile.findViewById(R.id.user_status_msg);
 		userMoreInfo = (GothamTextView) userProfile.findViewById(R.id.user_more_info);
-		wonTextView = (TextView) userProfile.findViewById(R.id.win_count);
-		lostTextView = (TextView) userProfile.findViewById(R.id.lose_count);
+		wonTextView = (GothamTextView) userProfile.findViewById(R.id.win_count);
+		lostTextView = (GothamTextView) userProfile.findViewById(R.id.lose_count);
+		tieTextView = (GothamTextView) userProfile.findViewById(R.id.tie_count);
 		mPieChart = (PieChartView) userProfile.findViewById(R.id.pie_chart);
-		mPieChart = (PieChartView) userProfile.findViewById(R.id.bar_chart);
+		mBarChart = (BarChartViewMultiDataset) userProfile.findViewById(R.id.bar_chart);
         setSampleData(controller.getContext());
 
 		addView(userProfile);
@@ -63,40 +66,66 @@ public class UserProfileScreen extends Screen {
 		userStatusMessage.setText(user.status);
 		userMoreInfo.setText(user.place);
 		
-		drawUserCharts(user);
+		drawUserChartsAndUpdateStats(user);
 	}
 	
-	public void drawUserCharts(User user){
+	public void drawUserChartsAndUpdateStats(User user){
+		int win_count = 0;
+		int lose_count = 0;
+		int tie_count = 0;
 		List<Category> categories = getApp().getDataBaseHelper().getAllCategories();
 		ArrayList<Entry> yVals1 = new ArrayList<Entry>();
-		ArrayList<BarEntry> yVals2 = new ArrayList<BarEntry>();
+		ArrayList<BarEntry> yValsWins = new ArrayList<BarEntry>();
+		ArrayList<BarEntry> yValsLosses = new ArrayList<BarEntry>();
+		ArrayList<BarEntry> yValsTies = new ArrayList<BarEntry>();
 		ArrayList<String> xVals = new ArrayList<String>();
 		int sz = categories.size();
 		
 		for(int i=0;i<sz;i++){
 			xVals.add(categories.get(i).shortDescription);
 		}
+		int[] winsLosses;
+		List<String> qIdList = new ArrayList<String>();
+		List<Quiz> qList = null;
 		for (int i = 0; i < sz; i++) {
-			List<Quiz> qList = categories.get(i).getQuizzes(getApp());
+			qList = categories.get(i).getQuizzes(getApp());
+			qIdList.clear();
 			float totalXP = 0;
 			for(int j=0;j<qList.size();j++){
 				totalXP = totalXP + (float)user.getPoints(qList.get(j));
+				qIdList.add(((Quiz)qList.get(i)).quizId);
 			}
-            yVals1.add(new Entry(totalXP, i));
-            yVals2.add(new BarEntry((float)getApp().getGameUtils().getLevelFromXp(totalXP),i));
+			winsLosses = user.getWinsLossesSum(qIdList);
+            yVals1.add(new Entry((float)getApp().getGameUtils().getLevelFromXp(totalXP), i)); // Blunder - we have to use user win lose tie stats ..
+            // update win lose tie counts here
+            yValsWins.add(new BarEntry(winsLosses[0],i));
+            yValsLosses.add(new BarEntry(winsLosses[1],i));
+            yValsTies.add(new BarEntry(winsLosses[2],i));
         }
 		
+		//update stats
+		wonTextView.setText(win_count+" "+UiUtils.UiText.PROFILE_WON_STATS_TEXT.getValue());
+		lostTextView.setText(lose_count+" "+UiUtils.UiText.PROFILE_LOST_STATS_TEXT.getValue());
+		tieTextView.setText(tie_count+" "+UiUtils.UiText.PROFILE_TIE_STATS_TEXT.getValue());
+		
 		drawUserActivityDistributionChart(xVals,yVals1);
-		drawCategoryWiseLevelsChart(xVals,yVals2);
+		drawCategoryWiseLevelsChart(xVals,yValsWins,yValsLosses,yValsTies);
 	}
 	
-	public void drawCategoryWiseLevelsChart(ArrayList<String> xVals,ArrayList<BarEntry> yVals){
+	public void drawCategoryWiseLevelsChart(ArrayList<String> xVals,ArrayList<BarEntry> yValsWins,ArrayList<BarEntry> yValsLosses,ArrayList<BarEntry> yValsTies){
 	        ArrayList<BarDataSet> dataSets = new ArrayList<BarDataSet>();
 	        BarDataSet set;
 
-			set = new BarDataSet(yVals, "Level");
+			set = new BarDataSet(yValsWins, "Won");
 			set.setColor(this.getApp().getConfig().getAThemeColor());
 			dataSets.add(set);
+			set = new BarDataSet(yValsLosses, "Lost");
+			set.setColor(this.getApp().getConfig().getAThemeColor());
+			dataSets.add(set);
+			set = new BarDataSet(yValsTies, "Tie");
+			set.setColor(this.getApp().getConfig().getAThemeColor());
+			dataSets.add(set);
+			
 			BarData data = new BarData(xVals, dataSets);
 			data.setGroupSpace(110f);
 

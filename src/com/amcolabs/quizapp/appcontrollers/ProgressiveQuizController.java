@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
+import twitter4j.examples.oauth.GetAccessToken;
 import android.os.Handler;
 
 import com.amcolabs.quizapp.AppController;
@@ -63,7 +64,7 @@ public class ProgressiveQuizController extends AppController{
 			return 0;
 		int mscore = 0;
 		for(int i=0;i<currentQuestions.size();i++){
-			mscore += currentQuestions.get(i).xp;
+			mscore += currentQuestions.get(i).xp*quizApp.getConfig().multiplyFactor(i+1);
 		}
 		return mscore;
 	}
@@ -276,7 +277,7 @@ public class ProgressiveQuizController extends AppController{
 						int elapsedTime = rand.nextInt(5*Math.max(0, (100-quizApp.getUser().getLevel(quiz))/100)); 
 						boolean isRightAnswer = rand.nextInt(2)==1? false:true;
 						if(isRightAnswer){
-							botScore+=Math.ceil(currentQuestion.getTime() - elapsedTime)*multiplyFactor();
+							botScore+=Math.ceil((currentQuestion.getTime() - elapsedTime)*currentQuestion.xp/currentQuestion.getTime())*quizApp.getConfig().multiplyFactor(currentQuestions.size());
 						}
 						final UserAnswer botAnswer = new UserAnswer(currentQuestion.questionId, user.uid, isRightAnswer?currentQuestion.getCorrectAnswer():currentQuestion.getWrongRandomAnswer(rand),
 								 	elapsedTime, botScore);
@@ -381,19 +382,12 @@ public class ProgressiveQuizController extends AppController{
 
 	public void ohNoDammit() {
 	}
-
-	private int multiplyFactor(){
-		if(currentQuestions.size()%4==0 && currentQuestions.size()<quiz.nQuestions){
-			return 2;
-		};
-		return 1;
-	}
 	
 	public void onOptionSelected(Boolean isAnwer, String answer , Question currentQuestion) {
 		UserAnswer payload =null; 
 		double timeElapsed = questionScreen.getTimerView().stopPressed(1);
 		if(isAnwer){
-			currentScore += ( Math.ceil(currentQuestion.getTime()-timeElapsed)* multiplyFactor());
+			currentScore += ( Math.ceil(currentQuestion.getTime()-timeElapsed)*quizApp.getConfig().multiplyFactor(currentQuestions.size()));
 		}
 		payload = new UserAnswer(currentQuestion.questionId, quizApp.getUser().uid, answer, (int)timeElapsed, currentScore);
 		if(!isBotMode())

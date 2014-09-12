@@ -10,18 +10,20 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="10dp"
-        android:textStyle="bold"
-        android:textSize="16sp"
+        android:layout_weight="0.1"
         android:gravity="center"
-        android:text="Identify the Actor in above image" />
+        android:text="Identify the Actor in above image"
+        android:textSize="16sp"
+        android:textStyle="bold" />
 
       <ImageView
           android:id="@+id/questionImage"
-          android:layout_width="wrap_content"
+          android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:maxWidth="300dp"
-          android:maxHeight="200dp"
-           />
+          android:layout_gravity="center"
+          android:layout_margin="10dp"
+          android:layout_weight="0.9"
+          android:background="@color/black" />
  
 <!--     <com.amcolabs.quizapp.widgets.ImageViewFiltered -->
 <!--         android:id="@+id/questionImage" -->
@@ -39,6 +41,8 @@
           android:id="@+id/imageView1"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:src="@drawable/abc_ab_bottom_solid_dark_holo" />
+          android:layout_gravity="center"
+          android:src="@drawable/abc_ab_bottom_solid_dark_holo"
+          android:visibility="gone" />
 
 </LinearLayout>
