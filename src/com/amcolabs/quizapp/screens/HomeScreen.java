@@ -3,6 +3,8 @@ package com.amcolabs.quizapp.screens;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
@@ -21,6 +23,12 @@ import com.amcolabs.quizapp.appcontrollers.UserMainPageController;
 import com.amcolabs.quizapp.databaseutils.Category;
 import com.amcolabs.quizapp.databaseutils.Quiz;
 import com.amcolabs.quizapp.datalisteners.DataInputListener;
+import com.amcolabs.quizapp.swipelistview.SwipeMenu;
+import com.amcolabs.quizapp.swipelistview.SwipeMenuCreator;
+import com.amcolabs.quizapp.swipelistview.SwipeMenuItem;
+import com.amcolabs.quizapp.swipelistview.SwipeMenuListView;
+import com.amcolabs.quizapp.swipelistview.SwipeMenuListView.OnMenuItemClickListener;
+import com.amcolabs.quizapp.swipelistview.SwipeMenuListView.OnSwipeListener;
 import com.amcolabs.quizapp.uiutils.UiUtils.UiText;
 import com.amcolabs.quizapp.widgets.GothamTextView;
 
@@ -87,6 +95,61 @@ public class HomeScreen extends Screen {
 	    return listView;
 	}
 	
+	private void addListenersToQuizListItem(SwipeMenuListView listView){
+		SwipeMenuCreator creator = new SwipeMenuCreator() {
+			int color1 =getApp().getConfig().getAThemeColor();
+			int color2 = getApp().getConfig().getAThemeColor();
+			@Override
+			public void create(SwipeMenu menu) {
+				// create "open" item
+				SwipeMenuItem openItem = new SwipeMenuItem(
+						getApp().getContext());
+				openItem.setTitle("Play");
+				openItem.setBgColor(color1);
+				menu.addMenuItem(openItem);
+
+				// create "delete" item
+				SwipeMenuItem deleteItem = new SwipeMenuItem(
+						getApp().getContext());
+				// set item background
+				deleteItem.setTitle("Challenge");
+				deleteItem.setBgColor(color2);
+				menu.addMenuItem(deleteItem);
+			}
+		};
+		// set creator
+		listView.setMenuCreator(creator);
+
+		// step 2. listener item click event
+		listView.setOnMenuItemClickListener(new OnMenuItemClickListener() {
+			@Override
+			public void onMenuItemClick(int position, SwipeMenu menu, int index) {
+				switch (index) {
+				case 0:
+					break;
+				case 1:
+					break;
+				}
+			}
+		});
+		
+		// set SwipeListener
+		listView.setOnSwipeListener(new OnSwipeListener() {
+			
+			@Override
+			public void onSwipeStart(int position) {
+				// swipe start
+			}
+			
+			@Override
+			public void onSwipeEnd(int position) {
+				// swipe end
+			}
+		});
+
+	}
+	
+	
 	public void addUserQuizzesView(List<Quiz> quizzes, boolean showViewMore , String text) {
 		final QuizItemListAdapter quizAdaptor = new QuizItemListAdapter(getApp(),0,quizzes, new DataInputListener<Quiz>(){
 			@Override
@@ -101,8 +164,12 @@ public class HomeScreen extends Screen {
 		searchText.setVisibility(View.GONE);
 		GothamTextView titleView = (GothamTextView) lView.findViewById(R.id.title_text_view);
 		titleView.setText(text);
-		ListView listView = (ListView) lView.findViewById(R.id.listView);
+		SwipeMenuListView listView = (SwipeMenuListView) lView.findViewById(R.id.listView);
 		listView.setAdapter(quizAdaptor);
+		addListenersToQuizListItem(listView);
+		
+		
+		
 
 		setListViewHeightBasedOnChildren(listView);
 		

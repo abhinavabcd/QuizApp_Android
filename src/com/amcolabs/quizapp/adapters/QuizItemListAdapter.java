@@ -52,6 +52,8 @@ public class QuizItemListAdapter extends ArrayAdapter<Quiz> {
 		if (convertView == null) {
 			convertView = quizApp.getActivity().getLayoutInflater()
 					.inflate(R.layout.list_item_layout, null);
+			//remove bg
+//			convertView.findViewById(R.id.item_wrapper_2).setBackgroundResource(0);
 			holder = new QuizItemViewHolder();
 			holder.imageView = (ImageView)convertView.findViewById(R.id.imageView1);
 			holder.quizName = (GothamTextView) convertView.findViewById(R.id.category_item_name);
@@ -71,14 +73,14 @@ public class QuizItemListAdapter extends ArrayAdapter<Quiz> {
 					 */
 //			holder.additionalText = (GothamTextView) convertView.findViewById(R.id.additional_text);
 			if(clickListener!=null){
-				convertView.setOnClickListener(new OnClickListener() {
-					@Override
-					public void onClick(View v) {
-						if (clickListener != null)
-							clickListener.onData(((QuizItemViewHolder) v
-									.getTag()).item);
-					}
-				});
+//				convertView.setOnClickListener(new OnClickListener() {
+//					@Override
+//					public void onClick(View v) {
+//						if (clickListener != null)
+//							clickListener.onData(((QuizItemViewHolder) v
+//									.getTag()).item);
+//					}
+//				});
 			}
 			convertView.setTag(holder);
 		} else {

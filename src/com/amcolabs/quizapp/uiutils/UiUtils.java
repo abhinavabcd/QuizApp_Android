@@ -24,6 +24,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
+import android.util.TypedValue;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -34,6 +35,7 @@ import com.amcolabs.quizapp.R;
 import com.amcolabs.quizapp.configuration.Config;
 import com.amcolabs.quizapp.datalisteners.DataInputListener;
 import com.amcolabs.quizapp.notificationutils.NotificationReciever;
+import com.amcolabs.quizapp.serverutils.ServerCalls;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
@@ -330,11 +332,10 @@ public class UiUtils {
 			else{
 				if(downloadToAssets){
 					imgView.setTag(new LoadAndSave(imgView, file, assetPath, downloadToAssets));
-					Picasso.with(ctx).load(Config.CDN_IMAGES_PATH+assetPath).into((LoadAndSave)imgView.getTag());
+					Picasso.with(ctx).load(ServerCalls.CDN_IMAGES_PATH+assetPath).into((LoadAndSave)imgView.getTag());
 				}
 				else{
-					Picasso.with(ctx).load(Config.CDN_IMAGES_PATH+assetPath).into(imgView);//directly
-					
+					Picasso.with(ctx).load(ServerCalls.CDN_IMAGES_PATH+assetPath).into(imgView);//directly
 				}
 			}
 		}		 
@@ -357,7 +358,7 @@ public class UiUtils {
 				Picasso.with(ctx).load(file).into(target);
 			}
 			else{
-				Picasso.with(ctx).load(Config.CDN_IMAGES_PATH+assetPath).into(new Target() {
+				Picasso.with(ctx).load(ServerCalls.CDN_IMAGES_PATH+assetPath).into(new Target() {
 			        @Override
 			        public void onBitmapLoaded(final Bitmap bitmap, Picasso.LoadedFrom from) {
 			            new Thread(new Runnable() {
@@ -423,6 +424,10 @@ public class UiUtils {
 			oneSp = quizApp.getResources().getDimension(R.dimen.one_sp);
 		}
 		return i*oneSp;
+	}
+	public int dp2px(int dp) {
+		return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp,
+				quizApp.getResources().getDisplayMetrics());
 	}
 
 }
