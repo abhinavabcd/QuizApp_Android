@@ -689,8 +689,22 @@ public class ServerCalls {
 			}
 		}, true);
 	}
-	
-	
-	
+
+
+	public void getScoreBoards(String quizId , final DataInputListener2<HashMap<String, Integer[]>, HashMap<String, Integer[]>, Void, Void> localGlobalRanksDataListener) {
+		String url = getAServerAddr()+"/func?task=getLeaderboards";
+		url+="&encodedKey="+quizApp.getUserDeviceManager().getEncodedKey();
+		url+="&quizId="+quizId;
+		makeServerCall(url, new ServerNotifier() {
+			@Override
+			public void onServerResponse(MessageType messageType,ServerResponse response) {
+				switch(messageType){
+					case OK_SCORE_BOARD:
+						localGlobalRanksDataListener.onData((HashMap<String, Integer[]>)quizApp.getConfig().getGson().fromJson(response.payload,new TypeToken<HashMap<String,Integer[]>>(){}.getType()), (HashMap<String, Integer[]>)quizApp.getConfig().getGson().fromJson(response.payload2, new TypeToken<HashMap<String,Integer[]>>(){}.getType()), null);
+						break;
+				}
+			}
+		});
+	}	
 }
 

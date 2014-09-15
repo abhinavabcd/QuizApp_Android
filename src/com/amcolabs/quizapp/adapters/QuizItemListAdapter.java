@@ -73,14 +73,14 @@ public class QuizItemListAdapter extends ArrayAdapter<Quiz> {
 					 */
 //			holder.additionalText = (GothamTextView) convertView.findViewById(R.id.additional_text);
 			if(clickListener!=null){
-//				convertView.setOnClickListener(new OnClickListener() {
-//					@Override
-//					public void onClick(View v) {
-//						if (clickListener != null)
-//							clickListener.onData(((QuizItemViewHolder) v
-//									.getTag()).item);
-//					}
-//				});
+				convertView.setOnClickListener(new OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						if (clickListener != null)
+							clickListener.onData(((QuizItemViewHolder) v
+									.getTag()).item);
+					}
+				});
 			}
 			convertView.setTag(holder);
 		} else {

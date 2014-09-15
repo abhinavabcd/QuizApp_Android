@@ -26,9 +26,14 @@ import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 import android.util.TypedValue;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.View.MeasureSpec;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
+import android.widget.ListAdapter;
+import android.widget.ListView;
+import android.widget.LinearLayout.LayoutParams;
 
 import com.amcolabs.quizapp.QuizApp;
 import com.amcolabs.quizapp.R;
@@ -95,7 +100,8 @@ public class UiUtils {
 		PREVIOUS_CHATS_USERS("Previous Conversations"), CHATS("Conversations"),
 		FETCHING_MESSAGES("Fetching Messages from Server"),
 		WON_QUIZ_MESSAGE("You Won!"),
-		LOST_QUIZ_MESAGE("You Lost");
+		LOST_QUIZ_MESAGE("You Lost"), GLOBAL_RANKINGS("Global Rankings"),
+		LOCAL_RANKINGS("Local Rankings");
 		
 		String value = null;
 		UiText(String value){
@@ -428,6 +434,28 @@ public class UiUtils {
 	public int dp2px(int dp) {
 		return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp,
 				quizApp.getResources().getDisplayMetrics());
+	}
+	public static ListView setListViewHeightBasedOnChildren(ListView listView) {
+	    ListAdapter listAdapter = listView.getAdapter();
+	    if (listAdapter == null)
+	        return listView;
+
+	    int desiredWidth = MeasureSpec.makeMeasureSpec(listView.getWidth(), MeasureSpec.UNSPECIFIED);
+	    int totalHeight = 0;
+	    View view = null;
+	    for (int i = 0; i < listAdapter.getCount(); i++) {
+	        view = listAdapter.getView(i, view, listView);
+	        if (i == 0)
+	            view.setLayoutParams(new ViewGroup.LayoutParams(desiredWidth, LayoutParams.WRAP_CONTENT));
+
+	        view.measure(desiredWidth, MeasureSpec.UNSPECIFIED);
+	        totalHeight += view.getMeasuredHeight();
+	    }
+	    ViewGroup.LayoutParams params = listView.getLayoutParams();
+	    params.height = totalHeight + (listView.getDividerHeight() * (listAdapter.getCount() - 1));
+	    listView.setLayoutParams(params);
+	    listView.requestLayout();
+	    return listView;
 	}
 
 }
