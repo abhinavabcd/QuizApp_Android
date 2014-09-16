@@ -145,6 +145,12 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 		if(currentAppController!=null && currentAppController.getClass().equals(clazz)){
 			return currentAppController;
 		}
+		//reuse the existing controller
+		for(Screen screen: screenStack){
+			if(screen.controller.getClass().equals(clazz)){
+				return screen.controller;
+			}
+		}
 		try {
 			Constructor<?> constructor = clazz.getConstructor(QuizApp.class);
 			appController =(AppController) constructor.newInstance(this);

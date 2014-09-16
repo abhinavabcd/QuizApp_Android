@@ -11,10 +11,13 @@ import com.amcolabs.quizapp.appcontrollers.ProgressiveQuizController.UserAnswer;
 import com.amcolabs.quizapp.configuration.Config;
 import com.amcolabs.quizapp.databaseutils.Quiz;
 import com.amcolabs.quizapp.screens.WinOrLoseScreen;
+import com.amcolabs.quizapp.serverutils.ServerWebSocketConnection;
 
 
 public class WinOrLoseController extends AppController {
 	private WinOrLoseScreen quizResultScreen;
+
+	private ServerWebSocketConnection serverSocket;
 
 	public WinOrLoseController(QuizApp quizApp) {
 		super(quizApp);
