@@ -134,9 +134,10 @@ public class HomeScreen extends Screen {
 								break;
 							case 2:
 								break;
-							case 3:
+							case 3://challenge
 								break;
-							case 4:
+							case 4://scoreboard
+								userMainController.showLeaderBoards(quiz.quizId);
 								break;
 						}
 						return super.onData(s);

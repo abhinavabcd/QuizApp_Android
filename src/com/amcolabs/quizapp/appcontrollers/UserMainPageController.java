@@ -328,7 +328,7 @@ public class UserMainPageController  extends AppController implements OnInitiali
 		
 	}
 	
-	public void showLeaderBoards(String  quizId , User user){
+	public void showLeaderBoards(String  quizId){
 		clearScreen(); 
 		quizApp.getServerCalls().getScoreBoards(quizId , new DataInputListener2<HashMap<String , Integer[]>, HashMap<String , Integer[]>,Void , Void>(){
 			@Override
@@ -348,6 +348,4 @@ public class UserMainPageController  extends AppController implements OnInitiali
 			}
 		});
 	}
-	
-	
 }
