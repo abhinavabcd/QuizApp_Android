@@ -19,7 +19,7 @@ import com.amcolabs.quizapp.AppController;
 import com.amcolabs.quizapp.R;
 import com.amcolabs.quizapp.Screen;
 import com.amcolabs.quizapp.User;
-import com.amcolabs.quizapp.WinOrLoseController;
+import com.amcolabs.quizapp.appcontrollers.ProgressiveQuizController;
 import com.amcolabs.quizapp.appcontrollers.ProgressiveQuizController.UserAnswer;
 import com.amcolabs.quizapp.configuration.Config;
 import com.amcolabs.quizapp.databaseutils.Category;
@@ -153,7 +153,7 @@ public class WinOrLoseScreen extends Screen{
 				@Override
 				public void onClick(View v) {
 					User user = (User) v.getTag();
-					((WinOrLoseController) controller).loadProfile(user);
+					((ProgressiveQuizController) controller).loadProfile(user);
 //					UserProfileScreen uScreen = new UserProfileScreen(controller);
 //					uScreen.showUser(user);
 //					controller.showScreen(uScreen);

@@ -11,6 +11,7 @@ public class Badge {
 	@DatabaseField
 	String description;
 	@DatabaseField
+	private
 	String condition;
 	@DatabaseField
 	String assetPath;
@@ -25,6 +26,14 @@ public class Badge {
 	
 	public Badge() {
 		// TODO Auto-generated constructor stub
+	}
+
+	public String getCondition() {
+		return condition;
+	}
+
+	public void setCondition(String condition) {
+		this.condition = condition;
 	}
 
 }
