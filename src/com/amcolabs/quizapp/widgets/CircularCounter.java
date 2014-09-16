@@ -545,7 +545,7 @@ public class CircularCounter extends View {
 		resetTimer();
 	}
 	public void startTimer(Integer time , boolean showReverse) {
-		resetTimer();
+		//resetTimer();
 		val1 = 0;
 		val2=0;
 		val3=0;

@@ -146,9 +146,21 @@ public class QuestionScreen extends Screen implements View.OnClickListener, Anim
 	protected Question currentQuestion;
 	
 	private void showQuestion(final Question ques){
-		isOptionSelected = false;
 		preQuestionView.setVisibility(View.INVISIBLE);
 		questionAndOptionsViewWrapper.setVisibility(View.VISIBLE);
+		new Handler().postDelayed(new Runnable() {
+			@Override
+			public void run() {
+				getTimerView().startTimer(ques.getTime(), true);
+			}
+		}, Config.TIMER_SLIGHT_DELAY_START);
+		
+	}
+	
+	private void loadQuestion(final Question ques){
+		isOptionSelected = false;
+//		preQuestionView.setVisibility(View.INVISIBLE);
+//		questionAndOptionsViewWrapper.setVisibility(View.VISIBLE);
 		questionTextView.setText(ques.questionDescription);
 		
 		// TODO: should use longoptionflag to change layout
@@ -168,12 +180,7 @@ public class QuestionScreen extends Screen implements View.OnClickListener, Anim
 			opt.setTag(mcqOptions[i]);
 			opt.setTextColor(Color.BLACK);
 		}
-		new Handler().postDelayed(new Runnable() {
-			@Override
-			public void run() {
-				getTimerView().startTimer(ques.getTime(), true);
-			}
-		}, Config.TIMER_SLIGHT_DELAY_START);
+		getTimerView().resetTimer();//reset timer
 	}
 	
 	public void animateQuestionChange(String titleInfo1, String titleInfo2, Question ques){
@@ -246,8 +253,9 @@ public class QuestionScreen extends Screen implements View.OnClickListener, Anim
 
 	@Override
 	public void onAnimationStart(Animation animation) {
-		// TODO Auto-generated method stub
-		
+		if(animation==animFadeOut){
+			loadQuestion(currentQuestion);//but do not show
+		}
 	}
 
 
