@@ -134,6 +134,7 @@ public class ProgressiveQuizController extends AppController{
 		}
 		
 		else{
+			gracefullyCloseSocket();
 			return false;
 		}
 	}
