@@ -194,14 +194,14 @@
                 android:layout_weight="1"
                 android:orientation="vertical">
 
-                <Button
+                <com.amcolabs.quizapp.widgets.GothamButtonView
                     android:id="@+id/rematchButton"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
                     android:text="Rematch" />
 
-                <Button
+                <com.amcolabs.quizapp.widgets.GothamButtonView
                     android:id="@+id/addFriendButton"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -215,14 +215,14 @@
                 android:layout_weight="1"
                 android:orientation="vertical">
 
-                <Button
+                <com.amcolabs.quizapp.widgets.GothamButtonView
                     android:id="@+id/challengeButton"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
                     android:text="Challenge" />
 
-                <Button
+                <com.amcolabs.quizapp.widgets.GothamButtonView
                     android:id="@+id/viewProfileButton"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

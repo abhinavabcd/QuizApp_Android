@@ -100,8 +100,14 @@ public class UiUtils {
 		PREVIOUS_CHATS_USERS("Previous Conversations"), CHATS("Conversations"),
 		FETCHING_MESSAGES("Fetching Messages from Server"),
 		WON_QUIZ_MESSAGE("You Won!"),
-		LOST_QUIZ_MESAGE("You Lost"), GLOBAL_RANKINGS("Global Rankings"),
-		LOCAL_RANKINGS("Local Rankings");
+		LOST_QUIZ_MESAGE("You Lost"), 
+		GLOBAL_RANKINGS("Global Rankings"),
+		LOCAL_RANKINGS("Local Rankings"),
+		TIE_QUIZ_MESAGE("Its A TIE!"), 
+		PROFILE_WON_STATS_TEXT("Won"),
+		PROFILE_LOST_STATS_TEXT("Lost"),
+		PROFILE_TIE_STATS_TEXT("Tie");
+
 		
 		String value = null;
 		UiText(String value){

@@ -9,21 +9,24 @@ import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.Animation;
-import android.view.animation.Animation.AnimationListener;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
-import android.widget.Toast;
 
 import com.amcolabs.quizapp.AppController;
 import com.amcolabs.quizapp.R;
 import com.amcolabs.quizapp.Screen;
 import com.amcolabs.quizapp.User;
+import com.amcolabs.quizapp.WinOrLoseController;
 import com.amcolabs.quizapp.appcontrollers.ProgressiveQuizController.UserAnswer;
+import com.amcolabs.quizapp.configuration.Config;
+import com.amcolabs.quizapp.databaseutils.Category;
+import com.amcolabs.quizapp.databaseutils.Quiz;
 import com.amcolabs.quizapp.uiutils.UiUtils.UiText;
 import com.amcolabs.quizapp.widgets.BarChartViewMultiDataset;
+import com.amcolabs.quizapp.widgets.GothamButtonView;
 import com.amcolabs.quizapp.widgets.GothamTextView;
 import com.amcolabs.quizapp.widgets.PieChartView;
 import com.github.mikephil.charting.data.BarData;
@@ -47,10 +50,10 @@ public class WinOrLoseScreen extends Screen{
 	private GothamTextView quizLevelupPoints;
 	private GothamTextView quizTotalPoints;
 	
-	private Button rematchButton;
-	private Button challengeButton;
-	private Button addFriendButton;
-	private Button viewProfileButton;
+	private GothamButtonView rematchButton;
+	private GothamButtonView challengeButton;
+	private GothamButtonView addFriendButton;
+	private GothamButtonView viewProfileButton;
 	private GothamTextView quizResultMessage;
 	
 	private ArrayList<User> currentUsers;
@@ -68,12 +71,12 @@ public class WinOrLoseScreen extends Screen{
 		super(controller);
 		currentUsers = curUsers;
 		quizResult = (ScrollView) LayoutInflater.from(controller.getContext()).inflate(R.layout.win_lose_screen, null);
-		LinearLayout users = (LinearLayout) quizResult.findViewById(R.id.users);
+		LinearLayout usersViews = (LinearLayout) quizResult.findViewById(R.id.users);
 		userViews = new HashMap<String, userViewHolder>();
 		LinearLayout tmp;
 		userViewHolder uView;
-		for (int i=0;i<users.getChildCount();i++){
-			tmp = (LinearLayout) users.getChildAt(i);
+		for (int i=0;i<usersViews.getChildCount();i++){
+			tmp = (LinearLayout) usersViews.getChildAt(i);
 			uView = new userViewHolder();
 			
 			uView.userNameView = (GothamTextView) tmp.findViewById(R.id.user_card_name);
@@ -81,7 +84,8 @@ public class WinOrLoseScreen extends Screen{
 			uView.userMoreInfoView = (GothamTextView) tmp.findViewById(R.id.user_more_info);
 			uView.userImageView = (ImageView) tmp.findViewById(R.id.user_card_small_pic);
 			uView.userPieChartView = (PieChartView) tmp.findViewById(R.id.pie_chart);
-			setSampleData(this.getContext(),uView.userPieChartView);
+//			setSampleData(this.getContext(),uView.userPieChartView);
+			drawUserActivityDistributionChart(curUsers.get(i),uView.userPieChartView);
 			
 			userViews.put(curUsers.get(i).uid,uView);
 		}
@@ -94,29 +98,22 @@ public class WinOrLoseScreen extends Screen{
         quizLevelupPoints = (GothamTextView)quizResult.findViewById(R.id.quizLevelupPoints);
         quizTotalPoints = (GothamTextView)quizResult.findViewById(R.id.quizTotalPoints);
         
-        rematchButton = (Button)quizResult.findViewById(R.id.rematchButton);
-        challengeButton = (Button)quizResult.findViewById(R.id.challengeButton);
-        addFriendButton = (Button)quizResult.findViewById(R.id.addFriendButton);
-        viewProfileButton = (Button)quizResult.findViewById(R.id.viewProfileButton);
+        rematchButton = (GothamButtonView)quizResult.findViewById(R.id.rematchButton);
+        challengeButton = (GothamButtonView)quizResult.findViewById(R.id.challengeButton);
+        addFriendButton = (GothamButtonView)quizResult.findViewById(R.id.addFriendButton);
+        viewProfileButton = (GothamButtonView)quizResult.findViewById(R.id.viewProfileButton);
         
         
         addView(quizResult);
-        
-//		chatScreen = new ChatScreen(controller);
-////		for(int i=0;i<chatScreen.getChildCount();i++){
-////			addView(chatScreen.getChildAt(i));
-////		}
-//		chatScreen.setLayoutParams(new LayoutParams(300, 400));
-//		addView(chatScreen);
 	}
 	
 	/**
 	 * This is the main function to be invoked to display result of a quiz, right after init method
 	 * @param currentUsers List of Users participated in the quiz
 	 * @param userAnswersStack HashMap of list of answers mapped with users
-	 * @param isWinner has current user who won the quiz
+	 * @param matchResult has current user who won the quiz
 	 */
-	public void showResult(HashMap<String, List<UserAnswer>> uAnswersStack,boolean isWinner){
+	public void showResult(HashMap<String, List<UserAnswer>> uAnswersStack,int matchResult,boolean levelUp){
 	  // Show whether user has won or not
 	  // rematch button , addFriend button , challenge with points button ,  seeProfile button
 	// for these buttons , will use the same layout we used for category view ,list_item_layout.xml
@@ -140,22 +137,25 @@ public class WinOrLoseScreen extends Screen{
 				@Override
 				public void onClick(View v) {
 					User user = (User) v.getTag();
-					UserProfileScreen uScreen = new UserProfileScreen(controller);
-					uScreen.showUser(user);
-					controller.showScreen(uScreen);
+					((WinOrLoseController) controller).loadProfile(user);
+//					UserProfileScreen uScreen = new UserProfileScreen(controller);
+//					uScreen.showUser(user);
+//					controller.showScreen(uScreen);
 				}
 			});
 		}
-		if(isWinner){
+		if(matchResult>0){
 			quizResultMessage.setText(UiText.WON_QUIZ_MESSAGE.getValue());
 		}
-		else{
+		else if(matchResult<0){
 			quizResultMessage.setText(UiText.LOST_QUIZ_MESAGE.getValue());
 		}
-		boolean levelUp = true;
+		else{
+			quizResultMessage.setText(UiText.TIE_QUIZ_MESAGE.getValue());
+		}
 		
 		List<UserAnswer> ans = userAnswersStack.get(getApp().getUser().uid);
-		animatePoints(ans.get(ans.size()-1).whatUserGot,isWinner?20:0,levelUp?20:0);
+		animatePoints((int)Math.floor(ans.get(ans.size()-1).whatUserGot),(int)Math.floor(matchResult>0?Config.QUIZ_WIN_BONUS:0),(int)Math.floor(levelUp?Config.QUIZ_LEVEL_UP_BONUS:0));
 		showResultInChart();
 	}
 
@@ -180,10 +180,6 @@ public class WinOrLoseScreen extends Screen{
 				}, 2000);
 			}
 		}, 1000);
-	}
-
-	public void showAnimationOfCurrentGamePoints(int[] questionPoints, int[] questionBasedBonus , int winBonus){
-	         // just current gain , and all sum of them gained in small boxes
 	}
 	
 	// TODO : below method must be remove at the end
@@ -232,6 +228,41 @@ public class WinOrLoseScreen extends Screen{
         myChart.setCenterText("Total Value\n" + (int) myChart.getYValueSum() + "\n(all slices)");
         myChart.invalidate();
 	 }
+	
+	public void drawUserActivityDistributionChart(User user,PieChartView mPieChart){
+		List<Category> categories = getApp().getDataBaseHelper().getAllCategories();
+		ArrayList<Entry> yVals = new ArrayList<Entry>();
+		ArrayList<String> xVals = new ArrayList<String>();
+		int sz = categories.size();
+		
+		for(int i=0;i<sz;i++){
+			xVals.add(categories.get(i).shortDescription);
+		}
+		for (int i = 0; i < sz; i++) {
+			List<Quiz> qList = categories.get(i).getQuizzes(getApp());
+			float totalXP = 0;
+			for(int j=0;j<qList.size();j++){
+				totalXP = totalXP + (float)user.getPoints(qList.get(j));
+			}
+            yVals.add(new Entry(totalXP, i));
+        }
+		
+		PieDataSet set = new PieDataSet(yVals, "Quiz Stats");
+		set.setSliceSpace(3f);
+		set.setColors(Config.themeColors);
+//        set1.setColors(ColorTemplate.createColors(controller.getContext().getApplicationContext(),ColorTemplate.VORDIPLOM_COLORS));
+        PieData data = new PieData(xVals, set);
+        mPieChart.setData(data);
+
+        // undo all highlights
+        mPieChart.highlightValues(null);
+
+        // set a text for the chart center
+        mPieChart.setCenterText("Total \n" + (int) mPieChart.getYValueSum() + "\n(all slices)");
+        
+        mPieChart.setDescription("Total Matches Played in each Category");
+        mPieChart.invalidate();
+	}
 
 	/**
 	 * To show result of a quiz in bar chart. It assumes non null values any checks must be made beforehand
@@ -255,7 +286,7 @@ public class WinOrLoseScreen extends Screen{
 					UserAnswer tmp = answers.get(j);
 					yVals.add(new BarEntry((float)tmp.whatUserGot,j));
 				}
-				set = new BarDataSet(yVals, "User1");
+				set = new BarDataSet(yVals, currentUsers.get(i).name);
 				set.setColor(this.getApp().getConfig().getAThemeColor());
 				dataSets.add(set);
 			}

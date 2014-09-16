@@ -10,12 +10,15 @@
         android:layout_height="wrap_content"
         android:orientation="vertical" >
 
-        <include layout="@layout/user_info_card" />
+        <include
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            layout="@layout/user_info_card" />
 
         <com.amcolabs.quizapp.widgets.SeperatorView
             android:id="@+id/seperatorView1"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="2dp"
             android:layout_margin="5dp" />
 
         <LinearLayout
@@ -23,7 +26,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content" >
 
-            <TextView
+            <com.amcolabs.quizapp.widgets.GothamTextView
                 android:id="@+id/win_count"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -32,7 +35,7 @@
                 android:gravity="center"
                 android:text="10 Won" />
 
-            <TextView
+            <com.amcolabs.quizapp.widgets.GothamTextView
                 android:id="@+id/lose_count"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -41,7 +44,7 @@
                 android:gravity="center"
                 android:text="10 Lost" />
 
-            <TextView
+            <com.amcolabs.quizapp.widgets.GothamTextView
                 android:id="@+id/tie_count"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -51,25 +54,31 @@
 
         </LinearLayout>
 
+        <com.amcolabs.quizapp.widgets.SeperatorView
+            android:id="@+id/seperatorView2"
+            android:layout_width="wrap_content"
+            android:layout_height="2dp"
+            android:layout_margin="5dp" />
+
         <LinearLayout
             android:id="@+id/chartWrapper"
             android:layout_width="match_parent"
-            android:layout_height="400dp"
-            android:background="@color/grey"
+            android:layout_height="wrap_content"
             android:orientation="vertical" >
 
             <com.amcolabs.quizapp.widgets.PieChartView
                 android:id="@+id/pie_chart"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="300dp"
+                android:layout_margin="10dp" />
+
+            <com.amcolabs.quizapp.widgets.BarChartViewMultiDataset
+                android:id="@+id/bar_chart"
+                android:layout_width="wrap_content"
+                android:layout_height="300dp"
+                android:layout_margin="10dp" />
 
         </LinearLayout>
-
-        <com.amcolabs.quizapp.widgets.SeperatorView
-            android:id="@+id/seperatorView2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="5dp" />
 
     </LinearLayout>
 

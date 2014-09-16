@@ -110,6 +110,16 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 			}
     		return new ArrayList<Category>();
     }
+
+    public List<Category> getAllCategories(){
+    		try {
+				return getCategoryDao().queryBuilder().orderBy("modifiedTimestamp", false).query();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+    		return new ArrayList<Category>();
+    }
     
     public Quiz getQuizById(String quizId){
 		try {
@@ -133,7 +143,32 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 		return null;
     }
     
+    public List<Badge> getAllBadges(){
+		try {
+				return getBadgesDao().queryForAll();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
+    }
     
+    public List<Badge> getAllUnAwardedBadges(){
+		try {
+			return getBadgesDao().queryBuilder().where().eq("isAwarded", false).query();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
+    }
+    
+    public List<Badge> getAllAwardedBadges(){
+		try {
+			return getBadgesDao().queryBuilder().where().eq("isAwarded", true).query();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
+    }
     
     public double getServerTimeDiffFromDB(){
     	RuntimeExceptionDao<UserPreferences, Integer> userPreferencesTable = getUserPreferencesExceptionDao();

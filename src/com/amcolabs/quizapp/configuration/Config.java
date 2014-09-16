@@ -75,6 +75,11 @@ public class Config{
 										};
 	
 	public static int  TIMER_SLIGHT_DELAY_START = 500;
+	
+	public static final double QUIZ_WIN_BONUS = 20;
+	public static final double QUIZ_LEVEL_UP_BONUS = 20;
+	
+	
 	private QuizApp quizApp;
 	
 
@@ -170,5 +175,16 @@ public class Config{
 
 	public Gson getGson() {
 		return gson;
+	}
+	
+	/**
+	 * This method will be our bonus question points calculator to be used by all methods
+	 * @return scale factor
+	 */
+	public int multiplyFactor(int questionNumber){
+		if(questionNumber%4==0){ //currentQuestions.size()%4==0 && currentQuestions.size()<quiz.nQuestions
+			return 2;
+		};
+		return 1;
 	}
 }

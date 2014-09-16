@@ -74,7 +74,6 @@ class RandomSelector <T>{
 }
 
 public class ServerCalls {
-
 	public static final String SERVER_ADDR = Config.IS_TEST_BUILD? "http://192.168.0.10:8085":"http://quizapp-main.amcolabs.com";
 	public static final String CDN_IMAGES_PATH = "http://192.168.0.10:8081/images/";
 	
