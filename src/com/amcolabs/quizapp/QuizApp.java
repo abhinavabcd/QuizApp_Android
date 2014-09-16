@@ -448,5 +448,12 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 	}
 
 	public HashMap<String , User> cachedUsers = new HashMap<String, User>();
+
+
+	public void cacheUsersList(ArrayList<User> users) {
+		for(User user : users){
+			cachedUsers.put(user.uid, user);
+		}
+	}
 	
 }

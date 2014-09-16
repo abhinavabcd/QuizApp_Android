@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/userImagesBar"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/translucent_black"
+    android:orientation="horizontal"
+    android:paddingTop="5dp" >
+
+    <LinearLayout
+        android:id="@+id/wrap1"
+	    android:layout_width="0dp"
+		android:layout_weight="1"
+	    android:layout_height="wrap_content"
+        android:orientation="vertical" >
+
+        <LinearLayout
+            android:id="@+id/user1view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="left" >
+
+            <ImageView
+                android:id="@+id/user1"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_gravity="left|top"
+                android:contentDescription="user1"
+                android:src="@drawable/ic_launcher" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:orientation="vertical" >
+
+                <com.amcolabs.quizapp.widgets.GothamTextView
+                    android:id="@+id/user_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Medium Text"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textColor="@color/white"
+                    android:textSize="14sp" />
+
+                <com.amcolabs.quizapp.widgets.GothamTextView
+                    android:id="@+id/user_status_msg"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="user status message"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:textColor="@color/white"
+                    android:textSize="8dp" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <com.amcolabs.quizapp.widgets.FlowLayout
+            android:id="@+id/user1badges"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/wrap2"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical" >
+
+        <LinearLayout
+            android:id="@+id/user2view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="right" >
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:gravity="right"
+                android:orientation="vertical" >
+
+                <com.amcolabs.quizapp.widgets.GothamTextView
+                    android:id="@+id/user_name_2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Medium Text"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textColor="@color/white"
+                    android:textSize="14sp" />
+
+                <com.amcolabs.quizapp.widgets.GothamTextView
+                    android:id="@+id/user_status_msg_2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="user status message"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:textColor="@color/white"
+                    android:textSize="8dp" />
+            </LinearLayout>
+
+            <ImageView
+                android:id="@+id/user2"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:contentDescription="user2"
+                android:src="@drawable/ic_launcher" >
+            </ImageView>
+        </LinearLayout>
+
+        <com.amcolabs.quizapp.widgets.FlowLayout
+            android:id="@+id/user2badges"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+
+</LinearLayout>

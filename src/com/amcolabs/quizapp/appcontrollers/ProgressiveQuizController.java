@@ -364,6 +364,7 @@ public class ProgressiveQuizController extends AppController{
 	    		}
 	    		setBotMode(true);
 	    		serverSocket.disconnect();
+	    		quizApp.cacheUsersList(currentUsers);
 	    		showQuestionScreen(currentUsers);
 	    		break;
 			default:
