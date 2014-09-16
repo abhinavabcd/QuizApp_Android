@@ -102,14 +102,14 @@ public class UserMainPageController  extends AppController implements OnInitiali
 		categoryQuizzesScreen.addQuizzesToList(category.description , quizzes, new DataInputListener<Quiz>(){
 			@Override
 			public String onData(Quiz s) {
-				onQuizSelected(s);
+				onQuizPlaySelected(s);
 				return super.onData(s);
 			}
 		});
 		insertScreen(categoryQuizzesScreen);
 	}
 	
-	public void onQuizSelected(Quiz quiz){
+	public void onQuizPlaySelected(Quiz quiz){
 		clearScreen();
 		ProgressiveQuizController progressiveQuiz = (ProgressiveQuizController) quizApp.loadAppController(ProgressiveQuizController.class);
 		progressiveQuiz.initlializeQuiz(quiz);

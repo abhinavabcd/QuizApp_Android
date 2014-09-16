@@ -32,6 +32,7 @@ import com.amcolabs.quizapp.appcontrollers.UserMainPageController;
 import com.amcolabs.quizapp.configuration.Config;
 import com.amcolabs.quizapp.databaseutils.DatabaseHelper;
 import com.amcolabs.quizapp.gameutils.GameUtils;
+import com.amcolabs.quizapp.popups.StaticPopupDialogBoxes;
 import com.amcolabs.quizapp.serverutils.ServerCalls;
 import com.amcolabs.quizapp.uiutils.UiUtils;
 import com.amcolabs.quizapp.uiutils.UiUtils.UiText;
@@ -62,6 +63,7 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 	private UiUtils uiUtils;
 	private ServerCalls serverCalls;
 	private DatabaseHelper dbHelper;
+	private StaticPopupDialogBoxes staticPopupDialogBoxes;
 	private boolean initializedDb;
 	private Config config;
 	private ArrayList<Screen> disposeScreens;
@@ -72,6 +74,7 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 	private MainActivity ref = null;
 
 	private GameUtils gameUtils;
+
 	 
 	public void setMainActivity(MainActivity mainActivity) {
 		ref = mainActivity;
@@ -100,6 +103,7 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 			uiUtils = new UiUtils(this);
 			gameUtils = new GameUtils(this);
 			serverCalls = new ServerCalls(this);
+			setStaticPopupDialogBoxes(new StaticPopupDialogBoxes(this));
 			loadingView = userDeviceManager.getLoadingView(this.getActivity());
 			disposeScreens = new ArrayList<Screen>();
 			addMenuItems();
@@ -435,6 +439,14 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 		return menu;
 	}
 	
+	public StaticPopupDialogBoxes getStaticPopupDialogBoxes() {
+		return staticPopupDialogBoxes;
+	}
+
+	public void setStaticPopupDialogBoxes(StaticPopupDialogBoxes staticPopupDialogBoxes) {
+		this.staticPopupDialogBoxes = staticPopupDialogBoxes;
+	}
+
 	public HashMap<String , User> cachedUsers = new HashMap<String, User>();
 	
 }

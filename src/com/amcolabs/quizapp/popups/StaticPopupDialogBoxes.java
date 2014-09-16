@@ -131,12 +131,34 @@ public class StaticPopupDialogBoxes {
         return dialog;
 	}
 	
-	/**
-	 * Creates a prompt to confirm user actions
-	 * @param A   current activity 
-	 * @param message   message to display on prompt
-	 * @param listener   listener to be triggered on action
-	 * @param onDismiss   set Whether to send True or False to listener when dismissed
-	 */
+	public void showQuizSelectMenu(final DataInputListener<Integer> menuListener){
+		final Dialog d = new Dialog(quizApp.getContext(),R.style.CustomDialogTheme); 
+		LinearLayout dialogLayout = (LinearLayout)quizApp.getActivity().getLayoutInflater().inflate(R.layout.quiz_menu, null);
+		OnClickListener listener = new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				if(v.getId()==R.id.icon1){
+					menuListener.onData(1);
+				}
+				else if(v.getId()==R.id.icon2){
+					menuListener.onData(2);
+				}
+				else if(v.getId()==R.id.icon3){
+					menuListener.onData(3);
+				}
+				else if(v.getId()==R.id.icon4){
+					menuListener.onData(4);
+				}
+				d.dismiss();
+			}
+		};
+		dialogLayout.setOnClickListener(listener);
+		dialogLayout.findViewById(R.id.icon1).setOnClickListener(listener);
+		dialogLayout.findViewById(R.id.icon2).setOnClickListener(listener);
+		dialogLayout.findViewById(R.id.icon3).setOnClickListener(listener);
+		dialogLayout.findViewById(R.id.icon4).setOnClickListener(listener);
+		d.setContentView(dialogLayout);
+		d.show();
+	}
 
 }

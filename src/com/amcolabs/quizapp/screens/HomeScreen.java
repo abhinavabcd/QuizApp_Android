@@ -3,7 +3,9 @@ package com.amcolabs.quizapp.screens;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.app.Dialog;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
@@ -122,8 +124,24 @@ public class HomeScreen extends Screen {
 	public void addUserQuizzesView(List<Quiz> quizzes, boolean showViewMore , String text) {
 		final QuizItemListAdapter quizAdaptor = new QuizItemListAdapter(getApp(),0,quizzes, new DataInputListener<Quiz>(){
 			@Override
-			public String onData(Quiz quiz) {
-				userMainController.onQuizSelected(quiz);
+			public String onData(final Quiz quiz) {
+				getApp().getStaticPopupDialogBoxes().showQuizSelectMenu(new DataInputListener<Integer>(){
+					@Override
+					public String onData(Integer s) {
+						switch(s){
+							case 1: 
+								userMainController.onQuizPlaySelected(quiz);
+								break;
+							case 2:
+								break;
+							case 3:
+								break;
+							case 4:
+								break;
+						}
+						return super.onData(s);
+					}
+				});
 				return null;
 			}
 		});
