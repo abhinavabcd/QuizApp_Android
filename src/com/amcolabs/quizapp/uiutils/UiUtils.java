@@ -106,7 +106,13 @@ public class UiUtils {
 		TIE_QUIZ_MESAGE("Its A TIE!"), 
 		PROFILE_WON_STATS_TEXT("Won"),
 		PROFILE_LOST_STATS_TEXT("Lost"),
-		PROFILE_TIE_STATS_TEXT("Tie");
+		PROFILE_TIE_STATS_TEXT("Tie"), 
+		USER_WANTS_REMATCH("%s wants a rematch with you"), USER_HAS_DISCONNECTED("%s has disconnected"),
+		CHALLENGE("Challenge"),
+		EXIT("Exit"),
+		YES("Yes"),
+		NO("No"), 
+		SERVER_ERROR_MESSAGE("An Error");
 
 		
 		String value = null;

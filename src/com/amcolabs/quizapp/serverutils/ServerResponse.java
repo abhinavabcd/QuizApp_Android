@@ -65,6 +65,8 @@ public class ServerResponse {
 				OK_SEND_MESSAGE(513),
 				OK_USERS_INFO(514),
 				OK_SCORE_BOARD(515),
+				OK_START_REMATCH (516),
+				ON_REMATCH_REQUEST(517),
 				
 //				################################# dict values/commands for payload type definition
 				USER_ANSWERED_QUESTION ( 1),
@@ -74,7 +76,9 @@ public class ServerResponse {
 				USER_DISCONNECTED ( 5),
 				NEXT_QUESTION (6),
 				START_QUESTIONS ( 7),
-				STATUS_WHAT_USER_GOT ( 8), ACTIVATE_BOT(9);
+				STATUS_WHAT_USER_GOT ( 8), 
+				ACTIVATE_BOT(9),
+				REMATCH_REQUEST(10);
 
 
 				

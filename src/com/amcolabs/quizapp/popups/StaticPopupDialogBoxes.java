@@ -13,6 +13,7 @@ import com.amcolabs.quizapp.QuizApp;
 import com.amcolabs.quizapp.R;
 import com.amcolabs.quizapp.UserDeviceManager;
 import com.amcolabs.quizapp.datalisteners.DataInputListener;
+import com.amcolabs.quizapp.widgets.GothamButtonView;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -160,5 +161,54 @@ public class StaticPopupDialogBoxes {
 		d.setContentView(dialogLayout);
 		d.show();
 	}
+	
+	class YesNoDialog extends Dialog{
 
+		private DataInputListener<Boolean> acceptListener;
+		public YesNoDialog(Context context , int resId, DataInputListener<Boolean> acceptListener) {
+			super(context);
+			this.acceptListener = acceptListener;
+		}
+		public void dismiss() {
+			acceptListener.onData(false);
+			super.dismiss();
+		}
+		public void dismissQuietly() {
+			super.dismiss();
+		}
+	}
+	
+	YesNoDialog yesNoPopup = null; 
+	public void yesOrNo(String text, String possitiveText , String negetiveText , final DataInputListener<Boolean> acceptListener) {
+		yesNoPopup = new YesNoDialog(quizApp.getContext(),R.style.CustomDialogTheme, acceptListener);
+		LinearLayout dialogLayout = (LinearLayout)quizApp.getActivity().getLayoutInflater().inflate(R.layout.full_screen_dialog, null);
+		OnClickListener listener = new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				if(v.getId()==R.id.button1){
+					acceptListener.onData(true);
+				}
+				else if(v.getId()==R.id.button2){
+					acceptListener.onData(false);
+				}
+				yesNoPopup.dismiss();
+			}
+		};
+		((TextView) dialogLayout.findViewById(R.id.textView1)).setText(text);
+		GothamButtonView button1 = (GothamButtonView) dialogLayout.findViewById(R.id.button1);
+		button1.setOnClickListener(listener);
+		button1.setText(possitiveText);
+		
+		GothamButtonView button2 = (GothamButtonView) dialogLayout.findViewById(R.id.button2);
+		button2.setOnClickListener(listener);
+		button1.setText(negetiveText);
+		yesNoPopup.setContentView(dialogLayout);
+		yesNoPopup.show();
+	}
+
+	public void removeRematchRequestScreen() {
+		if(yesNoPopup!=null)
+			yesNoPopup.dismissQuietly();
+		yesNoPopup= null;
+	}
 }

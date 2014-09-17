@@ -160,15 +160,19 @@ public class WinOrLoseScreen extends Screen{
 				}
 			});
 		}
-		if(matchResult>0){
+		if(matchResult==1){
 			quizResultMessage.setText(UiText.WON_QUIZ_MESSAGE.getValue());
 		}
-		else if(matchResult<0){
+		else if(matchResult==-1){
 			quizResultMessage.setText(UiText.LOST_QUIZ_MESAGE.getValue());
 		}
-		else{
+		else if(matchResult==0){
 			quizResultMessage.setText(UiText.TIE_QUIZ_MESAGE.getValue());
 		}
+		else if(matchResult==-2){
+			quizResultMessage.setText(UiText.SERVER_ERROR_MESSAGE.getValue());
+		}
+		
 		
 		List<UserAnswer> ans = userAnswersStack.get(getApp().getUser().uid);
 		animatePoints((int)Math.floor(ans.get(ans.size()-1).whatUserGot),(int)Math.floor(matchResult>0?Config.QUIZ_WIN_BONUS:0),(int)Math.floor(levelUp?Config.QUIZ_LEVEL_UP_BONUS:0));

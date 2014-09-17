@@ -19,6 +19,7 @@ import com.amcolabs.quizapp.User;
 import com.amcolabs.quizapp.configuration.Config;
 import com.amcolabs.quizapp.databaseutils.Question;
 import com.amcolabs.quizapp.databaseutils.Quiz;
+import com.amcolabs.quizapp.datalisteners.DataInputListener;
 import com.amcolabs.quizapp.screens.ClashScreen;
 import com.amcolabs.quizapp.screens.QuestionScreen;
 import com.amcolabs.quizapp.screens.WinOrLoseScreen;
@@ -153,7 +154,11 @@ public class ProgressiveQuizController extends AppController{
 	public final  static String USER_ANSWER = "7";
 	public final static  String USERS="8";
 	public final  static String CREATED_AT="9";
-	public final  static String ELAPSED_TIME="10"; 
+	public final  static String ELAPSED_TIME="10";
+	
+	
+	protected static final int CHALLENGE_MODE = 2;
+	private static final int BOT_MODE = 3; 
 	
 	double waitinStartTime = 0;
 	boolean noResponseFromServer = true;
@@ -169,13 +174,13 @@ public class ProgressiveQuizController extends AppController{
 	private int botScore =0;
 	protected Random rand = new Random();
 	private WinOrLoseScreen quizResultScreen;
+	private int quizMode = -1;
 	
-	private  void setBotMode(boolean mode){
-		botMode = mode;
-		botScore = 0;
+	private void setQuizMode(int mode){
+		quizMode = mode;
 	}
 	private boolean isBotMode(){
-		return botMode;
+		return quizMode == BOT_MODE;
 	}
 	
 	private String constructSocketMessage(MessageType messageType , HashMap<String, String> data , HashMap<Integer, String> data1){
@@ -347,26 +352,63 @@ public class ProgressiveQuizController extends AppController{
 	    		validateAndShowWinningScreen();
 	    		break; 
 	    	case USER_DISCONNECTED:
+	    		if(currentQuestions.size()>0){ // still there are questions ? 
+	    			gracefullyCloseSocket();
+	    			quizApp.getStaticPopupDialogBoxes().yesOrNo(UiText.USER_HAS_DISCONNECTED.getValue(), UiText.YES.getValue() , UiText.NO.getValue() , new DataInputListener<Boolean>(){
+	    				@Override
+	    				public String onData(Boolean s) {
+	    					if(s){
+	    						setQuizMode(CHALLENGE_MODE);
+	    					}
+	    					else{
+	    						validateAndShowWinningScreen();
+	    					}
+	    					return super.onData(s);
+	    				}
+	    			});
+	    		}
 	    		break; 
 	    	case NEXT_QUESTION:
 	    		break; 
-	    	case START_QUESTIONS:
-	    		break; 
 	    	case STATUS_WHAT_USER_GOT:
 	    		break; 
+	    		
 	    	case OK_ACTIVATING_BOT: 
 	    		quizApp.getServerCalls().informActivatingBot(quiz, serverSocket.serverId); 
-	    		currentQuestions = quizApp.getConfig().getGson().fromJson(response.payload1, new TypeToken<List<Question>>(){}.getType());
-	    		try{
-	    			currentUsers = quizApp.getConfig().getGson().fromJson(response.payload, new TypeToken<List<User>>(){}.getType());
-	    		}
-	    		catch(JsonSyntaxException ex){
-	    			currentUsers.add(quizApp.getUser());
-	    			currentUsers.add((User) quizApp.getConfig().getGson().fromJson(response.payload, new TypeToken<User>(){}.getType()));
-	    		}
-	    		setBotMode(true);
+	    		setQuizMode(BOT_MODE);
 	    		serverSocket.disconnect();
+	    	case START_QUESTIONS:
+	    		currentQuestions = quizApp.getConfig().getGson().fromJson(response.payload2, new TypeToken<List<Question>>(){}.getType());
+	    		try{ 
+	    			currentUsers = quizApp.getConfig().getGson().fromJson(response.payload1, new TypeToken<List<User>>(){}.getType());
+	    		}
+	    		catch(JsonSyntaxException ex){//single user in payload
+	    			currentUsers.add(quizApp.getUser());
+	    			currentUsers.add((User) quizApp.getConfig().getGson().fromJson(response.payload1, new TypeToken<User>(){}.getType()));
+	    		}
 	    		quizApp.cacheUsersList(currentUsers);
+	    		showQuestionScreen(currentUsers);
+	    		break; 
+
+	    	case ON_REMATCH_REQUEST: 
+	    		User user = quizApp.cachedUsers.get(response.payload);
+	    		quizApp.getStaticPopupDialogBoxes().yesOrNo(UiText.USER_WANTS_REMATCH.getValue(user.name), UiText.CHALLENGE.getValue() , UiText.EXIT.getValue() , new DataInputListener<Boolean>(){
+	    			@Override
+	    			public String onData(Boolean s) {
+	    				if(s){
+	    					serverSocket.sendTextMessage(constructSocketMessage(MessageType.REMATCH_REQUEST, null,null));
+	    				}
+	    				else{
+	    					gracefullyCloseSocket();
+	    				}
+	    				return super.onData(s);
+	    			}
+	    		});
+	    		break;
+	    	case OK_START_REMATCH:
+	    		quizApp.getStaticPopupDialogBoxes().removeRematchRequestScreen();
+	    		currentQuestions = quizApp.getConfig().getGson().fromJson(response.payload1, new TypeToken<List<Question>>(){}.getType());
+	    		showWaitingScreen(quiz);
 	    		showQuestionScreen(currentUsers);
 	    		break;
 			default:
@@ -374,6 +416,11 @@ public class ProgressiveQuizController extends AppController{
 		}
 	}
 
+	public void requestRematch(){
+		if(serverSocket!=null && serverSocket.isConnected()){
+			serverSocket.sendTextMessage(constructSocketMessage(MessageType.REMATCH_REQUEST, null,null));
+		}
+	}
 
 	public void onSocketClosed() {
 		//TODO: poup
@@ -430,12 +477,15 @@ public class ProgressiveQuizController extends AppController{
 			if(winnersList.size()==1){
 				quizResult = 1;
 			}
-//			else{ // default value
-//				// Tie
-//			}
+			else{ // default value
+				quizResult = 0;
+			}
 		}
 		else{
-			quizResult = -1;
+			if(currentQuestions.size()>0)
+				quizResult = -2; // server error 
+			else
+				quizResult = -1; // lost
 		}
 		if (quizResultScreen==null){
 			quizResultScreen = new WinOrLoseScreen(this,currentUsers);
