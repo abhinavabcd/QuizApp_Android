@@ -14,7 +14,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
-import com.amcolabs.quizapp.Badge;
 import com.amcolabs.quizapp.QuizApp;
 import com.amcolabs.quizapp.R;
 import com.amcolabs.quizapp.User;
@@ -113,7 +112,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 
     public List<Category> getAllCategories(){
     		try {
-				return getCategoryDao().queryBuilder().orderBy("modifiedTimestamp", false).query();
+				return getCategoryDao().queryForAll();
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -137,6 +136,15 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 				return getQuizDao().queryBuilder().orderBy("userXp", false).limit(q).where().gt("modifiedTimestamp", fromTimeStamp).query();
 			}
 			return getQuizDao().queryBuilder().orderBy("userXp", false).limit(q).query();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
+    }
+    
+    public List<Quiz> getAllQuizzes(){
+		try {
+			return getQuizDao().queryForAll();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -476,6 +484,18 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
     	}
     	return quizApp.cachedUsers;
     }
+
+	public Category getCategoryById(String id) {
+		try {
+			List<Category> tmp = getCategoryDao().queryBuilder().where().eq("categoryId", id).query();
+			if(tmp.size()>0)
+				tmp.get(0);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
     
 }
 

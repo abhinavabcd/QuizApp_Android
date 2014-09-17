@@ -9,6 +9,7 @@ import java.util.Set;
 import com.amcolabs.quizapp.appcontrollers.ProfileAndChatController;
 import com.amcolabs.quizapp.appcontrollers.ProgressiveQuizController.UserAnswer;
 import com.amcolabs.quizapp.configuration.Config;
+import com.amcolabs.quizapp.databaseutils.Badge;
 import com.amcolabs.quizapp.databaseutils.Quiz;
 import com.amcolabs.quizapp.screens.WinOrLoseScreen;
 
@@ -85,53 +86,6 @@ public class WinOrLoseController extends AppController {
 			return true;
 		}
 		return false;
-	}
-	
-	public void evaluateBadges(){
-		// TODO: evaluate all badge conditions and show if unlocked
-		List<Badge> badges = quizApp.getDataBaseHelper().getAllUnAwardedBadges();
-		Iterator<Badge> itr = badges.iterator();
-		Badge curBadge = null;
-		String[] ors;
-		String[] ands;
-		String[] cond;
-		boolean state = true;
-		while(itr.hasNext()){
-			curBadge = itr.next();
-			String condition = curBadge.condition;
-			ors = condition.split("||");
-			for(int i=0;i<ors.length;i++){
-				ands = ors[i].split("&&");
-				for(int j=0;j<ands.length;j++){
-					cond = ands[j].split(":");
-					if(cond.length==2)
-						state = state && badgeConditionEvaluator(cond[0], cond[1]);
-				}
-				if(state){
-					// condition satisfied else continue
-				}
-			}
-		}
-	}
-	
-	public boolean badgeConditionEvaluator(String cond,String value){
-		// To be implemented
-		if(cond.equalsIgnoreCase("quiz")){
-			
-		}
-		else if(cond.equalsIgnoreCase("category")){
-			
-		}
-		else if(cond.equalsIgnoreCase("streak")){
-			
-		}
-		else if(cond.equalsIgnoreCase("quizCount")){
-			
-		}
-		else if(cond.equalsIgnoreCase("level")){
-			
-		}
-		return true;
 	}
 
 	public void loadProfile(User user) {

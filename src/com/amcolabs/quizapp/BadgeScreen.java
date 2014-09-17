@@ -10,6 +10,7 @@ import android.widget.ArrayAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
 
+import com.amcolabs.quizapp.databaseutils.Badge;
 import com.amcolabs.quizapp.widgets.GothamTextView;
 import com.squareup.picasso.Picasso;
 
