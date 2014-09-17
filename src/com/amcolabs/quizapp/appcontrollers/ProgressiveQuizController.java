@@ -175,6 +175,7 @@ public class ProgressiveQuizController extends AppController{
 	protected Random rand = new Random();
 	private WinOrLoseScreen quizResultScreen;
 	private int quizMode = -1;
+	private boolean waitingForRematch;
 	
 	private void setQuizMode(int mode){
 		quizMode = mode;
@@ -334,7 +335,7 @@ public class ProgressiveQuizController extends AppController{
 	
 	public void onMessageRecieved(MessageType messageType, ServerResponse response, String data) {
 		switch(messageType){
-	    	case USER_ANSWERED_QUESTION:
+			case USER_ANSWERED_QUESTION:
 	    		UserAnswer userAnswer = quizApp.getConfig().getGson().fromJson(response.payload, UserAnswer.class);
 	    		//questionId , self.uid, userAnswer,elapsedTime , whatUserGot
 	    		questionScreen.getTimerView().stopPressed(2, userAnswer.elapsedTime);
@@ -367,30 +368,24 @@ public class ProgressiveQuizController extends AppController{
 	    				}
 	    			});
 	    		}
+	    		else if(waitingForRematch){
+	    			waitingForRematch = false;
+	    		}
 	    		break; 
 	    	case NEXT_QUESTION:
 	    		break; 
 	    	case STATUS_WHAT_USER_GOT:
 	    		break; 
-	    		
 	    	case OK_ACTIVATING_BOT: 
 	    		quizApp.getServerCalls().informActivatingBot(quiz, serverSocket.serverId); 
 	    		setQuizMode(BOT_MODE);
 	    		serverSocket.disconnect();
+	    		startQuestions(response);
+	    		break;
 	    	case START_QUESTIONS:
-	    		currentQuestions = quizApp.getConfig().getGson().fromJson(response.payload2, new TypeToken<List<Question>>(){}.getType());
-	    		try{ 
-	    			currentUsers = quizApp.getConfig().getGson().fromJson(response.payload1, new TypeToken<List<User>>(){}.getType());
-	    		}
-	    		catch(JsonSyntaxException ex){//single user in payload
-	    			currentUsers.add(quizApp.getUser());
-	    			currentUsers.add((User) quizApp.getConfig().getGson().fromJson(response.payload1, new TypeToken<User>(){}.getType()));
-	    		}
-	    		quizApp.cacheUsersList(currentUsers);
-	    		showQuestionScreen(currentUsers);
+	    		startQuestions(response);
 	    		break; 
-
-	    	case ON_REMATCH_REQUEST: 
+	    	case REMATCH_REQUEST: 
 	    		User user = quizApp.cachedUsers.get(response.payload);
 	    		quizApp.getStaticPopupDialogBoxes().yesOrNo(UiText.USER_WANTS_REMATCH.getValue(user.name), UiText.CHALLENGE.getValue() , UiText.EXIT.getValue() , new DataInputListener<Boolean>(){
 	    			@Override
@@ -411,14 +406,58 @@ public class ProgressiveQuizController extends AppController{
 	    		showWaitingScreen(quiz);
 	    		showQuestionScreen(currentUsers);
 	    		break;
+	    	case LOAD_CHALLENGE_FROM_OFFLINE:
+	    		gracefullyCloseSocket();
+	    		loadOfflineChallenge();
+	    		break;
+//	    	case START_CHALLENGE_NOW:
+	    	case OK_CHALLENGE_WITHOUT_OPPONENT:
+				setQuizMode(CHALLENGE_MODE);
+				startQuestions(response);
+				break;
+
 			default:
 				break;
 		}
 	}
 
+	private void loadOfflineChallenge() {
+		// fetch data from server and start quiz
+	}
+
+
+	private void startQuestions(ServerResponse response) {
+		currentQuestions = quizApp.getConfig().getGson().fromJson(response.payload2, new TypeToken<List<Question>>(){}.getType());
+		try{ 
+			currentUsers = quizApp.getConfig().getGson().fromJson(response.payload1, new TypeToken<List<User>>(){}.getType());
+		}
+		catch(JsonSyntaxException ex){//single user in payload
+			currentUsers.add(quizApp.getUser());
+			currentUsers.add((User) quizApp.getConfig().getGson().fromJson(response.payload1, new TypeToken<User>(){}.getType()));
+		}
+		quizApp.cacheUsersList(currentUsers);
+		showQuestionScreen(currentUsers);
+	}
+
+
 	public void requestRematch(){
 		if(serverSocket!=null && serverSocket.isConnected()){
 			serverSocket.sendTextMessage(constructSocketMessage(MessageType.REMATCH_REQUEST, null,null));
+			waitingForRematch = true;
+		}
+		else{
+			quizApp.getStaticPopupDialogBoxes().yesOrNo(UiText.USER_HAS_DECLINED.getValue(), UiText.CHALLENGE.getValue(), UiText.OK.getValue(), new DataInputListener<Boolean>(){
+				@Override
+				public String onData(Boolean s) {
+					if(s){
+						startNewOfflineChallenge();
+					}
+					else{
+						
+					}
+					return super.onData(s);
+				}
+			});
 		}
 	}
 
@@ -430,6 +469,7 @@ public class ProgressiveQuizController extends AppController{
 		if(serverSocket!=null){
 			serverSocket.disconnect();
 		}
+		waitingForRematch = false;
 	}
 
 
@@ -580,4 +620,12 @@ public class ProgressiveQuizController extends AppController{
 		profileAndChat.showProfileScreen(user);
 	}
 
+	public void startNewOfflineChallenge(){
+		//TODO: clear socket , 
+		// master server get sid
+		// open new socket with &isChallenge=uid2 , get challengeId , etc from server , 
+		// and then wait for the opponent to connect ,
+		// else let the user click on start now to Send message START_CHALLENGE_NOW to server , get questions , 
+		// users , setmode as challenge , complete it to send the offlinechallenge to server 
+	}
 }
