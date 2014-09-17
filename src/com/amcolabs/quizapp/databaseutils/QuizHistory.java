@@ -15,13 +15,15 @@ public class QuizHistory {
 	@DatabaseField
 	String categoryId;
 	@DatabaseField
-	String streak;
+	int streak;
 	@DatabaseField
 	int win;
 	@DatabaseField
 	int lose;
 	@DatabaseField
 	int tie;
+	@DatabaseField
+	int totalCount;
 	@DatabaseField
 	double timeStamp;
 	
@@ -53,11 +55,11 @@ public class QuizHistory {
 		this.categoryId = categoryId;
 	}
 
-	public String getStreak() {
+	public int getStreak() {
 		return streak;
 	}
 
-	public void setStreak(String streak) {
+	public void setStreak(int streak) {
 		this.streak = streak;
 	}
 
@@ -91,5 +93,13 @@ public class QuizHistory {
 
 	public void setTimeStamp(double timeStamp) {
 		this.timeStamp = timeStamp;
+	}
+	
+	public int getTotalCount() {
+		return totalCount;
+	}
+
+	public void setTotalCount(int totalCount) {
+		this.totalCount = totalCount;
 	}
 }

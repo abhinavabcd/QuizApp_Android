@@ -4,22 +4,25 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.logging.Level;
-
-import android.R.integer;
 
 import com.amcolabs.quizapp.QuizApp;
 import com.amcolabs.quizapp.databaseutils.Badge;
 import com.amcolabs.quizapp.databaseutils.Category;
 import com.amcolabs.quizapp.databaseutils.Quiz;
+import com.amcolabs.quizapp.databaseutils.QuizHistory;
+import com.amcolabs.quizapp.fileandcommonutils.CommonFunctions;
+import com.google.gson.reflect.TypeToken;
 
 public class BadgeEvaluator {
 
 	HashMap<String, Category> mainCategoryList;
 	HashMap<String, Quiz> mainQuizList;
+	HashMap<String, QuizHistory> mainQuizHistoryList;
 	QuizApp quizApp;
 	ArrayList<ArrayList<String>> categoryList = new ArrayList<ArrayList<String>>();
 	ArrayList<ArrayList<String>> quizList = new ArrayList<ArrayList<String>>();
+	ArrayList<ArrayList<String>> categoryCombinations;
+	
 	ArrayList<Integer> categoryFullChildState = new ArrayList<Integer>();
 	ArrayList<Integer> quizFullChildState = new ArrayList<Integer>();
 	boolean allFlag = false;
@@ -38,6 +41,11 @@ public class BadgeEvaluator {
 		List<Quiz> tmp1 = quizApp.getDataBaseHelper().getAllQuizzes();
 		for(int i=0;i<tmp1.size();i++){
 			mainQuizList.put(tmp1.get(i).quizId, tmp1.get(i));
+		}
+		
+		List<QuizHistory> tmp2 = quizApp.getDataBaseHelper().getAllQuizHistory();
+		for(int i=0;i<tmp2.size();i++){
+			mainQuizHistoryList.put(tmp2.get(i).getQuizId(), tmp2.get(i));
 		}
 	}
 	
@@ -151,7 +159,7 @@ public class BadgeEvaluator {
 					return getRemainingElements(1,ands);
 				}
 			}
-			System.out.println("Somethings not right");
+			System.out.println("Something is not right");
 			return getRemainingElements(1,ands);
 		}
 		else if(cond[0].equalsIgnoreCase("quiz")){
@@ -224,22 +232,76 @@ public class BadgeEvaluator {
 		if(cond.equalsIgnoreCase("level")){
 			if(categoryFullChildState.get(index)<0){
 				if(quizFullChildState.get(index)<0){
-					for(int i=0;i<quizList.size();i++){
-						if(Double.valueOf(value)<=quizApp.getUiUtils().getLevelFromPoints(mainQuizList.get(quizList.get(index).get(i)).userXp))
-							return true;
-					}
-					return false;
+					return matchQuizListLevel(index, 1, value);
 				}
-				// other cases
+				else if(quizFullChildState.get(index)==0){
+					return matchQuizListLevel(index, quizList.get(index), value);
+				}
+			}
+			else if(categoryFullChildState.get(index)==0){
+				return matchQuizListLevel(index, getQuizIdsOfCategories(categoryList.get(index)), value);
+			}
+			else{
+				categoryCombinations=CommonFunctions.getCombinations(categoryList.get(index), categoryFullChildState.get(index), 0, new ArrayList<String>(),new ArrayList<ArrayList<String>>());
+				for(int i=0;i<categoryCombinations.size();i++){
+					state = matchQuizListLevel(index, getQuizIdsOfCategories(categoryCombinations.get(i)), value);
+					if(state)
+						return true;
+				}
 			}
 		}
 		else if(cond.equalsIgnoreCase("streak")){
-			
+			if(categoryFullChildState.get(index)<0){
+				if(quizFullChildState.get(index)<0){
+					return matchQuizListStreak(index, 1, value);
+				}
+				else if(quizFullChildState.get(index)==0){
+					return matchQuizListStreak(index, quizList.get(index), value);
+				}
+			}
+			else if(categoryFullChildState.get(index)==0){
+				return matchQuizListStreak(index, getQuizIdsOfCategories(categoryList.get(index)), value);
+			}
+			else{
+				categoryCombinations=CommonFunctions.getCombinations(categoryList.get(index), categoryFullChildState.get(index), 0, new ArrayList<String>(),new ArrayList<ArrayList<String>>());
+				for(int i=0;i<categoryCombinations.size();i++){
+					state = matchQuizListStreak(index, getQuizIdsOfCategories(categoryCombinations.get(i)), value);
+					if(state)
+						return true;
+				}
+			}
 		}
 		else if(cond.equalsIgnoreCase("quizCount")){
-			
+			if(categoryFullChildState.get(index)<0){
+				if(quizFullChildState.get(index)<0){
+					return matchQuizListQuizCount(index, 1, value);
+				}
+				else if(quizFullChildState.get(index)==0){
+					return matchQuizListQuizCount(index, quizList.get(index), value);
+				}
+			}
+			else if(categoryFullChildState.get(index)==0){
+				return matchQuizListQuizCount(index, getQuizIdsOfCategories(categoryList.get(index)), value);
+			}
+			else{
+				categoryCombinations=CommonFunctions.getCombinations(categoryList.get(index), categoryFullChildState.get(index), 0, new ArrayList<String>(),new ArrayList<ArrayList<String>>());
+				for(int i=0;i<categoryCombinations.size();i++){
+					state = matchQuizListQuizCount(index, getQuizIdsOfCategories(categoryCombinations.get(i)), value);
+					if(state)
+						return true;
+				}
+			}
 		}
 		return state;
+	}
+	
+	private ArrayList<String> getQuizIdsOfCategories(ArrayList<String> categoryIds){
+		ArrayList<String> tmp = new ArrayList<String>();
+		for(int i=0;i<categoryIds.size();i++){
+			List<String> qlist = quizApp.getConfig().getGson().fromJson(mainCategoryList.get(categoryIds.get(i)).quizList, new TypeToken<List<String>>(){}.getType());
+			tmp.addAll(qlist);
+		}
+		return tmp;
 	}
 	
 	private boolean matchQuizListLevel(int index,int count,String value){
@@ -255,14 +317,17 @@ public class BadgeEvaluator {
 	}
 	
 	private boolean matchQuizListLevel(int index,ArrayList<String> quizIds,String value){
-		boolean ret = false;
-		return ret;
+		for(int i=0;i<quizIds.size();i++){
+			if(Double.valueOf(value)>quizApp.getUiUtils().getLevelFromPoints(mainQuizList.get(quizIds.get(i)).userXp))
+				return false;
+		}
+		return true;
 	}
 	
 	private boolean matchQuizListStreak(int index,int count,String value){
 		int tmp_count = 0;
 		for(int i=0;i<quizList.size();i++){
-			if(Double.valueOf(value)<=quizApp.getUiUtils().getLevelFromPoints(mainQuizList.get(quizList.get(index).get(i)).userXp))
+			if(Integer.valueOf(value)<=mainQuizHistoryList.get(quizList.get(index).get(i)).getStreak())
 				tmp_count++;
 			if(tmp_count>=count){
 				return true;
@@ -272,14 +337,17 @@ public class BadgeEvaluator {
 	}
 	
 	private boolean matchQuizListStreak(int index,ArrayList<String> quizIds,String value){
-		boolean ret = false;
-		return ret;
+		for(int i=0;i<quizIds.size();i++){
+			if(Integer.valueOf(value)>mainQuizHistoryList.get(quizIds.get(i)).getStreak())
+				return false;
+		}
+		return true;
 	}
 
 	private boolean matchQuizListQuizCount(int index,int count,String value){
 		int tmp_count = 0;
 		for(int i=0;i<quizList.size();i++){
-			if(Double.valueOf(value)<=quizApp.getUiUtils().getLevelFromPoints(mainQuizList.get(quizList.get(index).get(i)).userXp))
+			if(Integer.valueOf(value)<=mainQuizHistoryList.get(quizList.get(index).get(i)).getTotalCount())
 				tmp_count++;
 			if(tmp_count>=count){
 				return true;
@@ -289,8 +357,11 @@ public class BadgeEvaluator {
 	}
 	
 	private boolean matchQuizListQuizCount(int index,ArrayList<String> quizIds,String value){
-		boolean ret = false;
-		return ret;
+		for(int i=0;i<quizIds.size();i++){
+			if(Integer.valueOf(value)>mainQuizHistoryList.get(quizIds.get(i)).getTotalCount())
+				return false;
+		}
+		return true;
 	}
 	
 	private void loadAllQuizzes(){
