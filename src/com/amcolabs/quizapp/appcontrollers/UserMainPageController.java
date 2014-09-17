@@ -1,6 +1,7 @@
 package com.amcolabs.quizapp.appcontrollers;
  
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import android.view.View;
@@ -20,12 +21,10 @@ import com.amcolabs.quizapp.databaseutils.UserInboxMessage;
 import com.amcolabs.quizapp.datalisteners.DataInputListener;
 import com.amcolabs.quizapp.datalisteners.DataInputListener2;
 import com.amcolabs.quizapp.popups.StaticPopupDialogBoxes;
-import com.amcolabs.quizapp.screens.QuestionScreen;
-import com.amcolabs.quizapp.screens.QuizzesScreen;
 import com.amcolabs.quizapp.screens.HomeScreen;
-import com.amcolabs.quizapp.screens.UserProfileScreen;
+import com.amcolabs.quizapp.screens.LeaderBoardScreen;
+import com.amcolabs.quizapp.screens.QuizzesScreen;
 import com.amcolabs.quizapp.screens.WelcomeScreen;
-import com.amcolabs.quizapp.screens.WinOrLoseScreen;
 import com.amcolabs.quizapp.uiutils.UiUtils.UiText;
 import com.androidsocialnetworks.lib.AccessToken;
 import com.androidsocialnetworks.lib.SocialNetworkManager;
@@ -103,14 +102,14 @@ public class UserMainPageController  extends AppController implements OnInitiali
 		categoryQuizzesScreen.addQuizzesToList(category.description , quizzes, new DataInputListener<Quiz>(){
 			@Override
 			public String onData(Quiz s) {
-				onQuizSelected(s);
+				onQuizPlaySelected(s);
 				return super.onData(s);
 			}
 		});
 		insertScreen(categoryQuizzesScreen);
 	}
 	
-	public void onQuizSelected(Quiz quiz){
+	public void onQuizPlaySelected(Quiz quiz){
 		clearScreen();
 		ProgressiveQuizController progressiveQuiz = (ProgressiveQuizController) quizApp.loadAppController(ProgressiveQuizController.class);
 		progressiveQuiz.initlializeQuiz(quiz);
@@ -327,5 +326,26 @@ public class UserMainPageController  extends AppController implements OnInitiali
 
 	public void showAllUserQuizzes() {
 		
+	}
+	
+	public void showLeaderBoards(String  quizId){
+		clearScreen(); 
+		quizApp.getServerCalls().getScoreBoards(quizId , new DataInputListener2<HashMap<String , Integer[]>, HashMap<String , Integer[]>,Void , Void>(){
+			@Override
+			public void onData(final HashMap<String , Integer[]> a, final HashMap<String, Integer[]> b, Void c) {
+				ArrayList<String> allUids = new ArrayList<String>(a.keySet());
+				allUids.addAll(b.keySet());
+				quizApp.getDataBaseHelper().getAllUsersByUid(allUids, new DataInputListener<Boolean>(){
+					@Override
+					public String onData(Boolean s) {
+						LeaderBoardScreen lscreen = new LeaderBoardScreen(UserMainPageController.this);
+						lscreen.addLeaderBoards(a, UiText.GLOBAL_RANKINGS.getValue());
+						lscreen.addLeaderBoards(b, UiText.LOCAL_RANKINGS.getValue());
+						insertScreen(lscreen);
+						return super.onData(s);
+					}
+				});
+			}
+		});
 	}
 }

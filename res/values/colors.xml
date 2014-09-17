@@ -16,7 +16,7 @@
 	<color name="textFieldColor">#000</color>
 	<color name="textShadow">#FFF</color>
 	<color name="listViewBg">#DADFEE</color>
-
+	<color name="darker_translucent_black">#AA000000</color>
 	<color name="sendLightColor">#8897BF</color>
 	<color name="sendMeduimColor">#5D6CA5</color>
 	<color name="sendDarkColor">#515F9F</color>

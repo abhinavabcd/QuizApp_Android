@@ -30,11 +30,10 @@
         android:layout_marginBottom="20dp"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
+        android:divider="#00000000"    
         android:listSelector="@android:color/transparent"
         android:scrollbarAlwaysDrawVerticalTrack="false"
-        android:scrollbars="none" >
-
-    </ListView>
+        android:scrollbars="none" />
 
     <FrameLayout
         android:id="@+id/view_all_wrapper"

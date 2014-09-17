@@ -89,18 +89,30 @@ public class QuizAppMenuItem extends LinearLayout implements OnClickListener {
 		super(quizApp.getContext());
 		this.quizApp = quizApp;
 		mContext =quizApp.getContext();
+		setOnClickListener(this);
+		init(id, text, quizApp.getConfig().getAThemeColor());
+	}
+	
+	public QuizAppMenuItem(Context context, int id , Integer backgroundColor , int iconDrawable , String text) {
+		super(context);
+		mContext =context;
+		this.id = id;
+		init(id, text, backgroundColor);
+
+	}
+	
+	private void init(int id ,String text , int backgroundColor){
 		this.id = id;
         setText(text);
-        setBackgroundColor(quizApp.getConfig().getAThemeColor());
+        setBackgroundColor(backgroundColor);
         //setFocusBackgroundColor(Color.parseColor("#bfe156"));
        	setTextSize(12);
         setRadius(5);
-		setOnClickListener(this);
 		LayoutParams lParams = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
 		lParams.setMargins(5, 5, 5, 5);
+		lParams.gravity = Gravity.CENTER_VERTICAL;
 		this.setLayoutParams(lParams);   
 	}
-	
 	@Override
 	public void onClick(View v) {
 		quizApp.onMenuClick(id);

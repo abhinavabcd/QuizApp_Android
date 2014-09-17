@@ -19,13 +19,14 @@ import com.amcolabs.quizapp.AppController;
 import com.amcolabs.quizapp.R;
 import com.amcolabs.quizapp.Screen;
 import com.amcolabs.quizapp.User;
-import com.amcolabs.quizapp.WinOrLoseController;
+import com.amcolabs.quizapp.appcontrollers.ProgressiveQuizController;
 import com.amcolabs.quizapp.appcontrollers.ProgressiveQuizController.UserAnswer;
 import com.amcolabs.quizapp.configuration.Config;
 import com.amcolabs.quizapp.databaseutils.Category;
 import com.amcolabs.quizapp.databaseutils.Quiz;
 import com.amcolabs.quizapp.uiutils.UiUtils.UiText;
 import com.amcolabs.quizapp.widgets.BarChartViewMultiDataset;
+import com.amcolabs.quizapp.widgets.FlowLayout;
 import com.amcolabs.quizapp.widgets.GothamButtonView;
 import com.amcolabs.quizapp.widgets.GothamTextView;
 import com.amcolabs.quizapp.widgets.PieChartView;
@@ -65,30 +66,45 @@ public class WinOrLoseScreen extends Screen{
 		GothamTextView userMoreInfoView;
 		ImageView userImageView;
 		PieChartView userPieChartView;
+		public FlowLayout badgesView;
 	}
 	
 	public WinOrLoseScreen(AppController controller,ArrayList<User> curUsers) {
 		super(controller);
 		currentUsers = curUsers;
 		quizResult = (ScrollView) LayoutInflater.from(controller.getContext()).inflate(R.layout.win_lose_screen, null);
-		LinearLayout usersViews = (LinearLayout) quizResult.findViewById(R.id.users);
+		LinearLayout usersPieChartViews = (LinearLayout) quizResult.findViewById(R.id.users);
+		LinearLayout usersShortView = (LinearLayout) quizResult.findViewById(R.id.users_short_view);
+		
 		userViews = new HashMap<String, userViewHolder>();
 		LinearLayout tmp;
 		userViewHolder uView;
-		for (int i=0;i<usersViews.getChildCount();i++){
-			tmp = (LinearLayout) usersViews.getChildAt(i);
+		for(User user : curUsers){
 			uView = new userViewHolder();
-			
-			uView.userNameView = (GothamTextView) tmp.findViewById(R.id.user_card_name);
-			uView.userStatusMessageView = (GothamTextView) tmp.findViewById(R.id.user_status_msg);
-			uView.userMoreInfoView = (GothamTextView) tmp.findViewById(R.id.user_more_info);
-			uView.userImageView = (ImageView) tmp.findViewById(R.id.user_card_small_pic);
-			uView.userPieChartView = (PieChartView) tmp.findViewById(R.id.pie_chart);
-//			setSampleData(this.getContext(),uView.userPieChartView);
-			drawUserActivityDistributionChart(curUsers.get(i),uView.userPieChartView);
-			
-			userViews.put(curUsers.get(i).uid,uView);
+			userViews.put(user.uid,uView);
+			if(user.uid.equalsIgnoreCase(getApp().getUser().uid)){
+				uView.userNameView = (GothamTextView) usersShortView.findViewById(R.id.user_name);
+				uView.userStatusMessageView = (GothamTextView) usersShortView.findViewById(R.id.user_status_msg);
+				uView.userImageView = (ImageView) usersShortView.findViewById(R.id.user1);
+				uView.badgesView = (FlowLayout)usersShortView.findViewById(R.id.user1badges);
+			}
+			else{
+				uView.userNameView = (GothamTextView) usersShortView.findViewById(R.id.user_name_2);
+				uView.userStatusMessageView = (GothamTextView) usersShortView.findViewById(R.id.user_status_msg_2);
+				uView.userImageView = (ImageView) usersShortView.findViewById(R.id.user2);
+				uView.badgesView = (FlowLayout)usersShortView.findViewById(R.id.user2badges);
+			}
 		}
+		for (int i=0;i<usersPieChartViews.getChildCount();i++){
+			tmp = (LinearLayout) usersPieChartViews.getChildAt(i);//generally discouraged
+			uView = userViews.get(curUsers.get(i).uid);
+			uView.userPieChartView = (PieChartView) tmp.findViewById(R.id.pie_chart);
+			drawUserActivityDistributionChart(curUsers.get(i),uView.userPieChartView);
+//			setSampleData(this.getContext(),uView.userPieChartView);
+		}
+		
+
+		
 		
 		quizResultMessage = (GothamTextView) quizResult.findViewById(R.id.quizResultMessage);
 		mChart = (BarChartViewMultiDataset) quizResult.findViewById(R.id.bar_chart);
@@ -130,29 +146,33 @@ public class WinOrLoseScreen extends Screen{
 			Picasso.with(getApp().getContext()).load(cUser.pictureUrl).into(imgView);
 			tmp.userNameView.setText(cUser.name);
 			tmp.userStatusMessageView.setText(cUser.status);
-			tmp.userMoreInfoView.setText(cUser.country);
+			//tmp.userMoreInfoView.setText(cUser.country);
 			imgView.setTag(cUser);
 			imgView.setOnClickListener(new OnClickListener() {
 				
 				@Override
 				public void onClick(View v) {
 					User user = (User) v.getTag();
-					((WinOrLoseController) controller).loadProfile(user);
+					((ProgressiveQuizController) controller).loadProfile(user);
 //					UserProfileScreen uScreen = new UserProfileScreen(controller);
 //					uScreen.showUser(user);
 //					controller.showScreen(uScreen);
 				}
 			});
 		}
-		if(matchResult>0){
+		if(matchResult==1){
 			quizResultMessage.setText(UiText.WON_QUIZ_MESSAGE.getValue());
 		}
-		else if(matchResult<0){
+		else if(matchResult==-1){
 			quizResultMessage.setText(UiText.LOST_QUIZ_MESAGE.getValue());
 		}
-		else{
+		else if(matchResult==0){
 			quizResultMessage.setText(UiText.TIE_QUIZ_MESAGE.getValue());
 		}
+		else if(matchResult==-2){
+			quizResultMessage.setText(UiText.SERVER_ERROR_MESSAGE.getValue());
+		}
+		
 		
 		List<UserAnswer> ans = userAnswersStack.get(getApp().getUser().uid);
 		animatePoints((int)Math.floor(ans.get(ans.size()-1).whatUserGot),(int)Math.floor(matchResult>0?Config.QUIZ_WIN_BONUS:0),(int)Math.floor(levelUp?Config.QUIZ_LEVEL_UP_BONUS:0));

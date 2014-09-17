@@ -3,12 +3,12 @@ package com.amcolabs.quizapp.screens;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.app.Dialog;
 import android.view.View;
-import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -21,6 +21,7 @@ import com.amcolabs.quizapp.appcontrollers.UserMainPageController;
 import com.amcolabs.quizapp.databaseutils.Category;
 import com.amcolabs.quizapp.databaseutils.Quiz;
 import com.amcolabs.quizapp.datalisteners.DataInputListener;
+import com.amcolabs.quizapp.uiutils.UiUtils;
 import com.amcolabs.quizapp.uiutils.UiUtils.UiText;
 import com.amcolabs.quizapp.widgets.GothamTextView;
 
@@ -64,34 +65,84 @@ public class HomeScreen extends Screen {
 		addToScrollView(lView);
 	}
 
-	public static ListView setListViewHeightBasedOnChildren(ListView listView) {
-	    ListAdapter listAdapter = listView.getAdapter();
-	    if (listAdapter == null)
-	        return listView;
-
-	    int desiredWidth = MeasureSpec.makeMeasureSpec(listView.getWidth(), MeasureSpec.UNSPECIFIED);
-	    int totalHeight = 0;
-	    View view = null;
-	    for (int i = 0; i < listAdapter.getCount(); i++) {
-	        view = listAdapter.getView(i, view, listView);
-	        if (i == 0)
-	            view.setLayoutParams(new ViewGroup.LayoutParams(desiredWidth, LayoutParams.WRAP_CONTENT));
-
-	        view.measure(desiredWidth, MeasureSpec.UNSPECIFIED);
-	        totalHeight += view.getMeasuredHeight();
-	    }
-	    ViewGroup.LayoutParams params = listView.getLayoutParams();
-	    params.height = totalHeight + (listView.getDividerHeight() * (listAdapter.getCount() - 1));
-	    listView.setLayoutParams(params);
-	    listView.requestLayout();
-	    return listView;
-	}
+	
+//	private void addListenersToQuizListItem2(SwipeMenuListView listView){
+//		SwipeMenuCreator creator = new SwipeMenuCreator() {
+//			int color1 =getApp().getConfig().getAThemeColor();
+//			int color2 = getApp().getConfig().getAThemeColor();
+//			@Override
+//			public void create(SwipeMenu menu) {
+//				// create "open" item
+//				SwipeMenuItem openItem = new SwipeMenuItem(
+//						getApp().getContext());
+//				openItem.setTitle("Play");
+//				openItem.setBgColor(color1);
+//				menu.addMenuItem(openItem);
+//
+//				// create "delete" item
+//				SwipeMenuItem deleteItem = new SwipeMenuItem(
+//						getApp().getContext());
+//				// set item background
+//				deleteItem.setTitle("Challenge");
+//				deleteItem.setBgColor(color2);
+//				menu.addMenuItem(deleteItem);
+//			}
+//		};
+//		// set creator
+//		listView.setMenuCreator(creator);
+//
+//		// step 2. listener item click event
+//		listView.setOnMenuItemClickListener(new OnMenuItemClickListener() {
+//			@Override
+//			public void onMenuItemClick(int position, SwipeMenu menu, int index) {
+//				switch (index) {
+//				case 0:
+//					break;
+//				case 1:
+//					break;
+//				}
+//			}
+//		});
+//		
+//		// set SwipeListener
+//		listView.setOnSwipeListener(new OnSwipeListener() {
+//			
+//			@Override
+//			public void onSwipeStart(int position) {
+//				// swipe start
+//			}
+//			
+//			@Override
+//			public void onSwipeEnd(int position) {
+//				// swipe end
+//			}
+//		});
+//
+//	}
+	
 	
 	public void addUserQuizzesView(List<Quiz> quizzes, boolean showViewMore , String text) {
 		final QuizItemListAdapter quizAdaptor = new QuizItemListAdapter(getApp(),0,quizzes, new DataInputListener<Quiz>(){
 			@Override
-			public String onData(Quiz quiz) {
-				userMainController.onQuizSelected(quiz);
+			public String onData(final Quiz quiz) {
+				getApp().getStaticPopupDialogBoxes().showQuizSelectMenu(new DataInputListener<Integer>(){
+					@Override
+					public String onData(Integer s) {
+						switch(s){
+							case 1: 
+								userMainController.onQuizPlaySelected(quiz);
+								break;
+							case 2:
+								break;
+							case 3://challenge
+								break;
+							case 4://scoreboard
+								userMainController.showLeaderBoards(quiz.quizId);
+								break;
+						}
+						return super.onData(s);
+					}
+				});
 				return null;
 			}
 		});
@@ -103,8 +154,12 @@ public class HomeScreen extends Screen {
 		titleView.setText(text);
 		ListView listView = (ListView) lView.findViewById(R.id.listView);
 		listView.setAdapter(quizAdaptor);
+	//	addListenersToQuizListItem(listView);
+		
+		
+		
 
-		setListViewHeightBasedOnChildren(listView);
+		UiUtils.setListViewHeightBasedOnChildren(listView);
 		
 		FrameLayout viewMore = (FrameLayout) lView.findViewById(R.id.view_all_wrapper);
 		if(!showViewMore){

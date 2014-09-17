@@ -74,8 +74,10 @@ class RandomSelector <T>{
 }
 
 public class ServerCalls {
+	
+	public static final String SERVER_ADDR = Config.IS_TEST_BUILD? "http://192.168.0.10:8085":"http://quizapp-main.amcolabs.com";
+	public static final String CDN_IMAGES_PATH = "http://192.168.0.10:8081/images/";
 
-	public static final String SERVER_ADDR = Config.IS_TEST_BUILD? "http://127.0.0.1:8085":"http://quizapp-main.amcolabs.com";
 //	public static final String SERVER_URL = Config.IS_TEST_BUILD? "http://192.168.0.10:8084/func":"http://quizapp-main.amcolabs.com/func";
 //	private static final String GET_ENCODEDKEY_URL = SERVER_URL+"?task=getEncodedKey";
 //	private static final String SET_GCM_KEY_URL = SERVER_URL+"?task=setGCMRegistrationId";
@@ -687,8 +689,22 @@ public class ServerCalls {
 			}
 		}, true);
 	}
-	
-	
-	
+
+
+	public void getScoreBoards(String quizId , final DataInputListener2<HashMap<String, Integer[]>, HashMap<String, Integer[]>, Void, Void> localGlobalRanksDataListener) {
+		String url = getAServerAddr()+"/func?task=getLeaderboards";
+		url+="&encodedKey="+quizApp.getUserDeviceManager().getEncodedKey();
+		url+="&quizId="+quizId;
+		makeServerCall(url, new ServerNotifier() {
+			@Override
+			public void onServerResponse(MessageType messageType,ServerResponse response) {
+				switch(messageType){
+					case OK_SCORE_BOARD:
+						localGlobalRanksDataListener.onData((HashMap<String, Integer[]>)quizApp.getConfig().getGson().fromJson(response.payload,new TypeToken<HashMap<String,Integer[]>>(){}.getType()), (HashMap<String, Integer[]>)quizApp.getConfig().getGson().fromJson(response.payload2, new TypeToken<HashMap<String,Integer[]>>(){}.getType()), null);
+						break;
+				}
+			}
+		});
+	}	
 }
 
