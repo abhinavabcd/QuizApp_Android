@@ -112,7 +112,9 @@ public class UiUtils {
 		EXIT("Exit"),
 		YES("Yes"),
 		NO("No"), 
-		SERVER_ERROR_MESSAGE("An Error");
+		SERVER_ERROR_MESSAGE("An Error"),
+		USER_HAS_DECLINED("User declined the request"), 
+		OK("Ok");
 
 		
 		String value = null;
