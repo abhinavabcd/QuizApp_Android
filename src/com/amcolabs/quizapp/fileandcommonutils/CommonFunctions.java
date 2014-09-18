@@ -1,8 +1,7 @@
 package com.amcolabs.quizapp.fileandcommonutils;
 
+import java.util.ArrayList;
 import java.util.Date;
-
-import com.amcolabs.quizapp.popups.StaticPopupDialogBoxes;
 
 import android.app.Activity;
 import android.content.Context;
@@ -10,6 +9,8 @@ import android.graphics.Bitmap;
 import android.graphics.Matrix;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+
+import com.amcolabs.quizapp.popups.StaticPopupDialogBoxes;
 
 public class CommonFunctions {
 
@@ -49,4 +50,34 @@ public class CommonFunctions {
 		    return false;
 		} 
 	}
+
+    public static ArrayList<ArrayList<String>> getCombinations(ArrayList<String> arr, int len, int startPosition, ArrayList<String> result,ArrayList<ArrayList<String>> combinations){
+        if (len == 0){
+            combinations.add(result);
+            return combinations;
+        }       
+        for (int i = startPosition; i <= arr.size()-len; i++){
+            result.set(result.size() - len, arr.get(i));
+            combinations = getCombinations(arr, len-1, i+1, result,combinations);
+        }
+        return combinations;
+    }
+    
+    public static void main(String[] args) {
+    	System.out.println("check");
+    	ArrayList<String> alist = new ArrayList<String>();
+    	alist.add("A");
+    	alist.add("B");
+    	alist.add("C");
+    	alist.add("D");
+    	alist.add("E");
+    	alist.add("F");
+    	ArrayList<ArrayList<String>> comb = getCombinations(alist, 3, 0, new ArrayList<String>(), new ArrayList<ArrayList<String>>());
+    	for(int i=0;i<comb.size();i++){
+    		for(int j=0;j<comb.get(i).size();j++){
+    			System.out.print(comb.get(i).get(j));
+    		}
+    		System.out.println();
+    	}
+    }
 }

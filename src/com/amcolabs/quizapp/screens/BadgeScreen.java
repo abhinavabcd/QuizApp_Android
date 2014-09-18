@@ -1,4 +1,4 @@
-package com.amcolabs.quizapp;
+package com.amcolabs.quizapp.screens;
 
 import java.util.ArrayList;
 
@@ -10,6 +10,12 @@ import android.widget.ArrayAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
 
+import com.amcolabs.quizapp.AppController;
+import com.amcolabs.quizapp.R;
+import com.amcolabs.quizapp.Screen;
+import com.amcolabs.quizapp.R.id;
+import com.amcolabs.quizapp.R.layout;
+import com.amcolabs.quizapp.databaseutils.Badge;
 import com.amcolabs.quizapp.widgets.GothamTextView;
 import com.squareup.picasso.Picasso;
 
@@ -58,8 +64,8 @@ public class BadgeScreen extends Screen{
         		holder = (ViewHolder) convertView.getTag();
         	}
         	Badge currentBadge = getItem(position);
-        	Picasso.with(getApp().getContext()).load(currentBadge.smallAssetPath).into(holder.badgeImage);
-        	holder.badgeName.setText(currentBadge.name);
+        	Picasso.with(getApp().getContext()).load(currentBadge.getSmallAssetPath()).into(holder.badgeImage);
+        	holder.badgeName.setText(currentBadge.getName());
             return convertView;
         }
     }

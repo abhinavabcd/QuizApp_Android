@@ -14,7 +14,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
-import com.amcolabs.quizapp.Badge;
 import com.amcolabs.quizapp.QuizApp;
 import com.amcolabs.quizapp.R;
 import com.amcolabs.quizapp.User;
@@ -43,6 +42,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 	// the DAO object we use to access the Category table
 	private Dao<Category, Integer> categoriesDao = null;
 	private Dao<Quiz, Integer> quizDao = null;
+	private Dao<QuizHistory, Integer> quizHistoryDao = null;
 	private Dao<Badge, Integer> badgesDao = null;
 	private Dao<ChatList,Integer> chatListDao = null;
 	private Dao<UserPreferences, Integer> userPreferencesDao = null;
@@ -50,6 +50,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 	
 	private RuntimeExceptionDao<Category, Integer> categoriesRuntimeExceptionDao = null;
 	private RuntimeExceptionDao<Quiz, Integer> quizRuntimeExceptionDao = null;
+	private RuntimeExceptionDao<QuizHistory, Integer> quizHistoryRuntimeExceptionDao = null;
 	private RuntimeExceptionDao<Badge, Integer> badgesExceptionDao = null;
 	private RuntimeExceptionDao<UserPreferences, Integer> userPreferencesRuntimeDao;
 	
@@ -113,7 +114,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 
     public List<Category> getAllCategories(){
     		try {
-				return getCategoryDao().queryBuilder().orderBy("modifiedTimestamp", false).query();
+				return getCategoryDao().queryForAll();
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -131,12 +132,30 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 		return null;
     }
 
+    public List<QuizHistory> getAllQuizHistory(){
+		try {
+			return getQuizHistoryDao().queryForAll();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
+    }
+    
     public List<Quiz> getAllQuizzes(long q , double fromTimeStamp){
 		try {
 			if(fromTimeStamp>0){
 				return getQuizDao().queryBuilder().orderBy("userXp", false).limit(q).where().gt("modifiedTimestamp", fromTimeStamp).query();
 			}
 			return getQuizDao().queryBuilder().orderBy("userXp", false).limit(q).query();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
+    }
+    
+    public List<Quiz> getAllQuizzes(){
+		try {
+			return getQuizDao().queryForAll();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -255,6 +274,13 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 		return quizDao;
 	}
 	
+	public Dao<QuizHistory, Integer> getQuizHistoryDao() throws SQLException {
+		if (quizHistoryDao == null) {
+			quizHistoryDao = getDao(QuizHistory.class);
+		}
+		return quizHistoryDao;
+	}
+	
 	public Dao<Badge, Integer> getBadgesDao() throws SQLException {
 		if (badgesDao == null) {
 			badgesDao = getDao(Badge.class); 
@@ -302,6 +328,13 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 			quizRuntimeExceptionDao = getRuntimeExceptionDao(Quiz.class);
 		}
 		return quizRuntimeExceptionDao;
+	}
+	
+	public RuntimeExceptionDao<QuizHistory, Integer> getQuizHistoryDataExceptionDao() {
+		if (quizHistoryRuntimeExceptionDao == null) {
+			quizHistoryRuntimeExceptionDao = getRuntimeExceptionDao(QuizHistory.class);
+		}
+		return quizHistoryRuntimeExceptionDao;
 	}
 
 	public RuntimeExceptionDao<Badge, Integer> getBadgesExceptionDao() {
@@ -476,6 +509,18 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
     	}
     	return quizApp.cachedUsers;
     }
+
+	public Category getCategoryById(String id) {
+		try {
+			List<Category> tmp = getCategoryDao().queryBuilder().where().eq("categoryId", id).query();
+			if(tmp.size()>0)
+				tmp.get(0);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
     
 }
 

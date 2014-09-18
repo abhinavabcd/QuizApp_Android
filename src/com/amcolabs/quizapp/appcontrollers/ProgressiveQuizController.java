@@ -9,11 +9,9 @@ import java.util.List;
 import java.util.Random;
 import java.util.Set;
 
-import twitter4j.examples.oauth.GetAccessToken;
 import android.os.Handler;
 
 import com.amcolabs.quizapp.AppController;
-import com.amcolabs.quizapp.Badge;
 import com.amcolabs.quizapp.QuizApp;
 import com.amcolabs.quizapp.User;
 import com.amcolabs.quizapp.configuration.Config;
@@ -522,15 +520,12 @@ public class ProgressiveQuizController extends AppController{
 			if(winnersList.size()==1){
 				quizResult = 1;
 			}
-			else{ // default value
-				quizResult = 0;
-			}
+//			else{ // default value
+//				// Tie
+//			}
 		}
 		else{
-			if(currentQuestions.size()>0)
-				quizResult = -2; // server error 
-			else
-				quizResult = -1; // lost
+			quizResult = -1;
 		}
 		if (quizResultScreen==null){
 			quizResultScreen = new WinOrLoseScreen(this,currentUsers);
@@ -577,53 +572,6 @@ public class ProgressiveQuizController extends AppController{
 			return true;
 		}
 		return false;
-	}
-	
-	public void evaluateBadges(){
-		// TODO: evaluate all badge conditions and show if unlocked
-		List<Badge> badges = quizApp.getDataBaseHelper().getAllUnAwardedBadges();
-		Iterator<Badge> itr = badges.iterator();
-		Badge curBadge = null;
-		String[] ors;
-		String[] ands;
-		String[] cond;
-		boolean state = true;
-		while(itr.hasNext()){
-			curBadge = itr.next();
-			String condition = curBadge.getCondition();
-			ors = condition.split("||");
-			for(int i=0;i<ors.length;i++){
-				ands = ors[i].split("&&");
-				for(int j=0;j<ands.length;j++){
-					cond = ands[j].split(":");
-					if(cond.length==2)
-						state = state && badgeConditionEvaluator(cond[0], cond[1]);
-				}
-				if(state){
-					// condition satisfied else continue
-				}
-			}
-		}
-	}
-	
-	public boolean badgeConditionEvaluator(String cond,String value){
-		// To be implemented
-		if(cond.equalsIgnoreCase("quiz")){
-			
-		}
-		else if(cond.equalsIgnoreCase("category")){
-			
-		}
-		else if(cond.equalsIgnoreCase("streak")){
-			
-		}
-		else if(cond.equalsIgnoreCase("quizCount")){
-			
-		}
-		else if(cond.equalsIgnoreCase("level")){
-			
-		}
-		return true;
 	}
 
 	public void loadProfile(User user) {

@@ -3,6 +3,7 @@ package com.amcolabs.quizapp.databaseutils;
 import com.j256.ormlite.field.DatabaseField;
 
 public class Quiz {
+	
 	@DatabaseField(id=true , index=true, unique=true)
     public String quizId;
 	@DatabaseField
@@ -12,7 +13,7 @@ public class Quiz {
 	@DatabaseField
 	public String shortDescription;
 	@DatabaseField
-	public String assetPath;	
+	public String assetPath;
 	@DatabaseField
 	public String tags; //comma seperated list of tags
 	@DatabaseField
@@ -21,10 +22,8 @@ public class Quiz {
 	public int nPeople;
 	@DatabaseField
 	public double modifiedTimestamp;
-	
 	@DatabaseField
 	public double userXp;
-	
 	
 	Quiz(){
 		// needed by ormlite
