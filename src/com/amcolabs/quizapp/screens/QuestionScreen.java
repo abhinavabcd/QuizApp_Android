@@ -124,7 +124,7 @@ public class QuestionScreen extends Screen implements View.OnClickListener, Anim
 			userProgressView.userProgressView.setBackgroundResource(R.drawable.fat_progress_bar);//(getApp().getConfig().getAThemeColor());
 			userProgressView.userProgressView.getProgressDrawable().setColorFilter(getApp().getConfig().getAThemeColor(), android.graphics.PorterDuff.Mode.MULTIPLY);
 			
-			userProgressView.userScoreView.setText("+0XP");
+			userProgressView.userScoreView.setText( (!pQuizController.isChallengeMode() || user.uid.equalsIgnoreCase(getApp().getUser().uid))?"+0 Xp":"?");
 		}
 	}
 	

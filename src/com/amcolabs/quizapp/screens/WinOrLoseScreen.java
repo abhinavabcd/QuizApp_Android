@@ -59,6 +59,7 @@ public class WinOrLoseScreen extends Screen{
 	
 	private ArrayList<User> currentUsers;
 	private HashMap<String, List<UserAnswer>> userAnswersStack;
+	private ProgressiveQuizController progressviewQuizController;
 	
 	public static class userViewHolder{
 		GothamTextView userNameView;
@@ -71,6 +72,7 @@ public class WinOrLoseScreen extends Screen{
 	
 	public WinOrLoseScreen(AppController controller,ArrayList<User> curUsers) {
 		super(controller);
+		progressviewQuizController =  (ProgressiveQuizController) controller;
 		currentUsers = curUsers;
 		quizResult = (ScrollView) LayoutInflater.from(controller.getContext()).inflate(R.layout.win_lose_screen,this, false);
 		LinearLayout usersPieChartViews = (LinearLayout) quizResult.findViewById(R.id.users);
@@ -115,11 +117,45 @@ public class WinOrLoseScreen extends Screen{
         quizTotalPoints = (GothamTextView)quizResult.findViewById(R.id.quizTotalPoints);
         
         rematchButton = (GothamButtonView)quizResult.findViewById(R.id.rematchButton);
+        rematchButton.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				progressviewQuizController.requestRematch();
+			}
+		});
         challengeButton = (GothamButtonView)quizResult.findViewById(R.id.challengeButton);
+        challengeButton.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				progressviewQuizController.startNewChallenge(null);
+			}
+		});
+        
         addFriendButton = (GothamButtonView)quizResult.findViewById(R.id.addFriendButton);
+        addFriendButton.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				for(User user : currentUsers){
+					if(!user.uid.equalsIgnoreCase(getApp().getUser().uid)){
+						progressviewQuizController.addFriend(user);
+						break;
+					}
+				}
+			}
+		});
+
         viewProfileButton = (GothamButtonView)quizResult.findViewById(R.id.viewProfileButton);
-        
-        
+        viewProfileButton.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				for(User user : currentUsers){
+					if(!user.uid.equalsIgnoreCase(getApp().getUser().uid)){
+						progressviewQuizController.loadProfile(user);
+						break;
+					}
+				}
+			}
+		});
         addView(quizResult);
 	}
 	

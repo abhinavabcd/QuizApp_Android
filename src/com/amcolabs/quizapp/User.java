@@ -92,8 +92,14 @@ public class User {
 		Iterator<String> itr = quizList.iterator();
 		String quizId = null;
 		Integer[] tmpWinsLosses;
+		if(winsLosses!=null){
+			return new int[]{0,0,0};
+		}
 		while(itr.hasNext()){
 			quizId = itr.next();
+			if(!this.winsLosses.containsKey(quizId)){
+				continue;
+			}
 			tmpWinsLosses = this.winsLosses.get(quizId);
 			if(tmpWinsLosses!=null){
 				for(int i=0;i<3;i++){
