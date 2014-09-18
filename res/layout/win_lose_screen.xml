@@ -42,10 +42,10 @@
 
                 <com.amcolabs.quizapp.widgets.GothamTextView
                     android:id="@+id/quizPoints"
-                    android:layout_width="wrap_content"
+                    android:layout_width="70dp"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
                     android:layout_margin="10dp"
+                    android:background="@drawable/list_item_bg"
                     android:gravity="center_horizontal"
                     android:text="+20"
                     android:textSize="18sp" />
@@ -68,10 +68,10 @@
 
                 <com.amcolabs.quizapp.widgets.GothamTextView
                     android:id="@+id/quizWinPoints"
-                    android:layout_width="wrap_content"
+                    android:layout_width="70dp"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
                     android:layout_margin="10dp"
+                    android:background="@drawable/list_item_bg"
                     android:gravity="center_horizontal"
                     android:text="+20"
                     android:textSize="18sp" />
@@ -94,10 +94,11 @@
 
                 <com.amcolabs.quizapp.widgets.GothamTextView
                     android:id="@+id/quizLevelupPoints"
-                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_width="70dp"
                     android:layout_gravity="center"
                     android:layout_margin="10dp"
+                    android:background="@drawable/list_item_bg"
                     android:gravity="center_horizontal"
                     android:text="+20"
                     android:textSize="18sp" />
@@ -120,10 +121,11 @@
 
                 <com.amcolabs.quizapp.widgets.GothamTextView
                     android:id="@+id/quizTotalPoints"
-                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_width="70dp"
                     android:layout_gravity="center"
                     android:layout_margin="10dp"
+                    android:background="@drawable/list_item_bg"
                     android:gravity="center_horizontal"
                     android:text="+60"
                     android:textSize="18sp" />

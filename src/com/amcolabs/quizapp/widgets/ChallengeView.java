@@ -28,7 +28,8 @@ public class ChallengeView extends LinearLayout implements OnClickListener {
 		mainView.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.WRAP_CONTENT));
 		this.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,0,1f));
 		this.setGravity(Gravity.CENTER);
-		findViewById(R.id.button1).setOnClickListener(this);
+		mainView.findViewById(R.id.button1).setOnClickListener(this);
+		this.addView(mainView);
 	}
 
 	@Override

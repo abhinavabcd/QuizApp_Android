@@ -15,7 +15,8 @@
         android:id="@+id/animated_question_info_question_view"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1.0" >
+        android:layout_weight="1.0"
+        android:measureAllChildren="true" >
 
         <LinearLayout
             android:id="@+id/question_pre_text"
@@ -54,8 +55,8 @@
                 android:id="@+id/quizQuestion"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_gravity="center"
-                android:layout_weight="0.7"
+                android:layout_gravity="top"
+                android:layout_weight="0.6"
                 layout="@layout/quiz_question" />
 
             <include
@@ -63,7 +64,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_gravity="bottom"
-                android:layout_weight="0.3"
+                android:layout_weight="0.4"
                 layout="@layout/quiz_options" />
 
         </LinearLayout>

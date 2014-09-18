@@ -146,7 +146,7 @@ public class StaticPopupDialogBoxes {
 
 		private DataInputListener<Boolean> acceptListener;
 		public YesNoDialog(Context context , int resId, DataInputListener<Boolean> acceptListener) {
-			super(context);
+			super(context , resId);
 			this.acceptListener = acceptListener;
 		}
 		public void dismiss() {
@@ -181,7 +181,7 @@ public class StaticPopupDialogBoxes {
 		
 		GothamButtonView button2 = (GothamButtonView) dialogLayout.findViewById(R.id.button2);
 		button2.setOnClickListener(listener);
-		button1.setText(negetiveText);
+		button2.setText(negetiveText);
 		yesNoPopup.setContentView(dialogLayout);
 		yesNoPopup.show();
 	}
