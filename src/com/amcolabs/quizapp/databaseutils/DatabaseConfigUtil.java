@@ -3,6 +3,7 @@ package com.amcolabs.quizapp.databaseutils;
 import java.io.IOException;
 import java.sql.SQLException;
 
+import com.amcolabs.quizapp.User;
 import com.j256.ormlite.android.apptools.OrmLiteConfigUtil;
 
 /**
@@ -16,7 +17,11 @@ public class DatabaseConfigUtil extends OrmLiteConfigUtil {
 	    Question.class,
 	    Quiz.class,
 	    Category.class,
-	    UserPreferences.class
+	    UserPreferences.class,
+	    QuizHistory.class,
+	    Badge.class,
+	    ChatList.class,
+	    User.class
 	  };
 	
 	public static void main(String[] args) throws SQLException, IOException {
