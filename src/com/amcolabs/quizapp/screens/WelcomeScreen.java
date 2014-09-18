@@ -20,7 +20,7 @@ public class WelcomeScreen extends Screen {
 	public WelcomeScreen(UserMainPageController controller) {
 		super(controller);
 		this.userMainPageController = controller;
-		View v = getApp().getActivity().getLayoutInflater().inflate(R.layout.welcome_login_fb_gplus, null);
+		View v = getApp().getActivity().getLayoutInflater().inflate(R.layout.welcome_login_fb_gplus, this, false);
 		addView(v);
 		googlePlusButton = (SignInButton)v.findViewById(R.id.google_plus_button);
 		facebookButton = (Button)v.findViewById(R.id.facebook_button);

@@ -54,7 +54,7 @@ public class ChatScreen extends Screen {
 		super(controller);
 		this.otherUser = user2;
 		this.pController = (ProfileAndChatController) controller;
-		View chatLayout = LayoutInflater.from(controller.getContext()).inflate(R.layout.chat_main, null);
+		View chatLayout = LayoutInflater.from(controller.getContext()).inflate(R.layout.chat_main, this, false);
 		chatLayout.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.MATCH_PARENT));
 		text = (EditText) chatLayout.findViewById(R.id.text);
 

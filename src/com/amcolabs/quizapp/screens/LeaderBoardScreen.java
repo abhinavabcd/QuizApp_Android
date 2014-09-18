@@ -39,7 +39,7 @@ public class LeaderBoardScreen extends Screen {
 				return null;
 			}
 		});
-		LinearLayout lView = (LinearLayout) getApp().getActivity().getLayoutInflater().inflate(R.layout.block_list_view, null);
+		LinearLayout lView = (LinearLayout) getApp().getActivity().getLayoutInflater().inflate(R.layout.block_list_view, this, false);;
 		lView.setBackgroundColor(getApp().getConfig().getAThemeColor());
 		TextView title = (TextView) lView.findViewById(R.id.title_text_view);
 		title.setText(titleText);

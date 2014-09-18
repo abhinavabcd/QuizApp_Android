@@ -29,7 +29,7 @@ public class QuizzesScreen extends Screen {
 	public void addQuizzesToList(String title ,List<Quiz> quizzes , DataInputListener<Quiz> clickListener){
 		this.quizzes = quizzes;
 		final QuizItemListAdapter quizAdaptor = new QuizItemListAdapter(getApp(),0,quizzes, clickListener);
-		LinearLayout lView = (LinearLayout) getApp().getActivity().getLayoutInflater().inflate(R.layout.block_list_view, null);
+		LinearLayout lView = (LinearLayout) getApp().getActivity().getLayoutInflater().inflate(R.layout.block_list_view, this, false);
 		EditText searchText = (EditText) lView.findViewById(R.id.search_text);
 		GothamTextView titleView = (GothamTextView) lView.findViewById(R.id.title_text_view);
 		titleView.setText(title);

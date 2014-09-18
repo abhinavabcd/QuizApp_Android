@@ -183,6 +183,9 @@ public class ProgressiveQuizController extends AppController{
 	private boolean isBotMode(){
 		return quizMode == BOT_MODE;
 	}
+	private boolean isChallengeMode(){
+		return quizMode == CHALLENGE_MODE;
+	}
 	
 	private String constructSocketMessage(MessageType messageType , HashMap<String, String> data , HashMap<Integer, String> data1){
 		String jsonStr = "{\""+MESSAGE_TYPE+"\":"+Integer.toString(messageType.getValue())+",";
@@ -483,7 +486,7 @@ public class ProgressiveQuizController extends AppController{
 			currentScore += ( Math.ceil(currentQuestion.getTime()-timeElapsed)*quizApp.getConfig().multiplyFactor(currentQuestions.size()));
 		}
 		payload = new UserAnswer(currentQuestion.questionId, quizApp.getUser().uid, answer, (int)timeElapsed, currentScore);
-		if(!isBotMode())
+		if(!isBotMode() || !isChallengeMode())
 			serverSocket.sendTextMessage(quizApp.getConfig().getGson().toJson(payload));
 		checkAndProceedToNextQuestion(payload);
 	}
@@ -501,7 +504,9 @@ public class ProgressiveQuizController extends AppController{
 	}
 	
 	
-	
+	public void setChallengeData(){
+		
+	}
 	
 	/**
 	 * Main method to load result screen after quiz
@@ -533,6 +538,13 @@ public class ProgressiveQuizController extends AppController{
 		double cPoints = quizApp.getUser().getPoints(quiz);
 		List<UserAnswer> uAns = userAnswersStack.get(quizApp.getUser().uid);
 		double newPoints = cPoints+uAns.get(uAns.size()-1).whatUserGot+(quizResult>0?Config.QUIZ_WIN_BONUS:0);
+		
+		if(quizResult!=-2){
+			quiz.userXp+=newPoints;
+			quizApp.getDataBaseHelper().createOrUpdateQuiz(quiz);
+			quizApp.getServerCalls().updateQuizWinStatus(quiz.quizId , quizResult , newPoints);//server call 
+			quizApp.getUser().getStats().put(quiz.quizId , (int) quiz.userXp);
+		}
 		quizResultScreen.showResult(userAnswersStack,quizResult,didUserLevelUp(cPoints,newPoints));
 		showScreen(quizResultScreen);
 	}

@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
+import com.amcolabs.quizapp.appcontrollers.ProgressiveQuizController.UserAnswer;
 import com.amcolabs.quizapp.databaseutils.Quiz;
 import com.j256.ormlite.field.DatabaseField;
 
@@ -102,6 +102,14 @@ public class User {
 			}
 		}
 		return totalWinsLosses;
+	}
+
+	public HashMap<String, Integer> getStats() {
+		// TODO Auto-generated method stub
+		if(stats==null){
+			stats = new HashMap<String, Integer>();
+		}
+		return stats;
 	}
 }
 

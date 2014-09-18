@@ -404,7 +404,9 @@ public class CircularCounter extends View {
 	}
 	
 	public void setCurrentValue(float currentValue){
-		elapsedTimeInSeconds = currentValue;
+		mOneValue = elapsedTimeInSeconds = currentValue;
+		if(mSpinHandler!=null)
+			mSpinHandler.sendEmptyMessage(0);
 	}
 	
 	public CircularCounter setRange(int range) {

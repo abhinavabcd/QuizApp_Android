@@ -72,7 +72,7 @@ public class WinOrLoseScreen extends Screen{
 	public WinOrLoseScreen(AppController controller,ArrayList<User> curUsers) {
 		super(controller);
 		currentUsers = curUsers;
-		quizResult = (ScrollView) LayoutInflater.from(controller.getContext()).inflate(R.layout.win_lose_screen, null);
+		quizResult = (ScrollView) LayoutInflater.from(controller.getContext()).inflate(R.layout.win_lose_screen,this, false);
 		LinearLayout usersPieChartViews = (LinearLayout) quizResult.findViewById(R.id.users);
 		LinearLayout usersShortView = (LinearLayout) quizResult.findViewById(R.id.users_short_view);
 		

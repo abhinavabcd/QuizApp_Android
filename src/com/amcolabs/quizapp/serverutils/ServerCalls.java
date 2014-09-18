@@ -704,6 +704,26 @@ public class ServerCalls {
 				}
 			}
 		});
-	}	
+	}
+
+
+	public void updateQuizWinStatus(String quizId, int winStatus , double newPoints) {
+		String url = getAServerAddr()+"/func?task=updateQuizWinStatus";
+		url+="&encodedKey="+quizApp.getUserDeviceManager().getEncodedKey();
+		url+="&quizId="+quizId;
+		url+="&xpPoints="+newPoints;
+		url+="&winStatus="+winStatus+"";
+		
+		makeServerCall(url, new ServerNotifier() {
+		@Override
+		public void onServerResponse(MessageType messageType,ServerResponse response) {
+			switch(messageType){
+				case OK:
+					break;
+			}
+		}
+		});
+	}
+
 }
 

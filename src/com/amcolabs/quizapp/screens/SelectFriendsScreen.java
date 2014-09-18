@@ -27,7 +27,7 @@ public class SelectFriendsScreen extends Screen {
 	
 	public void showFriendsList(String titleText ,List<User> users , DataInputListener<User> onFriendSelectedListener){
 		SelectFriendsListAdapter quizAdaptor = new SelectFriendsListAdapter(getApp(),0, users, onFriendSelectedListener);
-		LinearLayout lView = (LinearLayout) getApp().getActivity().getLayoutInflater().inflate(R.layout.block_list_view, null);
+		LinearLayout lView = (LinearLayout) getApp().getActivity().getLayoutInflater().inflate(R.layout.block_list_view, this, false);
 		lView.setBackgroundColor(getApp().getConfig().getAThemeColor());
 		EditText searchText = (EditText) lView.findViewById(R.id.search_text);
 		searchText.setVisibility(View.GONE);

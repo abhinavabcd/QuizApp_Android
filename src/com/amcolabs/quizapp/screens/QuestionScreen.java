@@ -64,7 +64,7 @@ public class QuestionScreen extends Screen implements View.OnClickListener, Anim
 		super(controller);
 		this.pQuizController = (ProgressiveQuizController)controller;
 		LayoutInflater tmp = getApp().getActivity().getLayoutInflater();
-		fullQuestionLayout = (LinearLayout) tmp.inflate(R.layout.quiz_full_question, null);
+		fullQuestionLayout = (LinearLayout) tmp.inflate(R.layout.quiz_full_question, this, false);
 		headerViewWrapper = (LinearLayout) fullQuestionLayout.findViewById(R.id.quizHeader);
 		preQuestionView = (LinearLayout)fullQuestionLayout.findViewById(R.id.question_pre_text);
 		questionAndOptionsViewWrapper = (LinearLayout) fullQuestionLayout.findViewById(R.id.question_options_wrapper);
@@ -165,14 +165,17 @@ public class QuestionScreen extends Screen implements View.OnClickListener, Anim
 		
 		// TODO: should use longoptionflag to change layout
 		if (ques.getAssetPaths().size()==0){ //longOptionFlag ||
-			optionsViewWrapper.setOrientation(LinearLayout.VERTICAL);
 			questionImageView.setVisibility(View.GONE);
+			optionsViewWrapper.setOrientation(LinearLayout.VERTICAL);
+			optionsViewWrapper.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, 0,1.6f));			
 		} 
 		else{
-			optionsViewWrapper.setOrientation(LinearLayout.HORIZONTAL);
 			questionImageView.setVisibility(View.VISIBLE);
+			optionsViewWrapper.setOrientation(LinearLayout.HORIZONTAL);
+			optionsViewWrapper.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, 0,0.4f));			
 			getApp().getUiUtils().loadImageIntoView(getApp().getContext(), questionImageView, ques.getAssetPaths().get(0), false);
 		}
+		questionAndOptionsViewWrapper.invalidate();
 		String[] mcqOptions = ques.getMCQOptions();
 		for(int i=0;i<questionOptionsViews.size();i++){
 			GothamButtonView opt = questionOptionsViews.get(i);
