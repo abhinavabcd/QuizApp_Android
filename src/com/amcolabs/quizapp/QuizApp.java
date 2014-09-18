@@ -191,6 +191,7 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 
 	public void setUser(User user) {
 		currentUser = user;
+		cachedUsers.put(user.uid , user);
 	}
 
 	public void addUiBlock(){
@@ -260,6 +261,7 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 						wantsToExitLastTimestamp = Config.getCurrentTimeStamp();
 						return;
 					}
+					oldScreen.refresh();
 					animateScreenIn(oldScreen);
 				}
 			}

@@ -45,7 +45,7 @@ public class UserProfileScreen extends Screen {
 	public UserProfileScreen(AppController cont) {
 		super(cont);
 		controller = cont;
-		userProfile = (ScrollView) LayoutInflater.from(controller.getContext()).inflate(R.layout.user_profile, null);
+		userProfile = (ScrollView) LayoutInflater.from(controller.getContext()).inflate(R.layout.user_profile, this, false);
 		userName = (GothamTextView) userProfile.findViewById(R.id.user_card_name);
 		userImage = (ImageView)userProfile.findViewById(R.id.user_card_small_pic);
 		userStatusMessage = (GothamTextView) userProfile.findViewById(R.id.user_status_msg);

@@ -22,7 +22,7 @@ public class UserInfoCard extends LinearLayout implements Target,IViewType{
 
 	public UserInfoCard(final QuizApp quizApp, String bgAssetPath, User user, boolean left,boolean smaller , int gravity) {
 		super(quizApp.getContext());
-		LinearLayout mainView = (LinearLayout) quizApp.getActivity().getLayoutInflater().inflate(R.layout.user_info_card, null);
+		LinearLayout mainView = (LinearLayout) quizApp.getActivity().getLayoutInflater().inflate(R.layout.user_info_card, this, false);
 		mainView.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.WRAP_CONTENT));
 		this.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,0,1f));
 		setGravity(gravity);

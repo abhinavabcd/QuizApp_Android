@@ -25,6 +25,7 @@ import com.amcolabs.quizapp.serverutils.ServerResponse;
 import com.amcolabs.quizapp.serverutils.ServerResponse.MessageType;
 import com.amcolabs.quizapp.serverutils.ServerWebSocketConnection;
 import com.amcolabs.quizapp.uiutils.UiUtils.UiText;
+import com.amcolabs.quizapp.widgets.ChallengeView;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.annotations.SerializedName;
 import com.google.gson.reflect.TypeToken;
@@ -56,10 +57,10 @@ public class ProgressiveQuizController extends AppController{
 	public void showWaitingScreen(Quiz quiz){
 		clearScreen();
 		clashingScreen = new ClashScreen(this);
-		clashingScreen.setClashCount(2);
+		clashingScreen.setClashCount(2); 
 		clashingScreen.updateClashScreen(quizApp.getUser()/*quizApp.getUser()*/, 0);//TODO: change to quizApp.getUser()
 		insertScreen(clashingScreen);
-		quizApp.getServerCalls().startProgressiveQuiz(this, quiz);
+		quizApp.getServerCalls().startProgressiveQuiz(this, quiz, null);
 	}	
 	
 	public int getMaxScore(){
@@ -181,6 +182,9 @@ public class ProgressiveQuizController extends AppController{
 	private boolean isBotMode(){
 		return quizMode == BOT_MODE;
 	}
+	public boolean isChallengeMode(){
+		return quizMode == CHALLENGE_MODE;
+	}
 	
 	private String constructSocketMessage(MessageType messageType , HashMap<String, String> data , HashMap<Integer, String> data1){
 		String jsonStr = "{\""+MESSAGE_TYPE+"\":"+Integer.toString(messageType.getValue())+",";
@@ -203,14 +207,16 @@ public class ProgressiveQuizController extends AppController{
 		serverSocket = mConnection; 
 		waitinStartTime = Config.getCurrentTimeStamp();
 
-		new Handler().postDelayed(new Runnable() {
-			@Override
-			public void run() {
-				if(noResponseFromServer){
-					serverSocket.sendTextMessage(constructSocketMessage(MessageType.ACTIVATE_BOT, null, null));
+		if(!isChallengeMode()){
+			new Handler().postDelayed(new Runnable() {
+				@Override
+				public void run() {
+					if(noResponseFromServer){
+						serverSocket.sendTextMessage(constructSocketMessage(MessageType.ACTIVATE_BOT, null, null));
+					}
 				}
-			}
-		}, Config.BOT_INTIALIZE_AFTER_NO_USER_TIME);
+			}, Config.BOT_INTIALIZE_AFTER_NO_USER_TIME);
+		}
 	}
 	
 	public static class UserAnswer{
@@ -247,11 +253,12 @@ public class ProgressiveQuizController extends AppController{
 			temp.add(userAnswer);
 			userAnswersStack.put(userAnswer.uid , temp);
 		}
-		if(currentUsers.size() == userAnswers.keySet().size()){//every one answered 
+		if(currentUsers.size() == userAnswers.keySet().size() || isChallengeMode()){//every one answered 
 			
     		questionScreen.getTimerView().resetTimer();
 			for(String u: userAnswers.keySet()){
-				questionScreen.animateXpPoints(u, userAnswers.get(u).whatUserGot);
+				if(!isChallengeMode() || u.equalsIgnoreCase(quizApp.getUser().uid))
+					questionScreen.animateXpPoints(u, userAnswers.get(u).whatUserGot);
 			}
 			for(String uid: userAnswers.keySet()){
 				questionScreen.highlightOtherUsersOption(uid, userAnswers.get(uid).userAnswer);
@@ -353,11 +360,11 @@ public class ProgressiveQuizController extends AppController{
 	    	case USER_DISCONNECTED:
 	    		if(currentQuestions.size()>0){ // still there are questions ? 
 	    			gracefullyCloseSocket();
-	    			quizApp.getStaticPopupDialogBoxes().yesOrNo(UiText.USER_HAS_DISCONNECTED.getValue(), UiText.YES.getValue() , UiText.NO.getValue() , new DataInputListener<Boolean>(){
+	    			quizApp.getStaticPopupDialogBoxes().yesOrNo(UiText.USER_HAS_DISCONNECTED.getValue(getOtherUser().name), UiText.CHALLENGE.getValue() , UiText.NO.getValue() , new DataInputListener<Boolean>(){
 	    				@Override
 	    				public String onData(Boolean s) {
 	    					if(s){
-	    						setQuizMode(CHALLENGE_MODE);
+	    						//setQuizMode(CHALLENGE_MODE);
 	    					}
 	    					else{
 	    						validateAndShowWinningScreen();
@@ -426,10 +433,11 @@ public class ProgressiveQuizController extends AppController{
 
 	private void startQuestions(ServerResponse response) {
 		currentQuestions = quizApp.getConfig().getGson().fromJson(response.payload2, new TypeToken<List<Question>>(){}.getType());
-		try{ 
+		try{
 			currentUsers = quizApp.getConfig().getGson().fromJson(response.payload1, new TypeToken<List<User>>(){}.getType());
 		}
 		catch(JsonSyntaxException ex){//single user in payload
+			currentUsers.clear();
 			currentUsers.add(quizApp.getUser());
 			currentUsers.add((User) quizApp.getConfig().getGson().fromJson(response.payload1, new TypeToken<User>(){}.getType()));
 		}
@@ -437,7 +445,16 @@ public class ProgressiveQuizController extends AppController{
 		showQuestionScreen(currentUsers);
 	}
 
-
+	public User getOtherUser(){
+		User otherUser = null;
+		for(User user:currentUsers){
+			otherUser = user;
+			if(!otherUser.uid.equalsIgnoreCase(quizApp.getUser().uid)){
+				break;
+			}
+		}
+		return otherUser;
+	}
 	public void requestRematch(){
 		if(serverSocket!=null && serverSocket.isConnected()){
 			serverSocket.sendTextMessage(constructSocketMessage(MessageType.REMATCH_REQUEST, null,null));
@@ -448,7 +465,7 @@ public class ProgressiveQuizController extends AppController{
 				@Override
 				public String onData(Boolean s) {
 					if(s){
-						startNewOfflineChallenge();
+						startNewChallenge(getOtherUser());
 					}
 					else{
 						
@@ -481,7 +498,7 @@ public class ProgressiveQuizController extends AppController{
 			currentScore += ( Math.ceil(currentQuestion.getTime()-timeElapsed)*quizApp.getConfig().multiplyFactor(currentQuestions.size()));
 		}
 		payload = new UserAnswer(currentQuestion.questionId, quizApp.getUser().uid, answer, (int)timeElapsed, currentScore);
-		if(!isBotMode())
+		if(!isBotMode() || !isChallengeMode())
 			serverSocket.sendTextMessage(quizApp.getConfig().getGson().toJson(payload));
 		checkAndProceedToNextQuestion(payload);
 	}
@@ -499,7 +516,9 @@ public class ProgressiveQuizController extends AppController{
 	}
 	
 	
-	
+	public void setChallengeData(){
+		
+	}
 	
 	/**
 	 * Main method to load result screen after quiz
@@ -528,6 +547,19 @@ public class ProgressiveQuizController extends AppController{
 		double cPoints = quizApp.getUser().getPoints(quiz);
 		List<UserAnswer> uAns = userAnswersStack.get(quizApp.getUser().uid);
 		double newPoints = cPoints+uAns.get(uAns.size()-1).whatUserGot+(quizResult>0?Config.QUIZ_WIN_BONUS:0);
+		
+		if(quizResult!=-2){
+			quiz.userXp+=newPoints;
+			quizApp.getDataBaseHelper().createOrUpdateQuiz(quiz);
+			
+			Integer[] winsLossesQuiz = quizApp.getUser().getWinsLosses(quiz.quizId);
+			winsLossesQuiz[0]+= (quizResult==1?1:0);
+			winsLossesQuiz[1]+= (quizResult==-1?1:0);
+			winsLossesQuiz[2]+= (quizResult==0?1:0);
+			
+			quizApp.getServerCalls().updateQuizWinStatus(quiz.quizId , quizResult , newPoints);//server call 
+			quizApp.getUser().getStats().put(quiz.quizId , (int) quiz.userXp);
+		}
 		quizResultScreen.showResult(userAnswersStack,quizResult,didUserLevelUp(cPoints,newPoints));
 		showScreen(quizResultScreen);
 	}
@@ -568,12 +600,42 @@ public class ProgressiveQuizController extends AppController{
 		profileAndChat.showProfileScreen(user);
 	}
 
-	public void startNewOfflineChallenge(){
+	public void startNewChallenge(User otherUser){
+		if(otherUser==null) otherUser = getOtherUser();
 		//TODO: clear socket , 
 		// master server get sid
 		// open new socket with &isChallenge=uid2 , get challengeId , etc from server , 
-		// and then wait for the opponent to connect ,
 		// else let the user click on start now to Send message START_CHALLENGE_NOW to server , get questions , 
+		// and then wait for the opponent to connect ,
 		// users , setmode as challenge , complete it to send the offlinechallenge to server 
+		gracefullyCloseSocket();
+		showChallengeScreen(otherUser);
+	}
+
+	public void showChallengeScreen(User otherUser){
+			clearScreen();
+			clashingScreen = new ClashScreen(this);
+			clashingScreen.setClashCount(2); 
+			clashingScreen.updateClashScreen(quizApp.getUser()/*quizApp.getUser()*/, 0 , new ChallengeView(quizApp , otherUser, new DataInputListener<Integer>(){
+				@Override
+				public String onData(Integer s) {
+					switch(s){
+						case 1://challege start now
+							setQuizMode(CHALLENGE_MODE);
+							break;
+						case 2://exit
+							break;
+					}
+					return super.onData(s);
+				}
+			}))	;//TODO: change to quizApp.getUser()
+			insertScreen(clashingScreen);
+			HashMap<String , String> temp = new HashMap<String, String>();
+			temp.put("isChallenge", otherUser.uid);
+ 			quizApp.getServerCalls().startProgressiveQuiz(this, quiz, temp);
+	}
+	
+	public void addFriend(User user) {
+		// TODO Auto-generated method stub
 	}
 }

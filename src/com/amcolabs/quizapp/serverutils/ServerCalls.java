@@ -1,7 +1,9 @@
 package com.amcolabs.quizapp.serverutils;
 
+import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URLEncoder;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -543,11 +545,12 @@ public class ServerCalls {
 		PROGRESSIVE_QUIZ;
 	}
 	
-	public void startProgressiveQuiz(String webSocketAddr , final ProgressiveQuizController pController , final Quiz quiz, String serverId){
+	private void startProgressiveQuiz(String webSocketAddr , final ProgressiveQuizController pController , final Quiz quiz, String serverId, HashMap<String,String> additionalParams){
 		  String wsuri = webSocketAddr +"/progressiveQuiz";
 		  wsuri+="?encodedKey="+quizApp.getUserDeviceManager().getEncodedKey();
 		  wsuri+="&quizId="+quiz.quizId;
-		  
+		  if(additionalParams!=null)
+			  wsuri+="&"+mapToQuery(additionalParams);
 		  if(mConnection!=null && mConnection.isConnected()){
 			  mConnection.disconnect();
 		  }
@@ -579,9 +582,24 @@ public class ServerCalls {
 	    }
 	}
 	
+	private String mapToQuery(HashMap<String , String> queryString){
+		StringBuilder sb = new StringBuilder();
+		  for(HashMap.Entry<String, String> e : queryString.entrySet()){
+		      if(sb.length() > 0){
+		          sb.append('&');
+		      }
+		      try {
+				sb.append(URLEncoder.encode(e.getKey(), "UTF-8")).append('=').append(URLEncoder.encode(e.getValue(), "UTF-8"));
+			} catch (UnsupportedEncodingException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		  }
+		  return sb.toString();
+	}
 	
 	 ServerWebSocketConnection mConnection = null;
-	 public void startProgressiveQuiz(final ProgressiveQuizController pController, final Quiz quiz) {
+	 public void startProgressiveQuiz(final ProgressiveQuizController pController, final Quiz quiz, final HashMap<String,String> additionalParams) {
 		 String url = getMasterServerAddr()+"/func?task=getServer";
 		 url+="&type="+GetServerRequestType.PROGRESSIVE_QUIZ.ordinal()+"&quizId="+quiz.quizId;
 		 
@@ -602,10 +620,11 @@ public class ServerCalls {
 					URI uri;
 					try {
 						uri = new URI(response.payload2);
-						startProgressiveQuiz("ws://"+uri.getHost()+":"+uri.getPort() , pController, quiz , sid);
+						startProgressiveQuiz("ws://"+uri.getHost()+":"+uri.getPort() , pController, quiz , sid, additionalParams);
 					} catch (URISyntaxException e) {
 						e.printStackTrace();
 					}
+					break;
 					default:
 						pController.ohNoDammit();
 				}
@@ -705,6 +724,26 @@ public class ServerCalls {
 				}
 			}
 		});
-	}	
+	}
+
+
+	public void updateQuizWinStatus(String quizId, int winStatus , double newPoints) {
+		String url = getAServerAddr()+"/func?task=updateQuizWinStatus";
+		url+="&encodedKey="+quizApp.getUserDeviceManager().getEncodedKey();
+		url+="&quizId="+quizId;
+		url+="&xpPoints="+newPoints;
+		url+="&winStatus="+winStatus+"";
+		
+		makeServerCall(url, new ServerNotifier() {
+		@Override
+		public void onServerResponse(MessageType messageType,ServerResponse response) {
+			switch(messageType){
+				case OK:
+					break;
+			}
+		}
+		});
+	}
+
 }
 

@@ -26,9 +26,13 @@ public class ClashScreen extends Screen {
 	}
 	
 	ArrayList<View> userInfoViews = new ArrayList<View>();
+	
 	public void updateClashScreen(User user , int index){
+		updateClashScreen(user, index, new WaitingForUserView(getApp()));	
+	}
+	
+	public void updateClashScreen(User user , int index,  View waitingView){
 		for(int i=userInfoViews.size();i<index;i++){
-			WaitingForUserView waitingView = new WaitingForUserView(getApp());	
 			userInfoViews.add(waitingView);
 			this.addView(waitingView,i);
 		}
@@ -46,7 +50,6 @@ public class ClashScreen extends Screen {
 		}
 		
 		for(int i=userInfoViews.size();i<clashCount;i++){
-			WaitingForUserView waitingView = new WaitingForUserView(getApp());
 			userInfoViews.add(waitingView);
 			this.addView(waitingView,i);
 		}
