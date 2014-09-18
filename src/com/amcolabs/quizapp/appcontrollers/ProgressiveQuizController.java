@@ -551,6 +551,12 @@ public class ProgressiveQuizController extends AppController{
 		if(quizResult!=-2){
 			quiz.userXp+=newPoints;
 			quizApp.getDataBaseHelper().createOrUpdateQuiz(quiz);
+			
+			Integer[] winsLossesQuiz = quizApp.getUser().getWinsLosses(quiz.quizId);
+			winsLossesQuiz[0]+= (quizResult==1?1:0);
+			winsLossesQuiz[1]+= (quizResult==-1?1:0);
+			winsLossesQuiz[2]+= (quizResult==0?1:0);
+			
 			quizApp.getServerCalls().updateQuizWinStatus(quiz.quizId , quizResult , newPoints);//server call 
 			quizApp.getUser().getStats().put(quiz.quizId , (int) quiz.userXp);
 		}

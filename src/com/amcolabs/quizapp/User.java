@@ -117,5 +117,16 @@ public class User {
 		}
 		return stats;
 	}
+
+	public Integer[] getWinsLosses(String quizId) {
+		if(winsLosses==null){
+			winsLosses = new HashMap<String, Integer[]>();
+			winsLosses.put(quizId, new Integer[]{0,0,0});
+		}
+		else if(!winsLosses.containsKey(quizId)){
+			winsLosses.put(quizId, new Integer[]{0,0,0});
+		}
+		return winsLosses.get(quizId);
+	}
 }
 
