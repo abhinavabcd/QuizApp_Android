@@ -20,6 +20,7 @@ import com.amcolabs.quizapp.databaseutils.UserFeed;
 import com.amcolabs.quizapp.databaseutils.UserInboxMessage;
 import com.amcolabs.quizapp.datalisteners.DataInputListener;
 import com.amcolabs.quizapp.datalisteners.DataInputListener2;
+import com.amcolabs.quizapp.gameutils.BadgeEvaluator;
 import com.amcolabs.quizapp.popups.StaticPopupDialogBoxes;
 import com.amcolabs.quizapp.screens.HomeScreen;
 import com.amcolabs.quizapp.screens.LeaderBoardScreen;
@@ -116,6 +117,9 @@ public class UserMainPageController  extends AppController implements OnInitiali
 	}
 	
 	private void showUserHomeScreen() {
+		BadgeEvaluator badgeEvaluator = quizApp.getBadgeEvaluator();
+		badgeEvaluator.evaluateBadges();
+		
 		clearScreen();
 		HomeScreen cs= new HomeScreen(this);
 //		ArrayList<Category> categories = new ArrayList<Category>();

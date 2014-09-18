@@ -51,28 +51,50 @@ public class CommonFunctions {
 		} 
 	}
 
-    public static ArrayList<ArrayList<String>> getCombinations(ArrayList<String> arr, int len, int startPosition, ArrayList<String> result,ArrayList<ArrayList<String>> combinations){
+	public static ArrayList<ArrayList<String>> initAndGetCombinations(ArrayList<String> array,int num){
+		ArrayList<String> res = new ArrayList<String>();
+		for(int i=0;i<num;i++){
+			res.add("Value"+String.valueOf(i));
+		}
+		return getCombinations(array, num, 0, res, new ArrayList<ArrayList<String>>());
+	}
+	
+    public static ArrayList<ArrayList<String>> getCombinations(ArrayList<String> arr, int len, int startPosition, ArrayList<String> result,ArrayList<ArrayList<String>> combs){
         if (len == 0){
-            combinations.add(result);
-            return combinations;
+            combs.add((ArrayList<String>)result.clone());
+            return combs;
         }       
         for (int i = startPosition; i <= arr.size()-len; i++){
-            result.set(result.size() - len, arr.get(i));
-            combinations = getCombinations(arr, len-1, i+1, result,combinations);
+            result.set(result.size() - len,arr.get(i));
+            combs = getCombinations(arr, len-1, i+1, result,combs);
         }
-        return combinations;
+        return combs;
+    } 
+    
+    public static String[] splitString(String str,String del){
+    	String[] res;
+    	if(str.contains(del)){
+			res = str.split(del);
+		}
+		else{
+			res = new String[]{str};
+		}
+    	return res;
     }
     
     public static void main(String[] args) {
-    	System.out.println("check");
-    	ArrayList<String> alist = new ArrayList<String>();
-    	alist.add("A");
-    	alist.add("B");
-    	alist.add("C");
-    	alist.add("D");
-    	alist.add("E");
-    	alist.add("F");
-    	ArrayList<ArrayList<String>> comb = getCombinations(alist, 3, 0, new ArrayList<String>(), new ArrayList<ArrayList<String>>());
+        ArrayList<String> arr = new ArrayList<String>();
+        arr.add("A");
+        arr.add("B");
+        arr.add("C");
+        arr.add("D");
+        arr.add("E");
+        arr.add("F");
+        ArrayList<String> res = new ArrayList<String>();
+        res.add("A");
+        res.add("B");
+        res.add("C");
+        ArrayList<ArrayList<String>> comb = getCombinations(arr, 3, 0, res,new ArrayList<ArrayList<String>>());
     	for(int i=0;i<comb.size();i++){
     		for(int j=0;j<comb.get(i).size();j++){
     			System.out.print(comb.get(i).get(j));

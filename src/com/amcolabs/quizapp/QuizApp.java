@@ -31,6 +31,7 @@ import com.amcolabs.quizapp.appcontrollers.ProfileAndChatController;
 import com.amcolabs.quizapp.appcontrollers.UserMainPageController;
 import com.amcolabs.quizapp.configuration.Config;
 import com.amcolabs.quizapp.databaseutils.DatabaseHelper;
+import com.amcolabs.quizapp.gameutils.BadgeEvaluator;
 import com.amcolabs.quizapp.gameutils.GameUtils;
 import com.amcolabs.quizapp.popups.StaticPopupDialogBoxes;
 import com.amcolabs.quizapp.serverutils.ServerCalls;
@@ -75,6 +76,8 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 
 	private GameUtils gameUtils;
 
+	private BadgeEvaluator badgeEvaluator;
+
 	 
 	public void setMainActivity(MainActivity mainActivity) {
 		ref = mainActivity;
@@ -103,6 +106,7 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 			uiUtils = new UiUtils(this);
 			gameUtils = new GameUtils(this);
 			serverCalls = new ServerCalls(this);
+			badgeEvaluator = new BadgeEvaluator(this);
 			setStaticPopupDialogBoxes(new StaticPopupDialogBoxes(this));
 			loadingView = userDeviceManager.getLoadingView(this.getActivity());
 			disposeScreens = new ArrayList<Screen>();
@@ -219,6 +223,10 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 			dbHelper = DatabaseHelper.getHelper(this);
 		}
 		return dbHelper;
+	}
+	
+	public BadgeEvaluator getBadgeEvaluator(){
+		return badgeEvaluator;
 	}
 	
 	private double wantsToExitLastTimestamp = 0;

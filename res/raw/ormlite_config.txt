@@ -1,0 +1,258 @@
+#
+# generated on 2014/09/18 11:36:37
+#
+# --table-start--
+dataClass=com.amcolabs.quizapp.databaseutils.Question
+tableName=question
+# --table-fields-start--
+# --field-start--
+fieldName=questionId
+# --field-end--
+# --field-start--
+fieldName=questionType
+# --field-end--
+# --field-start--
+fieldName=questionDescription
+# --field-end--
+# --field-start--
+fieldName=pictures
+# --field-end--
+# --field-start--
+fieldName=options
+# --field-end--
+# --field-start--
+fieldName=answer
+# --field-end--
+# --field-start--
+fieldName=hint
+# --field-end--
+# --field-start--
+fieldName=explanation
+# --field-end--
+# --field-start--
+fieldName=time
+# --field-end--
+# --field-start--
+fieldName=xp
+# --field-end--
+# --table-fields-end--
+# --table-end--
+#################################
+# --table-start--
+dataClass=com.amcolabs.quizapp.databaseutils.Quiz
+tableName=quiz
+# --table-fields-start--
+# --field-start--
+fieldName=quizId
+id=true
+unique=true
+indexName=quiz_quizId_idx
+# --field-end--
+# --field-start--
+fieldName=quizType
+# --field-end--
+# --field-start--
+fieldName=name
+# --field-end--
+# --field-start--
+fieldName=shortDescription
+# --field-end--
+# --field-start--
+fieldName=assetPath
+# --field-end--
+# --field-start--
+fieldName=tags
+# --field-end--
+# --field-start--
+fieldName=nQuestions
+# --field-end--
+# --field-start--
+fieldName=nPeople
+# --field-end--
+# --field-start--
+fieldName=modifiedTimestamp
+# --field-end--
+# --field-start--
+fieldName=userXp
+# --field-end--
+# --table-fields-end--
+# --table-end--
+#################################
+# --table-start--
+dataClass=com.amcolabs.quizapp.databaseutils.Category
+tableName=category
+# --table-fields-start--
+# --field-start--
+fieldName=categoryId
+id=true
+indexName=category_categoryId_idx
+# --field-end--
+# --field-start--
+fieldName=shortDescription
+# --field-end--
+# --field-start--
+fieldName=description
+# --field-end--
+# --field-start--
+fieldName=quizList
+# --field-end--
+# --field-start--
+fieldName=assetPath
+# --field-end--
+# --field-start--
+fieldName=type
+# --field-end--
+# --field-start--
+fieldName=modifiedTimestamp
+# --field-end--
+# --table-fields-end--
+# --table-end--
+#################################
+# --table-start--
+dataClass=com.amcolabs.quizapp.databaseutils.UserPreferences
+tableName=userpreferences
+# --table-fields-start--
+# --field-start--
+fieldName=property
+id=true
+indexName=userpreferences_property_idx
+# --field-end--
+# --field-start--
+fieldName=data
+# --field-end--
+# --table-fields-end--
+# --table-end--
+#################################
+# --table-start--
+dataClass=com.amcolabs.quizapp.databaseutils.QuizHistory
+tableName=quizhistory
+# --table-fields-start--
+# --field-start--
+fieldName=id
+id=true
+unique=true
+indexName=quizhistory_id_idx
+# --field-end--
+# --field-start--
+fieldName=quizId
+# --field-end--
+# --field-start--
+fieldName=categoryId
+# --field-end--
+# --field-start--
+fieldName=streak
+# --field-end--
+# --field-start--
+fieldName=win
+# --field-end--
+# --field-start--
+fieldName=lose
+# --field-end--
+# --field-start--
+fieldName=tie
+# --field-end--
+# --field-start--
+fieldName=totalCount
+# --field-end--
+# --field-start--
+fieldName=timeStamp
+# --field-end--
+# --table-fields-end--
+# --table-end--
+#################################
+# --table-start--
+dataClass=com.amcolabs.quizapp.databaseutils.Badge
+tableName=badge
+# --table-fields-start--
+# --field-start--
+fieldName=id
+id=true
+unique=true
+indexName=badge_id_idx
+# --field-end--
+# --field-start--
+fieldName=name
+# --field-end--
+# --field-start--
+fieldName=description
+# --field-end--
+# --field-start--
+fieldName=condition
+# --field-end--
+# --field-start--
+fieldName=assetPath
+# --field-end--
+# --field-start--
+fieldName=smallAssetPath
+# --field-end--
+# --field-start--
+fieldName=type
+# --field-end--
+# --field-start--
+fieldName=modifiedTimestamp
+# --field-end--
+# --field-start--
+fieldName=isAwarded
+# --field-end--
+# --table-fields-end--
+# --table-end--
+#################################
+# --table-start--
+dataClass=com.amcolabs.quizapp.databaseutils.ChatList
+tableName=chatlist
+# --table-fields-start--
+# --field-start--
+fieldName=uid
+id=true
+unique=true
+indexName=chatlist_uid_idx
+# --field-end--
+# --field-start--
+fieldName=recentMessage
+# --field-end--
+# --field-start--
+fieldName=timestamp
+# --field-end--
+# --field-start--
+fieldName=unseenMessagesFlag
+# --field-end--
+# --table-fields-end--
+# --table-end--
+#################################
+# --table-start--
+dataClass=com.amcolabs.quizapp.User
+tableName=user
+# --table-fields-start--
+# --field-start--
+fieldName=uid
+id=true
+unique=true
+indexName=user_uid_idx
+# --field-end--
+# --field-start--
+fieldName=name
+# --field-end--
+# --field-start--
+fieldName=pictureUrl
+# --field-end--
+# --field-start--
+fieldName=coverUrl
+# --field-end--
+# --field-start--
+fieldName=gender
+# --field-end--
+# --field-start--
+fieldName=birthday
+# --field-end--
+# --field-start--
+fieldName=place
+# --field-end--
+# --field-start--
+fieldName=status
+# --field-end--
+# --field-start--
+fieldName=jsonDump
+# --field-end--
+# --table-fields-end--
+# --table-end--
+#################################
