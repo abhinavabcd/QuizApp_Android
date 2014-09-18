@@ -599,9 +599,9 @@ public class ServerCalls {
 	}
 	
 	 ServerWebSocketConnection mConnection = null;
-	 public void startProgressiveQuiz(final ProgressiveQuizController pController, final Quiz quiz, final HashMap<String,String> additionalParams) {
+	 public void startProgressiveQuiz(final ProgressiveQuizController pController, final Quiz quiz, int quizType ,final HashMap<String,String> additionalParams) {
 		 String url = getMasterServerAddr()+"/func?task=getServer";
-		 url+="&type="+GetServerRequestType.PROGRESSIVE_QUIZ.ordinal()+"&quizId="+quiz.quizId;
+		 url+="&type="+GetServerRequestType.PROGRESSIVE_QUIZ.ordinal()+"&quizId="+quiz.quizId+"&quizType="+quizType;
 		 
 		 url+="&encodedKey="+quizApp.getUserDeviceManager().getEncodedKey();
 			

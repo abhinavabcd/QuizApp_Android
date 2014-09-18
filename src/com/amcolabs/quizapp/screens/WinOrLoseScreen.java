@@ -353,4 +353,9 @@ public class WinOrLoseScreen extends Screen{
         mChart.setData(data);
         mChart.invalidate();
 	}
+	@Override
+	public boolean showOnBackPressed() {
+		return false;
+	}
+	
 }
