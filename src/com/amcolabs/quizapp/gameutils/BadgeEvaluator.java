@@ -99,7 +99,6 @@ public class BadgeEvaluator {
 			ors = CommonFunctions.splitString(condition, "||");
 			for(int i=0;i<ors.length;i++){
 				ands = loadCategoriesAndQuizzes(ors[i]);
-				
 				for(int j=0;j<ands.size();j++){
 					cond = CommonFunctions.splitString(ands.get(j), "::");
 					if(cond.length==2){
@@ -112,6 +111,7 @@ public class BadgeEvaluator {
 				state = state || andState;
 				if(state){
 					unlockedBadges.add(curBadge);
+					state = false;
 				}
 			}
 		}

@@ -523,16 +523,19 @@ public class ProgressiveQuizController extends AppController{
 
 
 	public String onNoAnswer(Question currentQuestion) {
-		UserAnswer payload =null; 
+		UserAnswer payload = null; 
 		currentScore += 0;
 		payload = new UserAnswer(currentQuestion.questionId, quizApp.getUser().uid, "", currentQuestion.getTime(), currentScore);//all time elapsed
-		if(!isBotMode())
+		if(!isBotMode()){
+			if(serverSocket==null || !serverSocket.isConnected()){
+				return null;
+			}
 			serverSocket.sendTextMessage(quizApp.getConfig().getGson().toJson(payload));
+		}
 		questionScreen.highlightCorrectAnswer();
 		checkAndProceedToNextQuestion(payload);
 		return null;
 	}
-	
 	
 	public void setChallengeData(){
 		
