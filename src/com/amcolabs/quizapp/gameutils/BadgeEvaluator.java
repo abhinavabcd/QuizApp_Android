@@ -9,8 +9,10 @@ import android.content.Context;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
+import com.amcolabs.quizapp.AppController;
 import com.amcolabs.quizapp.QuizApp;
 import com.amcolabs.quizapp.R;
+import com.amcolabs.quizapp.appcontrollers.ProgressiveQuizController;
 import com.amcolabs.quizapp.databaseutils.Badge;
 import com.amcolabs.quizapp.databaseutils.Category;
 import com.amcolabs.quizapp.databaseutils.Quiz;
@@ -26,6 +28,7 @@ public class BadgeEvaluator {
 	HashMap<String, Category> mainCategoryList;
 	HashMap<String, Quiz> mainQuizList;
 	HashMap<String, QuizHistory> mainQuizHistoryList;
+ 
 	QuizApp quizApp;
 	ArrayList<ArrayList<String>> categoryList = new ArrayList<ArrayList<String>>();
 	ArrayList<ArrayList<String>> quizList = new ArrayList<ArrayList<String>>();
@@ -76,12 +79,20 @@ public class BadgeEvaluator {
 	 * @return
 	 */
 	public void evaluateBadges(){
-		// TODO: evaluate all badge conditions and show if unlocked
-		List<Badge> badges = quizApp.getDataBaseHelper().getAllUnAwardedBadges();
+		List<Badge> badges = quizApp.getDataBaseHelper().getAllBadges();
 		if(badges==null){
 			return;
 		}
-		badges.add(new Badge());
+		// To remove awarded badges
+		List<String> awardedBadges = quizApp.getUser().badges;
+		ArrayList<String> allBadges = new ArrayList<String>();
+		for(int i=0;i<badges.size();i++){
+			allBadges.add(badges.get(i).getId());
+		}
+		for(int i=0;i<awardedBadges.size();i++){
+			badges.remove(allBadges.indexOf(awardedBadges.get(i)));
+		}
+		
 		Iterator<Badge> itr = badges.iterator();
 		Badge curBadge = null;
 		String[] ors;
@@ -108,22 +119,11 @@ public class BadgeEvaluator {
 				}
 				state = state || andState;
 				if(state){
-					showUnlockedBadge(quizApp.getContext(),curBadge);
+					// TODO: server call to add new badge to user
+					quizApp.getStaticPopupDialogBoxes().showUnlockedBadge(curBadge);
 				}
 			}
 		}
-	}
-	
-	private void showUnlockedBadge(Context ctxt,Badge badge) {
-		FancyDialog dialog = new FancyDialog(ctxt);
-		dialog.setTitle(UiUtils.UiText.NEW_BADGE_UNLOCKED_MESSAGE.getValue());
-		RelativeLayout badgeLayout = (RelativeLayout)quizApp.getActivity().getLayoutInflater().inflate(R.layout.badge_small, null);
-		quizApp.getUiUtils().loadImageIntoView(ctxt, (ImageView)badgeLayout.findViewById(R.id.badgeImage),badge.getSmallAssetPath(), true);
-		((GothamTextView)badgeLayout.findViewById(R.id.badgeName)).setText(badge.getName());
-		dialog.setContentView(badgeLayout);
-		dialog.showTitle();
-		dialog.hideAlertButtons();
-		dialog.show();
 	}
 
 	/**

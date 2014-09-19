@@ -171,18 +171,9 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 		return null;
     }
     
-    public List<Badge> getAllUnAwardedBadges(){
+    public List<Badge> getAllPendingBadges(){
 		try {
-			return getBadgesDao().queryBuilder().where().eq("isAwarded", false).query();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return null;
-    }
-    
-    public List<Badge> getAllAwardedBadges(){
-		try {
-			return getBadgesDao().queryBuilder().where().eq("isAwarded", true).query();
+			return getBadgesDao().queryBuilder().where().eq("isPending", true).query();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

@@ -5,7 +5,7 @@ import com.j256.ormlite.field.DatabaseField;
 public class Badge {
 	
 	@DatabaseField(id=true , index=true, unique=true)
-    int id;
+    String id;
 	@DatabaseField
 	String name;
 	@DatabaseField
@@ -21,17 +21,17 @@ public class Badge {
 	@DatabaseField		
 	double modifiedTimestamp;
 	@DatabaseField
-	boolean isAwarded;
+	boolean isPending;
 	
 	public Badge() {
 		// TODO Auto-generated constructor stub
 	}
 
-	public int getId() {
+	public String getId() {
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 
@@ -83,12 +83,12 @@ public class Badge {
 		this.modifiedTimestamp = modifiedTimestamp;
 	}
 
-	public boolean isAwarded() {
-		return isAwarded;
+	public boolean isPending() {
+		return isPending;
 	}
 
-	public void setAwarded(boolean isAwarded) {
-		this.isAwarded = isAwarded;
+	public void setPending(boolean isPending) {
+		this.isPending = isPending;
 	}
 	
 	public String getCondition(){
