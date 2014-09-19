@@ -180,6 +180,32 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 		return null;
     }
     
+    public boolean removePendingState(ArrayList<Badge> badges){
+    	for(int i=0;i<badges.size();i++){
+			try {
+				badges.get(i).setPending(false);
+				getBadgesDao().createOrUpdate(badges.get(i));
+			} catch (SQLException e) {
+				e.printStackTrace();
+				return false;
+			}
+    	}
+    	return true;
+    }
+    
+    public boolean setPendingState(ArrayList<Badge> unlockedBadges){
+    	for(int i=0;i<unlockedBadges.size();i++){
+			try {
+				unlockedBadges.get(i).setPending(true);
+				getBadgesDao().createOrUpdate(unlockedBadges.get(i));
+			} catch (SQLException e) {
+				e.printStackTrace();
+				return false;
+			}
+    	}
+		return true;
+    }
+    
     public double getServerTimeDiffFromDB(){
     	RuntimeExceptionDao<UserPreferences, Integer> userPreferencesTable = getUserPreferencesExceptionDao();
     	List<UserPreferences> serverTimeDiff = userPreferencesTable.queryForEq("property", Config.PREF_SERVER_TIME_DIFF);
