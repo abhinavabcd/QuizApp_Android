@@ -114,7 +114,7 @@ public class UiUtils {
 		NO("No"), 
 		SERVER_ERROR_MESSAGE("An Error"),
 		USER_HAS_DECLINED("User declined the request"), 
-		OK("Ok");
+		OK("Ok"), USER_HAS_LEFT("User left the quiz"), SELECT_FRIENDS_TO_CHALLENGE("Select Friends to Challenge");
 
 		
 		String value = null;

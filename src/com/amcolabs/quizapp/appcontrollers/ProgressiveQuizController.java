@@ -62,7 +62,7 @@ public class ProgressiveQuizController extends AppController{
 		clearScreen();
 		clashingScreen = new ClashScreen(this);
 		clashingScreen.setClashCount(2); 
-		clashingScreen.updateClashScreen(quizApp.getUser()/*quizApp.getUser()*/, 0);//TODO: change to quizApp.getUser()
+		clashingScreen.updateClashScreen(quizApp.getUser()/*quizApp.getUser()*/,quiz, 0);//TODO: change to quizApp.getUser()
 		insertScreen(clashingScreen);
 		quizApp.getServerCalls().startProgressiveQuiz(this, quiz, RANDOM_USER_TYPE, null);
 	}	
@@ -82,7 +82,7 @@ public class ProgressiveQuizController extends AppController{
 			int index = 0;
 			if(user.uid!=quizApp.getUser().uid){
 				try{
-					clashingScreen.updateClashScreen(user, ++index);
+					clashingScreen.updateClashScreen(user, quiz, ++index);
 				}
 				catch(NullPointerException e){
 					e.printStackTrace();
@@ -476,7 +476,7 @@ public class ProgressiveQuizController extends AppController{
 			waitingForRematch = true;
 		}
 		else{
-			quizApp.getStaticPopupDialogBoxes().yesOrNo(UiText.USER_HAS_DECLINED.getValue(), UiText.CHALLENGE.getValue(), UiText.OK.getValue(), new DataInputListener<Boolean>(){
+			quizApp.getStaticPopupDialogBoxes().yesOrNo(UiText.USER_HAS_LEFT.getValue(), UiText.CHALLENGE.getValue(), UiText.OK.getValue(), new DataInputListener<Boolean>(){
 				@Override
 				public String onData(Boolean s) {
 					if(s){
@@ -637,12 +637,16 @@ public class ProgressiveQuizController extends AppController{
 			clearScreen();
 			clashingScreen = new ClashScreen(this);
 			clashingScreen.setClashCount(2); 
-			clashingScreen.updateClashScreen(quizApp.getUser()/*quizApp.getUser()*/, 0 , new ChallengeView(quizApp , otherUser, new DataInputListener<Integer>(){
+			clashingScreen.updateClashScreen(quizApp.getUser()/*quizApp.getUser()*/,quiz,  0 , new ChallengeView(quizApp , otherUser, null , new DataInputListener<Integer>(){
+				int pressed = 0;
 				@Override
 				public String onData(Integer s) {
+					if(pressed == s)//repress , not a correct implementation though, for temporary
+						return null;
+					pressed = s;
 					switch(s){
 						case 1://challege start now
-							setQuizMode(CHALLENGE_MODE);
+							serverSocket.sendTextMessage(constructSocketMessage(MessageType.START_CHALLENGE_NOW, null, null));
 							break;
 						case 2://exit
 							break;
@@ -653,7 +657,15 @@ public class ProgressiveQuizController extends AppController{
 			insertScreen(clashingScreen);
 	}
 	
-	public void addFriend(User user) {
-		// TODO Auto-generated method stub
+	public void addFriend(final User user) {
+		quizApp.getServerCalls().subscribeTo(user, new DataInputListener<Boolean>(){
+			@Override
+			public String onData(Boolean s) {
+				if(s){
+					quizApp.getUser().getSubscribedTo().add(user.uid);
+				}
+				return super.onData(s);
+			}
+		});
 	}
 }

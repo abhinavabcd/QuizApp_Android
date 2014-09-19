@@ -31,6 +31,7 @@ import com.amcolabs.quizapp.appcontrollers.ProfileAndChatController;
 import com.amcolabs.quizapp.appcontrollers.UserMainPageController;
 import com.amcolabs.quizapp.configuration.Config;
 import com.amcolabs.quizapp.databaseutils.DatabaseHelper;
+import com.amcolabs.quizapp.datalisteners.DataInputListener;
 import com.amcolabs.quizapp.gameutils.BadgeEvaluator;
 import com.amcolabs.quizapp.gameutils.GameUtils;
 import com.amcolabs.quizapp.popups.StaticPopupDialogBoxes;
@@ -463,7 +464,20 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 		this.staticPopupDialogBoxes = staticPopupDialogBoxes;
 	}
 
-	public HashMap<String , User> cachedUsers = new HashMap<String, User>();
+	
+	
+	public HashMap<String , User> cachedUsers = new HashMap<String, User>(){
+		
+		public User get(Object key) {
+			if(!super.containsKey(key)){
+				//wtf
+				getServerCalls().getUserByUidSync(key, new DataInputListener<Boolean>(){
+					
+				});
+			}
+			return super.get(key);
+		};
+	};
 
 
 	public void cacheUsersList(ArrayList<User> users) {

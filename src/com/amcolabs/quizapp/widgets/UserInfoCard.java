@@ -2,6 +2,7 @@ package com.amcolabs.quizapp.widgets;
 
 
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.view.Gravity;
@@ -11,11 +12,15 @@ import android.widget.LinearLayout;
 import com.amcolabs.quizapp.QuizApp;
 import com.amcolabs.quizapp.R;
 import com.amcolabs.quizapp.User;
+import com.amcolabs.quizapp.uiutils.UiUtils;
+import com.amcolabs.quizapp.uiutils.UiUtils.UiText;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Picasso.LoadedFrom;
 import com.squareup.picasso.Target;
 
 public class UserInfoCard extends LinearLayout implements Target,IViewType{
+	private LinearLayout moreInfoWrapper;
+
 	public UserInfoCard(final QuizApp quizApp, String bgAssetPath, User user) {
 		this(quizApp, bgAssetPath, user, false, false, Gravity.CENTER);
 	}
@@ -35,7 +40,7 @@ public class UserInfoCard extends LinearLayout implements Target,IViewType{
 		ImageView imgView = (ImageView) mainView.findViewById(R.id.user_card_small_pic);
 		GothamTextView statusMsg = (GothamTextView)mainView.findViewById(R.id.user_status_msg);
 		statusMsg.setText(user.status);
-		
+		moreInfoWrapper = (LinearLayout)mainView.findViewById(R.id.level_more_info);
 		
 		name.setText(user.name);
 		if(user.pictureUrl!=null){
@@ -44,7 +49,17 @@ public class UserInfoCard extends LinearLayout implements Target,IViewType{
 		
 		addView(mainView);
 	}
-
+	
+	public void addLevelIndicator(QuizApp quizApp , float xpPoints){
+		UiUtils uiUtils = quizApp.getUiUtils();
+		float currentLevelProgress = quizApp.getGameUtils().getLevelFromXp((int)xpPoints);
+		CircularCounter levelIndicator = new CircularCounter(quizApp.getContext(), uiUtils.getInSp(10), Color.parseColor("#000000"), uiUtils.getInSp(7), UiText.LEVEL.getValue(), 
+				 uiUtils.getInDp(5), 1, uiUtils.getInDp(3), uiUtils.getInDp(3), 0, 0, 0, 0, uiUtils.getInDp(40),0);		
+		levelIndicator.setValues(currentLevelProgress - (int)currentLevelProgress, 1, 0);
+		levelIndicator.setCurrentValue((int)currentLevelProgress);
+		
+		moreInfoWrapper.addView(levelIndicator);
+	}
 
 	@Override
 	public void onBitmapFailed(Drawable arg0) {
