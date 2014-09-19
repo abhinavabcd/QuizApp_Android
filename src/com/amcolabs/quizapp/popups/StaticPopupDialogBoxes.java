@@ -202,9 +202,9 @@ public class StaticPopupDialogBoxes {
 		FancyDialog dialog = new FancyDialog(quizApp.getContext());
 		dialog.setTitle(UiUtils.UiText.NEW_BADGE_UNLOCKED_MESSAGE.getValue());
 		RelativeLayout badgeLayout = (RelativeLayout)quizApp.getActivity().getLayoutInflater().inflate(R.layout.badge_small, null);
-		quizApp.getUiUtils().loadImageIntoView(quizApp.getContext(), (ImageView)badgeLayout.findViewById(R.id.badgeImage),badge.getSmallAssetPath(), true);
+		quizApp.getUiUtils().loadImageIntoView(quizApp.getContext(), (ImageView)badgeLayout.findViewById(R.id.badgeImage),badge.getAssetPath(), true);
 		((GothamTextView)badgeLayout.findViewById(R.id.badgeName)).setText(badge.getName());
-		dialog.setContentView(badgeLayout);
+		dialog.setContent(badgeLayout);
 		dialog.showTitle();
 		dialog.hideAlertButtons();
 		dialog.show();

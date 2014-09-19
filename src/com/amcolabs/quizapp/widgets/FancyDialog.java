@@ -15,14 +15,18 @@ import com.amcolabs.quizapp.R;
 
 public class FancyDialog extends Dialog implements android.view.View.OnClickListener{
 
+	private View fancyDialogView;
 	public FancyDialog(Context ctxt,int theme){
 		super(ctxt, theme);
+		fancyDialogView = getLayoutInflater().inflate(R.layout.fancy_dialog, null);
 	}
 	public FancyDialog(Context ctxt){
 		super(ctxt);
+		fancyDialogView = getLayoutInflater().inflate(R.layout.fancy_dialog, null);
 	}
 	public FancyDialog(Context ctxt,boolean cancelable,OnCancelListener listener){
 		super(ctxt, cancelable,listener);
+		fancyDialogView = getLayoutInflater().inflate(R.layout.fancy_dialog, null);
 	}
 	
 	@Override
@@ -31,42 +35,36 @@ public class FancyDialog extends Dialog implements android.view.View.OnClickList
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-		setContentView(R.layout.fancy_dialog);
+		setContentView(fancyDialogView);
 		
-		ImageView closeButton = (ImageView) findViewById(R.id.closeButton);
+		ImageView closeButton = (ImageView)fancyDialogView.findViewById(R.id.closeButton);
 		// if button is clicked, close the custom dialog
 		closeButton.setOnClickListener(this);
 	}
 	
-	@Override
-	public void setContentView(int layoutResID) {
-		setContentView(R.layout.fancy_dialog);
+	public void setContent(int layoutResID){
 		View layout = getLayoutInflater().inflate(layoutResID, null);
-		((LinearLayout)findViewById(R.id.mainLayout)).addView(layout);
+		((LinearLayout)fancyDialogView.findViewById(R.id.contentWrapper)).addView(layout);
 	}
 	
-	@Override
-	public void setContentView(View view) {
-		setContentView(R.layout.fancy_dialog);
-		((LinearLayout)findViewById(R.id.mainLayout)).addView(view,0);
+	public void setContent(View view) {
+		((LinearLayout)fancyDialogView.findViewById(R.id.contentWrapper)).addView(view);
 	}
 	
-	@Override
-	public void setContentView(View view, LayoutParams params) {
-		setContentView(R.layout.fancy_dialog);
-		LinearLayout layout = (LinearLayout)findViewById(R.id.mainLayout);
+	public void setContent(View view, LayoutParams params) {
+		LinearLayout layout = (LinearLayout)fancyDialogView.findViewById(R.id.contentWrapper);
 		layout.addView(view);
 		layout.setLayoutParams(params);
 	}
 	
 	@Override
 	public void setTitle(CharSequence title) {
-		((GothamTextView)findViewById(R.id.titleText)).setText(title);
+		((GothamTextView)fancyDialogView.findViewById(R.id.titleText)).setText(title);
 	}
 	
 	@Override
 	public void setTitle(int titleId) {
-		((GothamTextView)findViewById(R.id.titleText)).setText(titleId);
+		((GothamTextView)fancyDialogView.findViewById(R.id.titleText)).setText(titleId);
 	}
 	
 	@Override
@@ -75,26 +73,26 @@ public class FancyDialog extends Dialog implements android.view.View.OnClickList
 	}
 	
 	public void showTitle(){
-		findViewById(R.id.headerWrapper).setVisibility(View.VISIBLE);
+		fancyDialogView.findViewById(R.id.headerWrapper).setVisibility(View.VISIBLE);
 	}
 	
 	public void hideTitle(){
-		findViewById(R.id.headerWrapper).setVisibility(View.GONE);
+		fancyDialogView.findViewById(R.id.headerWrapper).setVisibility(View.GONE);
 	}
 	
 	public void showAlertButtons(){
-		findViewById(R.id.footerWrapper).setVisibility(View.VISIBLE);
+		fancyDialogView.findViewById(R.id.footerWrapper).setVisibility(View.VISIBLE);
 	}
 	
 	public void hideAlertButtons(){
-		findViewById(R.id.footerWrapper).setVisibility(View.GONE);
+		fancyDialogView.findViewById(R.id.footerWrapper).setVisibility(View.GONE);
 	}
 	
 	public void setPositiveButtonListener(android.view.View.OnClickListener l){
-		findViewById(R.id.positiveButton).setOnClickListener(l);
+		fancyDialogView.findViewById(R.id.positiveButton).setOnClickListener(l);
 	}
 	
 	public void setNegativeButtonListener(android.view.View.OnClickListener l){
-		findViewById(R.id.negativeButton).setOnClickListener(l);
+		fancyDialogView.findViewById(R.id.negativeButton).setOnClickListener(l);
 	}
 }

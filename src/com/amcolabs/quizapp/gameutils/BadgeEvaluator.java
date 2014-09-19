@@ -383,8 +383,12 @@ public class BadgeEvaluator {
 	
 	private boolean matchQuizListStreak(int index,int count,String value){
 		int tmp_count = 0;
+		QuizHistory qh;
 		for(int i=0;i<quizList.get(index).size();i++){
-			if(Integer.valueOf(value)<=mainQuizHistoryList.get(quizList.get(index).get(i)).getStreak())
+			qh = mainQuizHistoryList.get(quizList.get(index).get(i));
+			if(qh==null)
+				continue;
+			if(Integer.valueOf(value)<=qh.getStreak())
 				tmp_count++;
 			if(tmp_count>=count){
 				return true;
@@ -394,8 +398,10 @@ public class BadgeEvaluator {
 	}
 	
 	private boolean matchQuizListStreak(int index,ArrayList<String> quizIds,String value){
+		QuizHistory qh;
 		for(int i=0;i<quizIds.size();i++){
-			if(Integer.valueOf(value)>mainQuizHistoryList.get(quizIds.get(i)).getStreak())
+			qh = mainQuizHistoryList.get(quizIds.get(i));
+			if(qh==null || Integer.valueOf(value)>qh.getStreak())
 				return false;
 		}
 		return true;
@@ -403,8 +409,12 @@ public class BadgeEvaluator {
 
 	private boolean matchQuizListQuizCount(int index,int count,String value){
 		int tmp_count = 0;
+		QuizHistory qh;
 		for(int i=0;i<quizList.get(index).size();i++){
-			if(Integer.valueOf(value)<=mainQuizHistoryList.get(quizList.get(index).get(i)).getTotalCount())
+			qh = mainQuizHistoryList.get(quizList.get(index).get(i));
+			if(qh==null)
+				continue;
+			if(Integer.valueOf(value)<=qh.getTotalCount())
 				tmp_count++;
 			if(tmp_count>=count){
 				return true;
@@ -414,8 +424,10 @@ public class BadgeEvaluator {
 	}
 	
 	private boolean matchQuizListQuizCount(int index,ArrayList<String> quizIds,String value){
+		QuizHistory qh;
 		for(int i=0;i<quizIds.size();i++){
-			if(Integer.valueOf(value)>mainQuizHistoryList.get(quizIds.get(i)).getTotalCount())
+			qh = mainQuizHistoryList.get(quizIds.get(i));
+			if(qh==null || Integer.valueOf(value)>qh.getTotalCount())
 				return false;
 		}
 		return true;
