@@ -33,7 +33,7 @@ public class User {
 	private String status;
 	public String googlePlus;
 	public String facebook;
-	public ArrayList<Integer> badges;
+	public ArrayList<String> badges;
 	public HashMap<String,Integer> stats;
 	public HashMap<String, Integer[]> winsLosses;
 	private int userType = 0;

@@ -15,14 +15,20 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.amcolabs.quizapp.QuizApp;
 import com.amcolabs.quizapp.R;
 import com.amcolabs.quizapp.UserDeviceManager;
+import com.amcolabs.quizapp.databaseutils.Badge;
 import com.amcolabs.quizapp.datalisteners.DataInputListener;
+import com.amcolabs.quizapp.uiutils.UiUtils;
+import com.amcolabs.quizapp.widgets.FancyDialog;
 import com.amcolabs.quizapp.widgets.GothamButtonView;
+import com.amcolabs.quizapp.widgets.GothamTextView;
 
 
 
@@ -190,5 +196,17 @@ public class StaticPopupDialogBoxes {
 		if(yesNoPopup!=null)
 			yesNoPopup.dismissQuietly();
 		yesNoPopup= null;
+	}
+	
+	public void showUnlockedBadge(Badge badge) {
+		FancyDialog dialog = new FancyDialog(quizApp.getContext());
+		dialog.setTitle(UiUtils.UiText.NEW_BADGE_UNLOCKED_MESSAGE.getValue());
+		RelativeLayout badgeLayout = (RelativeLayout)quizApp.getActivity().getLayoutInflater().inflate(R.layout.badge_small, null);
+		quizApp.getUiUtils().loadImageIntoView(quizApp.getContext(), (ImageView)badgeLayout.findViewById(R.id.badgeImage),badge.getSmallAssetPath(), true);
+		((GothamTextView)badgeLayout.findViewById(R.id.badgeName)).setText(badge.getName());
+		dialog.setContentView(badgeLayout);
+		dialog.showTitle();
+		dialog.hideAlertButtons();
+		dialog.show();
 	}
 }

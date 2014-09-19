@@ -151,6 +151,7 @@ public class UserDeviceManager {
 			return Double.parseDouble(temp);
 		return d;
 	}
+
 	String encodedKey;
 	public String getEncodedKey() {
 		if(encodedKey==null)
