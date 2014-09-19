@@ -11,4 +11,9 @@ public class ServerWebSocketConnection extends WebSocketConnection{
 		this.addr  = addr;
 		
 	}
+	@Override
+	public void disconnect() {
+		// TODO Auto-generated method stub
+		super.disconnect();
+	}
 }

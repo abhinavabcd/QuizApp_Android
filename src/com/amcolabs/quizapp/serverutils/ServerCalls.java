@@ -368,6 +368,29 @@ public class ServerCalls {
 			}
 		},true); 
 	}		
+	
+	public void getUserByUid(String uid , final DataInputListener<User> dataInputListener) {
+		String url = getAServerAddr()+"/func?task=getUserById";
+		url+="&encodedKey="+quizApp.getUserDeviceManager().getEncodedKey();
+		url+="&uid="+uid;
+		makeServerCall(url,new ServerNotifier() {			
+		@Override
+		public void onServerResponse(MessageType messageType, ServerResponse response) {
+			switch(messageType){
+				case OK_USER_INFO:
+					if(dataInputListener!=null){
+						dataInputListener.onData(quizApp.getConfig().getGson().fromJson(response.payload,User.class));
+					}
+					break;
+				case FAILED: 
+					if(dataInputListener!=null){
+						dataInputListener.onData(null);
+					}
+					break;
+				}
+			}
+		},true); 
+	}		
 
 	public void updateUserRating(final float rating, final DataInputListener<Boolean> dataInputListener) {
 		String url = getAServerAddr()+"/func?task=updateUserRating";
@@ -541,9 +564,6 @@ public class ServerCalls {
 		},false);
 	}
 	
-	public static enum GetServerRequestType{
-		PROGRESSIVE_QUIZ;
-	}
 	
 	private void startProgressiveQuiz(String webSocketAddr , final ProgressiveQuizController pController , final Quiz quiz, String serverId, HashMap<String,String> additionalParams){
 		  String wsuri = webSocketAddr +"/progressiveQuiz";
@@ -599,9 +619,9 @@ public class ServerCalls {
 	}
 	
 	 ServerWebSocketConnection mConnection = null;
-	 public void startProgressiveQuiz(final ProgressiveQuizController pController, final Quiz quiz, final HashMap<String,String> additionalParams) {
+	 public void startProgressiveQuiz(final ProgressiveQuizController pController, final Quiz quiz, int quizType ,final HashMap<String,String> additionalParams) {
 		 String url = getMasterServerAddr()+"/func?task=getServer";
-		 url+="&type="+GetServerRequestType.PROGRESSIVE_QUIZ.ordinal()+"&quizId="+quiz.quizId;
+		 url+="&quizId="+quiz.quizId+"&quizType="+quizType;
 		 
 		 url+="&encodedKey="+quizApp.getUserDeviceManager().getEncodedKey();
 			
@@ -745,5 +765,59 @@ public class ServerCalls {
 		});
 	}
 
+
+	public void getUserByUidSync(Object key, final DataInputListener<Boolean> dataInputListener) {
+		// TODO Auto-generated method stub
+		final String uid = key.toString();
+		String url = getAServerAddr()+"/func?task=getUserById";
+		url+="&encodedKey="+quizApp.getUserDeviceManager().getEncodedKey();
+		url+="&uid="+uid;
+		makeServerCall(url,new ServerNotifier() {			
+		@Override
+		public void onServerResponse(MessageType messageType, ServerResponse response) {
+			switch(messageType){
+				case OK_USER_INFO:
+					if(dataInputListener!=null){
+						quizApp.cachedUsers.put(uid, quizApp.getConfig().getGson().fromJson(response.payload,User.class));
+					}
+					break;
+				case FAILED: 
+					if(dataInputListener!=null){
+						dataInputListener.onData(null);
+					}
+					break;
+				}
+			}
+		},true, true);//sync 
+	}
+	
+	private HashMap<String, Boolean> subScribingRequests = new HashMap<String, Boolean>();
+	
+	public void subscribeTo(final User user2 ,final DataInputListener<Boolean> listener) {
+		if(subScribingRequests.containsKey(user2.uid)){
+			if(listener!=null) listener.onData(true);
+		}
+		String url = getAServerAddr()+"/func?task=subscribeTo";
+		url+="&encodedKey="+quizApp.getUserDeviceManager().getEncodedKey();
+		url+="&uid="+user2.uid;
+		makeServerCall(url, new ServerNotifier() {
+		@Override
+		public void onServerResponse(MessageType messageType,ServerResponse response) {
+			switch(messageType){
+				case OK:
+					if(listener!=null){
+						listener.onData(true);
+					}
+					break;
+				default:
+					subScribingRequests.remove(user2.uid);
+					if(listener!=null){
+						listener.onData(false);
+					}
+					break;
+			}
+		}
+		});
+	}
 }
 

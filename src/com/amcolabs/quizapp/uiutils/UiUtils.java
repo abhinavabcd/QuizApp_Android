@@ -26,14 +26,14 @@ import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 import android.util.TypedValue;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.View.MeasureSpec;
+import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
+import android.widget.LinearLayout.LayoutParams;
 import android.widget.ListAdapter;
 import android.widget.ListView;
-import android.widget.LinearLayout.LayoutParams;
 
 import com.amcolabs.quizapp.QuizApp;
 import com.amcolabs.quizapp.R;
@@ -41,7 +41,6 @@ import com.amcolabs.quizapp.configuration.Config;
 import com.amcolabs.quizapp.datalisteners.DataInputListener;
 import com.amcolabs.quizapp.notificationutils.NotificationReciever;
 import com.amcolabs.quizapp.serverutils.ServerCalls;
-import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
@@ -113,10 +112,11 @@ public class UiUtils {
 		YES("Yes"),
 		NO("No"), 
 		SERVER_ERROR_MESSAGE("An Error"),
-		USER_HAS_DECLINED("User declined the request"), 
+		USER_HAS_DECLINED("User declined the request"),
 		OK("Ok"),
-		NEW_BADGE_UNLOCKED_MESSAGE("New Badge Unlocked!");
-
+		NEW_BADGE_UNLOCKED_MESSAGE("New Badge Unlocked!"),
+		USER_HAS_LEFT("User left the quiz"), 
+		SELECT_FRIENDS_TO_CHALLENGE("Select Friends to Challenge");
 		
 		String value = null;
 		UiText(String value){

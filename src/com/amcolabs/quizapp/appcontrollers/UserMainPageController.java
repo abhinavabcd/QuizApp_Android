@@ -12,6 +12,7 @@ import com.amcolabs.quizapp.QuizApp;
 import com.amcolabs.quizapp.Screen;
 import com.amcolabs.quizapp.User;
 import com.amcolabs.quizapp.UserDeviceManager;
+import com.amcolabs.quizapp.adapters.SelectFriendsListAdapter;
 import com.amcolabs.quizapp.configuration.Config;
 import com.amcolabs.quizapp.databaseutils.Category;
 import com.amcolabs.quizapp.databaseutils.OfflineChallenge;
@@ -25,6 +26,7 @@ import com.amcolabs.quizapp.popups.StaticPopupDialogBoxes;
 import com.amcolabs.quizapp.screens.HomeScreen;
 import com.amcolabs.quizapp.screens.LeaderBoardScreen;
 import com.amcolabs.quizapp.screens.QuizzesScreen;
+import com.amcolabs.quizapp.screens.SelectFriendsScreen;
 import com.amcolabs.quizapp.screens.WelcomeScreen;
 import com.amcolabs.quizapp.uiutils.UiUtils.UiText;
 import com.androidsocialnetworks.lib.AccessToken;
@@ -348,6 +350,29 @@ public class UserMainPageController  extends AppController implements OnInitiali
 					}
 				});
 			}
+		});
+	}
+
+	public void onStartChallengeQuiz(Quiz quiz) {
+		clearScreen();
+		quizApp.getDataBaseHelper().getAllUsersByUid(user.getSubscribedTo(), new DataInputListener<Boolean>(){
+			@Override
+			public String onData(Boolean s) {
+				SelectFriendsScreen selectFriendsScreen = new SelectFriendsScreen(UserMainPageController.this);
+				List<User> users = new ArrayList<User>();
+				for(String uid : user.getSubscribers()){
+					users.add(quizApp.cachedUsers.get(uid));
+				}
+				selectFriendsScreen.showFriendsList(UiText.SELECT_FRIENDS_TO_CHALLENGE.getValue(), users,new DataInputListener<User>(){
+					@Override
+					public String onData(User s) {
+						ProgressiveQuizController progressiveQuiz = (ProgressiveQuizController) quizApp.loadAppController(ProgressiveQuizController.class);
+						progressiveQuiz.startNewChallenge(s);
+						return super.onData(s);
+					}
+				});
+				return super.onData(s);
+		    }
 		});
 	}
 }

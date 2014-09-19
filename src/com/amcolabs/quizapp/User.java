@@ -40,6 +40,11 @@ public class User {
 	@DatabaseField
 	private String jsonDump;
 	
+	private List<String> subscribers;//uids
+	private List<String> subscribedTo;
+	
+	
+	
 	
 	public User(){
 	}
@@ -128,5 +133,14 @@ public class User {
 		}
 		return winsLosses.get(quizId);
 	}
+
+	public List<String> getSubscribers() {
+		return subscribers;
+	}
+
+	public List<String> getSubscribedTo() {
+		return subscribedTo;
+	}
+
 }
 
