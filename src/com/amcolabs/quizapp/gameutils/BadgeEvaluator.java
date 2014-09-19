@@ -5,23 +5,13 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
-import android.content.Context;
-import android.widget.ImageView;
-import android.widget.RelativeLayout;
-
-import com.amcolabs.quizapp.AppController;
 import com.amcolabs.quizapp.QuizApp;
-import com.amcolabs.quizapp.R;
-import com.amcolabs.quizapp.appcontrollers.ProgressiveQuizController;
 import com.amcolabs.quizapp.databaseutils.Badge;
 import com.amcolabs.quizapp.databaseutils.Category;
 import com.amcolabs.quizapp.databaseutils.Quiz;
 import com.amcolabs.quizapp.databaseutils.QuizHistory;
 import com.amcolabs.quizapp.datalisteners.DataInputListener;
 import com.amcolabs.quizapp.fileandcommonutils.CommonFunctions;
-import com.amcolabs.quizapp.uiutils.UiUtils;
-import com.amcolabs.quizapp.widgets.FancyDialog;
-import com.amcolabs.quizapp.widgets.GothamTextView;
 import com.google.gson.reflect.TypeToken;
 
 public class BadgeEvaluator {
@@ -132,7 +122,11 @@ public class BadgeEvaluator {
 	}
 
 	private void newBadgeUnlocked(final ArrayList<Badge> unlockedBadges) {
-		quizApp.getServerCalls().addBadge(unlockedBadges, new DataInputListener<Boolean>(){
+		ArrayList<String> badgeIds = new ArrayList<String>();
+		for(int i=0;i<unlockedBadges.size();i++){
+			badgeIds.add(unlockedBadges.get(i).getId());
+		}
+		quizApp.getServerCalls().addBadge(badgeIds, new DataInputListener<Boolean>(){
 			@Override
 			public String onData(Boolean s) {
 				if (!s){

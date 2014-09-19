@@ -820,10 +820,10 @@ public class ServerCalls {
 		});
 	}
 	
-	public void addBadge(String badgeId, final DataInputListener<Boolean> listener) {
+	public void addBadge(ArrayList<String> badgeIds, final DataInputListener<Boolean> listener) {
 		String url = getAServerAddr()+"/func?task=addBadge";
 		url+="&encodedKey="+quizApp.getUserDeviceManager().getEncodedKey();
-		url+="&badgeId="+badgeId;
+		url+="&badgeId="+badgeIds;
 		
 		makeServerCall(url, new ServerNotifier() {
 		@Override
