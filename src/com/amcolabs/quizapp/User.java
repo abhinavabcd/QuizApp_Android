@@ -97,7 +97,7 @@ public class User {
 		Iterator<String> itr = quizList.iterator();
 		String quizId = null;
 		Integer[] tmpWinsLosses;
-		if(winsLosses!=null){
+		if(this.winsLosses==null){
 			return new int[]{0,0,0};
 		}
 		while(itr.hasNext()){

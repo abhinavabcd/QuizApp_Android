@@ -102,7 +102,7 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 	public void reinit(boolean force) {
 		if(!initialized || force){
 			initialized = true;
-			userDeviceManager = new UserDeviceManager(this);//initialized preferences , device id , pertaining to device
+			userDeviceManager = new UserDeviceManager(this);//initialized preferences , device badgeId , pertaining to device
 			config = new Config(this);
 			uiUtils = new UiUtils(this);
 			gameUtils = new GameUtils(this);

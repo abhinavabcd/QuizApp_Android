@@ -78,7 +78,7 @@ public class BadgeEvaluator {
 		List<String> awardedBadges = quizApp.getUser().badges;
 		ArrayList<String> allBadges = new ArrayList<String>();
 		for(int i=0;i<badges.size();i++){
-			allBadges.add(badges.get(i).getId());
+			allBadges.add(badges.get(i).getBadgeId());
 		}
 		for(int i=0;i<awardedBadges.size();i++){
 			badges.remove(allBadges.indexOf(awardedBadges.get(i)));
@@ -124,7 +124,7 @@ public class BadgeEvaluator {
 	private void newBadgeUnlocked(final ArrayList<Badge> unlockedBadges) {
 		ArrayList<String> badgeIds = new ArrayList<String>();
 		for(int i=0;i<unlockedBadges.size();i++){
-			badgeIds.add(unlockedBadges.get(i).getId());
+			badgeIds.add(unlockedBadges.get(i).getBadgeId());
 		}
 		quizApp.getServerCalls().addBadges(badgeIds, new DataInputListener<Boolean>(){
 			@Override
