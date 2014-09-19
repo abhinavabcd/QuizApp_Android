@@ -36,7 +36,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 	// name of the database file for your application -- change to something appropriate for your app
 	private static final String DATABASE_NAME = "quizApp.db";
 	// any time you make changes to your database objects, you may have to increase the database version
-	private static final int DATABASE_VERSION = 8;
+	private static final int DATABASE_VERSION = 11;
 	private static String DATABASE_PATH = "/data/data/com.amcolabs.quizapp/databases/";
 
 	// the DAO object we use to access the Category table
@@ -253,6 +253,20 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 			Log.e(DatabaseHelper.class.getName(), "Can't create database", e);
 			throw new RuntimeException(e);
 		}
+		try {
+			Log.i(DatabaseHelper.class.getName(), "onCreate");
+			TableUtils.createTableIfNotExists(connectionSource, Badge.class);
+		} catch (SQLException e) {
+			Log.e(DatabaseHelper.class.getName(), "Can't create database", e);
+			throw new RuntimeException(e);
+		}
+		try {
+			Log.i(DatabaseHelper.class.getName(), "onCreate");
+			TableUtils.createTableIfNotExists(connectionSource, QuizHistory.class);
+		} catch (SQLException e) {
+			Log.e(DatabaseHelper.class.getName(), "Can't create database", e);
+			throw new RuntimeException(e);
+		}
 	}
 	
 	@Override
@@ -265,6 +279,8 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 			TableUtils.dropTable(connectionSource, UserPreferences.class, true);
 			TableUtils.dropTable(connectionSource, ChatList.class, true);
 			TableUtils.dropTable(connectionSource, User.class, true);
+			TableUtils.dropTable(connectionSource, Badge.class, true);
+			TableUtils.dropTable(connectionSource, QuizHistory.class, true);
 			// after we drop the old databases, we create the new ones
 			onCreate(db, connectionSource);
 		} catch (SQLException e) {
@@ -389,7 +405,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
     public double getMaxTimeStampQuiz(){
     	double max = -1;
 		try {
-			max = (Double) getQuizDao().queryRaw("select max(modifiedTimeStamp) from Quiz",new DataType[]{DataType.DOUBLE}).closeableIterator().next()[0];
+			max = (Double) getQuizDao().queryRaw("select max(modifiedTimestamp) from Quiz",new DataType[]{DataType.DOUBLE}).closeableIterator().next()[0];
 		} catch (SQLException e){
 			e.printStackTrace();
 		}
@@ -399,7 +415,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
     public double getMaxTimeStampBadges(){
     	double max = -1;
 		try {
-			max = (Double) getBadgesDao().queryRaw("select max(modifiedTimestamp) from badge",new DataType[]{DataType.DOUBLE}).closeableIterator().next()[0];
+			max = (Double) getBadgesDao().queryRaw("select max(modifiedTimestamp) from Badge",new DataType[]{DataType.DOUBLE}).closeableIterator().next()[0];
 		} catch (SQLException e){
 			e.printStackTrace();
 		}
@@ -413,7 +429,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
     public double getMaxTimeStampCategory(){
     	double max = -1;
 		try {
-			max = (Double) getCategoryDao().queryRaw("select max(modifiedTimeStamp) from Category",new DataType[]{DataType.DOUBLE}).closeableIterator().next()[0];
+			max = (Double) getCategoryDao().queryRaw("select max(modifiedTimestamp) from Category",new DataType[]{DataType.DOUBLE}).closeableIterator().next()[0];
 		} catch (SQLException e){
 			e.printStackTrace();
 		}
