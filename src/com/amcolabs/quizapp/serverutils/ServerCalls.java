@@ -443,12 +443,15 @@ public class ServerCalls {
 				switch(messageType){
 					case OK_UPDATES:
 						if(isLogin){
+							quizApp.setUser(quizApp.getConfig().getGson().fromJson(response.payload7 , User.class));//set the user here
 							List<Quiz> quizzes = quizApp.getConfig().getGson().fromJson(response.payload, new TypeToken<List<Quiz>>(){}.getType());
 							List<Category> categories = quizApp.getConfig().getGson().fromJson(response.payload1, new TypeToken<List<Category>>(){}.getType());
-							List<Badge> badges = quizApp.getConfig().getGson().fromJson(response.payload2, new TypeToken<List<Badge>>(){}.getType());
+							List<Badge> badges = quizApp.getConfig().getGson().fromJson(response.payload2, new TypeToken<List<Badge>>(){}.getType());							
 							
 							for(Quiz q : quizzes){
 								try {
+									if(quizApp.getUser().getStats().containsKey(q.quizId))
+										q.userXp = quizApp.getUser().getStats().get(q.quizId);
 									quizApp.getDataBaseHelper().getQuizDao().createOrUpdate(q);
 								} catch (SQLException e) {
 									e.printStackTrace();
@@ -470,7 +473,6 @@ public class ServerCalls {
 								}
 							}
 						}
-						quizApp.setUser(quizApp.getConfig().getGson().fromJson(response.payload7 , User.class));
 						List<UserFeed> userFeeds = quizApp.getConfig().getGson().fromJson(response.payload3, new TypeToken<List<UserFeed>>(){}.getType());
 						List<UserInboxMessage> inboxMessages = quizApp.getConfig().getGson().fromJson(response.payload4, new TypeToken<List<UserInboxMessage>>(){}.getType());
 						List<OfflineChallenge> offlineChalleneges = quizApp.getConfig().getGson().fromJson(response.payload5, new TypeToken<List<OfflineChallenge>>(){}.getType());
