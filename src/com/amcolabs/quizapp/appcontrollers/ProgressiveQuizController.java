@@ -82,7 +82,7 @@ public class ProgressiveQuizController extends AppController{
 	public void showQuestionScreen(ArrayList<User> users){
 		for(User user: currentUsers){
 			int index = 0;
-			if(user.uid!=quizApp.getUser().uid){
+			if(!user.uid.equalsIgnoreCase(quizApp.getUser().uid)){
 				try{
 					clashingScreen.updateClashScreen(user, quiz, ++index);
 				}
