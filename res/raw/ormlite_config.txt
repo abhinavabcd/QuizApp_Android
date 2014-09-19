@@ -1,5 +1,5 @@
 #
-# generated on 2014/09/18 06:41:33
+# generated on 2014/09/19 04:15:45
 #
 # --table-start--
 dataClass=com.amcolabs.quizapp.databaseutils.Question
@@ -159,10 +159,10 @@ dataClass=com.amcolabs.quizapp.databaseutils.Badge
 tableName=badge
 # --table-fields-start--
 # --field-start--
-fieldName=id
+fieldName=badgeId
 id=true
 unique=true
-indexName=badge_id_idx
+indexName=badge_badgeId_idx
 # --field-end--
 # --field-start--
 fieldName=name
@@ -186,7 +186,7 @@ fieldName=type
 fieldName=modifiedTimestamp
 # --field-end--
 # --field-start--
-fieldName=isAwarded
+fieldName=isPending
 # --field-end--
 # --table-fields-end--
 # --table-end--

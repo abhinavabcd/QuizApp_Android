@@ -5,7 +5,7 @@ import com.j256.ormlite.field.DatabaseField;
 public class Badge {
 	
 	@DatabaseField(id=true , index=true, unique=true)
-    String id;
+    String badgeId;
 	@DatabaseField
 	String name;
 	@DatabaseField
@@ -27,12 +27,12 @@ public class Badge {
 		// TODO Auto-generated constructor stub
 	}
 
-	public String getId() {
-		return id;
+	public String getBadgeId() {
+		return badgeId;
 	}
 
-	public void setId(String id) {
-		this.id = id;
+	public void setBadgeId(String id) {
+		this.badgeId = id;
 	}
 
 	public String getName() {

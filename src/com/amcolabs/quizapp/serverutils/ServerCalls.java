@@ -820,6 +820,7 @@ public class ServerCalls {
 		});
 	}
 	
+
 	public void addBadges(List<String> badgeIds, final DataInputListener<Boolean> listener) {
 		String url = getAServerAddr()+"/func?task=addBadge";
 		url+="&encodedKey="+quizApp.getUserDeviceManager().getEncodedKey();

@@ -50,8 +50,8 @@ public class MainActivity extends ActionBarActivity {
 //        
 //        menu.setOnItemClickedListener(new SateliteClickedListener() {
 //			
-//			public void eventOccured(int id) {
-//				quizApp.onMenuClick(id);
+//			public void eventOccured(int badgeId) {
+//				quizApp.onMenuClick(badgeId);
 //			}
 //		});
 //        

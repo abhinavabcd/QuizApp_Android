@@ -51,7 +51,7 @@ public class Config{
 	
 	public static final String PREF_USER_NAME = "userName";
 	public static final String PREF_APP_RATING = "appRating";
-	public static final String playStoreUrl = "https://play.google.com/store/apps/details?id=com.amcolabs.quizApp";
+	public static final String playStoreUrl = "https://play.google.com/store/apps/details?badgeId=com.amcolabs.quizApp";
 	public static final String sharingAppText = "Try this app \n "+playStoreUrl;
 	public static final int NOTIFICATION_ID_SERVER_PUSH = 10;
 	public static final String FORCE_APP_VERSION = "forceAppVersion";

@@ -5,22 +5,13 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
-import android.content.Context;
-import android.widget.ImageView;
-import android.widget.RelativeLayout;
-
-import com.amcolabs.quizapp.AppController;
 import com.amcolabs.quizapp.QuizApp;
-import com.amcolabs.quizapp.R;
-import com.amcolabs.quizapp.appcontrollers.ProgressiveQuizController;
 import com.amcolabs.quizapp.databaseutils.Badge;
 import com.amcolabs.quizapp.databaseutils.Category;
 import com.amcolabs.quizapp.databaseutils.Quiz;
 import com.amcolabs.quizapp.databaseutils.QuizHistory;
+import com.amcolabs.quizapp.datalisteners.DataInputListener;
 import com.amcolabs.quizapp.fileandcommonutils.CommonFunctions;
-import com.amcolabs.quizapp.uiutils.UiUtils;
-import com.amcolabs.quizapp.widgets.FancyDialog;
-import com.amcolabs.quizapp.widgets.GothamTextView;
 import com.google.gson.reflect.TypeToken;
 
 public class BadgeEvaluator {
@@ -87,7 +78,7 @@ public class BadgeEvaluator {
 		List<String> awardedBadges = quizApp.getUser().badges;
 		ArrayList<String> allBadges = new ArrayList<String>();
 		for(int i=0;i<badges.size();i++){
-			allBadges.add(badges.get(i).getId());
+			allBadges.add(badges.get(i).getBadgeId());
 		}
 		for(int i=0;i<awardedBadges.size();i++){
 			badges.remove(allBadges.indexOf(awardedBadges.get(i)));
@@ -95,6 +86,7 @@ public class BadgeEvaluator {
 		
 		Iterator<Badge> itr = badges.iterator();
 		Badge curBadge = null;
+		ArrayList<Badge> unlockedBadges = new ArrayList<Badge>();
 		String[] ors;
 		ArrayList<String> ands;
 		String[] cond;
@@ -119,10 +111,35 @@ public class BadgeEvaluator {
 				}
 				state = state || andState;
 				if(state){
-					// TODO: server call to add new badge to user
-					quizApp.getStaticPopupDialogBoxes().showUnlockedBadge(curBadge);
+					unlockedBadges.add(curBadge);
 				}
 			}
+		}
+		
+		if(unlockedBadges.size()>0){
+			newBadgeUnlocked(unlockedBadges);
+		}
+	}
+
+	private void newBadgeUnlocked(final ArrayList<Badge> unlockedBadges) {
+		ArrayList<String> badgeIds = new ArrayList<String>();
+		for(int i=0;i<unlockedBadges.size();i++){
+			badgeIds.add(unlockedBadges.get(i).getBadgeId());
+		}
+		quizApp.getServerCalls().addBadges(badgeIds, new DataInputListener<Boolean>(){
+			@Override
+			public String onData(Boolean s) {
+				if (!s){
+					if(!quizApp.getDataBaseHelper().setPendingState(unlockedBadges)){
+//						new Exception("DB data update error");
+						System.out.println("DB update error");
+					}
+				}
+				return null;
+			}
+		});
+		for(int i=0;i<unlockedBadges.size();i++){
+			quizApp.getStaticPopupDialogBoxes().showUnlockedBadge(unlockedBadges.get(i));
 		}
 	}
 
