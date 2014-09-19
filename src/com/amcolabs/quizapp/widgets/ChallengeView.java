@@ -8,18 +8,19 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.amcolabs.quizapp.QuizApp;
 import com.amcolabs.quizapp.R;
 import com.amcolabs.quizapp.User;
 import com.amcolabs.quizapp.datalisteners.DataInputListener;
-import com.amcolabs.quizapp.widgets.IViewType.ViewType;
 import com.squareup.picasso.Picasso.LoadedFrom;
 import com.squareup.picasso.Target;
 
 public class ChallengeView extends LinearLayout implements OnClickListener, Target , IViewType{
 
 	private DataInputListener<Integer> clickListener;
+	private TextView textView;
 
 	public ChallengeView(Context context) {
 		super(context);
@@ -30,6 +31,7 @@ public class ChallengeView extends LinearLayout implements OnClickListener, Targ
 		super(quizApp.getContext());
 		this.clickListener = dataInputListener;
 		LinearLayout mainView = (LinearLayout) quizApp.getActivity().getLayoutInflater().inflate(R.layout.challenge_view, this, false);
+		textView = (TextView) mainView.findViewById(R.id.textView1);
 		mainView.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.WRAP_CONTENT));
 		this.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,0,1f));
 		this.setGravity(Gravity.CENTER);
@@ -41,6 +43,7 @@ public class ChallengeView extends LinearLayout implements OnClickListener, Targ
 
 		mainView.findViewById(R.id.button1).setOnClickListener(this);
 		this.addView(mainView);
+		quizApp.getUiUtils().blickAnimation(textView);
 	}
 
 	@Override
@@ -75,5 +78,9 @@ public class ChallengeView extends LinearLayout implements OnClickListener, Targ
 	public ViewType getViewType() {
 		// TODO Auto-generated method stub
 		return ViewType.CHALLENGE_VIEW;
+	}
+	
+	public void cleanUp(){
+		textView.clearAnimation();
 	}
 }
