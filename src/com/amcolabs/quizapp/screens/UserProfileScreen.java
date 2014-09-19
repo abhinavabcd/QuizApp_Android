@@ -61,7 +61,7 @@ public class UserProfileScreen extends Screen {
 	public void showUser(User user){
 		userName.setText(user.name);
 		getApp().getUiUtils().loadImageIntoView(getApp().getContext(), userImage, user.pictureUrl, false);
-		userStatusMessage.setText(user.status);
+		userStatusMessage.setText(user.getStatus());
 		userMoreInfo.setText(user.place);
 		
 		drawUserChartsAndUpdateStats(user);

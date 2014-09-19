@@ -116,7 +116,10 @@ public class UiUtils {
 		OK("Ok"),
 		NEW_BADGE_UNLOCKED_MESSAGE("New Badge Unlocked!"),
 		USER_HAS_LEFT("User left the quiz"), 
-		SELECT_FRIENDS_TO_CHALLENGE("Select Friends to Challenge");
+		SELECT_FRIENDS_TO_CHALLENGE("Select Friends to Challenge"),
+		BEGINNER("Beginner"),
+		RUNNER("Runner"),
+		GO_GETTER("Go Getter"), TREND_SETTER("Trend Setter");
 		
 		String value = null;
 		UiText(String value){
