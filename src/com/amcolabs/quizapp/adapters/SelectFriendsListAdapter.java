@@ -61,7 +61,7 @@ public  class SelectFriendsListAdapter extends ArrayAdapter<User>{
 			holder.item = user;
 			quizApp.getUiUtils().loadImageIntoView(quizApp.getContext(), holder.imageView, getItem(position).pictureUrl,true);
 			holder.userName.setText(user.name);
-			holder.statusDescription.setText(user.status);
+			holder.statusDescription.setText(user.getStatus());
 			return convertView;
 		}
 		

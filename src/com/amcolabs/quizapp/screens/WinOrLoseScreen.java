@@ -179,7 +179,7 @@ public class WinOrLoseScreen extends Screen{
 			imgView = tmp.userImageView;
 			getApp().getUiUtils().loadImageIntoView(getApp().getContext(), imgView, cUser.pictureUrl, false);
 			tmp.userNameView.setText(cUser.name);
-			tmp.userStatusMessageView.setText(cUser.status);
+			tmp.userStatusMessageView.setText(cUser.getStatus());
 			//tmp.userMoreInfoView.setText(cUser.country);
 			imgView.setTag(cUser);
 			imgView.setOnClickListener(new OnClickListener() {

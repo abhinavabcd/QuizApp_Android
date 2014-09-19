@@ -820,12 +820,14 @@ public class ServerCalls {
 		});
 	}
 	
-	public void addBadge(ArrayList<String> badgeIds, final DataInputListener<Boolean> listener) {
+
+	public void addBadges(List<String> badgeIds, final DataInputListener<Boolean> listener) {
 		String url = getAServerAddr()+"/func?task=addBadge";
 		url+="&encodedKey="+quizApp.getUserDeviceManager().getEncodedKey();
-		url+="&badgeId="+badgeIds;
+		HashMap<String, String> params = new HashMap<String, String>();
+		params.put("badgeIds",quizApp.getConfig().getGson().toJson(badgeIds));
 		
-		makeServerCall(url, new ServerNotifier() {
+		makeServerPostCall(url, params, new ServerNotifier() {
 		@Override
 		public void onServerResponse(MessageType messageType,ServerResponse response) {
 			switch(messageType){

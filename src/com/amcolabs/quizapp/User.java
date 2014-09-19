@@ -5,8 +5,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
-import com.amcolabs.quizapp.appcontrollers.ProgressiveQuizController.UserAnswer;
 import com.amcolabs.quizapp.databaseutils.Quiz;
+import com.amcolabs.quizapp.uiutils.UiUtils.UiText;
 import com.j256.ormlite.field.DatabaseField;
 
 public class User {
@@ -30,7 +30,7 @@ public class User {
 	public double createdAt;
 	public String country; 
 	@DatabaseField
-	public String status;
+	private String status;
 	public String googlePlus;
 	public String facebook;
 	public ArrayList<String> badges;
@@ -141,6 +141,31 @@ public class User {
 	public List<String> getSubscribedTo() {
 		return subscribedTo;
 	}
+
+	public String getStatus(float level) {
+		if(status==null){
+			if(level<10)
+				return UiText.BEGINNER.getValue();
+			if(level<20)
+				return UiText.RUNNER.getValue();
+			if(level<40)
+				return UiText.GO_GETTER.getValue();
+			if(level<60)
+				return UiText.TREND_SETTER.getValue();
+		}
+		return status;
+	}
+	public String getStatus() {
+		if(status==null){
+			return UiText.BEGINNER.getValue();
+		}
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+	
 
 }
 

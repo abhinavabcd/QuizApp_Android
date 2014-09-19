@@ -100,7 +100,7 @@ public class LeaderboardItemListAdapter extends ArrayAdapter<User> {
 //		else{
 //			holder.shortCategoryDescription.setVisibility(View.VISIBLE);
 //		}
-		holder.userStatus.setText(user.status);
+		holder.userStatus.setText(user.getStatus(quizApp.getGameUtils().getLevelFromXp(temp[0])));
 		holder.additionalText.setText(score);		
 		holder.rankText.setText(rank);
 		return convertView;

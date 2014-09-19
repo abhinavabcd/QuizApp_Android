@@ -126,7 +126,7 @@ public class BadgeEvaluator {
 		for(int i=0;i<unlockedBadges.size();i++){
 			badgeIds.add(unlockedBadges.get(i).getId());
 		}
-		quizApp.getServerCalls().addBadge(badgeIds, new DataInputListener<Boolean>(){
+		quizApp.getServerCalls().addBadges(badgeIds, new DataInputListener<Boolean>(){
 			@Override
 			public String onData(Boolean s) {
 				if (!s){
