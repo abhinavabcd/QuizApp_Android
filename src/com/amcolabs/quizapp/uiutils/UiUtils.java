@@ -114,7 +114,8 @@ public class UiUtils {
 		NO("No"), 
 		SERVER_ERROR_MESSAGE("An Error"),
 		USER_HAS_DECLINED("User declined the request"), 
-		OK("Ok");
+		OK("Ok"),
+		NEW_BADGE_UNLOCKED_MESSAGE("New Badge Unlocked!");
 
 		
 		String value = null;
@@ -331,18 +332,18 @@ public class UiUtils {
 	
 	
 	
-	public void loadImageIntoView(Context ctx , final ImageView imgView , final String assetPath , final boolean downloadToAssets){
+	public boolean loadImageIntoView(Context ctx , final ImageView imgView, final String assetPath , final boolean downloadToAssets){
 		if(assetPath==null || assetPath.isEmpty())
-			return;
+			return false;
 		try{
 			if(assetPath.startsWith("http://") || assetPath.startsWith("https://")){
 				Picasso.with(ctx).load(assetPath).into(imgView);
-			    return;
+			    return true;
 			}
 			
 		    InputStream ims = ctx.getAssets().open("images/"+assetPath);
 		    Picasso.with(ctx).load("file:///android_asset/images/"+assetPath).into(imgView);
-		    return;
+		    return true;
 		}
 		catch(IOException ex) {
 			File file = new File(ctx.getFilesDir().getParentFile().getPath()+"/images/"+assetPath);
@@ -360,7 +361,9 @@ public class UiUtils {
 			}
 		}		 
 		catch (Exception e) {
+			return false;
 		}
+		return true;
 	}
 	
 	

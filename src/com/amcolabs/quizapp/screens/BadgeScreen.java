@@ -13,11 +13,8 @@ import android.widget.ImageView;
 import com.amcolabs.quizapp.AppController;
 import com.amcolabs.quizapp.R;
 import com.amcolabs.quizapp.Screen;
-import com.amcolabs.quizapp.R.id;
-import com.amcolabs.quizapp.R.layout;
 import com.amcolabs.quizapp.databaseutils.Badge;
 import com.amcolabs.quizapp.widgets.GothamTextView;
-import com.squareup.picasso.Picasso;
 
 public class BadgeScreen extends Screen{
 	
@@ -31,11 +28,6 @@ public class BadgeScreen extends Screen{
         gridView = (GridView) tmp.findViewById(R.id.gridView);
         gridView.setAdapter( new MyArrayAdapter(this.getContext(), R.layout.badge_small, new ArrayList<Badge>()));
 	}
-	
-	public void evaluateBadgeConditions(){
-		
-	}
-	
 	
 	private class MyArrayAdapter extends ArrayAdapter<Badge>{
 		class ViewHolder{
@@ -64,7 +56,7 @@ public class BadgeScreen extends Screen{
         		holder = (ViewHolder) convertView.getTag();
         	}
         	Badge currentBadge = getItem(position);
-        	Picasso.with(getApp().getContext()).load(currentBadge.getSmallAssetPath()).into(holder.badgeImage);
+        	getApp().getUiUtils().loadImageIntoView(getApp().getContext(), holder.badgeImage, currentBadge.getSmallAssetPath(), true);
         	holder.badgeName.setText(currentBadge.getName());
             return convertView;
         }

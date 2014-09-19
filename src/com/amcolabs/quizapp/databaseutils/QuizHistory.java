@@ -8,12 +8,8 @@ import com.j256.ormlite.field.DatabaseField;
  */
 public class QuizHistory {
 	
-	@DatabaseField(id=true , index=true, unique=true)
-    int id;
-	@DatabaseField
+	@DatabaseField(id=true ,index=true, unique=true)
 	String quizId;
-	@DatabaseField
-	String categoryId;
 	@DatabaseField
 	int streak;
 	@DatabaseField
@@ -25,18 +21,28 @@ public class QuizHistory {
 	@DatabaseField
 	int totalCount;
 	@DatabaseField
-	double timeStamp;
+	double modifiedTimestamp;
 	
 	public QuizHistory(){
 		
 	}
 
-	public int getId() {
-		return id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
+	public QuizHistory(String qId,int result,double tstamp){
+		quizId = qId;
+		totalCount = 1;
+		modifiedTimestamp = tstamp;
+		if(result<0){
+			win = 0; lose = 1; tie = 0; streak = 0;
+		}
+		else if(result==0){
+			win = 0; lose = 0; tie = 1; streak = 0;
+		}
+		else if(result>0){
+			win = 1; lose = 0; tie = 0; streak = 1;
+		}
+		else{
+			win = 0; lose = 0; tie = 0; streak = 0;
+		}
 	}
 
 	public String getQuizId() {
@@ -45,14 +51,6 @@ public class QuizHistory {
 
 	public void setQuizId(String quizId) {
 		this.quizId = quizId;
-	}
-
-	public String getCategoryId() {
-		return categoryId;
-	}
-
-	public void setCategoryId(String categoryId) {
-		this.categoryId = categoryId;
 	}
 
 	public int getStreak() {
@@ -87,12 +85,12 @@ public class QuizHistory {
 		this.tie = tie;
 	}
 
-	public double getTimeStamp() {
-		return timeStamp;
+	public double getModifiedTimeStamp() {
+		return modifiedTimestamp;
 	}
 
-	public void setTimeStamp(double timeStamp) {
-		this.timeStamp = timeStamp;
+	public void setModifiedTimeStamp(double timeStamp) {
+		this.modifiedTimestamp = timeStamp;
 	}
 	
 	public int getTotalCount() {

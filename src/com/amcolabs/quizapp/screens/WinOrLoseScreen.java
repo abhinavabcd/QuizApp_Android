@@ -10,7 +10,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
@@ -37,7 +36,6 @@ import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.utils.ColorTemplate;
-import com.squareup.picasso.Picasso;
 
 public class WinOrLoseScreen extends Screen{
 	
@@ -179,7 +177,7 @@ public class WinOrLoseScreen extends Screen{
 			tmp = userViews.get(currentUsers.get(i).uid);
 			cUser = currentUsers.get(i);
 			imgView = tmp.userImageView;
-			Picasso.with(getApp().getContext()).load(cUser.pictureUrl).into(imgView);
+			getApp().getUiUtils().loadImageIntoView(getApp().getContext(), imgView, cUser.pictureUrl, false);
 			tmp.userNameView.setText(cUser.name);
 			tmp.userStatusMessageView.setText(cUser.status);
 			//tmp.userMoreInfoView.setText(cUser.country);

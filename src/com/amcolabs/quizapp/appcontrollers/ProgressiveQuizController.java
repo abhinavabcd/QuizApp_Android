@@ -17,7 +17,9 @@ import com.amcolabs.quizapp.User;
 import com.amcolabs.quizapp.configuration.Config;
 import com.amcolabs.quizapp.databaseutils.Question;
 import com.amcolabs.quizapp.databaseutils.Quiz;
+import com.amcolabs.quizapp.databaseutils.QuizHistory;
 import com.amcolabs.quizapp.datalisteners.DataInputListener;
+import com.amcolabs.quizapp.gameutils.BadgeEvaluator;
 import com.amcolabs.quizapp.screens.ClashScreen;
 import com.amcolabs.quizapp.screens.QuestionScreen;
 import com.amcolabs.quizapp.screens.WinOrLoseScreen;
@@ -547,6 +549,7 @@ public class ProgressiveQuizController extends AppController{
 		double cPoints = quizApp.getUser().getPoints(quiz);
 		List<UserAnswer> uAns = userAnswersStack.get(quizApp.getUser().uid);
 		double newPoints = cPoints+uAns.get(uAns.size()-1).whatUserGot+(quizResult>0?Config.QUIZ_WIN_BONUS:0);
+		QuizHistory qHistory;
 		
 		if(quizResult!=-2){
 			quiz.userXp+=newPoints;
@@ -559,9 +562,33 @@ public class ProgressiveQuizController extends AppController{
 			
 			quizApp.getServerCalls().updateQuizWinStatus(quiz.quizId , quizResult , newPoints);//server call 
 			quizApp.getUser().getStats().put(quiz.quizId , (int) quiz.userXp);
+			qHistory = quizApp.getDataBaseHelper().getQuizHistoryById(quiz.quizId);
+			if(qHistory==null){
+				qHistory = new QuizHistory(quiz.quizId,quizResult,Config.getCurrentTimeStamp());
+			}
+			else{
+				qHistory.setTotalCount(qHistory.getTotalCount()+1);
+				qHistory.setModifiedTimeStamp(Config.getCurrentTimeStamp());
+				if(quizResult<0){
+					qHistory.setLose(qHistory.getLose()+1);;
+					qHistory.setStreak(0);
+				}
+				else if(quizResult==0){
+					qHistory.setTie(qHistory.getTie()+1);;
+					qHistory.setStreak(0);
+				}
+				else if(quizResult>0){
+					qHistory.setWin(qHistory.getWin()+1);
+					qHistory.setStreak(qHistory.getStreak()+1);
+				}
+			}
+			quizApp.getDataBaseHelper().createOrUpdateQuizHistory(qHistory);
 		}
 		quizResultScreen.showResult(userAnswersStack,quizResult,didUserLevelUp(cPoints,newPoints));
 		showScreen(quizResultScreen);
+		
+		BadgeEvaluator badgeEvaluator = quizApp.getBadgeEvaluator();
+		badgeEvaluator.evaluateBadges();
 	}
 
 	private ArrayList<String> whoWon(HashMap<String, List<UserAnswer>> userAnswersStack){

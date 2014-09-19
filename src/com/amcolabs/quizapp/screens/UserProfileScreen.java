@@ -7,7 +7,6 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.widget.ImageView;
 import android.widget.ScrollView;
-import android.widget.TextView;
 
 import com.amcolabs.quizapp.AppController;
 import com.amcolabs.quizapp.R;
@@ -27,7 +26,6 @@ import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.utils.ColorTemplate;
-import com.squareup.picasso.Picasso;
 
 public class UserProfileScreen extends Screen {
 	public GothamTextView wonTextView;
@@ -62,7 +60,7 @@ public class UserProfileScreen extends Screen {
 	
 	public void showUser(User user){
 		userName.setText(user.name);
-		Picasso.with(getApp().getContext()).load(user.pictureUrl).into(userImage);
+		getApp().getUiUtils().loadImageIntoView(getApp().getContext(), userImage, user.pictureUrl, false);
 		userStatusMessage.setText(user.status);
 		userMoreInfo.setText(user.place);
 		

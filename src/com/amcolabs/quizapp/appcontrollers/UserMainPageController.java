@@ -117,8 +117,6 @@ public class UserMainPageController  extends AppController implements OnInitiali
 	}
 	
 	private void showUserHomeScreen() {
-		BadgeEvaluator badgeEvaluator = quizApp.getBadgeEvaluator();
-		badgeEvaluator.evaluateBadges();
 		
 		clearScreen();
 		HomeScreen cs= new HomeScreen(this);

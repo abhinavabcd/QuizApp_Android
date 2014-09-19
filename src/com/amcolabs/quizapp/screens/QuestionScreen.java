@@ -27,7 +27,6 @@ import com.amcolabs.quizapp.datalisteners.DataInputListener;
 import com.amcolabs.quizapp.widgets.CircularCounter;
 import com.amcolabs.quizapp.widgets.CustomProgressBar;
 import com.amcolabs.quizapp.widgets.GothamButtonView;
-import com.squareup.picasso.Picasso;
 
 class UserProgressViewHolder{
 
@@ -117,7 +116,8 @@ public class QuestionScreen extends Screen implements View.OnClickListener, Anim
 			userViews.put(user.uid, userProgressView);
 			
 			userProgressView.userNameView.setText(user.name);
-			Picasso.with(getApp().getContext()).load(user.pictureUrl).into(userProgressView.userImageView);
+			getApp().getUiUtils().loadImageIntoView(getApp().getContext(), userProgressView.userImageView, user.pictureUrl, false);
+
 			userProgressView.userProgressView.setProgress(0);
 			userProgressView.userProgressView.setMax(maxScore);
 
@@ -159,6 +159,7 @@ public class QuestionScreen extends Screen implements View.OnClickListener, Anim
 	
 	private void loadQuestion(final Question ques){
 		isOptionSelected = false;
+		boolean isImageAvailable = false;
 //		preQuestionView.setVisibility(View.INVISIBLE);
 //		questionAndOptionsViewWrapper.setVisibility(View.VISIBLE);
 		questionTextView.setText(ques.questionDescription);
@@ -173,7 +174,10 @@ public class QuestionScreen extends Screen implements View.OnClickListener, Anim
 			questionImageView.setVisibility(View.VISIBLE);
 			optionsViewWrapper.setOrientation(LinearLayout.HORIZONTAL);
 			optionsViewWrapper.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, 0,0.4f));			
-			getApp().getUiUtils().loadImageIntoView(getApp().getContext(), questionImageView, ques.getAssetPaths().get(0), false);
+			isImageAvailable = getApp().getUiUtils().loadImageIntoView(getApp().getContext(), questionImageView, ques.getAssetPaths().get(0), false);
+			if(!isImageAvailable){
+				// TODO: Show could not load image or quit quiz
+			}
 		}
 		questionAndOptionsViewWrapper.invalidate();
 		String[] mcqOptions = ques.getMCQOptions();

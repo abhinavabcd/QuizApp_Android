@@ -431,6 +431,26 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 		return tmp!=null?true:false;
     }
     
+    public QuizHistory getQuizHistoryById(String quizId){
+		try {
+			return getQuizHistoryDao().queryBuilder().where().eq("quizId", quizId).queryForFirst();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+    }
+    
+    public boolean createOrUpdateQuizHistory(QuizHistory qHistory){
+    	CreateOrUpdateStatus tmp=null;
+    	try {
+			tmp = getQuizHistoryDao().createOrUpdate(qHistory);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return tmp!=null?true:false;
+    }
+    
     public void setRecentChat(String uid, String message , boolean unseen){
     	try {
 			getChatListDao().createOrUpdate(new ChatList(uid, message,Config.getCurrentTimeStamp() , unseen?0:1)); 

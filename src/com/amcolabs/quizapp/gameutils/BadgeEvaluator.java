@@ -5,12 +5,20 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
+import android.content.Context;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
+
 import com.amcolabs.quizapp.QuizApp;
+import com.amcolabs.quizapp.R;
 import com.amcolabs.quizapp.databaseutils.Badge;
 import com.amcolabs.quizapp.databaseutils.Category;
 import com.amcolabs.quizapp.databaseutils.Quiz;
 import com.amcolabs.quizapp.databaseutils.QuizHistory;
 import com.amcolabs.quizapp.fileandcommonutils.CommonFunctions;
+import com.amcolabs.quizapp.uiutils.UiUtils;
+import com.amcolabs.quizapp.widgets.FancyDialog;
+import com.amcolabs.quizapp.widgets.GothamTextView;
 import com.google.gson.reflect.TypeToken;
 
 public class BadgeEvaluator {
@@ -87,7 +95,7 @@ public class BadgeEvaluator {
 //			String condition = "level::5";
 			ors = CommonFunctions.splitString(condition, "||");
 			for(int i=0;i<ors.length;i++){
-				ands = loadQuizList(ors[i]);
+				ands = loadCategoriesAndQuizzes(ors[i]);
 				
 				for(int j=0;j<ands.size();j++){
 					cond = CommonFunctions.splitString(ands.get(j), "::");
@@ -100,18 +108,30 @@ public class BadgeEvaluator {
 				}
 				state = state || andState;
 				if(state){
-					// condition satisfied else continue
+					showUnlockedBadge(quizApp.getContext(),curBadge);
 				}
 			}
 		}
 	}
 	
+	private void showUnlockedBadge(Context ctxt,Badge badge) {
+		FancyDialog dialog = new FancyDialog(ctxt);
+		dialog.setTitle(UiUtils.UiText.NEW_BADGE_UNLOCKED_MESSAGE.getValue());
+		RelativeLayout badgeLayout = (RelativeLayout)quizApp.getActivity().getLayoutInflater().inflate(R.layout.badge_small, null);
+		quizApp.getUiUtils().loadImageIntoView(ctxt, (ImageView)badgeLayout.findViewById(R.id.badgeImage),badge.getSmallAssetPath(), true);
+		((GothamTextView)badgeLayout.findViewById(R.id.badgeName)).setText(badge.getName());
+		dialog.setContentView(badgeLayout);
+		dialog.showTitle();
+		dialog.hideAlertButtons();
+		dialog.show();
+	}
+
 	/**
 	 * Category and Quiz can be manipulated to give conditions. category
 	 * default -1 -> no restrictions(one quiz match with other conditions); 0 -> must match all given entries fully; n -> must match n entries 
 	 * @param condition
 	 */
-	private ArrayList<String> loadQuizList(String condition){
+	private ArrayList<String> loadCategoriesAndQuizzes(String condition){
 //		for(int i=0;i<ors.length;i++){
 //			quizList.add(new ArrayList<Quiz>());
 //		}
@@ -127,43 +147,13 @@ public class BadgeEvaluator {
 		cond = CommonFunctions.splitString(ands[0], "::");
 		if(cond[0].equalsIgnoreCase("category")){
 			if(cond.length>1){
-				childConditions = CommonFunctions.splitString(cond[1], "|");
-				for(int i=0;i<childConditions.length;i++){
-					cList = CommonFunctions.splitString(childConditions[i], "%");
-					tmp = CommonFunctions.splitString(cList[0],"&");
-					tmp1 = new ArrayList<String>();
-					for(int j=0;j<tmp.length;j++){
-						tmp1.add(tmp[j]);
-					}
-					categoryList.add(tmp1);
-					if(tmp.length>1){
-						categoryFullChildState.add(Integer.valueOf(tmp[1]));
-					}
-					else{
-						categoryFullChildState.add(-1);
-					}
-				}
+				loadCategoryList(cond[1]);
 			}
 			if(ands.length>1){
 				cond = CommonFunctions.splitString(ands[1],"::");
 				if(cond[0].equalsIgnoreCase("quiz")){
 					if(cond.length>1){
-						childConditions = CommonFunctions.splitString(cond[1],"|");
-						for(int i=0;i<childConditions.length;i++){
-							cList = CommonFunctions.splitString(childConditions[i],"%");
-							tmp = CommonFunctions.splitString(cList[0],"&");
-							tmp2 = new ArrayList<String>();
-							for(int j=0;j<tmp.length;j++){
-								tmp2.add(tmp[j]);
-							}
-							quizList.add(tmp2);
-							if(tmp.length>1){
-								quizFullChildState.add(Integer.valueOf(tmp[1]));
-							}
-							else{
-								quizFullChildState.add(-1);
-							}
-						}
+						loadQuizList(cond[1]);
 					}
 					return getRemainingElements(2,ands);
 				}
@@ -176,22 +166,7 @@ public class BadgeEvaluator {
 		}
 		else if(cond[0].equalsIgnoreCase("quiz")){
 			if(cond.length>1){
-				childConditions = CommonFunctions.splitString(cond[1],"|");
-				for(int i=0;i<childConditions.length;i++){
-					cList = CommonFunctions.splitString(childConditions[i],"%");
-					tmp = CommonFunctions.splitString(cList[0],"&");
-					tmp2 = new ArrayList<String>();
-					for(int j=0;j<tmp.length;j++){
-						tmp2.add(tmp[j]);
-					}
-					quizList.add(tmp2);
-					if(tmp.length>1){
-						quizFullChildState.add(Integer.valueOf(tmp[1]));
-					}
-					else{
-						quizFullChildState.add(-1);
-					}
-				}
+				loadQuizList(cond[1]);
 			}
 			return getRemainingElements(1,ands);
 		}
@@ -199,7 +174,60 @@ public class BadgeEvaluator {
 			loadAllQuizzes();
 			return getRemainingElements(0,ands);
 		}
-
+	}
+	
+	private void loadCategoryList(String cond){
+		String[] childConditions = CommonFunctions.splitString(cond, "|");
+		String[] cList;
+		String[] tmp;
+		ArrayList<String> tmp1;
+		for(int i=0;i<childConditions.length;i++){
+			cList = CommonFunctions.splitString(childConditions[i], "%");
+			if (cList[0].equalsIgnoreCase("")){
+				categoryList.add(new ArrayList<String>(mainCategoryList.keySet()));
+			}
+			else{
+				tmp = CommonFunctions.splitString(cList[0],"&");
+				tmp1 = new ArrayList<String>();
+				for(int j=0;j<tmp.length;j++){
+					tmp1.add(tmp[j]);
+				}
+				categoryList.add(tmp1);
+			}
+			if(cList.length>1){
+				categoryFullChildState.add(Integer.valueOf(cList[1]));
+			}
+			else{
+				categoryFullChildState.add(-1);
+			}
+		}
+	}
+	
+	private void loadQuizList(String cond){
+		String[] childConditions = CommonFunctions.splitString(cond, "|");
+		String[] cList;
+		String[] tmp;
+		ArrayList<String> tmp1;
+		for(int i=0;i<childConditions.length;i++){
+			cList = CommonFunctions.splitString(childConditions[i], "%");
+			if (cList[0].equalsIgnoreCase("")){
+				quizList.add(new ArrayList<String>(mainQuizList.keySet()));
+			}
+			else{
+				tmp = CommonFunctions.splitString(cList[0],"&");
+				tmp1 = new ArrayList<String>();
+				for(int j=0;j<tmp.length;j++){
+					tmp1.add(tmp[j]);
+				}
+				quizList.add(tmp1);
+			}
+			if(cList.length>1){
+				quizFullChildState.add(Integer.valueOf(cList[1]));
+			}
+			else{
+				quizFullChildState.add(-1);
+			}
+		}
 	}
 	
 	private ArrayList<String> getRemainingElements(int start,String[] array) {
@@ -239,7 +267,7 @@ public class BadgeEvaluator {
 	}
 	
 	private boolean basicConditionEvaluator(String cond,String value,int index){
-		boolean state = true;
+		boolean state = false;
 
 		if(cond.equalsIgnoreCase("level")){
 			if(categoryFullChildState.get(index)<0){
