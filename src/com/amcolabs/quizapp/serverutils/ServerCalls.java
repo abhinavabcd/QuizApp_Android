@@ -824,7 +824,7 @@ public class ServerCalls {
 	
 
 	public void addBadges(List<String> badgeIds, final DataInputListener<Boolean> listener) {
-		String url = getAServerAddr()+"/func?task=addBadge";
+		String url = getAServerAddr()+"/func?task=addBadges";
 		url+="&encodedKey="+quizApp.getUserDeviceManager().getEncodedKey();
 		HashMap<String, String> params = new HashMap<String, String>();
 		params.put("badgeIds",quizApp.getConfig().getGson().toJson(badgeIds));

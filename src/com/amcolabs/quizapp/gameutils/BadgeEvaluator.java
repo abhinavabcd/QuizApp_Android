@@ -80,8 +80,10 @@ public class BadgeEvaluator {
 		for(int i=0;i<badges.size();i++){
 			allBadges.add(badges.get(i).getBadgeId());
 		}
-		for(int i=0;i<awardedBadges.size();i++){
-			badges.remove(allBadges.indexOf(awardedBadges.get(i)));
+		if(awardedBadges!=null){
+			for(int i=0;i<awardedBadges.size();i++){
+				badges.remove(allBadges.indexOf(awardedBadges.get(i)));
+			}
 		}
 		
 		Iterator<Badge> itr = badges.iterator();
