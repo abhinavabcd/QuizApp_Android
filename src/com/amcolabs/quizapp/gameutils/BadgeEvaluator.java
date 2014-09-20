@@ -81,9 +81,12 @@ public class BadgeEvaluator {
 		for(int i=0;i<badges.size();i++){
 			allBadgeIds.add(badges.get(i).getBadgeId());
 		}
+		int ind=0;
 		if(awardedBadges!=null){
 			for(int i=0;i<awardedBadges.size();i++){
-				badges.remove(allBadgeIds.indexOf(awardedBadges.get(i)));
+				ind = allBadgeIds.indexOf(awardedBadges.get(i));
+				badges.remove(ind);
+				allBadgeIds.remove(ind);
 			}
 		}
 		if(pendingBadges!=null){
