@@ -64,10 +64,63 @@ public class UserProfileScreen extends Screen {
 		userStatusMessage.setText(user.getStatus());
 		userMoreInfo.setText(user.place);
 		
-		drawUserChartsAndUpdateStats(user);
+		drawUserQuizChartsAndUpdateStats(user);
 	}
 	
-	public void drawUserChartsAndUpdateStats(User user){
+	public void drawUserQuizChartsAndUpdateStats(User user){
+		int win_count = 0;
+		int lose_count = 0;
+		int tie_count = 0;
+		List<Quiz> quizList = getApp().getDataBaseHelper().getAllQuizzes(null);
+		ArrayList<Entry> yVals1 = new ArrayList<Entry>();
+		ArrayList<BarEntry> yValsWins = new ArrayList<BarEntry>();
+		ArrayList<BarEntry> yValsLosses = new ArrayList<BarEntry>();
+		ArrayList<BarEntry> yValsTies = new ArrayList<BarEntry>();
+		ArrayList<String> xVals = new ArrayList<String>();
+		int sz = quizList.size();
+
+		int[] winsLosses;
+		List<String> qIdList = new ArrayList<String>();
+		double userXp = 0;
+		int myindex = 0;
+		for (int i = 0; i < sz; i++) {
+			if (i<Config.PIE_CHART_MAX_FIELDS-1){
+				userXp = user.getPoints(quizList.get(i));
+				qIdList.add(quizList.get(i).quizId);
+				xVals.add(quizList.get(i).name);
+				myindex = i;
+			}
+			else{
+				userXp = userXp + user.getPoints(quizList.get(i));
+				qIdList.add(((Quiz)quizList.get(i)).quizId);
+				if(i!=sz-1)
+					continue;
+				xVals.add(UiUtils.UiText.PIE_CHART_OTHERS_TEXT.getValue());
+				myindex = Config.PIE_CHART_MAX_FIELDS-1;
+			}
+			winsLosses = user.getWinsLossesSum(qIdList);
+            yVals1.add(new Entry((float)getApp().getGameUtils().getLevelFromXp(userXp), myindex));
+            // update win lose tie counts here
+            win_count = win_count + winsLosses[0];
+            lose_count = lose_count + winsLosses[1];
+            tie_count = tie_count + winsLosses[2];
+            yValsWins.add(new BarEntry(winsLosses[0],myindex));
+            yValsLosses.add(new BarEntry(winsLosses[1],myindex));
+            yValsTies.add(new BarEntry(winsLosses[2],myindex));
+            qIdList.clear();
+            userXp = 0;
+        }
+		
+		//update stats
+		wonTextView.setText(win_count+" "+UiUtils.UiText.PROFILE_WON_STATS_TEXT.getValue());
+		lostTextView.setText(lose_count+" "+UiUtils.UiText.PROFILE_LOST_STATS_TEXT.getValue());
+		tieTextView.setText(tie_count+" "+UiUtils.UiText.PROFILE_TIE_STATS_TEXT.getValue());
+		
+		drawUserActivityDistributionChart(xVals,yVals1);
+		drawCategoryWiseLevelsChart(xVals,yValsWins,yValsLosses,yValsTies);
+	}
+	
+	public void drawUserCategoryChartsAndUpdateStats(User user){
 		int win_count = 0;
 		int lose_count = 0;
 		int tie_count = 0;
@@ -94,7 +147,7 @@ public class UserProfileScreen extends Screen {
 				qIdList.add(((Quiz)qList.get(i)).quizId);
 			}
 			winsLosses = user.getWinsLossesSum(qIdList);
-            yVals1.add(new Entry((float)getApp().getGameUtils().getLevelFromXp(totalXP), i)); // Blunder - we have to use user win lose tie stats ..
+            yVals1.add(new Entry((float)getApp().getGameUtils().getLevelFromXp(totalXP), i));
             // update win lose tie counts here
             yValsWins.add(new BarEntry(winsLosses[0],i));
             yValsLosses.add(new BarEntry(winsLosses[1],i));
@@ -125,10 +178,12 @@ public class UserProfileScreen extends Screen {
 			dataSets.add(set);
 			
 			BarData data = new BarData(xVals, dataSets);
-			data.setGroupSpace(110f);
+			data.setGroupSpace(20f);
 
 	        mBarChart.setData(data);
-	        mBarChart.setDescription("Your Current Level in each Category");
+	        mBarChart.setDescriptionTextSize(6f);
+	        mBarChart.setValueTextSize(5f);
+	        mBarChart.setDescription("Quiz Stats");
 	        mBarChart.invalidate();
 	}
 	
@@ -140,14 +195,16 @@ public class UserProfileScreen extends Screen {
 //        set1.setColors(ColorTemplate.createColors(controller.getContext().getApplicationContext(),ColorTemplate.VORDIPLOM_COLORS));
         PieData data = new PieData(xVals, set);
         mPieChart.setData(data);
+        mPieChart.setDescriptionTextSize(6f);
+        mPieChart.setValueTextSize(5f);
 
         // undo all highlights
         mPieChart.highlightValues(null);
 
         // set a text for the chart center
-        mPieChart.setCenterText("Total \n" + (int) mPieChart.getYValueSum() + "\n(all slices)");
+        mPieChart.setCenterText("Total value:" + (int) mPieChart.getYValueSum());
         
-        mPieChart.setDescription("Total Matches Played in each Category");
+        mPieChart.setDescription("Total Matches Played");
         mPieChart.invalidate();
 	}
 	

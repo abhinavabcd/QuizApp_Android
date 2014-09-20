@@ -3,9 +3,12 @@ package com.amcolabs.quizapp.screens;
 import java.util.ArrayList;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
@@ -16,17 +19,25 @@ import com.amcolabs.quizapp.Screen;
 import com.amcolabs.quizapp.databaseutils.Badge;
 import com.amcolabs.quizapp.widgets.GothamTextView;
 
-public class BadgeScreen extends Screen{
+public class BadgeScreen extends Screen implements OnItemClickListener{
 	
 	GridView gridView;
+	ArrayList<Badge> badges;
+	BadgeScreenController controller;
 	
-	public BadgeScreen(final AppController controller,ArrayList<Badge> badges){
-		super(controller);
-		
+	public BadgeScreen(BadgeScreenController contrlr){
+		super(contrlr);
+		controller = contrlr;
+		badges = new ArrayList<Badge>(getApp().getDataBaseHelper().getAllBadges());
         LayoutInflater inflater = getApp().getActivity().getLayoutInflater();
 		View tmp = inflater.inflate(R.layout.badges_grid, null);
         gridView = (GridView) tmp.findViewById(R.id.gridView);
-        gridView.setAdapter( new MyArrayAdapter(this.getContext(), R.layout.badge_small, new ArrayList<Badge>()));
+        gridView.setAdapter( new MyArrayAdapter(this.getContext(), R.layout.badge_small, badges));
+        gridView.setOnItemClickListener(this);
+        tmp.setBackgroundColor(Color.BLACK);
+//        tmp.setBackgroundColor(getApp().getConfig().getAThemeColor());
+//        gridView.setBackgroundColor(getApp().getConfig().getAThemeColor());
+        addView(tmp);
 	}
 	
 	private class MyArrayAdapter extends ArrayAdapter<Badge>{
@@ -56,9 +67,20 @@ public class BadgeScreen extends Screen{
         		holder = (ViewHolder) convertView.getTag();
         	}
         	Badge currentBadge = getItem(position);
-        	getApp().getUiUtils().loadImageIntoView(getApp().getContext(), holder.badgeImage, currentBadge.getSmallAssetPath(), true);
+        	getApp().getUiUtils().loadImageIntoView(getApp().getContext(), holder.badgeImage, currentBadge.getAssetPath(), true);
+        	if(getApp().getUser().badges.contains(currentBadge.getBadgeId())){
+        		holder.badgeImage.setAlpha(1.0f);
+        	}
+        	else{
+        		holder.badgeImage.setAlpha(0.5f);
+        	}
         	holder.badgeName.setText(currentBadge.getName());
             return convertView;
         }
     }
+
+	@Override
+	public void onItemClick(AdapterView<?> parent, View view, int position,long id) {
+		controller.onBadgeClick(badges.get(position));
+	}
 }

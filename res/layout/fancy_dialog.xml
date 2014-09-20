@@ -27,14 +27,15 @@
                 android:id="@+id/titleWrapper"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="5dp" >
+                android:layout_marginBottom="10dp"
+                android:padding="5dp" >
 
                 <com.amcolabs.quizapp.widgets.GothamTextView
                     android:id="@+id/titleText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerHorizontal="true"
-                    android:layout_centerInParent="false"
+                    android:layout_centerInParent="true"
                     android:layout_marginBottom="20dp"
                     android:text="Instructions"
                     android:textColor="@color/grey_cloud"

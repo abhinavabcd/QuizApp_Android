@@ -23,6 +23,7 @@ import com.amcolabs.quizapp.appcontrollers.ProgressiveQuizController.UserAnswer;
 import com.amcolabs.quizapp.configuration.Config;
 import com.amcolabs.quizapp.databaseutils.Category;
 import com.amcolabs.quizapp.databaseutils.Quiz;
+import com.amcolabs.quizapp.uiutils.UiUtils;
 import com.amcolabs.quizapp.uiutils.UiUtils.UiText;
 import com.amcolabs.quizapp.widgets.BarChartViewMultiDataset;
 import com.amcolabs.quizapp.widgets.FlowLayout;
@@ -99,7 +100,7 @@ public class WinOrLoseScreen extends Screen{
 			tmp = (LinearLayout) usersPieChartViews.getChildAt(i);//generally discouraged
 			uView = userViews.get(curUsers.get(i).uid);
 			uView.userPieChartView = (PieChartView) tmp.findViewById(R.id.pie_chart);
-			drawUserActivityDistributionChart(curUsers.get(i),uView.userPieChartView);
+			drawUserActivityQuizDistributionChart(curUsers.get(i),uView.userPieChartView);
 //			setSampleData(this.getContext(),uView.userPieChartView);
 		}
 		
@@ -283,7 +284,7 @@ public class WinOrLoseScreen extends Screen{
         myChart.invalidate();
 	 }
 	
-	public void drawUserActivityDistributionChart(User user,PieChartView mPieChart){
+	public void drawUserActivityCategoryDistributionChart(User user,PieChartView mPieChart){
 		List<Category> categories = getApp().getDataBaseHelper().getAllCategories();
 		ArrayList<Entry> yVals = new ArrayList<Entry>();
 		ArrayList<String> xVals = new ArrayList<String>();
@@ -307,6 +308,8 @@ public class WinOrLoseScreen extends Screen{
 //        set1.setColors(ColorTemplate.createColors(controller.getContext().getApplicationContext(),ColorTemplate.VORDIPLOM_COLORS));
         PieData data = new PieData(xVals, set);
         mPieChart.setData(data);
+        mPieChart.setDescriptionTextSize(6f);
+        mPieChart.setValueTextSize(5f);        
 
         // undo all highlights
         mPieChart.highlightValues(null);
@@ -315,6 +318,50 @@ public class WinOrLoseScreen extends Screen{
         mPieChart.setCenterText("Total \n" + (int) mPieChart.getYValueSum() + "\n(all slices)");
         
         mPieChart.setDescription("Total Matches Played in each Category");
+        mPieChart.invalidate();
+	}
+	
+	public void drawUserActivityQuizDistributionChart(User user,PieChartView mPieChart){
+		List<Quiz> quizList = getApp().getDataBaseHelper().getAllQuizzes(null);
+		ArrayList<Entry> yVals = new ArrayList<Entry>();
+		ArrayList<String> xVals = new ArrayList<String>();
+		int sz = quizList.size();
+		double userXp = 0;
+		int myindex = 0;
+		
+		for (int i = 0; i < sz; i++) {
+			if (i<Config.PIE_CHART_MAX_FIELDS-1){
+				userXp = user.getPoints(quizList.get(i));
+				xVals.add(quizList.get(i).name);
+				myindex = i;
+			}
+			else{
+				userXp = userXp + user.getPoints(quizList.get(i));
+				if(i!=sz-1)
+					continue;
+				xVals.add(UiUtils.UiText.PIE_CHART_OTHERS_TEXT.getValue());
+				myindex = Config.PIE_CHART_MAX_FIELDS-1;
+			}
+			userXp = 0;
+			yVals.add(new Entry((float)getApp().getGameUtils().getLevelFromXp(userXp), myindex));
+		}
+		
+		PieDataSet set = new PieDataSet(yVals, "Quiz Level");
+		set.setSliceSpace(3f);
+		set.setColors(Config.themeColors);
+//        set1.setColors(ColorTemplate.createColors(controller.getContext().getApplicationContext(),ColorTemplate.VORDIPLOM_COLORS));
+        PieData data = new PieData(xVals, set);
+        mPieChart.setData(data);
+        mPieChart.setDescriptionTextSize(6f);
+        mPieChart.setValueTextSize(5f);
+
+        // undo all highlights
+        mPieChart.highlightValues(null);
+
+        // set a text for the chart center
+        mPieChart.setCenterText("Total value: " + (int) mPieChart.getYValueSum());
+        
+        mPieChart.setDescription("Quiz Levels Distribution");
         mPieChart.invalidate();
 	}
 
@@ -346,7 +393,7 @@ public class WinOrLoseScreen extends Screen{
 			}
 		}
 		BarData data = new BarData(xVals, dataSets);
-		data.setGroupSpace(110f);
+		data.setGroupSpace(30f);
 
         mChart.setData(data);
         mChart.invalidate();

@@ -35,6 +35,7 @@ import com.amcolabs.quizapp.datalisteners.DataInputListener;
 import com.amcolabs.quizapp.gameutils.BadgeEvaluator;
 import com.amcolabs.quizapp.gameutils.GameUtils;
 import com.amcolabs.quizapp.popups.StaticPopupDialogBoxes;
+import com.amcolabs.quizapp.screens.BadgeScreenController;
 import com.amcolabs.quizapp.serverutils.ServerCalls;
 import com.amcolabs.quizapp.uiutils.UiUtils;
 import com.amcolabs.quizapp.uiutils.UiUtils.UiText;
@@ -394,6 +395,8 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 			case MENU_ALL_QUIZZES:
 				break;
 			case MENU_BADGES:
+				BadgeScreenController badgeController = (BadgeScreenController) loadAppController(BadgeScreenController.class);
+				badgeController.showBadgeScreen();
 				break;
 			case MENU_FRIENDS:
 				break;

@@ -9,6 +9,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
+        android:maxHeight="300dp"
+        android:maxWidth="300dp"
         android:src="@drawable/ic_launcher" />
 
     <com.amcolabs.quizapp.widgets.GothamTextView

@@ -3,23 +3,27 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_gravity="center"
+    android:layout_margin="10dp"
     android:gravity="center" >
 
     <ImageView
         android:id="@+id/badgeImage"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:src="@drawable/ic_launcher"/>
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_centerInParent="true"
+        android:layout_margin="10dp"
+        android:background="@color/white"
+        android:src="@drawable/ic_launcher" />
 
     <com.amcolabs.quizapp.widgets.GothamTextView
         android:id="@+id/badgeName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/badgeImage"
-        android:layout_centerHorizontal="false"
         android:layout_centerInParent="false"
         android:gravity="center"
         android:text="Quiz App Badge"
+        android:textColor="@color/white"
         android:textStyle="bold"
         android:typeface="normal" />
 

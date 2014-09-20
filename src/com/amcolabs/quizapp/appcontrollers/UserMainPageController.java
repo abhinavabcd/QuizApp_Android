@@ -12,8 +12,8 @@ import com.amcolabs.quizapp.QuizApp;
 import com.amcolabs.quizapp.Screen;
 import com.amcolabs.quizapp.User;
 import com.amcolabs.quizapp.UserDeviceManager;
-import com.amcolabs.quizapp.adapters.SelectFriendsListAdapter;
 import com.amcolabs.quizapp.configuration.Config;
+import com.amcolabs.quizapp.databaseutils.Badge;
 import com.amcolabs.quizapp.databaseutils.Category;
 import com.amcolabs.quizapp.databaseutils.OfflineChallenge;
 import com.amcolabs.quizapp.databaseutils.Quiz;
@@ -21,7 +21,6 @@ import com.amcolabs.quizapp.databaseutils.UserFeed;
 import com.amcolabs.quizapp.databaseutils.UserInboxMessage;
 import com.amcolabs.quizapp.datalisteners.DataInputListener;
 import com.amcolabs.quizapp.datalisteners.DataInputListener2;
-import com.amcolabs.quizapp.gameutils.BadgeEvaluator;
 import com.amcolabs.quizapp.popups.StaticPopupDialogBoxes;
 import com.amcolabs.quizapp.screens.HomeScreen;
 import com.amcolabs.quizapp.screens.LeaderBoardScreen;
@@ -141,6 +140,9 @@ public class UserMainPageController  extends AppController implements OnInitiali
 //		cs.addQuizzes();
 		
 		insertScreen(cs);
+		List<Badge> pendingBadges = quizApp.getDataBaseHelper().getAllPendingBadges();
+		if(pendingBadges!=null)
+			quizApp.getBadgeEvaluator().newBadgeUnlocked(new ArrayList<Badge>(pendingBadges));
 //		insertScreen(new UserProfileScreen(this));
 //		insertScreen(new WinOrLoseScreen(this));
 	}

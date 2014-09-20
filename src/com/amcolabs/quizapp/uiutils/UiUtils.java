@@ -123,7 +123,8 @@ public class UiUtils {
 		SELECT_FRIENDS_TO_CHALLENGE("Select Friends to Challenge"),
 		BEGINNER("Beginner"),
 		RUNNER("Runner"),
-		GO_GETTER("Go Getter"), TREND_SETTER("Trend Setter");
+		GO_GETTER("Go Getter"), TREND_SETTER("Trend Setter"), 
+		PIE_CHART_OTHERS_TEXT("Others");
 		
 		String value = null;
 		UiText(String value){

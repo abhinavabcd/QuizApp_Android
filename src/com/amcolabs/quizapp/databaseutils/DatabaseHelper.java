@@ -152,10 +152,26 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 		}
 		return null;
     }
-    
-    public List<Quiz> getAllQuizzes(){
+    /**
+     * Get all Quizzes ordered by given Field. Results will be in descending order.
+     * @param orderBy Field by which the result has to be ordered. If null is passed quizzes are ordered by userXp.
+     * @return
+     */
+    public List<Quiz> getAllQuizzes(String orderBy){
+    	if(orderBy==null){
+    		orderBy = "userXp";
+    	}
 		try {
-			return getQuizDao().queryForAll();
+			return getQuizDao().queryBuilder().orderBy(orderBy, false).query();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
+    }
+    
+    public List<Quiz> getTopQuizzes(long n){
+		try {
+			return getQuizDao().queryBuilder().orderBy("userXp", false).limit(n).query();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
