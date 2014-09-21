@@ -142,7 +142,7 @@ public class User {
 		return subscribedTo;
 	}
 
-	public String getStatus(float level) {
+	public String getStatus(double level) {
 		if(status==null){
 			if(level<10)
 				return UiText.BEGINNER.getValue();

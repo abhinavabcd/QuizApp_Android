@@ -23,7 +23,7 @@ public class BadgeEvaluator {
 	QuizApp quizApp;
 	ArrayList<ArrayList<String>> categoryList = new ArrayList<ArrayList<String>>();
 	ArrayList<ArrayList<String>> quizList = new ArrayList<ArrayList<String>>();
-	ArrayList<ArrayList<String>> categoryCombinations;
+	ArrayList<ArrayList<String>> categoryCombinations = new ArrayList<ArrayList<String>>();;
 	
 	ArrayList<Integer> categoryFullChildState = new ArrayList<Integer>();
 	ArrayList<Integer> quizFullChildState = new ArrayList<Integer>();
@@ -36,31 +36,11 @@ public class BadgeEvaluator {
 		mainQuizList = new HashMap<String, Quiz>();
 		mainQuizHistoryList = new HashMap<String, QuizHistory>(); 
 		
-		List<Category> tmp = quizApp.getDataBaseHelper().getAllCategories();
-		if(tmp!=null){
-			for(int i=0;i<tmp.size();i++){
-				mainCategoryList.put(tmp.get(i).categoryId, tmp.get(i));
-			}
-		}
-		
-		List<Quiz> tmp1 = quizApp.getDataBaseHelper().getAllQuizzes(null);
-		if(tmp1!=null){
-			for(int i=0;i<tmp1.size();i++){
-				mainQuizList.put(tmp1.get(i).quizId, tmp1.get(i));
-			}
-		}
-		
-		List<QuizHistory> tmp2 = quizApp.getDataBaseHelper().getAllQuizHistory();
-		if(tmp2!=null){
-			for(int i=0;i<tmp2.size();i++){
-				mainQuizHistoryList.put(tmp2.get(i).getQuizId(), tmp2.get(i));
-			}
-		}
 	}
 	
 	/**
 	 * Values must be given as limits i.e., anything, greater than or equal to given value, is counted as True 
-	 * -- (all is the only keyword allowed instead of values which implies condition must apply for all selected)
+	 * -- (0 is used to represent all, it implies condition must apply for all selected)
 	 * values must be followed by %x where x is the minimum count for the condition for given type (category and quiz only)
 	 * Full child match - must satisfy for all->0 ; atleast one -> 1 ; no restriction(default value) -> -1 
 	 * selected quizList will be List of lists which are bound by OR condition
@@ -70,6 +50,7 @@ public class BadgeEvaluator {
 	 * @return
 	 */
 	public void evaluateBadges(){
+		initialize(); // To load All quiz history, quizzes and categories
 		List<Badge> badges = quizApp.getDataBaseHelper().getAllBadges();
 		if(badges==null){
 			return;
@@ -108,6 +89,8 @@ public class BadgeEvaluator {
 		while(itr.hasNext()){
 			curBadge = itr.next();
 			String condition = curBadge.getCondition();
+			reinit();
+			
 //			String condition = "level::5";
 			ors = CommonFunctions.splitString(condition, "||");
 			for(int i=0;i<ors.length;i++){
@@ -133,6 +116,40 @@ public class BadgeEvaluator {
 		if(unlockedBadges.size()>0){
 			newBadgeUnlocked(unlockedBadges);
 		}
+		clearAllData();
+	}
+	
+	private void initialize() {
+		List<Category> tmp = quizApp.getDataBaseHelper().getAllCategories();
+		if(tmp!=null){
+			for(int i=0;i<tmp.size();i++){
+				mainCategoryList.put(tmp.get(i).categoryId, tmp.get(i));
+			}
+		}
+		
+		List<Quiz> tmp1 = quizApp.getDataBaseHelper().getAllQuizzes(null);
+		if(tmp1!=null){
+			for(int i=0;i<tmp1.size();i++){
+				mainQuizList.put(tmp1.get(i).quizId, tmp1.get(i));
+			}
+		}
+		
+		List<QuizHistory> tmp2 = quizApp.getDataBaseHelper().getAllQuizHistory();
+		if(tmp2!=null){
+			for(int i=0;i<tmp2.size();i++){
+				mainQuizHistoryList.put(tmp2.get(i).getQuizId(), tmp2.get(i));
+			}
+		}
+	}
+
+	private void reinit(){
+		categoryList.clear();
+//		categoryList.add(new ArrayList<String>());
+		quizList.clear();
+//		quizList.add(new ArrayList<String>());
+		categoryFullChildState.clear();
+		quizFullChildState.clear();
+		categoryCombinations.clear();
 	}
 
 	public void newBadgeUnlocked(final ArrayList<Badge> unlockedBadges) {
@@ -322,7 +339,7 @@ public class BadgeEvaluator {
 				return matchQuizListLevel(getQuizIdsOfCategories(categoryList.get(index)), value);
 			}
 			else{
-				categoryCombinations=CommonFunctions.getCombinations(categoryList.get(index), categoryFullChildState.get(index), 0, new ArrayList<String>(),new ArrayList<ArrayList<String>>());
+				categoryCombinations=CommonFunctions.getCombinations(categoryList.get(index), categoryFullChildState.get(index), 0, new ArrayList<String>(),categoryCombinations);
 				for(int i=0;i<categoryCombinations.size();i++){
 					state = matchQuizListLevel(getQuizIdsOfCategories(categoryCombinations.get(i)), value);
 					if(state)
@@ -405,7 +422,7 @@ public class BadgeEvaluator {
 	private boolean matchQuizListLevel(int index,int count,String value){
 		int tmp_count = 0;
 		for(int i=0;i<quizList.get(index).size();i++){
-			if(Double.valueOf(value)<=quizApp.getUiUtils().getLevelFromPoints(mainQuizList.get(quizList.get(index).get(i)).userXp))
+			if(Double.valueOf(value)<=quizApp.getGameUtils().getLevelFromXp(mainQuizList.get(quizList.get(index).get(i)).userXp))
 				tmp_count++;
 			if(tmp_count>=count){
 				return true;
@@ -416,7 +433,7 @@ public class BadgeEvaluator {
 	
 	private boolean matchQuizListLevel(ArrayList<String> quizIds,String value){
 		for(int i=0;i<quizIds.size();i++){
-			if(Double.valueOf(value)>quizApp.getUiUtils().getLevelFromPoints(mainQuizList.get(quizIds.get(i)).userXp))
+			if(Double.valueOf(value)>quizApp.getGameUtils().getLevelFromXp(mainQuizList.get(quizIds.get(i)).userXp))
 				return false;
 		}
 		return true;
@@ -485,7 +502,7 @@ public class BadgeEvaluator {
 			if(Integer.valueOf(value)<=totalCount)
 				return true;
 		}
-		return true;
+		return false;
 	}
 	
 	private void loadAllQuizzes(){
@@ -493,5 +510,12 @@ public class BadgeEvaluator {
 		quizList.add(new ArrayList<String>(mainQuizList.keySet()));
 		categoryFullChildState.add(-1);
 		quizFullChildState.add(-1);
+	}
+	
+	private void clearAllData(){
+		mainCategoryList.clear();
+		mainQuizList.clear();
+		mainQuizHistoryList.clear();
+		reinit();
 	}
 }

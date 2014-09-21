@@ -68,7 +68,7 @@ public class BadgeScreen extends Screen implements OnItemClickListener{
         	}
         	Badge currentBadge = getItem(position);
         	getApp().getUiUtils().loadImageIntoView(getApp().getContext(), holder.badgeImage, currentBadge.getAssetPath(), true);
-        	if(getApp().getUser().badges.contains(currentBadge.getBadgeId())){
+        	if(getApp().getUser().badges!=null && getApp().getUser().badges.contains(currentBadge.getBadgeId())){
         		holder.badgeImage.setAlpha(1.0f);
         	}
         	else{
