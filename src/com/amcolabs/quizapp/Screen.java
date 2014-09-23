@@ -22,6 +22,7 @@ public class Screen extends LinearLayout {
 	public void addToScrollView(View view){
 		if(scrollView==null){
 			ScrollView scrollViewMain = new ScrollView(getApp().getContext());
+			scrollViewMain.setOverScrollMode(ScrollView.OVER_SCROLL_NEVER);
 			scrollViewMain.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.MATCH_PARENT,1));
 			scrollViewMain.setFillViewport(true);
 			addView(scrollViewMain);

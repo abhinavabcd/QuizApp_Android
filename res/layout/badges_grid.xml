@@ -8,9 +8,12 @@
         android:id="@+id/gridView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
-        android:numColumns="3" >
+        android:layout_alignParentTop="true"
+        android:layout_centerInParent="true"
+        android:layout_margin="5dp"
+        android:numColumns="2" >
+
     </GridView>
     
 </RelativeLayout>

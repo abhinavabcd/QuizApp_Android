@@ -26,16 +26,13 @@
             <RelativeLayout
                 android:id="@+id/titleWrapper"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="5dp" >
+                android:layout_height="wrap_content" >
 
                 <com.amcolabs.quizapp.widgets.GothamTextView
                     android:id="@+id/titleText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerHorizontal="true"
-                    android:layout_centerInParent="false"
-                    android:layout_marginBottom="20dp"
                     android:text="Instructions"
                     android:textColor="@color/grey_cloud"
                     android:textSize="20sp"
@@ -53,6 +50,7 @@
             <com.amcolabs.quizapp.widgets.SeperatorView
                 android:id="@+id/seperatorView1"
                 android:layout_width="wrap_content"
+                android:background="@color/grey"
                 android:layout_height="2dp"
                 android:layout_margin="5dp" />
 
@@ -62,6 +60,7 @@
             android:id="@+id/contentWrapper"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_margin="5dp"
             android:orientation="vertical" >
 
         </LinearLayout>
@@ -75,6 +74,7 @@
             <com.amcolabs.quizapp.widgets.SeperatorView
                 android:id="@+id/seperatorView2"
                 android:layout_width="wrap_content"
+                android:background="@color/grey"
                 android:layout_height="2dp"
                 android:layout_margin="5dp" />
 

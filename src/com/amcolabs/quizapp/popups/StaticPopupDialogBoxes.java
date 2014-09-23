@@ -216,4 +216,19 @@ public class StaticPopupDialogBoxes {
 		dialog.hideAlertButtons();
 		dialog.show();
 	}
+
+	public void showBadge(Badge badge) {
+		FancyDialog dialog = new FancyDialog(quizApp.getContext());
+//		dialog.setTitle(UiUtils.UiText.NEW_BADGE_UNLOCKED_MESSAGE.getValue());
+		RelativeLayout badgeLayout = (RelativeLayout)quizApp.getActivity().getLayoutInflater().inflate(R.layout.badge_full, null);
+		quizApp.getUiUtils().loadImageIntoView(quizApp.getContext(), (ImageView)badgeLayout.findViewById(R.id.badgeImage),badge.getAssetPath(), true);
+		((GothamTextView)badgeLayout.findViewById(R.id.badgeName)).setText(badge.getName());
+		((GothamTextView)badgeLayout.findViewById(R.id.badgeDescription)).setText(badge.getDescription());
+		dialog.setContent(badgeLayout);
+
+//		dialog.showTitle();
+		dialog.hideTitle();
+		dialog.hideAlertButtons();
+		dialog.show();
+	}
 }

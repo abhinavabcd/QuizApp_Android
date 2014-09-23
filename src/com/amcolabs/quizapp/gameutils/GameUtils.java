@@ -14,12 +14,12 @@ public class GameUtils {
 	}
 	
 	public static int LEVEL_ONE_POINTS = 300;
-	public float getLevelFromXp(double newPoints){
-		return 1+(float) ((-19.0f*LEVEL_ONE_POINTS + Math.sqrt(19*19*LEVEL_ONE_POINTS*LEVEL_ONE_POINTS + 4*(20*newPoints)*(LEVEL_ONE_POINTS)))/(2*LEVEL_ONE_POINTS*1.0f));
+	public double getLevelFromXp(double newPoints){
+		return 1+(double) ((-19.0d*LEVEL_ONE_POINTS + Math.sqrt(19.0d*19*LEVEL_ONE_POINTS*LEVEL_ONE_POINTS + 4*(20*newPoints)*(LEVEL_ONE_POINTS)))/(2*LEVEL_ONE_POINTS*1.0d));
 	}
 	
 	public double getPointsFromLevel(double level){
 		level--;
-		return LEVEL_ONE_POINTS*level+ level*(level-1)/10*LEVEL_ONE_POINTS/2;
+		return LEVEL_ONE_POINTS*level+ (level*(level-1)/10.0d)*(LEVEL_ONE_POINTS/2);
 	}
 }

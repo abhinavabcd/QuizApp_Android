@@ -52,7 +52,7 @@ public class UserInfoCard extends LinearLayout implements Target,IViewType{
 	
 	public void addLevelIndicator(QuizApp quizApp , float xpPoints){
 		UiUtils uiUtils = quizApp.getUiUtils();
-		float currentLevelProgress = quizApp.getGameUtils().getLevelFromXp((int)xpPoints);
+		float currentLevelProgress = (float)quizApp.getGameUtils().getLevelFromXp((int)xpPoints);
 		CircularCounter levelIndicator = new CircularCounter(quizApp.getContext(), uiUtils.getInSp(10), Color.parseColor("#FFFFFF"), uiUtils.getInSp(7), UiText.LEVEL.getValue(), 
 				 uiUtils.getInDp(5), 1, uiUtils.getInDp(3), uiUtils.getInDp(3), 0, 0, 0, 0, uiUtils.getInDp(40),0);		
 		levelIndicator.setValues(currentLevelProgress - (int)currentLevelProgress, 1, 0);

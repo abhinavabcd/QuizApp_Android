@@ -96,7 +96,7 @@ public class QuizItemListAdapter extends ArrayAdapter<Quiz> {
 //			holder.shortCategoryDescription.setVisibility(View.VISIBLE);
 		}
 		holder.shortCategoryDescription.setText(quiz.shortDescription);
-		float currentLevelProgress = quizApp.getGameUtils().getLevelFromXp((int)quiz.userXp);
+		float currentLevelProgress = (float)quizApp.getGameUtils().getLevelFromXp((int)quiz.userXp);
 		
 		holder.levelIndicator.setValues(currentLevelProgress - (int)currentLevelProgress, 1, 0);
 		holder.levelIndicator.setCurrentValue((int)currentLevelProgress);
