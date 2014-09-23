@@ -43,6 +43,7 @@ public class User {
 	private List<String> subscribers;//uids
 	private List<String> subscribedTo;
 	
+	public boolean isFriend = true;
 	
 	
 	
@@ -69,7 +70,7 @@ public class User {
 	}
 	
 	public boolean isBotUser(){
-		return uid.startsWith("0");
+		return uid.startsWith("00");
 	}
 	
 	public void save(QuizApp quizApp){
@@ -135,10 +136,14 @@ public class User {
 	}
 
 	public List<String> getSubscribers() {
+		if(subscribers==null)
+			subscribers = new ArrayList<String>();
 		return subscribers;
 	}
 
 	public List<String> getSubscribedTo() {
+		if(subscribedTo==null)
+			subscribedTo = new ArrayList<String>();
 		return subscribedTo;
 	}
 

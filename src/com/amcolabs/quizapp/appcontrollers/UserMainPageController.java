@@ -354,6 +354,10 @@ public class UserMainPageController  extends AppController implements OnInitiali
 	}
 
 	public void onStartChallengeQuiz(Quiz quiz) {
+		final User user = quizApp.getUser();
+		if(quizApp.getUser().getSubscribedTo().size()==0){
+			quizApp.getStaticPopupDialogBoxes().yesOrNo(UiText.NO_FRIENDS_TRY_ADDING.getValue(), null, UiText.OK.getValue(), null);
+		}
 		clearScreen();
 		quizApp.getDataBaseHelper().getAllUsersByUid(user.getSubscribedTo(), new DataInputListener<Boolean>(){
 			@Override
@@ -370,7 +374,8 @@ public class UserMainPageController  extends AppController implements OnInitiali
 						progressiveQuiz.startNewChallenge(s);
 						return super.onData(s);
 					}
-				});
+				}, true);
+				insertScreen(selectFriendsScreen);
 				return super.onData(s);
 		    }
 		});

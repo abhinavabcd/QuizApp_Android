@@ -749,12 +749,13 @@ public class ServerCalls {
 	}
 
 
-	public void updateQuizWinStatus(String quizId, int winStatus , double newPoints) {
+	public void updateQuizWinStatus(String quizId, int winStatus , double newPoints, User user) {
 		String url = getAServerAddr()+"/func?task=updateQuizWinStatus";
 		url+="&encodedKey="+quizApp.getUserDeviceManager().getEncodedKey();
 		url+="&quizId="+quizId;
 		url+="&xpPoints="+newPoints;
 		url+="&winStatus="+winStatus+"";
+		url+="&uid2="+user.uid;
 		
 		makeServerCall(url, new ServerNotifier() {
 		@Override
@@ -819,7 +820,7 @@ public class ServerCalls {
 					break;
 			}
 		}
-		});
+		}, true);
 	}
 	
 
@@ -843,6 +844,29 @@ public class ServerCalls {
 						listener.onData(false);
 					}
 					break;
+			}
+		}
+		});
+	}
+
+
+	public void searchUsersByName(String currentSearchQuery , final DataInputListener<List<User>> listener) {
+		String url = getAServerAddr()+"/func?task=searchByUserName";
+		url+="&encodedKey="+quizApp.getUserDeviceManager().getEncodedKey();
+		url+="&searchQ="+currentSearchQuery;
+		makeServerCall(url,new ServerNotifier() {			
+		@Override
+		public void onServerResponse(MessageType messageType, ServerResponse response) {
+			switch (messageType) {
+			case OK:
+				List<User> users = quizApp.getConfig().getGson().fromJson(response.payload, new TypeToken<List<User>>(){}.getType());
+				for(User user : users){
+					user.isFriend = false;
+				}
+				listener.onData(users);
+				break;
+			default:
+				break;
 			}
 		}
 		});

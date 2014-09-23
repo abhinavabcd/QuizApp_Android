@@ -13,6 +13,7 @@ public class Screen extends LinearLayout {
 	public Screen(AppController controller) {
 		super(controller.getContext());
 		this.controller = controller;
+		this.controller.incRefCount();
 		this.setOrientation(LinearLayout.VERTICAL);
 		setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.MATCH_PARENT,1));
 	}

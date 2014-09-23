@@ -130,7 +130,11 @@ public class QuizItemListAdapter extends ArrayAdapter<Quiz> {
 		protected void publishResults(CharSequence constraint,
 				FilterResults results) {
 			clear();
-			addAll((ArrayList<Quiz>) results.values);
+			List<Quiz> a = (ArrayList<Quiz>) results.values;
+			if(a.size()==0){
+				a=quizList;
+			}
+			addAll(a);
 			notifyDataSetChanged();
 		}
 

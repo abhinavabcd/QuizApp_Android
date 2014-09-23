@@ -14,6 +14,7 @@ import com.amcolabs.quizapp.QuizApp;
 import com.amcolabs.quizapp.R;
 import com.amcolabs.quizapp.User;
 import com.amcolabs.quizapp.datalisteners.DataInputListener;
+import com.amcolabs.quizapp.uiutils.UiUtils.UiText;
 import com.squareup.picasso.Picasso.LoadedFrom;
 import com.squareup.picasso.Target;
 
@@ -41,7 +42,11 @@ public class ChallengeView extends LinearLayout implements OnClickListener, Targ
 		}
 		quizApp.getUiUtils().loadImageAsBg(quizApp.getContext(), this, bgAssetPath);
 
-		mainView.findViewById(R.id.button1).setOnClickListener(this);
+		QuizAppMenuItem menu1 = new QuizAppMenuItem(quizApp.getContext(), R.id.button1, quizApp.getConfig().themeColors[2], 0, UiText.START_CHALLENGE.getValue());
+		menu1.setPadding(0, 0 , quizApp.getUiUtils().dp2px(20),0);
+		mainView.addView(menu1);
+		
+		mainView.addView(new QuizAppMenuItem(quizApp.getContext(), R.id.button2, quizApp.getConfig().themeColors[2], 0, UiText.START_CHALLENGE.getValue()));
 		this.addView(mainView);
 		quizApp.getUiUtils().blickAnimation(textView);
 	}

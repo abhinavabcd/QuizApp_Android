@@ -241,6 +241,7 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 				if(screen!=null && !screen.controller.onBackPressed()){
 					screen = popCurrentScreen();
 					screen.beforeRemove();
+					screen.controller.decRefCount();
 					animateScreenRemove(screen , TO_RIGHT,null);
 					
 					Screen oldScreen = popCurrentScreen();
@@ -379,7 +380,9 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
     int currentActiveMenu = -1;
 	public void onMenuClick(int id) {
 		while(screenStack.size()>1){
-			screenStack.remove(0);
+			Screen s = screenStack.remove(0);
+			s.controller.decRefCount();
+			s.beforeRemove();
 		}
 		if(currentActiveMenu==id){
 			screenStack.peek().refresh();
@@ -429,10 +432,10 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 		LinearLayout buttonsContainer = (LinearLayout) menu.findViewById(R.id.nav_items_container);
 		buttonsContainer.removeAllViews();
 		menuItems = Arrays.asList(
+				new QuizAppMenuItem(this, QuizApp.MENU_HOME, R.drawable.home , UiText.HOME.getValue()),
 				new QuizAppMenuItem(this, QuizApp.MENU_BADGES, R.drawable.badges,UiText.BADGES.getValue()),
 				new QuizAppMenuItem(this, QuizApp.MENU_ALL_QUIZZES, R.drawable.all_quizzes, UiText.SHOW_QUIZZES.getValue()),
-				new QuizAppMenuItem(this, QuizApp.MENU_MESSAGES, R.drawable.messages , UiText.SHOW_MESSAGES.getValue()),
-				new QuizAppMenuItem(this, QuizApp.MENU_HOME, R.drawable.home , UiText.HOME.getValue()),
+//				new QuizAppMenuItem(this, QuizApp.MENU_MESSAGES, R.drawable.messages , UiText.SHOW_MESSAGES.getValue()),
 				new QuizAppMenuItem(this, QuizApp.MENU_CHATS, R.drawable.home , UiText.CHATS.getValue())
 				);
 		
@@ -484,6 +487,11 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 		for(User user : users){
 			cachedUsers.put(user.uid, user);
 		}
+	}
+	
+	@Override
+	public void onDestroy() {
+		destroyAllScreens();
 	}
 	
 }
