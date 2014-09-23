@@ -7,6 +7,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -152,6 +154,37 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 		}
 		return null;
     }
+    
+	
+	/**
+	 * Comparator to get quizzes Ordered by XP in Descending order
+	 * @author vinay
+	 *
+	 */
+	public class QuizComparator implements Comparator<Quiz>{
+
+		@Override
+		public int compare(Quiz lhs, Quiz rhs) {
+			if(quizApp.getUser().getPoints(lhs.quizId) > quizApp.getUser().getPoints(rhs.quizId)){
+				return -1;
+			}
+			else{
+				return 1;
+			}
+		}
+		
+	}
+	
+	/**
+	 * Method to sort QuizList by XP in Descending order
+	 * @param quizList
+	 * @return sorted list
+	 */
+	private List<Quiz> orderByXP(List<Quiz> quizList){
+		Collections.sort(quizList,new QuizComparator());
+		return quizList;
+	}
+    
     /**
      * Get all Quizzes ordered by given Field. Results will be in descending order.
      * @param orderBy Field by which the result has to be ordered. If null is passed quizzes are ordered by userXp.
@@ -167,6 +200,14 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 			e.printStackTrace();
 		}
 		return null;
+    }
+    
+    public List<Quiz> getAllQuizzesOrderedByXP(){
+    	return orderByXP(getAllQuizzes(null));
+    }
+    
+    public List<Quiz> getAllQuizzesOrderedByXP(int n){
+    	return orderByXP(getAllQuizzes(n,-1));
     }
     
     /**

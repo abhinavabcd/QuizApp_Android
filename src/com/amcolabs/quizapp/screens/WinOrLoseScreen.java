@@ -343,8 +343,8 @@ public class WinOrLoseScreen extends Screen{
 				xVals.add(UiUtils.UiText.PIE_CHART_OTHERS_TEXT.getValue());
 				myindex = Config.PIE_CHART_MAX_FIELDS-1;
 			}
-			userXp = 0;
 			yVals.add(new Entry((float)getApp().getGameUtils().getLevelFromXp(userXp), myindex));
+			userXp = 0;
 		}
 		
 		PieDataSet set = new PieDataSet(yVals, "Quiz Level");
