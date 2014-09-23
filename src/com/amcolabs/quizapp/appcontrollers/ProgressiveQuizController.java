@@ -308,7 +308,7 @@ public class ProgressiveQuizController extends AppController{
 					for(User user:currentUsers){ // check for any bots and schedule
 						if(!user.isBotUser()) continue;
 						
-						int elapsedTime = rand.nextInt(5*Math.max(0, (100-quizApp.getUser().getLevel(quiz))/100)); 
+						int elapsedTime = rand.nextInt((int) (5*Math.max(0, (100-quizApp.getUser().getLevel(quizApp,quiz.quizId))/100))); 
 						boolean isRightAnswer = rand.nextInt(2)==1? false:true;
 						if(isRightAnswer){
 							botScore+=Math.ceil((currentQuestion.getTime() - elapsedTime)*currentQuestion.xp/currentQuestion.getTime())*quizApp.getConfig().multiplyFactor(currentQuestions.size());
@@ -551,36 +551,74 @@ public class ProgressiveQuizController extends AppController{
 		// TODO Auto-generated method stub
 		ArrayList<String> winnersList = whoWon(userAnswersStack);
 		int quizResult = 0;
-		if(winnersList.contains(this.quizApp.getUser().uid)){
+
+		if (quizResultScreen==null){
+			quizResultScreen = new WinOrLoseScreen(this,currentUsers);
+		}
+		User curUser;
+		double cPoints;
+		double newPoints;
+		List<UserAnswer> uAns;
+		
+		// All user updates
+		for(int i=0;i<currentUsers.size();i++){
+			curUser = currentUsers.get(i);
+			if(winnersList.contains(curUser.uid)){
+				if(winnersList.size()==1){
+					quizResult = 1;
+				}
+				else{
+					quizResult = 0;
+				}
+			}
+			else{
+				quizResult = -1;
+			}
+			cPoints = curUser.getPoints(quiz.quizId);
+			uAns = userAnswersStack.get(curUser.uid);
+			newPoints = cPoints+uAns.get(uAns.size()-1).whatUserGot+(quizResult>0?Config.QUIZ_WIN_BONUS:0);
+			
+			if(quizResult!=-2){
+				curUser.setPoints(quiz.quizId, (int) newPoints);
+				
+				Integer[] winsLossesQuiz = curUser.getWinsLosses(quiz.quizId);
+				winsLossesQuiz[0]+= (quizResult==1?1:0);
+				winsLossesQuiz[1]+= (quizResult==-1?1:0);
+				winsLossesQuiz[2]+= (quizResult==0?1:0); 
+			}
+		}
+		
+		//  Host User updates
+		if(winnersList.contains(quizApp.getUser().uid)){
 			if(winnersList.size()==1){
 				quizResult = 1;
 			}
-//			else{ // default value
-//				// Tie
-//			}
+			else{
+				quizResult = 0;
+			}
 		}
 		else{
 			quizResult = -1;
 		}
-		if (quizResultScreen==null){
-			quizResultScreen = new WinOrLoseScreen(this,currentUsers);
-		}
-		double cPoints = quizApp.getUser().getPoints(quiz);
-		List<UserAnswer> uAns = userAnswersStack.get(quizApp.getUser().uid);
-		double newPoints = cPoints+uAns.get(uAns.size()-1).whatUserGot+(quizResult>0?Config.QUIZ_WIN_BONUS:0);
+//		cPoints = quizApp.getUser().getPoints(quiz);
+//		uAns = userAnswersStack.get(quizApp.getUser().uid);
+//		newPoints = cPoints+uAns.get(uAns.size()-1).whatUserGot+(quizResult>0?Config.QUIZ_WIN_BONUS:0);
 		QuizHistory qHistory;
 		
 		if(quizResult!=-2){
-			quiz.userXp+=newPoints;
-			quizApp.getDataBaseHelper().createOrUpdateQuiz(quiz);
-			
-			Integer[] winsLossesQuiz = quizApp.getUser().getWinsLosses(quiz.quizId);
-			winsLossesQuiz[0]+= (quizResult==1?1:0);
-			winsLossesQuiz[1]+= (quizResult==-1?1:0);
-			winsLossesQuiz[2]+= (quizResult==0?1:0);
+//			quiz.userXp+=newPoints;
+//			quizApp.getDataBaseHelper().createOrUpdateQuiz(quiz);
+//			
+//			Integer[] winsLossesQuiz = quizApp.getUser().getWinsLosses(quiz.quizId);
+//			winsLossesQuiz[0]+= (quizResult==1?1:0);
+//			winsLossesQuiz[1]+= (quizResult==-1?1:0);
+//			winsLossesQuiz[2]+= (quizResult==0?1:0);
+			cPoints = quizApp.getUser().getPoints(quiz.quizId);
+			uAns = userAnswersStack.get(quizApp.getUser().uid);
+			newPoints = cPoints+uAns.get(uAns.size()-1).whatUserGot+(quizResult>0?Config.QUIZ_WIN_BONUS:0);
 			
 			quizApp.getServerCalls().updateQuizWinStatus(quiz.quizId , quizResult , newPoints);//server call 
-			quizApp.getUser().getStats().put(quiz.quizId , (int) quiz.userXp);
+//			quizApp.getUser().getStats().put(quiz.quizId , (int) quiz.userXp);
 			qHistory = quizApp.getDataBaseHelper().getQuizHistoryById(quiz.quizId);
 			if(qHistory==null){
 				qHistory = new QuizHistory(quiz.quizId,quizResult,Config.getCurrentTimeStamp());
@@ -602,12 +640,10 @@ public class ProgressiveQuizController extends AppController{
 				}
 			}
 			quizApp.getDataBaseHelper().createOrUpdateQuizHistory(qHistory);
+			quizResultScreen.showResult(userAnswersStack,quizResult,didUserLevelUp(cPoints,newPoints));
+			showScreen(quizResultScreen);
+			quizApp.getBadgeEvaluator().evaluateBadges();
 		}
-		quizResultScreen.showResult(userAnswersStack,quizResult,didUserLevelUp(cPoints,newPoints));
-		showScreen(quizResultScreen);
-		
-		BadgeEvaluator badgeEvaluator = quizApp.getBadgeEvaluator();
-		badgeEvaluator.evaluateBadges();
 	}
 
 	private ArrayList<String> whoWon(HashMap<String, List<UserAnswer>> userAnswersStack){

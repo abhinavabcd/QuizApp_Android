@@ -21,8 +21,9 @@
         android:layout_below="@id/badgeImage"
         android:layout_centerHorizontal="true"
         android:gravity="center"
+        android:padding="5dp"
         android:text="Quiz App Badge"
-        android:textColor="@color/white"
+        android:textColor="@color/grey_cloud"
         android:textStyle="bold"
         android:typeface="normal" />
 

@@ -1,6 +1,8 @@
 package com.amcolabs.quizapp.appcontrollers;
  
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 
@@ -130,6 +132,7 @@ public class UserMainPageController  extends AppController implements OnInitiali
 		 
 		
 		List<Quiz> quizzes = quizApp.getDataBaseHelper().getAllQuizzes(5, -1);
+		quizzes = orderByXP(quizzes);
 		cs.addUserQuizzesView(quizzes ,quizzes.size()>4 , UiText.USER_FAVOURITES.getValue());
 		
 		List<Quiz> recentQuizzes = quizApp.getDataBaseHelper().getAllQuizzes(10, currentQuizMaxTimeStamp);
@@ -145,6 +148,35 @@ public class UserMainPageController  extends AppController implements OnInitiali
 			quizApp.getBadgeEvaluator().newBadgeUnlocked(new ArrayList<Badge>(pendingBadges));
 //		insertScreen(new UserProfileScreen(this));
 //		insertScreen(new WinOrLoseScreen(this));
+	}
+	
+	/**
+	 * Comparator to get quizzes Ordered by XP in Descending order
+	 * @author vinay
+	 *
+	 */
+	public class QuizComparator implements Comparator<Quiz>{
+
+		@Override
+		public int compare(Quiz lhs, Quiz rhs) {
+			if(quizApp.getUser().getPoints(lhs.quizId) > quizApp.getUser().getPoints(rhs.quizId)){
+				return -1;
+			}
+			else{
+				return 1;
+			}
+		}
+		
+	}
+	
+	/**
+	 * Method to sort QuizList by XP in Descending order
+	 * @param quizList
+	 * @return sorted list
+	 */
+	private List<Quiz> orderByXP(List<Quiz> quizList){
+		Collections.sort(quizList,new QuizComparator());
+		return quizList;
 	}
 	
 

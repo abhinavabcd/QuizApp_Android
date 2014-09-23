@@ -60,12 +60,21 @@ public class User {
 		return quizApp.getConfig().getGson().fromJson("{\"emailId\": \"ramasolipuram@gmail.com\", \"uid\": \"110040773460941325994\", \"isActivated\": true, \"googlePlus\": \"ya29.aACYqyIWDi39LksAAADNOtMCHgeTwAr1HzPWinCQtAq_6cjPmrtbqpwHnfwnK9GJDm4Df6I5_Bgwm8j_H7_m0czGX90AfjVtfPyvSbAp86y5y_DgUWffbXg_9RoF4g\", \"pictureUrl\": \"https://lh3.googleusercontent.com/-TyulralhJFw/AAAAAAAAAAI/AAAAAAAAA9o/8KyUnpS-j_Y/photo.jpg?sz=200\", \"deviceId\": \"31e7d9178c3ca41f\", \"winsLosses\": {'2':[5,2,1],'1':[2,6,3]}, \"stats\": {}, \"name\": \"Rama Reddy\", \"gender\": \"female\", \"birthday\": 0, \"newDeviceId\": \"31e7d9178c3ca41f\", \"badges\": [], \"activationKey\": \"\"}", User.class);
 	}
 	
-	public int getLevel(Quiz quiz) {
+	public double getLevel(QuizApp quizApp,String quizId) {
+		return quizApp.getGameUtils().getLevelFromXp((double)this.getPoints(quizId));
+	}
+	
+	public int getPoints(String quizId){
+		HashMap<String, Integer> tmpstats = getStats();
+		if(tmpstats.containsKey(quizId)){
+			return tmpstats.get(quizId);
+		}
 		return 0;
 	}
 	
-	public double getPoints(Quiz quiz){
-		return 0;
+	public void setPoints(String quizId,int points){
+		HashMap<String, Integer> tmpstats = getStats();
+		tmpstats.put(quizId, points);
 	}
 	
 	public boolean isBotUser(){

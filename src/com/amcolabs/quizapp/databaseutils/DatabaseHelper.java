@@ -36,7 +36,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 	// name of the database file for your application -- change to something appropriate for your app
 	private static final String DATABASE_NAME = "quizApp.db";
 	// any time you make changes to your database objects, you may have to increase the database version
-	private static final int DATABASE_VERSION = 11;
+	private static final int DATABASE_VERSION = 12;
 	private static String DATABASE_PATH = "/data/data/com.amcolabs.quizapp/databases/";
 
 	// the DAO object we use to access the Category table
@@ -144,9 +144,9 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
     public List<Quiz> getAllQuizzes(long q , double fromTimeStamp){
 		try {
 			if(fromTimeStamp>0){
-				return getQuizDao().queryBuilder().orderBy("userXp", false).limit(q).where().gt("modifiedTimestamp", fromTimeStamp).query();
+				return getQuizDao().queryBuilder().orderBy("modifiedTimestamp", false).limit(q).where().gt("modifiedTimestamp", fromTimeStamp).query();
 			}
-			return getQuizDao().queryBuilder().orderBy("userXp", false).limit(q).query();
+			return getQuizDao().queryBuilder().orderBy("modifiedTimestamp", false).limit(q).query();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -159,7 +159,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
      */
     public List<Quiz> getAllQuizzes(String orderBy){
     	if(orderBy==null){
-    		orderBy = "userXp";
+    		orderBy = "modifiedTimestamp";
     	}
 		try {
 			return getQuizDao().queryBuilder().orderBy(orderBy, false).query();
@@ -169,9 +169,15 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 		return null;
     }
     
+    /**
+     * not using currently
+     *  TODO: not proper; get top quizzes Ids from userHistory and get corresponding quizzes from db
+     * @param n
+     * @return
+     */
     public List<Quiz> getTopQuizzes(long n){
 		try {
-			return getQuizDao().queryBuilder().orderBy("userXp", false).limit(n).query();
+			return getQuizDao().queryBuilder().orderBy("modifiedTimestamp", false).limit(n).query();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

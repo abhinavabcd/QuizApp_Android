@@ -297,7 +297,7 @@ public class WinOrLoseScreen extends Screen{
 			List<Quiz> qList = categories.get(i).getQuizzes(getApp());
 			float totalXP = 0;
 			for(int j=0;j<qList.size();j++){
-				totalXP = totalXP + (float)user.getPoints(qList.get(j));
+				totalXP = totalXP + (float)user.getPoints(qList.get(j).quizId);
 			}
             yVals.add(new Entry(totalXP, i));
         }
@@ -308,8 +308,9 @@ public class WinOrLoseScreen extends Screen{
 //        set1.setColors(ColorTemplate.createColors(controller.getContext().getApplicationContext(),ColorTemplate.VORDIPLOM_COLORS));
         PieData data = new PieData(xVals, set);
         mPieChart.setData(data);
-        mPieChart.setDescriptionTextSize(6f);
-        mPieChart.setValueTextSize(5f);        
+        mPieChart.setDescriptionTextSize(5f);
+        mPieChart.setValueTextSize(5f);    
+        mPieChart.setCenterTextSize(5f);
 
         // undo all highlights
         mPieChart.highlightValues(null);
@@ -331,12 +332,12 @@ public class WinOrLoseScreen extends Screen{
 		
 		for (int i = 0; i < sz; i++) {
 			if (i<Config.PIE_CHART_MAX_FIELDS-1){
-				userXp = user.getPoints(quizList.get(i));
+				userXp = user.getPoints(quizList.get(i).quizId);
 				xVals.add(quizList.get(i).name);
 				myindex = i;
 			}
 			else{
-				userXp = userXp + user.getPoints(quizList.get(i));
+				userXp = userXp + user.getPoints(quizList.get(i).quizId);
 				if(i!=sz-1)
 					continue;
 				xVals.add(UiUtils.UiText.PIE_CHART_OTHERS_TEXT.getValue());
@@ -352,8 +353,9 @@ public class WinOrLoseScreen extends Screen{
 //        set1.setColors(ColorTemplate.createColors(controller.getContext().getApplicationContext(),ColorTemplate.VORDIPLOM_COLORS));
         PieData data = new PieData(xVals, set);
         mPieChart.setData(data);
-        mPieChart.setDescriptionTextSize(6f);
+        mPieChart.setDescriptionTextSize(5f);
         mPieChart.setValueTextSize(5f);
+
         mPieChart.setCenterTextSize(5f);
 
         // undo all highlights
