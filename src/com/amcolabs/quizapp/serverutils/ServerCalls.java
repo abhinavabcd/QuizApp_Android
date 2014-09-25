@@ -26,6 +26,7 @@ import com.amcolabs.quizapp.databaseutils.Badge;
 import com.amcolabs.quizapp.databaseutils.Category;
 import com.amcolabs.quizapp.databaseutils.OfflineChallenge;
 import com.amcolabs.quizapp.databaseutils.OfflineChallenge.ChallengeData;
+import com.amcolabs.quizapp.databaseutils.Question;
 import com.amcolabs.quizapp.databaseutils.Quiz;
 import com.amcolabs.quizapp.databaseutils.UserFeed;
 import com.amcolabs.quizapp.databaseutils.UserInboxMessage;
@@ -877,7 +878,9 @@ public class ServerCalls {
 
 
 	public void addOfflineChallange(Quiz quiz, User otherUser,	List<UserAnswer> userAnswers, final DataInputListener<Boolean> dataInputListener) {
+			
 			String url = getAServerAddr()+"/func?task=addOfflineChallenge";
+			url+="&encodedKey="+quizApp.getUserDeviceManager().getEncodedKey();
 			url+="&uid2="+otherUser.uid;
 			Map<String,String > params = new HashMap<String, String>(); 
 			params.put("challengeData",quizApp.getConfig().getGson().toJson(new ChallengeData(quiz.quizId, userAnswers)));
@@ -891,13 +894,32 @@ public class ServerCalls {
 							default:
 								dataInputListener.onData(false);
 								break;
-
 						}
 				}
 			} , false);
-			
-		
 	}
 
+
+	public void loadQuestionsInOrder(ArrayList<String> questionIds, final DataInputListener<List<Question>> dataInputListener) {
+		
+		String url = getAServerAddr()+"/func?task=loadQuestionsInOrder";
+		url+="&encodedKey="+quizApp.getUserDeviceManager().getEncodedKey();
+		Map<String,String > params = new HashMap<String, String>(); 
+		params.put("questionIds",quizApp.getConfig().getGson().toJson(questionIds));
+		makeServerPostCall(url, params, new ServerNotifier() {
+			@Override
+			public void onServerResponse(MessageType messageType, ServerResponse response) {
+					switch(messageType){
+						case OK_QUESTIONS:
+							dataInputListener.onData((List<Question>) quizApp.getConfig().getGson().fromJson(response.payload, new TypeToken<List<Question>>(){}.getType())); 
+							break;
+						default:
+							dataInputListener.onData(null);
+							break;
+					}
+			}
+		}, false);
+	}
+			
 }
 

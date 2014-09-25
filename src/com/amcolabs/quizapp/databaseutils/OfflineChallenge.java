@@ -12,8 +12,8 @@ public class OfflineChallenge {
 			this.quizId = quizId;
 			this.userAnswers = userAnswers2;
 		}
-		String quizId;
-		List<UserAnswer> userAnswers;
+		public String quizId;
+		public List<UserAnswer> userAnswers;
 	}
 
 	

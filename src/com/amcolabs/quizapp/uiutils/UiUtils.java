@@ -131,7 +131,8 @@ public class UiUtils {
 		UNABLE_TO_ADD_USER("Unable to add User."),
 		ADDED_USER("successfully subscribed to %s"),
 		PIE_CHART_OTHERS_TEXT("Others"),
-		UNEXPECTED_ERROR("Unexpected Error"), YOU_CHALLENGED("You challenged");
+		UNEXPECTED_ERROR("Unexpected Error"), YOU_CHALLENGED("You challenged"),
+		CANNOT_CHALLENGE_PRIVATE_USERS("Cannot Challenge private Users");
 		
 		String value = null;
 		UiText(String value){
