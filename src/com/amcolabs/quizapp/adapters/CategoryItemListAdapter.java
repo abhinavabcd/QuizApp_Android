@@ -59,7 +59,7 @@ public  class CategoryItemListAdapter extends ArrayAdapter<Category>{
 			quizApp.getUiUtils().loadImageIntoView(quizApp.getContext(), holder.imageView, getItem(position).assetPath,true);
 			holder.categoryName.setText(category.description);
 			holder.shortCategoryDescription.setText(category.shortDescription);
-			holder.additionalText.setText("a");
+//			holder.additionalText.setText("a");
 			return convertView;
 		}
 };

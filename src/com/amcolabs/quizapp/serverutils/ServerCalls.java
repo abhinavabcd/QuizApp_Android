@@ -20,10 +20,12 @@ import android.util.Log;
 import com.amcolabs.quizapp.QuizApp;
 import com.amcolabs.quizapp.User;
 import com.amcolabs.quizapp.appcontrollers.ProgressiveQuizController;
+import com.amcolabs.quizapp.appcontrollers.ProgressiveQuizController.UserAnswer;
 import com.amcolabs.quizapp.configuration.Config;
 import com.amcolabs.quizapp.databaseutils.Badge;
 import com.amcolabs.quizapp.databaseutils.Category;
 import com.amcolabs.quizapp.databaseutils.OfflineChallenge;
+import com.amcolabs.quizapp.databaseutils.OfflineChallenge.ChallengeData;
 import com.amcolabs.quizapp.databaseutils.Quiz;
 import com.amcolabs.quizapp.databaseutils.UserFeed;
 import com.amcolabs.quizapp.databaseutils.UserInboxMessage;
@@ -411,6 +413,7 @@ public class ServerCalls {
 		});
 	}
 	
+	
 
 	
 	public static void clearAllStaticVariables() {
@@ -749,12 +752,13 @@ public class ServerCalls {
 	}
 
 
-	public void updateQuizWinStatus(String quizId, int winStatus , double newPoints) {
+	public void updateQuizWinStatus(String quizId, int winStatus , double newPoints, User user) {
 		String url = getAServerAddr()+"/func?task=updateQuizWinStatus";
 		url+="&encodedKey="+quizApp.getUserDeviceManager().getEncodedKey();
 		url+="&quizId="+quizId;
 		url+="&xpPoints="+newPoints;
 		url+="&winStatus="+winStatus+"";
+		url+="&uid2="+user.uid;
 		
 		makeServerCall(url, new ServerNotifier() {
 		@Override
@@ -801,7 +805,7 @@ public class ServerCalls {
 		}
 		String url = getAServerAddr()+"/func?task=subscribeTo";
 		url+="&encodedKey="+quizApp.getUserDeviceManager().getEncodedKey();
-		url+="&uid="+user2.uid;
+		url+="&uid2="+user2.uid;
 		makeServerCall(url, new ServerNotifier() {
 		@Override
 		public void onServerResponse(MessageType messageType,ServerResponse response) {
@@ -819,7 +823,7 @@ public class ServerCalls {
 					break;
 			}
 		}
-		});
+		}, true);
 	}
 	
 
@@ -846,6 +850,53 @@ public class ServerCalls {
 			}
 		}
 		});
+	}
+
+
+	public void searchUsersByName(String currentSearchQuery , final DataInputListener<List<User>> listener) {
+		String url = getAServerAddr()+"/func?task=searchByUserName";
+		url+="&encodedKey="+quizApp.getUserDeviceManager().getEncodedKey();
+		url+="&searchQ="+currentSearchQuery;
+		makeServerCall(url,new ServerNotifier() {			
+		@Override
+		public void onServerResponse(MessageType messageType, ServerResponse response) {
+			switch (messageType) {
+			case OK:
+				List<User> users = quizApp.getConfig().getGson().fromJson(response.payload, new TypeToken<List<User>>(){}.getType());
+				for(User user : users){
+					user.isFriend = false;
+				}
+				listener.onData(users);
+				break;
+			default:
+				break;
+			}
+		}
+		});
+	}
+
+
+	public void addOfflineChallange(Quiz quiz, User otherUser,	List<UserAnswer> userAnswers, final DataInputListener<Boolean> dataInputListener) {
+			String url = getAServerAddr()+"/func?task=addOfflineChallenge";
+			url+="&uid2="+otherUser.uid;
+			Map<String,String > params = new HashMap<String, String>(); 
+			params.put("challengeData",quizApp.getConfig().getGson().toJson(new ChallengeData(quiz.quizId, userAnswers)));
+			makeServerPostCall(url, params, new ServerNotifier() {
+				@Override
+				public void onServerResponse(MessageType messageType, ServerResponse response) {
+						switch(messageType){
+							case OK:
+								dataInputListener.onData(true);
+								break;
+							default:
+								dataInputListener.onData(false);
+								break;
+
+						}
+				}
+			} , false);
+			
+		
 	}
 
 }

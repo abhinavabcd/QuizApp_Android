@@ -156,7 +156,8 @@ public class StaticPopupDialogBoxes {
 			this.acceptListener = acceptListener;
 		}
 		public void dismiss() {
-			acceptListener.onData(false);
+			if(acceptListener!=null)
+				acceptListener.onData(false);
 			super.dismiss();
 		}
 		public void dismissQuietly() {
@@ -172,19 +173,25 @@ public class StaticPopupDialogBoxes {
 			@Override
 			public void onClick(View v) {
 				if(v.getId()==R.id.button1){
-					acceptListener.onData(true);
+					if(acceptListener!=null)
+						acceptListener.onData(true);
 				}
 				else if(v.getId()==R.id.button2){
-					acceptListener.onData(false);
+					if(acceptListener!=null)
+						acceptListener.onData(false);
 				}
 				yesNoPopup.dismiss();
 			}
 		};
 		((TextView) dialogLayout.findViewById(R.id.textView1)).setText(text);
 		GothamButtonView button1 = (GothamButtonView) dialogLayout.findViewById(R.id.button1);
-		button1.setOnClickListener(listener);
-		button1.setText(possitiveText);
-		
+		if(possitiveText!=null){
+			button1.setOnClickListener(listener);
+			button1.setText(possitiveText);
+		}
+		else{
+			button1.setVisibility(View.GONE);
+		}
 		GothamButtonView button2 = (GothamButtonView) dialogLayout.findViewById(R.id.button2);
 		button2.setOnClickListener(listener);
 		button2.setText(negetiveText);

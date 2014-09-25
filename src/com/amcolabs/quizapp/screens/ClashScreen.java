@@ -9,6 +9,7 @@ import com.amcolabs.quizapp.Screen;
 import com.amcolabs.quizapp.User;
 import com.amcolabs.quizapp.appcontrollers.ProgressiveQuizController;
 import com.amcolabs.quizapp.databaseutils.Quiz;
+import com.amcolabs.quizapp.widgets.ChallengeView;
 import com.amcolabs.quizapp.widgets.UserInfoCard;
 import com.amcolabs.quizapp.widgets.WaitingForUserView;
 
@@ -61,6 +62,9 @@ public class ClashScreen extends Screen {
 		for(View userInfoView : userInfoViews){
 			if(userInfoView instanceof WaitingForUserView){
 				((WaitingForUserView) userInfoView).cleanUp();
+			}
+			else if(userInfoView instanceof ChallengeView){
+				((ChallengeView) userInfoView).cleanUp();
 			}
 		}
 	}

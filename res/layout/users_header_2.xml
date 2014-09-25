@@ -25,6 +25,7 @@
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_gravity="left|top"
+                android:layout_marginRight="5dp"
                 android:contentDescription="user1"
                 android:src="@drawable/ic_launcher" />
 
@@ -104,8 +105,10 @@
                 android:id="@+id/user2"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
+                android:layout_marginLeft="5dp"
                 android:contentDescription="user2"
                 android:src="@drawable/ic_launcher" >
+
             </ImageView>
         </LinearLayout>
 

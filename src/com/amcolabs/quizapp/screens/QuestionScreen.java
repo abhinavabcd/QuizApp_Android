@@ -278,4 +278,9 @@ public class QuestionScreen extends Screen implements View.OnClickListener, Anim
 	public void onAnimationRepeat(Animation animation) {
 
 	}
+	@Override
+	public void beforeRemove() {
+		timerView.cleanUp();
+		super.beforeRemove();
+	}
 }

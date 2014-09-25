@@ -8,18 +8,20 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.amcolabs.quizapp.QuizApp;
 import com.amcolabs.quizapp.R;
 import com.amcolabs.quizapp.User;
 import com.amcolabs.quizapp.datalisteners.DataInputListener;
-import com.amcolabs.quizapp.widgets.IViewType.ViewType;
+import com.amcolabs.quizapp.uiutils.UiUtils.UiText;
 import com.squareup.picasso.Picasso.LoadedFrom;
 import com.squareup.picasso.Target;
 
 public class ChallengeView extends LinearLayout implements OnClickListener, Target , IViewType{
 
 	private DataInputListener<Integer> clickListener;
+	private TextView textView;
 
 	public ChallengeView(Context context) {
 		super(context);
@@ -30,6 +32,7 @@ public class ChallengeView extends LinearLayout implements OnClickListener, Targ
 		super(quizApp.getContext());
 		this.clickListener = dataInputListener;
 		LinearLayout mainView = (LinearLayout) quizApp.getActivity().getLayoutInflater().inflate(R.layout.challenge_view, this, false);
+		textView = (TextView) mainView.findViewById(R.id.textView1);
 		mainView.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.WRAP_CONTENT));
 		this.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,0,1f));
 		this.setGravity(Gravity.CENTER);
@@ -39,17 +42,26 @@ public class ChallengeView extends LinearLayout implements OnClickListener, Targ
 		}
 		quizApp.getUiUtils().loadImageAsBg(quizApp.getContext(), this, bgAssetPath);
 
-		mainView.findViewById(R.id.button1).setOnClickListener(this);
+		
+		QuizAppMenuItem menu1 = (QuizAppMenuItem) mainView.findViewById(R.id.start_offline_challenge);
+		QuizAppMenuItem menu2 = (QuizAppMenuItem) mainView.findViewById(R.id.exit_challenge_button);
+		menu1.setId(R.id.start_offline_challenge);
+		menu2.setId(R.id.exit_challenge_button);
+		
+		menu1.setOnClickListener(this);
+		menu2.setOnClickListener(this);
 		this.addView(mainView);
+
+		quizApp.getUiUtils().blickAnimation(textView);
 	}
 
 	@Override
 	public void onClick(View v) {
 		switch(v.getId()){
-			case R.id.button1:
+			case R.id.start_offline_challenge:
 				clickListener.onData(1);
 				break;
-			case R.id.button2:
+			case R.id.exit_challenge_button:
 				clickListener.onData(2);
 				break;
 		}
@@ -75,5 +87,9 @@ public class ChallengeView extends LinearLayout implements OnClickListener, Targ
 	public ViewType getViewType() {
 		// TODO Auto-generated method stub
 		return ViewType.CHALLENGE_VIEW;
+	}
+	
+	public void cleanUp(){
+		textView.clearAnimation();
 	}
 }

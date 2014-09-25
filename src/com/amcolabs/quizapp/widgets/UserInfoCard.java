@@ -56,8 +56,7 @@ public class UserInfoCard extends LinearLayout implements Target,IViewType{
 		CircularCounter levelIndicator = new CircularCounter(quizApp.getContext(), uiUtils.getInSp(10), Color.parseColor("#FFFFFF"), uiUtils.getInSp(7), UiText.LEVEL.getValue(), 
 				 uiUtils.getInDp(5), 1, uiUtils.getInDp(3), uiUtils.getInDp(3), 0, 0, 0, 0, uiUtils.getInDp(40),0);		
 		levelIndicator.setValues(currentLevelProgress - (int)currentLevelProgress, 1, 0);
-		levelIndicator.setCurrentValue((int)currentLevelProgress);
-		
+		levelIndicator.setCurrentValue((int)currentLevelProgress);		
 		moreInfoWrapper.addView(levelIndicator);
 	}
 

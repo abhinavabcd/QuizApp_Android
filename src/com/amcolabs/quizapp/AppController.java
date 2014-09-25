@@ -36,10 +36,21 @@ public abstract class AppController {
 	}	
 	
 	private boolean isActive;
+	private int refCount;
+	
 	public boolean isActive(){
 		return isActive;
 	}
 	public void setActive(boolean b) {
 		isActive = b;
+	}
+	public int incRefCount() {
+		return ++refCount;
+	}
+	public void decRefCount() {
+		--this.refCount;
+		if(refCount<=0){
+			onDestroy();
+		}
 	}
 }

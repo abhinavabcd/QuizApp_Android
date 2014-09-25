@@ -123,8 +123,15 @@ public class UiUtils {
 		SELECT_FRIENDS_TO_CHALLENGE("Select Friends to Challenge"),
 		BEGINNER("Beginner"),
 		RUNNER("Runner"),
-		GO_GETTER("Go Getter"), TREND_SETTER("Trend Setter"), 
-		PIE_CHART_OTHERS_TEXT("Others");
+		GO_GETTER("Go Getter"), TREND_SETTER("Trend Setter"),
+		START_CHALLENGE("Start Challenge"),
+		NO_FRIENDS_TRY_ADDING("You haven't subscribed to anyone try adding friends."), 
+		ADD("add"), 
+		CLOSE("close"),
+		UNABLE_TO_ADD_USER("Unable to add User."),
+		ADDED_USER("successfully subscribed to %s"),
+		PIE_CHART_OTHERS_TEXT("Others"),
+		UNEXPECTED_ERROR("Unexpected Error"), YOU_CHALLENGED("You challenged");
 		
 		String value = null;
 		UiText(String value){
