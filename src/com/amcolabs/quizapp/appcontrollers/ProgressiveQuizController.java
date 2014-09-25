@@ -771,7 +771,7 @@ public class ProgressiveQuizController extends AppController{
 		// users , setmode as challenge , complete it to send the offlinechallenge to server 
 		gracefullyCloseSocket();//previous socket 
 		HashMap<String , String> temp = new HashMap<String, String>();
-		temp.put("isChallenge", otherUser.uid);
+		temp.put("isChallenge", withUser.uid);
 		clearScreen();
 		if(otherUser.isBotUser()){
 			setOnSocketConnectionOpenListener(new DataInputListener2<ServerWebSocketConnection, Quiz, Void, Void>(){
