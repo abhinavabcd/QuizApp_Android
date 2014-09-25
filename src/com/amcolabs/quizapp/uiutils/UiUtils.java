@@ -130,8 +130,8 @@ public class UiUtils {
 		CLOSE("close"),
 		UNABLE_TO_ADD_USER("Unable to add User."),
 		ADDED_USER("successfully subscribed to %s"),
-		PIE_CHART_OTHERS_TEXT("Others");
-		
+		PIE_CHART_OTHERS_TEXT("Others"),
+		UNEXPECTED_ERROR("Unexpected Error"), YOU_CHALLENGED("You challenged");
 		
 		String value = null;
 		UiText(String value){

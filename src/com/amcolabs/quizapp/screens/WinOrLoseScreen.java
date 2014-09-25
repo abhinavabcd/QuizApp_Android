@@ -49,7 +49,7 @@ public class WinOrLoseScreen extends Screen{
 	private GothamTextView quizWinPoints;
 	private GothamTextView quizLevelupPoints;
 	private GothamTextView quizTotalPoints;
-	
+	private LinearLayout buttonsWrapper;
 	private GothamButtonView rematchButton;
 	private GothamButtonView challengeButton;
 	private GothamButtonView addFriendButton;
@@ -76,6 +76,7 @@ public class WinOrLoseScreen extends Screen{
 		quizResult = (ScrollView) LayoutInflater.from(controller.getContext()).inflate(R.layout.win_lose_screen,this, false);
 		LinearLayout usersPieChartViews = (LinearLayout) quizResult.findViewById(R.id.users);
 		LinearLayout usersShortView = (LinearLayout) quizResult.findViewById(R.id.users_short_view);
+		buttonsWrapper = (LinearLayout) quizResult.findViewById(R.id.buttons_wrapper);
 		
 		userViews = new HashMap<String, userViewHolder>();
 		LinearLayout tmp;
@@ -164,7 +165,7 @@ public class WinOrLoseScreen extends Screen{
 	 * @param userAnswersStack HashMap of list of answers mapped with users
 	 * @param matchResult has current user who won the quiz
 	 */
-	public void showResult(HashMap<String, List<UserAnswer>> uAnswersStack,int matchResult,boolean levelUp){
+	public void showResult(HashMap<String, List<UserAnswer>> uAnswersStack,int matchResult,boolean levelUp, boolean isChallengeMode){
 	  // Show whether user has won or not
 	  // rematch button , addFriend button , challenge with points button ,  seeProfile button
 	// for these buttons , will use the same layout we used for category view ,list_item_layout.xml
@@ -206,6 +207,11 @@ public class WinOrLoseScreen extends Screen{
 		}
 		else if(matchResult==-2){
 			quizResultMessage.setText(UiText.SERVER_ERROR_MESSAGE.getValue());
+		}
+		
+		if(isChallengeMode){
+			quizResultMessage.setText(UiText.YOU_CHALLENGED.getValue());	
+			buttonsWrapper.setVisibility(View.GONE);
 		}
 		
 		

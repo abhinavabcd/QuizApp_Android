@@ -355,7 +355,7 @@ public class UserMainPageController  extends AppController implements OnInitiali
 		});
 	}
 
-	public void onStartChallengeQuiz(Quiz quiz) {
+	public void onStartChallengeQuiz(final Quiz quiz) {
 		final User user = quizApp.getUser();
 		if(quizApp.getUser().getSubscribedTo().size()==0){
 			quizApp.getStaticPopupDialogBoxes().yesOrNo(UiText.NO_FRIENDS_TRY_ADDING.getValue(), null, UiText.OK.getValue(), null);
@@ -366,14 +366,14 @@ public class UserMainPageController  extends AppController implements OnInitiali
 			public String onData(Boolean s) {
 				SelectFriendsScreen selectFriendsScreen = new SelectFriendsScreen(UserMainPageController.this);
 				List<User> users = new ArrayList<User>();
-				for(String uid : user.getSubscribers()){
+				for(String uid : user.getSubscribedTo()){
 					users.add(quizApp.cachedUsers.get(uid));
 				}
 				selectFriendsScreen.showFriendsList(UiText.SELECT_FRIENDS_TO_CHALLENGE.getValue(), users,new DataInputListener<User>(){
 					@Override
 					public String onData(User s) {
 						ProgressiveQuizController progressiveQuiz = (ProgressiveQuizController) quizApp.loadAppController(ProgressiveQuizController.class);
-						progressiveQuiz.startNewChallenge(s);
+						progressiveQuiz.startNewChallenge(s, quiz);
 						return super.onData(s);
 					}
 				}, true);

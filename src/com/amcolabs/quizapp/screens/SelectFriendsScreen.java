@@ -72,4 +72,11 @@ public class SelectFriendsScreen extends Screen {
 		// TODO Auto-generated method stub
 		super.beforeRemove();
 	}
+
+	@Override
+	public boolean showOnBackPressed() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+	
 }

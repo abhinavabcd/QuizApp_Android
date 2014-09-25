@@ -63,8 +63,11 @@ public  class SelectFriendsListAdapter extends ArrayAdapter<User>{
 							@Override
 							public String onData(Boolean s) {
 								if(s){
-									User user = ((FriendViewHolder)v.getTag()).item;
+									FriendViewHolder holder = ((FriendViewHolder)v.getTag());
+									User user = holder.item;
 									quizApp.getStaticPopupDialogBoxes().yesOrNo(UiText.ADDED_USER.getValue(user.name), null, UiText.CLOSE.getValue(), null);
+									quizApp.getUser().getSubscribedTo().add(user.uid);
+									holder.addFriendButton.setVisibility(View.GONE);
 									user.isFriend = true;
 									usersList.add(user);
 								}
@@ -102,11 +105,17 @@ public  class SelectFriendsListAdapter extends ArrayAdapter<User>{
 			return convertView;
 		}
 		
-		private String currentSearchQuery="";		
+		private String oldSearchQuery="";		
 		private Timer timer=null;
+		protected String currentSearchString;
 		public Filter getFilter() {
 			return mFilter;
 		};
+		
+		
+		public void fetchUsers(){
+			
+		}
 		
 		Filter mFilter = new Filter() {
 
@@ -114,14 +123,14 @@ public  class SelectFriendsListAdapter extends ArrayAdapter<User>{
 			protected FilterResults performFiltering(CharSequence constraint) {
 				final ArrayList<User> nlist = new ArrayList<User>();
 				FilterResults results = new FilterResults();
-				final String filterString = constraint.toString().toLowerCase();
-				if(filterString.length()>2){
+				currentSearchString = constraint.toString().toLowerCase();
+				if(currentSearchString.length()>2){
 					if(timer==null){
 						timer = quizApp.getUiUtils().setInterval(1000, new DataInputListener<Integer>(){
 							public String onData(Integer s) {
-								if(!currentSearchQuery.trim().equalsIgnoreCase(filterString.trim())){
-									currentSearchQuery = filterString.trim();
-									quizApp.getServerCalls().searchUsersByName(currentSearchQuery, new DataInputListener<List<User>>(){
+								if(!oldSearchQuery.trim().equalsIgnoreCase(currentSearchString.trim())){
+									oldSearchQuery = currentSearchString.trim();
+									quizApp.getServerCalls().searchUsersByName(oldSearchQuery, new DataInputListener<List<User>>(){
 										public String onData(List<User> users) {
 											addAll(users);
 											notifyDataSetChanged();
@@ -135,7 +144,7 @@ public  class SelectFriendsListAdapter extends ArrayAdapter<User>{
 					}
 
 					for (int i = 0; i < usersList.size(); i++) {
-						if (usersList.get(i).toString().toLowerCase().contains(filterString)) {
+						if (usersList.get(i).toString().toLowerCase().contains(currentSearchString)) {
 							nlist.add(usersList.get(i));
 						}
 					}
@@ -145,7 +154,7 @@ public  class SelectFriendsListAdapter extends ArrayAdapter<User>{
 					if(timer!=null){
 						timer.cancel();
 						timer = null;
-						currentSearchQuery ="";
+						oldSearchQuery ="";
 					}
 				}
 				results.values = nlist;

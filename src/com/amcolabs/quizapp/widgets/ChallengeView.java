@@ -42,22 +42,26 @@ public class ChallengeView extends LinearLayout implements OnClickListener, Targ
 		}
 		quizApp.getUiUtils().loadImageAsBg(quizApp.getContext(), this, bgAssetPath);
 
-		QuizAppMenuItem menu1 = new QuizAppMenuItem(quizApp.getContext(), R.id.button1, quizApp.getConfig().themeColors[2], 0, UiText.START_CHALLENGE.getValue());
-		menu1.setPadding(0, 0 , quizApp.getUiUtils().dp2px(20),0);
-		mainView.addView(menu1);
 		
-		mainView.addView(new QuizAppMenuItem(quizApp.getContext(), R.id.button2, quizApp.getConfig().themeColors[2], 0, UiText.START_CHALLENGE.getValue()));
+		QuizAppMenuItem menu1 = (QuizAppMenuItem) mainView.findViewById(R.id.start_offline_challenge);
+		QuizAppMenuItem menu2 = (QuizAppMenuItem) mainView.findViewById(R.id.exit_challenge_button);
+		menu1.setId(R.id.start_offline_challenge);
+		menu2.setId(R.id.exit_challenge_button);
+		
+		menu1.setOnClickListener(this);
+		menu2.setOnClickListener(this);
 		this.addView(mainView);
+
 		quizApp.getUiUtils().blickAnimation(textView);
 	}
 
 	@Override
 	public void onClick(View v) {
 		switch(v.getId()){
-			case R.id.button1:
+			case R.id.start_offline_challenge:
 				clickListener.onData(1);
 				break;
-			case R.id.button2:
+			case R.id.exit_challenge_button:
 				clickListener.onData(2);
 				break;
 		}
