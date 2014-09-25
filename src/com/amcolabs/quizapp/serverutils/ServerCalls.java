@@ -79,8 +79,8 @@ class RandomSelector <T>{
 
 public class ServerCalls {
 	
-	public static final String SERVER_ADDR = Config.IS_TEST_BUILD? "http://192.168.0.10:8085":"http://quizapp-main.amcolabs.com";
-	public static final String CDN_IMAGES_PATH = "http://192.168.0.10:8081/images/";
+	public static final String SERVER_ADDR = Config.IS_TEST_BUILD? "http://192.168.0.11:8085":"http://quizapp-main.amcolabs.com";
+	public static final String CDN_IMAGES_PATH = "http://192.168.0.11:8081/images/";
 
 //	public static final String SERVER_URL = Config.IS_TEST_BUILD? "http://192.168.0.10:8084/func":"http://quizapp-main.amcolabs.com/func";
 //	private static final String GET_ENCODEDKEY_URL = SERVER_URL+"?task=getEncodedKey";
@@ -765,6 +765,7 @@ public class ServerCalls {
 		public void onServerResponse(MessageType messageType,ServerResponse response) {
 			switch(messageType){
 				case OK:
+					// User score has to be updated here but instead doing it in ProgressiveQuizhandler
 					break;
 			}
 		}

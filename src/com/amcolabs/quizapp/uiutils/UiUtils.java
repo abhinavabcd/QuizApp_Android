@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Timer;
@@ -500,5 +501,11 @@ public class UiUtils {
 		    animation.setRepeatMode(Animation.REVERSE); // Reverse animation at the end so the button will fade back in
 		    view.startAnimation(animation);
 	}
-
+	
+	public DecimalFormat getDecimalFormatter(){
+		DecimalFormat df = new DecimalFormat();
+		df.setMaximumFractionDigits(1);
+		df.setMinimumFractionDigits(0);
+		return df; 
+	}
 }

@@ -592,9 +592,6 @@ public class ProgressiveQuizController extends AppController{
 		ArrayList<String> winnersList = whoWon(userAnswersStack);
 		int quizResult = TIE;
 
-		if (quizResultScreen==null){
-			quizResultScreen = new WinOrLoseScreen(this,currentUsers);
-		}
 		User curUser;
 		double oldPoints;
 		double newPoints;
@@ -645,9 +642,9 @@ public class ProgressiveQuizController extends AppController{
 //		newPoints = cPoints+uAns.get(uAns.size()-1).whatUserGot+(quizResult>0?Config.QUIZ_WIN_BONUS:0);
 		QuizHistory qHistory;
 		
-		oldPoints = quizApp.getUser().getPoints(quiz.quizId);
+		newPoints = quizApp.getUser().getPoints(quiz.quizId);
 		uAns = userAnswersStack.get(quizApp.getUser().uid);
-		newPoints = oldPoints+uAns.get(uAns.size()-1).whatUserGot+(quizResult>0?Config.QUIZ_WIN_BONUS:0);
+		oldPoints = newPoints - (uAns.get(uAns.size()-1).whatUserGot+(quizResult>0?Config.QUIZ_WIN_BONUS:0));
 		
 		if(isChallengeMode()){
 			quizApp.getServerCalls().addOfflineChallange(quiz , getOtherUser(), userAnswersStack.get(quizApp.getUser().uid),  new DataInputListener<Boolean>(){
@@ -665,7 +662,7 @@ public class ProgressiveQuizController extends AppController{
 		}
 
 		else if(quizResult>=LOOSE){			
-			quizApp.getServerCalls().updateQuizWinStatus(quiz.quizId , quizResult , newPoints, getOtherUser());//server call 
+			quizApp.getServerCalls().updateQuizWinStatus(quiz.quizId , quizResult , newPoints-oldPoints, getOtherUser());//server call 
 			qHistory = quizApp.getDataBaseHelper().getQuizHistoryById(quiz.quizId);
 			if(qHistory==null){
 				qHistory = new QuizHistory(quiz.quizId,quizResult,Config.getCurrentTimeStamp());
@@ -691,7 +688,9 @@ public class ProgressiveQuizController extends AppController{
 			BadgeEvaluator badgeEvaluator = quizApp.getBadgeEvaluator();
 			badgeEvaluator.evaluateBadges();
 		}
-		
+		if (quizResultScreen==null){
+			quizResultScreen = new WinOrLoseScreen(this,currentUsers);
+		}
 		quizResultScreen.showResult(userAnswersStack,quizResult,didUserLevelUp(oldPoints,newPoints) , isChallengeMode());
 		showScreen(quizResultScreen);
 		

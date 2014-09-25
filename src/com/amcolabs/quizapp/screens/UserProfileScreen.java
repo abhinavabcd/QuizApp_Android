@@ -99,7 +99,8 @@ public class UserProfileScreen extends Screen {
 				myindex = Config.PIE_CHART_MAX_FIELDS-1;
 			}
 			winsLosses = user.getWinsLossesSum(qIdList);
-            yVals1.add(new Entry((float)getApp().getGameUtils().getLevelFromXp(userXp), myindex));
+//            yVals1.add(new Entry((float)getApp().getGameUtils().getLevelFromXp(userXp), myindex));
+            yVals1.add(new Entry((float)userXp, myindex));
             // update win lose tie counts here
             win_count = win_count + winsLosses[0];
             lose_count = lose_count + winsLosses[1];
@@ -194,6 +195,7 @@ public class UserProfileScreen extends Screen {
 		set.setColors(Config.themeColors);
 //        set1.setColors(ColorTemplate.createColors(controller.getContext().getApplicationContext(),ColorTemplate.VORDIPLOM_COLORS));
         PieData data = new PieData(xVals, set);
+        mPieChart.setValueFormatter(getApp().getUiUtils().getDecimalFormatter());
         mPieChart.setData(data);
         mPieChart.setDescriptionTextSize(6f);
         mPieChart.setValueTextSize(5f);

@@ -63,5 +63,11 @@ public class PieChartView extends PieChart{
         l.setXEntrySpace(7f);
         l.setYEntrySpace(5f);
     }
+    
+    @Override
+    protected void drawHighlights() {
+    	// TODO Auto-generated method stub
+    	super.drawHighlights();
+    }
 
 }
