@@ -42,7 +42,7 @@ public class PieChartView extends PieChart{
 
         this.setDrawHoleEnabled(true);
         
-       // this.setRotationAngle(0);
+        this.setRotationAngle(0);
 
         // draws the corresponding description value into the slice
         this.setDrawXValues(true);
@@ -54,12 +54,12 @@ public class PieChartView extends PieChart{
         this.setUsePercentValues(true);
         // this.setUnit(" €");
         // this.setDrawUnitsInChart(true);
-        
         this.animateXY(1500, 1500);
 //        this.spin(2000, 0, 360);
 
         Legend l = this.getLegend();
-        l.setPosition(LegendPosition.RIGHT_OF_CHART);
+        l.setTextSize(6f);
+        l.setPosition(LegendPosition.BELOW_CHART_CENTER);
         l.setXEntrySpace(7f);
         l.setYEntrySpace(5f);
     }

@@ -211,6 +211,7 @@ public class UiUtils {
 					int count =0;
 					@Override
 					public void run() {
+						// TODO: NullPointerException after when pressing back button to exit quiz
 					      (quizApp.getActivity()).runOnUiThread(new Runnable(){
 	
 					       @Override

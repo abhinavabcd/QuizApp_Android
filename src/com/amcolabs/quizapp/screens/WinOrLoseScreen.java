@@ -323,7 +323,7 @@ public class WinOrLoseScreen extends Screen{
 	}
 	
 	public void drawUserActivityQuizDistributionChart(User user,PieChartView mPieChart){
-		List<Quiz> quizList = getApp().getDataBaseHelper().getAllQuizzes(null);
+		List<Quiz> quizList = getApp().getDataBaseHelper().getAllQuizzesOrderedByXP();
 		ArrayList<Entry> yVals = new ArrayList<Entry>();
 		ArrayList<String> xVals = new ArrayList<String>();
 		int sz = quizList.size();

@@ -71,7 +71,7 @@ public class UserProfileScreen extends Screen {
 		int win_count = 0;
 		int lose_count = 0;
 		int tie_count = 0;
-		List<Quiz> quizList = getApp().getDataBaseHelper().getAllQuizzes(null);
+		List<Quiz> quizList = getApp().getDataBaseHelper().getAllQuizzesOrderedByXP();
 		ArrayList<Entry> yVals1 = new ArrayList<Entry>();
 		ArrayList<BarEntry> yValsWins = new ArrayList<BarEntry>();
 		ArrayList<BarEntry> yValsLosses = new ArrayList<BarEntry>();
