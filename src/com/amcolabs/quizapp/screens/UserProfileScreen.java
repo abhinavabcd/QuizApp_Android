@@ -85,13 +85,13 @@ public class UserProfileScreen extends Screen {
 		int myindex = 0;
 		for (int i = 0; i < sz; i++) {
 			if (i<Config.PIE_CHART_MAX_FIELDS-1){
-				userXp = user.getPoints(quizList.get(i));
+				userXp = user.getPoints(quizList.get(i).quizId);
 				qIdList.add(quizList.get(i).quizId);
 				xVals.add(quizList.get(i).name);
 				myindex = i;
 			}
 			else{
-				userXp = userXp + user.getPoints(quizList.get(i));
+				userXp = userXp + user.getPoints(quizList.get(i).quizId);
 				qIdList.add(((Quiz)quizList.get(i)).quizId);
 				if(i!=sz-1)
 					continue;
@@ -143,7 +143,7 @@ public class UserProfileScreen extends Screen {
 			qIdList.clear();
 			float totalXP = 0;
 			for(int j=0;j<qList.size();j++){
-				totalXP = totalXP + (float)user.getPoints(qList.get(j));
+				totalXP = totalXP + (float)user.getPoints(qList.get(j).quizId);
 				qIdList.add(((Quiz)qList.get(i)).quizId);
 			}
 			winsLosses = user.getWinsLossesSum(qIdList);

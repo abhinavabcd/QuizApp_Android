@@ -453,8 +453,8 @@ public class ServerCalls {
 							
 							for(Quiz q : quizzes){
 								try {
-									if(quizApp.getUser().getStats().containsKey(q.quizId))
-										q.userXp = quizApp.getUser().getStats().get(q.quizId);
+//									if(quizApp.getUser().getStats().containsKey(q.quizId))
+//										q.userXp = quizApp.getUser().getStats().get(q.quizId);
 									quizApp.getDataBaseHelper().getQuizDao().createOrUpdate(q);
 								} catch (SQLException e) {
 									e.printStackTrace();
@@ -478,7 +478,7 @@ public class ServerCalls {
 						}
 						List<UserFeed> userFeeds = quizApp.getConfig().getGson().fromJson(response.payload3, new TypeToken<List<UserFeed>>(){}.getType());
 						List<UserInboxMessage> inboxMessages = quizApp.getConfig().getGson().fromJson(response.payload4, new TypeToken<List<UserInboxMessage>>(){}.getType());
-						List<OfflineChallenge> offlineChalleneges = quizApp.getConfig().getGson().fromJson(response.payload5, new TypeToken<List<OfflineChallenge>>(){}.getType());
+						List<OfflineChallenge> offlineChallenges = quizApp.getConfig().getGson().fromJson(response.payload5, new TypeToken<List<OfflineChallenge>>(){}.getType());
 						if(response.payload6!=null && !response.payload6.trim().equalsIgnoreCase("")){
 							HashMap<String,String> serverMap = quizApp.getConfig().getGson().fromJson(response.payload6, new TypeToken<HashMap<String,String>>(){}.getType());
 							setSeverMap(serverMap);
@@ -490,7 +490,7 @@ public class ServerCalls {
 								quizApp.getDataBaseHelper().setRecentChat(uid, null, false);//just 
 							}
 						}
-						onFinishListener.onData(userFeeds, inboxMessages, offlineChalleneges, true);
+						onFinishListener.onData(userFeeds, inboxMessages, offlineChallenges, true);
 						break;
 					default:
 						onFinishListener.onData(null, null, null,false);

@@ -39,7 +39,8 @@ public class ClashScreen extends Screen {
 		}
 		if(index==userInfoViews.size()){
 			UserInfoCard userInfoCard = new UserInfoCard(getApp(), null, user);
-			userInfoCard.addLevelIndicator(getApp(), user.getStats().containsKey(quiz.quizId) ?user.getStats().get(quiz.quizId):100);
+//			userInfoCard.addLevelIndicator(getApp(), user.getPoints(quiz.quizId)!=0?user.getPoints(quiz.quizId):100);
+			userInfoCard.addLevelIndicator(getApp(), user.getPoints(quiz.quizId));
 			userInfoViews.add(userInfoCard);
 			addView(userInfoCard, index);
 		}

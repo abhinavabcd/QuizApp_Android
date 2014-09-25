@@ -193,12 +193,12 @@ public class BadgeEvaluator {
 //		}
 		String[] ands;
 		String[] cond;
-		String[] tmp;
-		String[] childConditions;
-		String[] cList;
-		ArrayList<String> tmp1;
-		ArrayList<String> tmp2;
-		int sz;
+//		String[] tmp;
+//		String[] childConditions;
+//		String[] cList;
+//		ArrayList<String> tmp1;
+//		ArrayList<String> tmp2;
+//		int sz;
 		ands = CommonFunctions.splitString(condition, "&&");
 		cond = CommonFunctions.splitString(ands[0], "::");
 		if(cond[0].equalsIgnoreCase("category")){
@@ -422,7 +422,7 @@ public class BadgeEvaluator {
 	private boolean matchQuizListLevel(int index,int count,String value){
 		int tmp_count = 0;
 		for(int i=0;i<quizList.get(index).size();i++){
-			if(Double.valueOf(value)<=quizApp.getGameUtils().getLevelFromXp(mainQuizList.get(quizList.get(index).get(i)).userXp))
+			if(Double.valueOf(value)<=quizApp.getGameUtils().getLevelFromXp(quizApp.getUser().getPoints(quizList.get(index).get(i))))
 				tmp_count++;
 			if(tmp_count>=count){
 				return true;
@@ -433,7 +433,7 @@ public class BadgeEvaluator {
 	
 	private boolean matchQuizListLevel(ArrayList<String> quizIds,String value){
 		for(int i=0;i<quizIds.size();i++){
-			if(Double.valueOf(value)>quizApp.getGameUtils().getLevelFromXp(mainQuizList.get(quizIds.get(i)).userXp))
+			if(Double.valueOf(value)>quizApp.getGameUtils().getLevelFromXp(quizApp.getUser().getPoints(quizIds.get(i))))
 				return false;
 		}
 		return true;

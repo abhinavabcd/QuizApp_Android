@@ -7,6 +7,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -36,7 +38,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 	// name of the database file for your application -- change to something appropriate for your app
 	private static final String DATABASE_NAME = "quizApp.db";
 	// any time you make changes to your database objects, you may have to increase the database version
-	private static final int DATABASE_VERSION = 11;
+	private static final int DATABASE_VERSION = 12;
 	private static String DATABASE_PATH = "/data/data/com.amcolabs.quizapp/databases/";
 
 	// the DAO object we use to access the Category table
@@ -144,14 +146,45 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
     public List<Quiz> getAllQuizzes(long q , double fromTimeStamp){
 		try {
 			if(fromTimeStamp>0){
-				return getQuizDao().queryBuilder().orderBy("userXp", false).limit(q).where().gt("modifiedTimestamp", fromTimeStamp).query();
+				return getQuizDao().queryBuilder().orderBy("modifiedTimestamp", false).limit(q).where().gt("modifiedTimestamp", fromTimeStamp).query();
 			}
-			return getQuizDao().queryBuilder().orderBy("userXp", false).limit(q).query();
+			return getQuizDao().queryBuilder().orderBy("modifiedTimestamp", false).limit(q).query();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 		return null;
     }
+    
+	
+	/**
+	 * Comparator to get quizzes Ordered by XP in Descending order
+	 * @author vinay
+	 *
+	 */
+	public class QuizComparator implements Comparator<Quiz>{
+
+		@Override
+		public int compare(Quiz lhs, Quiz rhs) {
+			if(quizApp.getUser().getPoints(lhs.quizId) > quizApp.getUser().getPoints(rhs.quizId)){
+				return -1;
+			}
+			else{
+				return 1;
+			}
+		}
+		
+	}
+	
+	/**
+	 * Method to sort QuizList by XP in Descending order
+	 * @param quizList
+	 * @return sorted list
+	 */
+	private List<Quiz> orderByXP(List<Quiz> quizList){
+		Collections.sort(quizList,new QuizComparator());
+		return quizList;
+	}
+    
     /**
      * Get all Quizzes ordered by given Field. Results will be in descending order.
      * @param orderBy Field by which the result has to be ordered. If null is passed quizzes are ordered by userXp.
@@ -159,7 +192,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
      */
     public List<Quiz> getAllQuizzes(String orderBy){
     	if(orderBy==null){
-    		orderBy = "userXp";
+    		orderBy = "modifiedTimestamp";
     	}
 		try {
 			return getQuizDao().queryBuilder().orderBy(orderBy, false).query();
@@ -169,9 +202,23 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 		return null;
     }
     
+    public List<Quiz> getAllQuizzesOrderedByXP(){
+    	return orderByXP(getAllQuizzes(null));
+    }
+    
+    public List<Quiz> getAllQuizzesOrderedByXP(int n){
+    	return orderByXP(getAllQuizzes(n,-1));
+    }
+    
+    /**
+     * not using currently
+     *  TODO: not proper; get top quizzes Ids from userHistory and get corresponding quizzes from db
+     * @param n
+     * @return
+     */
     public List<Quiz> getTopQuizzes(long n){
 		try {
-			return getQuizDao().queryBuilder().orderBy("userXp", false).limit(n).query();
+			return getQuizDao().queryBuilder().orderBy("modifiedTimestamp", false).limit(n).query();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

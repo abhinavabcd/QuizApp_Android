@@ -1,6 +1,8 @@
 package com.amcolabs.quizapp.appcontrollers;
  
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 
@@ -129,7 +131,7 @@ public class UserMainPageController  extends AppController implements OnInitiali
 		cs.addCategoriesView(categories, categories.size()>4);
 		 
 		
-		List<Quiz> quizzes = quizApp.getDataBaseHelper().getAllQuizzes(5, -1);
+		List<Quiz> quizzes = quizApp.getDataBaseHelper().getAllQuizzesOrderedByXP(5);
 		cs.addUserQuizzesView(quizzes ,quizzes.size()>4 , UiText.USER_FAVOURITES.getValue());
 		
 		List<Quiz> recentQuizzes = quizApp.getDataBaseHelper().getAllQuizzes(10, currentQuizMaxTimeStamp);
@@ -146,7 +148,6 @@ public class UserMainPageController  extends AppController implements OnInitiali
 //		insertScreen(new UserProfileScreen(this));
 //		insertScreen(new WinOrLoseScreen(this));
 	}
-	
 
 	
     public void onRemoveWelcomeScreen() {//destroy msocialNetwork
