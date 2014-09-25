@@ -27,6 +27,9 @@ import com.amcolabs.quizapp.widgets.GothamTextView;
 
 public class HomeScreen extends Screen { 
 	List<Category> categories = new ArrayList<Category>();
+	List<QuizItemListAdapter> quizAdaptorList = new ArrayList<QuizItemListAdapter>();
+	List<ListView> listViews = new ArrayList<ListView>();
+	
 	private UserMainPageController userMainController;
 	public HomeScreen(AppController appController) {
 		super(appController);
@@ -120,6 +123,14 @@ public class HomeScreen extends Screen {
 //
 //	}
 	
+	@Override
+	public void refresh() {
+		// TODO Auto-generated method stub
+		super.refresh();
+		for(int i=0;i<listViews.size();i++){
+			listViews.get(i).invalidate();
+		}
+	}
 	
 	public void addUserQuizzesView(List<Quiz> quizzes, boolean showViewMore , String text) {
 		final QuizItemListAdapter quizAdaptor = new QuizItemListAdapter(getApp(),0,quizzes, new DataInputListener<Quiz>(){
@@ -147,6 +158,7 @@ public class HomeScreen extends Screen {
 				return null;
 			}
 		});
+		quizAdaptorList.add(quizAdaptor);
 		LinearLayout lView = (LinearLayout) getApp().getActivity().getLayoutInflater().inflate(R.layout.block_list_view, null);
 		lView.setBackgroundColor(getApp().getConfig().getAThemeColor());
 		EditText searchText = (EditText) lView.findViewById(R.id.search_text);
@@ -155,6 +167,8 @@ public class HomeScreen extends Screen {
 		titleView.setText(text);
 		ListView listView = (ListView) lView.findViewById(R.id.listView);
 		listView.setAdapter(quizAdaptor);
+		
+		listViews.add(listView);
 	//	addListenersToQuizListItem(listView);
 		
 		

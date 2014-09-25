@@ -329,7 +329,7 @@ public class WinOrLoseScreen extends Screen{
 	}
 	
 	public void drawUserActivityQuizDistributionChart(User user,PieChartView mPieChart){
-		List<Quiz> quizList = getApp().getDataBaseHelper().getAllQuizzes(null);
+		List<Quiz> quizList = getApp().getDataBaseHelper().getAllQuizzesOrderedByXP();
 		ArrayList<Entry> yVals = new ArrayList<Entry>();
 		ArrayList<String> xVals = new ArrayList<String>();
 		int sz = quizList.size();
@@ -349,7 +349,8 @@ public class WinOrLoseScreen extends Screen{
 				xVals.add(UiUtils.UiText.PIE_CHART_OTHERS_TEXT.getValue());
 				myindex = Config.PIE_CHART_MAX_FIELDS-1;
 			}
-			yVals.add(new Entry((float)getApp().getGameUtils().getLevelFromXp(userXp), myindex));
+//			yVals.add(new Entry((float)getApp().getGameUtils().getLevelFromXp(userXp), myindex));
+			yVals.add(new Entry((float)(userXp==0?1:userXp), myindex));
 			userXp = 0;
 		}
 		
@@ -358,6 +359,7 @@ public class WinOrLoseScreen extends Screen{
 		set.setColors(Config.themeColors);
 //        set1.setColors(ColorTemplate.createColors(controller.getContext().getApplicationContext(),ColorTemplate.VORDIPLOM_COLORS));
         PieData data = new PieData(xVals, set);
+        mPieChart.setValueFormatter(getApp().getUiUtils().getDecimalFormatter());
         mPieChart.setData(data);
         mPieChart.setDescriptionTextSize(5f);
         mPieChart.setValueTextSize(5f);

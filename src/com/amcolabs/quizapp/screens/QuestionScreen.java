@@ -119,7 +119,7 @@ public class QuestionScreen extends Screen implements View.OnClickListener, Anim
 			getApp().getUiUtils().loadImageIntoView(getApp().getContext(), userProgressView.userImageView, user.pictureUrl, false);
 
 			userProgressView.userProgressView.setProgress(0);
-			userProgressView.userProgressView.setMax(maxScore);
+			userProgressView.userProgressView.setMax(maxScore+10); // TODO: Need to remove +10
 
 			userProgressView.userProgressView.setBackgroundResource(R.drawable.fat_progress_bar);//(getApp().getConfig().getAThemeColor());
 			userProgressView.userProgressView.getProgressDrawable().setColorFilter(getApp().getConfig().getAThemeColor(), android.graphics.PorterDuff.Mode.MULTIPLY);
@@ -132,7 +132,8 @@ public class QuestionScreen extends Screen implements View.OnClickListener, Anim
 		userViews.get(uid).userScoreView.setText(xpPoints+" xp");
 		animTextScale.reset();
 		userViews.get(uid).userScoreView.startAnimation(animTextScale);
-		
+//		userViews.get(uid).userScoreView.refreshDrawableState();
+//		userViews.get(uid).userScoreView.invalidate();
 	}
 	
 	public void animateProgressView(final String uid,final int newProgress){

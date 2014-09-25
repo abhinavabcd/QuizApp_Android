@@ -163,6 +163,9 @@ public class BadgeEvaluator {
 			@Override
 			public String onData(Boolean s) {
 				if (s){
+					if(quizApp.getUser().badges==null){
+						quizApp.getUser().badges = new ArrayList<String>();
+					}
 					for(int i=0;i<unlockedBadges.size();i++){
 						quizApp.getUser().badges.add(unlockedBadges.get(i).getBadgeId());
 						quizApp.getStaticPopupDialogBoxes().showUnlockedBadge(unlockedBadges.get(i));
