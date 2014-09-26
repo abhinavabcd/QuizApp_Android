@@ -61,6 +61,27 @@ public class UserDeviceManager {
     }
     
 //    static HashMap<String,String> preferenceCache = new HashMap<String,String>();
+    
+
+    public static void setPreference(Context context ,String key, String value) {
+    	SharedPreferences prefs = context.getSharedPreferences("quizUserPrefs", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+        if(key!=null)
+        	editor.putString(key, value);
+        else{
+        	editor.remove(key);
+        }
+        editor.commit();
+    }
+
+    public static String getPreference(Context context , String key, String defValue){
+
+        	SharedPreferences prefs = context.getSharedPreferences("quizUserPrefs", Context.MODE_PRIVATE);
+        	return prefs.getString(key, defValue);
+
+    }
+    
+
     public void setPreference(String key, String value) {
         SharedPreferences prefs = preferences;
         SharedPreferences.Editor editor = prefs.edit();
@@ -164,6 +185,21 @@ public class UserDeviceManager {
 			e.printStackTrace();
 			return null;
 		}
+	}
+
+	public static String getEncodedKey(Context context) {
+		// TODO Auto-generated method stub
+		String encodedKey = getPreference(context,Config.PREF_ENCODED_KEY, null);
+
+		try {
+			if(encodedKey==null) return null;
+			return URLEncoder.encode(encodedKey,"UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}
+
 	}	
 	
 }

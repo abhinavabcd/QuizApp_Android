@@ -615,6 +615,7 @@ public class ProgressiveQuizController extends AppController{
 		List<UserAnswer> uAns;
 		
 		// All user updates
+		if(!isChallengeMode())
 		for(int i=0,qResult = TIE;i<currentUsers.size();i++){
 			curUser = currentUsers.get(i);
 			if(winnersList.contains(curUser.uid)){
@@ -761,6 +762,7 @@ public class ProgressiveQuizController extends AppController{
 		else{
 			withUser = otherUser;
 		}
+		setQuizMode(CHALLENGE_MODE);
 		setQuizType(CHALLENGE_QUIZ_TYPE);
 		//TODO: clear socket , 
 		// master server get sid

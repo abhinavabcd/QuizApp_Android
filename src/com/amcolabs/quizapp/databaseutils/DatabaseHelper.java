@@ -38,7 +38,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 	// name of the database file for your application -- change to something appropriate for your app
 	private static final String DATABASE_NAME = "quizApp.db";
 	// any time you make changes to your database objects, you may have to increase the database version
-	private static final int DATABASE_VERSION = 12;
+	private static final int DATABASE_VERSION = 13;
 	private static String DATABASE_PATH = "/data/data/com.amcolabs.quizapp/databases/";
 
 	// the DAO object we use to access the Category table
@@ -49,13 +49,17 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 	private Dao<ChatList,Integer> chatListDao = null;
 	private Dao<UserPreferences, Integer> userPreferencesDao = null;
 	private Dao<User, Integer> usersInfo = null;
+	private Dao<OfflineChallenge, Integer> offlineChallenge = null;
 	
 	private RuntimeExceptionDao<Category, Integer> categoriesRuntimeExceptionDao = null;
 	private RuntimeExceptionDao<Quiz, Integer> quizRuntimeExceptionDao = null;
 	private RuntimeExceptionDao<QuizHistory, Integer> quizHistoryRuntimeExceptionDao = null;
 	private RuntimeExceptionDao<Badge, Integer> badgesExceptionDao = null;
 	private RuntimeExceptionDao<UserPreferences, Integer> userPreferencesRuntimeDao;
-	
+	private RuntimeExceptionDao<OfflineChallenge, Integer> offlineChallengeRuntimeExDao = null;
+	/* for each updater
+	 * upgrade() , getter , setters for runtime ex and dao s , create tables 
+	 */
 
 	QuizApp quizApp = null;
     public DatabaseHelper(QuizApp quizApp) {
@@ -330,6 +334,13 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 			Log.e(DatabaseHelper.class.getName(), "Can't create database", e);
 			throw new RuntimeException(e);
 		}
+		try {
+			Log.i(DatabaseHelper.class.getName(), "onCreate");
+			TableUtils.createTableIfNotExists(connectionSource, OfflineChallenge.class);
+		} catch (SQLException e) {
+			Log.e(DatabaseHelper.class.getName(), "Can't create database", e);
+			throw new RuntimeException(e);
+		}
 	}
 	
 	@Override
@@ -344,6 +355,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 			TableUtils.dropTable(connectionSource, User.class, true);
 			TableUtils.dropTable(connectionSource, Badge.class, true);
 			TableUtils.dropTable(connectionSource, QuizHistory.class, true);
+			TableUtils.dropTable(connectionSource, OfflineChallenge.class, true);
 			// after we drop the old databases, we create the new ones
 			onCreate(db, connectionSource);
 		} catch (SQLException e) {
@@ -398,6 +410,12 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 		return usersInfo;
 	}
 
+	public Dao<OfflineChallenge, Integer> getOfflineChallengesDao() throws SQLException {
+		if (offlineChallenge == null) {
+			offlineChallenge = getDao(OfflineChallenge.class); 
+		}
+		return offlineChallenge;
+	}
 	
 	public Dao<UserPreferences, Integer> getUserPreferencesDao() throws SQLException {
 		if (userPreferencesDao == null) {
@@ -438,6 +456,13 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 			badgesExceptionDao = getRuntimeExceptionDao(Badge.class);
 		}
 		return badgesExceptionDao;
+	}
+	
+	public RuntimeExceptionDao<OfflineChallenge, Integer> getOfflineChallengesExceptionDao() {
+		if (offlineChallengeRuntimeExDao == null) {
+			offlineChallengeRuntimeExDao = getRuntimeExceptionDao(OfflineChallenge.class);
+		}
+		return offlineChallengeRuntimeExDao;
 	}
 	
 	public RuntimeExceptionDao<UserPreferences, Integer> getUserPreferencesExceptionDao() {

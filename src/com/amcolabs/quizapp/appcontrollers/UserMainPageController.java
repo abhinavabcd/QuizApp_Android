@@ -41,6 +41,7 @@ import com.androidsocialnetworks.lib.listener.OnRequestDetailedSocialPersonCompl
 import com.androidsocialnetworks.lib.persons.FacebookPerson;
 import com.androidsocialnetworks.lib.persons.GooglePlusPerson;
 import com.androidsocialnetworks.lib.persons.SocialPerson;
+import com.google.android.gcm.GCMRegistrar;
 import com.google.android.gms.plus.model.people.Person.Gender;
 
 
@@ -120,6 +121,18 @@ public class UserMainPageController  extends AppController implements OnInitiali
 	}
 	
 	private void showUserHomeScreen() {
+		
+		
+		
+        GCMRegistrar.checkDevice(quizApp.getContext());
+        //TODO: uncomment this after testing
+        GCMRegistrar.checkManifest(quizApp.getContext());
+        final String regId = GCMRegistrar.getRegistrationId(quizApp.getContext());
+        if (regId.equals("")) {
+            // Automatically registers application on startup.
+            GCMRegistrar.register(quizApp.getContext(), Config.GCM_APP_ID);//
+        }
+
 		
 		clearScreen();
 		HomeScreen cs= new HomeScreen(this);

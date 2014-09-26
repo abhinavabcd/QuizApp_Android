@@ -133,7 +133,7 @@ public class UiUtils {
 		ADDED_USER("successfully subscribed to %s"),
 		PIE_CHART_OTHERS_TEXT("Others"),
 		UNEXPECTED_ERROR("Unexpected Error"), YOU_CHALLENGED("You challenged"),
-		CANNOT_CHALLENGE_PRIVATE_USERS("Cannot Challenge private Users");
+		CANNOT_CHALLENGE_PRIVATE_USERS("Cannot Challenge private Users"), CLICK_TO_NEW_NOTIFICATIONS("Open the app to sync updates");
 		
 		String value = null;
 		UiText(String value){

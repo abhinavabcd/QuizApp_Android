@@ -19,6 +19,7 @@ import android.util.Log;
 
 import com.amcolabs.quizapp.QuizApp;
 import com.amcolabs.quizapp.User;
+import com.amcolabs.quizapp.UserDeviceManager;
 import com.amcolabs.quizapp.appcontrollers.ProgressiveQuizController;
 import com.amcolabs.quizapp.appcontrollers.ProgressiveQuizController.UserAnswer;
 import com.amcolabs.quizapp.configuration.Config;
@@ -36,6 +37,7 @@ import com.amcolabs.quizapp.popups.StaticPopupDialogBoxes;
 import com.amcolabs.quizapp.serverutils.ServerResponse.MessageType;
 import com.amcolabs.quizapp.uiutils.UiUtils.UiText;
 import com.google.android.gcm.GCMRegistrar;
+import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
@@ -325,11 +327,14 @@ public class ServerCalls {
 	
 
 
-	public void setUserGCMKey(final Context context, String registrationId, final DataInputListener<Boolean> dataInputListener) {
-		String url = getAServerAddr()+"/func?task=setGCMRegistrationId";
-		url+="&encodedKey="+quizApp.getUserDeviceManager().getEncodedKey()+"&regId="+registrationId;
-		makeServerCall(url,new ServerNotifier() {
-			
+	public static void setUserGCMKey(final Context context, String registrationId, final DataInputListener<Boolean> dataInputListener) {
+		String url = SERVER_ADDR+"/func?task=setGCMRegistrationId"; 
+		url+="&encodedKey="+UserDeviceManager.getEncodedKey(context)+"&regId="+registrationId;
+		
+		AsyncHttpClient client  = new AsyncHttpClient();
+		client.setMaxRetriesAndTimeout(3, 10);
+
+		final ServerNotifier serverNotifier = new ServerNotifier() {
 			@Override
 			public void onServerResponse(MessageType messageType, ServerResponse response) {
 				switch(messageType){
@@ -345,10 +350,24 @@ public class ServerCalls {
 							//GCMRegistrar.setRegisteredOnServer(context, false);
 						}
 						break;
+					default:
+						break;
 				}
 			}
-		},false); 
-
+		};
+		client.get(url, new AsyncHttpResponseHandler() {
+			@Override
+			public void onSuccess(int arg0, Header[] arg1, byte[] responseBytes) {
+				String response = new String(responseBytes);
+			    ServerResponse serverResponse= (new Gson()).fromJson(response, ServerResponse.class);
+			    MessageType messageType = serverResponse.getStatusCode();
+			    serverNotifier.onServerResponse(messageType , serverResponse);
+			}
+			public void  onFailure(int messageType, org.apache.http.Header[] headers, byte[] responseBody, Throwable error){
+				
+				serverNotifier.onServerResponse(MessageType.FAILED , null);
+			} 
+		});
 		
 	}
 

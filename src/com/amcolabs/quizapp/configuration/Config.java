@@ -54,6 +54,7 @@ public class Config{
 	public static final String playStoreUrl = "https://play.google.com/store/apps/details?badgeId=com.amcolabs.quizApp";
 	public static final String sharingAppText = "Try this app \n "+playStoreUrl;
 	public static final int NOTIFICATION_ID_SERVER_PUSH = 10;
+	public static final String RECIEVER_NEW_GCM_NOTIFICATION = "com.amcolabs.quizapp.gcmnotification";
 	public static final String FORCE_APP_VERSION = "forceAppVersion";
 	public static final String PREF_ENCODED_KEY = "encodedKey";
 	public static final String PREF_NOT_ACTIVATED = "isNotActivated";
