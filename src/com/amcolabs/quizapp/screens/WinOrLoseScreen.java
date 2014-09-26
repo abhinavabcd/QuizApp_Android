@@ -364,7 +364,7 @@ public class WinOrLoseScreen extends Screen{
         mPieChart.setDescriptionTextSize(5f);
         mPieChart.setValueTextSize(5f);
 
-        mPieChart.setCenterTextSize(5f);
+        mPieChart.setCenterTextSize(5f); 
 
         // undo all highlights
         mPieChart.highlightValues(null);
