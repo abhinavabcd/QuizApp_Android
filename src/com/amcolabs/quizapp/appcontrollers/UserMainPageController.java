@@ -121,16 +121,13 @@ public class UserMainPageController  extends AppController implements OnInitiali
 	}
 	
 	private void showUserHomeScreen() {
-		
-		
-		
-        GCMRegistrar.checkDevice(quizApp.getContext());
+		GCMRegistrar.checkDevice(quizApp.getActivity());
         //TODO: uncomment this after testing
-        GCMRegistrar.checkManifest(quizApp.getContext());
-        final String regId = GCMRegistrar.getRegistrationId(quizApp.getContext());
+        //GCMRegistrar.checkManifest(quizApp.getActivity());
+        final String regId = GCMRegistrar.getRegistrationId(quizApp.getActivity().getApplicationContext());
         if (regId.equals("")) {
             // Automatically registers application on startup.
-            GCMRegistrar.register(quizApp.getContext(), Config.GCM_APP_ID);//
+            GCMRegistrar.register(quizApp.getActivity(), Config.GCM_APP_ID);//
         }
 
 		

@@ -16,6 +16,8 @@ public class OfflineChallenge {
 		public List<UserAnswer> userAnswers;
 	}
 
+	public OfflineChallenge() {
+	}
 	
 	@DatabaseField(id=true , index=true, unique=true)
 	String challengeId;	
@@ -26,9 +28,9 @@ public class OfflineChallenge {
 	@DatabaseField
 	int challengeTye;
 	@DatabaseField
-	ChallengeData challengeData;
+	String  challengeData;
 	@DatabaseField
-	ChallengeData challengeData2;
+	String challengeData2;
 	@DatabaseField
 	String wonUid;
 	

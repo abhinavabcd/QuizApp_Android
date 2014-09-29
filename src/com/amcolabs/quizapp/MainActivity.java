@@ -115,7 +115,7 @@ public class MainActivity extends ActionBarActivity {
 	
 	@Override
 	protected void onDestroy() {
-		quizApp.destroyAllScreens();
+		quizApp.onDestroy();
 		UserDeviceManager.setAppRunningState(AppRunningState.IS_DESTROYED);
 		super.onDestroy();
 	}

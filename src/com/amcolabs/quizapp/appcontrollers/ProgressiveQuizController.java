@@ -120,10 +120,21 @@ public class ProgressiveQuizController extends AppController{
 				questionScreen.animateQuestionChange( UiText.GET_READY.getValue(), UiText.FOR_YOUR_FIRST_QUESTION.getValue() ,currentQuestion);
 				if(isBotMode())
 					scheduleBotAnswer(currentQuestion);
+				if(isChallengedMode()){
+					for(UserAnswer userAnswer : challengeUserAnswers ){
+						if(userAnswer.questionId.equalsIgnoreCase(currentQuestion.questionId)){
+							challengeUserAnswers.remove(userAnswer);
+							scheduleChallengedAnswer(userAnswer);		
+							break;
+						}
+					}
+				}
 
 			}
 		}, Config.CLASH_SCREEN_DELAY+Config.PREQUESTION_FADE_OUT_ANIMATION_TIME);
 	}
+	
+	
 	
 	@Override
 	public void onDestroy() {
@@ -207,6 +218,10 @@ public class ProgressiveQuizController extends AppController{
 	
 	private boolean isNormalMode() {
 		return quizMode==NORMAL_MODE;
+	}
+
+	private boolean isChallengedMode() {
+		return quizMode == CHALLENGED_MODE;
 	}
 
 	
@@ -315,6 +330,23 @@ public class ProgressiveQuizController extends AppController{
 				}
 			}, Config.QUESTION_END_DELAY_TIME);
 		}
+	}
+	
+	private void scheduleChallengedAnswer(final UserAnswer userAnswer){
+		new Handler().postDelayed(new Runnable() {
+			
+			@Override
+			public void run() {
+						int elapsedTime =  userAnswer.elapsedTime;
+						new Handler().postDelayed( new Runnable() {
+							@Override
+							public void run() {
+								questionScreen.getTimerView().stopPressed(2, userAnswer.elapsedTime);
+								checkAndProceedToNextQuestion(userAnswer);
+							}
+						}, elapsedTime*1000);
+					}
+		}, Config.PREQUESTION_FADE_OUT_ANIMATION_TIME);
 	}
 	
 	private void scheduleBotAnswer(final Question currentQuestion) {

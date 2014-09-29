@@ -347,7 +347,7 @@ public class ServerCalls {
 					case FAILED:
 						if(dataInputListener!=null){
 							dataInputListener.onData(false);
-							//GCMRegistrar.setRegisteredOnServer(context, false);
+							GCMRegistrar.setRegisteredOnServer(context, false);
 						}
 						break;
 					default:

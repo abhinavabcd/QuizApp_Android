@@ -33,8 +33,7 @@ public class Config{
 	private final Gson gson = new Gson();
 	public static final String PREF_SERVER_TIME_DIFF = "serverTimeDiff";
 	public static final int RETRY_URL_COUNT = 1;
-	public static final String AD_UNIT_ID = "ca-app-pub-3957510202036052/9058751323";
-	public static final String GCM_APP_ID = "246677287773";
+	public static final String GCM_APP_ID = "591807556804";
 	public static final int DEFAULT_TEXT_COLOR = Color.BLACK;
 	
 	

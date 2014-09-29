@@ -495,6 +495,7 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 	@Override
 	public void onDestroy() {
 		destroyAllScreens();
+		super.onDestroy();
 	}
 	
 }

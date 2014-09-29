@@ -21,7 +21,9 @@ public class DatabaseConfigUtil extends OrmLiteConfigUtil {
 	    QuizHistory.class,
 	    Badge.class,
 	    ChatList.class,
-	    User.class
+	    User.class,
+	    OfflineChallenge.class
+	    
 	  };
 	
 	public static void main(String[] args) throws SQLException, IOException {
