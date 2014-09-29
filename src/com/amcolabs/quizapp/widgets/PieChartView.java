@@ -59,9 +59,42 @@ public class PieChartView extends PieChart{
 
         Legend l = this.getLegend();
         l.setTextSize(6f);
-        l.setPosition(LegendPosition.BELOW_CHART_CENTER);
+//        l.setPosition(LegendPosition.BELOW_CHART_CENTER);
+//        l.setXEntrySpace(7f);
+//        l.setYEntrySpace(5f);
+        l.setPosition(LegendPosition.RIGHT_OF_CHART);
         l.setXEntrySpace(7f);
         l.setYEntrySpace(5f);
+        
+        PieChart mChart = this;
+		mChart.setHoleRadius(60f);
+
+        mChart.setDescription("");
+
+        mChart.setDrawYValues(true);
+        mChart.setDrawCenterText(true);
+
+        mChart.setDrawHoleEnabled(true);
+        
+        mChart.setRotationAngle(0);
+
+        // draws the corresponding description value into the slice
+        mChart.setDrawXValues(true);
+
+        // enable rotation of the chart by touch
+        mChart.setRotationEnabled(true);
+        
+        // display percentage values
+        mChart.setUsePercentValues(true);
+        // mChart.setUnit(" €");
+        // mChart.setDrawUnitsInChart(true);
+
+//        mChart.setTouchEnabled(false);
+                
+        mChart.animateXY(1500, 1500);
+//        mChart.spin(2000, 0, 360);
+        
+        mChart.highlightValues(null);
     }
     
     @Override
