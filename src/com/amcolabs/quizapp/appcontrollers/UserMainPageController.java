@@ -17,7 +17,7 @@ import com.amcolabs.quizapp.databaseutils.Badge;
 import com.amcolabs.quizapp.databaseutils.Category;
 import com.amcolabs.quizapp.databaseutils.OfflineChallenge;
 import com.amcolabs.quizapp.databaseutils.Quiz;
-import com.amcolabs.quizapp.databaseutils.UserFeed;
+import com.amcolabs.quizapp.databaseutils.Feed;
 import com.amcolabs.quizapp.databaseutils.UserInboxMessage;
 import com.amcolabs.quizapp.datalisteners.DataInputListener;
 import com.amcolabs.quizapp.datalisteners.DataInputListener2;
@@ -65,9 +65,9 @@ public class UserMainPageController  extends AppController implements OnInitiali
 			//on fetch update new categories and draw the categories
 			currentQuizMaxTimeStamp = quizApp.getDataBaseHelper().getMaxTimeStampQuiz();
 
-			quizApp.getServerCalls().getAllUpdates(new DataInputListener2<List<UserFeed> ,List<UserInboxMessage> ,List<OfflineChallenge>, Boolean>(){
+			quizApp.getServerCalls().getAllUpdates(new DataInputListener2<List<Feed> ,List<UserInboxMessage> ,List<OfflineChallenge>, Boolean>(){
 				@Override
-				public void onData(List<UserFeed> feeds,List<UserInboxMessage> inboxMessages,List<OfflineChallenge> offlineChallenges, Boolean s) {
+				public void onData(List<Feed> feeds,List<UserInboxMessage> inboxMessages,List<OfflineChallenge> offlineChallenges, Boolean s) {
 					if(s){
 						showUserHomeScreen();
 					}

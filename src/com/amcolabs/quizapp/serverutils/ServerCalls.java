@@ -29,7 +29,7 @@ import com.amcolabs.quizapp.databaseutils.OfflineChallenge;
 import com.amcolabs.quizapp.databaseutils.OfflineChallenge.ChallengeData;
 import com.amcolabs.quizapp.databaseutils.Question;
 import com.amcolabs.quizapp.databaseutils.Quiz;
-import com.amcolabs.quizapp.databaseutils.UserFeed;
+import com.amcolabs.quizapp.databaseutils.Feed;
 import com.amcolabs.quizapp.databaseutils.UserInboxMessage;
 import com.amcolabs.quizapp.datalisteners.DataInputListener;
 import com.amcolabs.quizapp.datalisteners.DataInputListener2;
@@ -439,7 +439,7 @@ public class ServerCalls {
 	public static void clearAllStaticVariables() {
 	}
 
-	public void getAllUpdates(final DataInputListener2<List<UserFeed> ,List<UserInboxMessage> ,List<OfflineChallenge>, Boolean> onFinishListener) {
+	public void getAllUpdates(final DataInputListener2<List<Feed> ,List<UserInboxMessage> ,List<OfflineChallenge>, Boolean> onFinishListener) {
 
 
 		String url = getAServerAddr()+"/func?task=getAllUpdates";
@@ -496,7 +496,7 @@ public class ServerCalls {
 								}
 							}
 						}
-						List<UserFeed> userFeeds = quizApp.getConfig().getGson().fromJson(response.payload3, new TypeToken<List<UserFeed>>(){}.getType());
+						List<Feed> userFeeds = quizApp.getConfig().getGson().fromJson(response.payload3, new TypeToken<List<Feed>>(){}.getType());
 						List<UserInboxMessage> inboxMessages = quizApp.getConfig().getGson().fromJson(response.payload4, new TypeToken<List<UserInboxMessage>>(){}.getType());
 						List<OfflineChallenge> offlineChallenges = quizApp.getConfig().getGson().fromJson(response.payload5, new TypeToken<List<OfflineChallenge>>(){}.getType());
 						if(response.payload6!=null && !response.payload6.trim().equalsIgnoreCase("")){
