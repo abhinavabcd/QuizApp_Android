@@ -38,7 +38,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 	// name of the database file for your application -- change to something appropriate for your app
 	private static final String DATABASE_NAME = "quizApp.db";
 	// any time you make changes to your database objects, you may have to increase the database version
-	private static final int DATABASE_VERSION = 13;
+	private static final int DATABASE_VERSION = 14;
 	private static String DATABASE_PATH = "/data/data/com.amcolabs.quizapp/databases/";
 
 	// the DAO object we use to access the Category table
@@ -49,7 +49,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 	private Dao<ChatList,Integer> chatListDao = null;
 	private Dao<UserPreferences, Integer> userPreferencesDao = null;
 	private Dao<User, Integer> usersInfo = null;
-	private Dao<OfflineChallenge, Integer> offlineChallenge = null;
+	private Dao<OfflineChallenge, Integer> offlineChallengeDao = null;
 	
 	private RuntimeExceptionDao<Category, Integer> categoriesRuntimeExceptionDao = null;
 	private RuntimeExceptionDao<Quiz, Integer> quizRuntimeExceptionDao = null;
@@ -411,10 +411,10 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 	}
 
 	public Dao<OfflineChallenge, Integer> getOfflineChallengesDao() throws SQLException {
-		if (offlineChallenge == null) {
-			offlineChallenge = getDao(OfflineChallenge.class); 
+		if (offlineChallengeDao == null) {
+			offlineChallengeDao = getDao(OfflineChallenge.class); 
 		}
-		return offlineChallenge;
+		return offlineChallengeDao;
 	}
 	
 	public Dao<UserPreferences, Integer> getUserPreferencesDao() throws SQLException {
@@ -525,7 +525,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 	}
     
     /**
-     * To Create or update a category by its ID
+     * To Create or update a offlineChallengeDao by its ID
      * Returns true successful else false
      */
     public boolean createOrUpdateCategory(Category cat){
@@ -661,6 +661,33 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 			e.printStackTrace();
 		}
 		return null;
+	}
+
+	public List<OfflineChallenge> getRecentOfflineChallenges(long limit) {
+		try {
+			if(limit>0)
+				return getOfflineChallengesDao().queryBuilder().limit(limit).query();
+			else
+				return getOfflineChallengesDao().queryBuilder().query();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	public void updateOfflineChallenge(String id, boolean b, boolean hasWon) {
+		try {
+			 List<OfflineChallenge> offlineChallenges = getOfflineChallengesDao().queryBuilder().where().eq("offlineChallengeId", id).query();
+			 if(offlineChallenges!=null && offlineChallenges.size()>0){
+				 OfflineChallenge offlineChallenge = offlineChallenges.get(0);
+				 offlineChallenge.hasWon = hasWon;
+				 offlineChallenge.isCompleted = true;
+				getOfflineChallengesDao().createOrUpdate(offlineChallenge);
+			 }
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
     
 }

@@ -897,11 +897,12 @@ public class ServerCalls {
 	}
 
 
-	public void addOfflineChallange(Quiz quiz, User otherUser,	List<UserAnswer> userAnswers, final DataInputListener<Boolean> dataInputListener) {
+	public void addOfflineChallange(Quiz quiz, User otherUser,	List<UserAnswer> userAnswers, String offlineChallengeId, final DataInputListener<Boolean> dataInputListener) {
 			
 			String url = getAServerAddr()+"/func?task=addOfflineChallenge";
 			url+="&encodedKey="+quizApp.getUserDeviceManager().getEncodedKey();
 			url+="&uid2="+otherUser.uid;
+			url+="&offlineChallengeId="+offlineChallengeId;
 			Map<String,String > params = new HashMap<String, String>(); 
 			params.put("challengeData",quizApp.getConfig().getGson().toJson(new ChallengeData(quiz.quizId, userAnswers)));
 			makeServerPostCall(url, params, new ServerNotifier() {
@@ -940,6 +941,28 @@ public class ServerCalls {
 			}
 		}, false);
 	}
-			
+
+
+	public void completeOfflineChallenge(String offlineChallengeId, ChallengeData challengeData2, final DataInputListener<Boolean> dataInputListener) {
+
+		String url = getAServerAddr()+"/func?task=onOfflineChallengeCompleted";
+		url+="&encodedKey="+quizApp.getUserDeviceManager().getEncodedKey();
+		url+="&offlineChallengeId="+offlineChallengeId;
+		Map<String,String > params = new HashMap<String, String>(); 
+		params.put("challengeData",quizApp.getConfig().getGson().toJson(challengeData2));
+		makeServerPostCall(url, params, new ServerNotifier() {
+			@Override
+			public void onServerResponse(MessageType messageType, ServerResponse response) {
+					switch(messageType){
+						case OK:
+							dataInputListener.onData(true);
+							break;
+						default:
+							dataInputListener.onData(false);
+							break;
+					}
+			}
+		} , false);
+	}
 }
 

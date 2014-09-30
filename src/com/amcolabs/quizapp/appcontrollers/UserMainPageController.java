@@ -1,8 +1,6 @@
 package com.amcolabs.quizapp.appcontrollers;
  
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 
@@ -132,29 +130,46 @@ public class UserMainPageController  extends AppController implements OnInitiali
 
 		
 		clearScreen();
-		HomeScreen cs= new HomeScreen(this);
+		final HomeScreen homeScreen= new HomeScreen(this);
 //		ArrayList<Category> categories = new ArrayList<Category>();
 //		for(int i=0;i<10;i++){
 //			categories.add(Category.createDummy());
 //		}
 		List<Category> categories = quizApp.getDataBaseHelper().getCategories(5);
-		cs.addCategoriesView(categories, categories.size()>4);
+		homeScreen.addCategoriesView(categories, categories.size()>4);
 		 
 		
 		List<Quiz> quizzes = quizApp.getDataBaseHelper().getAllQuizzesOrderedByXP(5);
-		cs.addUserQuizzesView(quizzes ,quizzes.size()>4 , UiText.USER_FAVOURITES.getValue());
+		homeScreen.addUserQuizzesView(quizzes ,quizzes.size()>4 , UiText.USER_FAVOURITES.getValue());
 		
 		List<Quiz> recentQuizzes = quizApp.getDataBaseHelper().getAllQuizzes(10, currentQuizMaxTimeStamp);
 		if(recentQuizzes!=null && recentQuizzes.size()>0)
-			cs.addUserQuizzesView(quizzes ,false , UiText.RECENT_QUIZZES.getValue());
+			homeScreen.addUserQuizzesView(quizzes ,false , UiText.RECENT_QUIZZES.getValue());
+		
+		final List<OfflineChallenge> offlineChallenges = quizApp.getDataBaseHelper().getRecentOfflineChallenges(7);
+		if(offlineChallenges!=null && offlineChallenges.size()>0){
+			List<String> uidsList = new ArrayList<String>();
+			for(OfflineChallenge offlineChallenge : offlineChallenges){
+				uidsList.add(offlineChallenge.getFromUserUid());
+			}
+			quizApp.getDataBaseHelper().getAllUsersByUid(uidsList, new DataInputListener<Boolean>(){ // should run on ui thread
+				@Override
+				public String onData(Boolean s) { 
+					homeScreen.addOfflineChallengesView(offlineChallenges, offlineChallenges.size()>6, UiText.OFFLINE_CHALLENGES.getValue() , true);
+					return null;
+				}
+			});
+		}
 		
 //		cs.addFeedView();
 //		cs.addQuizzes();
 		
-		insertScreen(cs);
+		insertScreen(homeScreen);
 		List<Badge> pendingBadges = quizApp.getDataBaseHelper().getAllPendingBadges();
 		if(pendingBadges!=null)
 			quizApp.getBadgeEvaluator().newBadgeUnlocked(new ArrayList<Badge>(pendingBadges));
+		
+		
 //		insertScreen(new UserProfileScreen(this));
 //		insertScreen(new WinOrLoseScreen(this));
 	}
@@ -392,5 +407,17 @@ public class UserMainPageController  extends AppController implements OnInitiali
 				return super.onData(s);
 		    }
 		});
+	}
+
+	public void startNewOfflineChallenge(OfflineChallenge offlineChallenge) {
+		((ProgressiveQuizController)quizApp.loadAppController(ProgressiveQuizController.class)).startChallengedGame(offlineChallenge);
+		
+	}
+
+	public void showAllOfflineChallenges() {
+		clearScreen();
+		HomeScreen homeScreen = new HomeScreen(this);
+		homeScreen.addOfflineChallengesView(quizApp.getDataBaseHelper().getRecentOfflineChallenges(-1), false, UiText.OFFLINE_CHALLENGES.getValue(), false);
+		insertScreen(homeScreen);
 	}
 }

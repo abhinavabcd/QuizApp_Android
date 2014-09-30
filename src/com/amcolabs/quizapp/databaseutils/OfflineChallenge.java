@@ -2,6 +2,8 @@ package com.amcolabs.quizapp.databaseutils;
 
 import java.util.List;
 
+import com.amcolabs.quizapp.QuizApp;
+import com.amcolabs.quizapp.User;
 import com.amcolabs.quizapp.appcontrollers.ProgressiveQuizController.UserAnswer;
 import com.j256.ormlite.field.DatabaseField;
 
@@ -20,7 +22,8 @@ public class OfflineChallenge {
 	}
 	
 	@DatabaseField(id=true , index=true, unique=true)
-	String challengeId;	
+	private
+	String offlineChallengeId;	
 	@DatabaseField
 	String fromUid_userChallengeIndex;
 	@DatabaseField
@@ -33,5 +36,31 @@ public class OfflineChallenge {
 	String challengeData2;
 	@DatabaseField
 	String wonUid;
+	@DatabaseField
+	boolean isCompleted= false;
+	@DatabaseField
+	boolean hasWon = false;
 	
+	
+	ChallengeData cachedChallengeData = null;
+	public ChallengeData getChallengeData(QuizApp quizApp){
+		return cachedChallengeData==null?(cachedChallengeData = quizApp.getConfig().getGson().fromJson(challengeData, ChallengeData.class)) : cachedChallengeData;
+	}
+	
+	public String getFromUserUid(){
+		return fromUid_userChallengeIndex.split("_")[0];
+	}
+
+	private User cachedUser = null;
+	public User getFromUser(QuizApp quizApp) { 
+		return cachedUser==null?(cachedUser =quizApp.cachedUsers.get(getFromUserUid())):cachedUser;
+	}
+
+	public String getOfflineChallengeId() {
+		return offlineChallengeId;
+	}
+
+	public void setOfflineChallengeId(String offlineChallengeId) {
+		this.offlineChallengeId = offlineChallengeId;
+	}
 }

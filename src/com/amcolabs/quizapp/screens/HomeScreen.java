@@ -16,9 +16,12 @@ import com.amcolabs.quizapp.AppController;
 import com.amcolabs.quizapp.R;
 import com.amcolabs.quizapp.Screen;
 import com.amcolabs.quizapp.adapters.CategoryItemListAdapter;
+import com.amcolabs.quizapp.adapters.OfflineChallengesAdapter;
 import com.amcolabs.quizapp.adapters.QuizItemListAdapter;
 import com.amcolabs.quizapp.appcontrollers.UserMainPageController;
+import com.amcolabs.quizapp.configuration.Config;
 import com.amcolabs.quizapp.databaseutils.Category;
+import com.amcolabs.quizapp.databaseutils.OfflineChallenge;
 import com.amcolabs.quizapp.databaseutils.Quiz;
 import com.amcolabs.quizapp.datalisteners.DataInputListener;
 import com.amcolabs.quizapp.uiutils.UiUtils;
@@ -131,6 +134,55 @@ public class HomeScreen extends Screen {
 			listViews.get(i).invalidate();
 		}
 	}
+	
+	
+	double clickTime = 0;
+	
+	public void addOfflineChallengesView(List<OfflineChallenge> offlineChallenges, boolean showViewMore , String text , boolean spanOnFullWidth) {
+		final OfflineChallengesAdapter offlineChallengeAdaptor = new OfflineChallengesAdapter(getApp(),0,offlineChallenges, new DataInputListener<OfflineChallenge>(){
+			@Override
+			public String onData(final OfflineChallenge offlineChallenge){
+				if(Config.getCurrentNanos()-clickTime < 1000000000.0){ // 10^9 nano sec
+					return null;
+				}
+				clickTime = Config.getCurrentNanos();
+				userMainController.startNewOfflineChallenge(offlineChallenge);
+				return null; 
+			}
+		});
+		LinearLayout lView = (LinearLayout) getApp().getActivity().getLayoutInflater().inflate(R.layout.block_list_view, null);
+		lView.setBackgroundColor(getApp().getConfig().getAThemeColor());
+		EditText searchText = (EditText) lView.findViewById(R.id.search_text);
+		searchText.setVisibility(View.GONE);
+		GothamTextView titleView = (GothamTextView) lView.findViewById(R.id.title_text_view);
+		titleView.setText(text);
+		ListView listView = (ListView) lView.findViewById(R.id.listView);
+		listView.setAdapter(offlineChallengeAdaptor);
+		
+		listViews.add(listView);
+	//	addListenersToQuizListItem(listView);
+		
+		
+		
+		if(spanOnFullWidth)
+			UiUtils.setListViewHeightBasedOnChildren(listView);
+		
+		FrameLayout viewMore = (FrameLayout) lView.findViewById(R.id.view_all_wrapper);
+		if(!showViewMore){
+			viewMore.setVisibility(View.GONE);
+		}
+		else{
+			viewMore.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					userMainController.showAllOfflineChallenges();
+				}
+			});
+		}
+		addToScrollView(lView);
+	}
+		
+	
 	
 	public void addUserQuizzesView(List<Quiz> quizzes, boolean showViewMore , String text) {
 		final QuizItemListAdapter quizAdaptor = new QuizItemListAdapter(getApp(),0,quizzes, new DataInputListener<Quiz>(){

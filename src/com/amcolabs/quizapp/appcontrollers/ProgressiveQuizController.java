@@ -37,6 +37,30 @@ import com.google.gson.annotations.SerializedName;
 import com.google.gson.reflect.TypeToken;
 
 public class ProgressiveQuizController extends AppController{
+	public static enum QuizMode{
+		UNKNOWN,
+		NORMAL_MODE,
+		BOT_MODE,
+		CHALLENGE_MODE,
+		CHALLENGED_MODE;
+		
+		private QuizMode() {
+			// TODO Auto-generated constructor stub
+		}
+		QuizMode(String id){
+			this.id=null;
+		}
+		
+		String id=null;
+		public String getId(){
+			return id;
+		}
+		public void setId(String id) {
+			this.id = id;
+		}
+		
+	}
+	
 	User user;
 	User user2;
 	
@@ -58,7 +82,7 @@ public class ProgressiveQuizController extends AppController{
 		showWaitingScreen(quiz);
 		playType = RANDOM_USER_TYPE;
 		noResponseFromServer = true;
-		quizMode = -1;
+		quizMode = QuizMode.UNKNOWN;
 	}
 
 	ClashScreen clashingScreen = null;
@@ -175,10 +199,6 @@ public class ProgressiveQuizController extends AppController{
 	public final  static String ELAPSED_TIME="10";
 	
 	
-	private static final int NORMAL_MODE = -1;
-	protected static final int CHALLENGE_MODE = 2;
-	private static final int BOT_MODE = 3;
-	private static final int CHALLENGED_MODE = 4;
 
 	
 	// type of quiz
@@ -199,29 +219,29 @@ public class ProgressiveQuizController extends AppController{
 	private int botScore =0;
 	protected Random rand = new Random();
 	private WinOrLoseScreen quizResultScreen;
-	private int quizMode = NORMAL_MODE;
+	private QuizMode quizMode = QuizMode.NORMAL_MODE;
 	private boolean waitingForRematch;
 	private int playType = RANDOM_USER_TYPE;
 	private DataInputListener2<ServerWebSocketConnection, Quiz, Void, Void> socketConnectedListener = null;
 	
-	private void setQuizMode(int mode){
+	private void setQuizMode(QuizMode mode){
 		quizMode = mode;
 	}
 	
 	private boolean isBotMode(){
-		return quizMode == BOT_MODE;
+		return quizMode == QuizMode.BOT_MODE;
 	}
 	
 	public boolean isChallengeMode(){
-		return quizMode == CHALLENGE_MODE;
+		return quizMode == QuizMode.CHALLENGE_MODE;
 	}
 	
 	private boolean isNormalMode() {
-		return quizMode==NORMAL_MODE;
+		return quizMode==QuizMode.NORMAL_MODE;
 	}
 
 	private boolean isChallengedMode() {
-		return quizMode == CHALLENGED_MODE;
+		return quizMode == QuizMode.CHALLENGED_MODE;
 	}
 
 	
@@ -246,7 +266,7 @@ public class ProgressiveQuizController extends AppController{
 		serverSocket = mConnection; 
 		waitinStartTime = Config.getCurrentTimeStamp();
 
-		if(!isChallegeTypeQuiz()){
+		if(isNormalMode()){
 			new Handler().postDelayed(new Runnable() {
 				@Override
 				public void run() {
@@ -261,12 +281,6 @@ public class ProgressiveQuizController extends AppController{
 		}
 	}
 	
-	private void setQuizType(int type){
-		playType = type;
-	}
-	private boolean isChallegeTypeQuiz() {
-		return playType == CHALLENGE_QUIZ_TYPE;
-	}
 
 	public static class UserAnswer{
 		@SerializedName(MESSAGE_TYPE)
@@ -447,7 +461,7 @@ public class ProgressiveQuizController extends AppController{
 	    		break; 
 	    	case OK_ACTIVATING_BOT: 
 	    		quizApp.getServerCalls().informActivatingBot(quiz, serverSocket.serverId); 
-	    		setQuizMode(BOT_MODE);
+	    		setQuizMode(QuizMode.BOT_MODE);
 	    		serverSocket.disconnect();
 	    		startQuestions(response);
 	    		break;
@@ -481,8 +495,10 @@ public class ProgressiveQuizController extends AppController{
 	    		break;
 //	    	case START_CHALLENGE_NOW:
 	    	case OK_CHALLENGE_WITHOUT_OPPONENT:
-				setQuizMode(CHALLENGE_MODE);
+				setQuizMode(QuizMode.CHALLENGE_MODE);
+				quizMode.setId(response.payload3);
 				startQuestions(response);
+				gracefullyCloseSocket();
 				break;
 
 			default:
@@ -596,7 +612,7 @@ public class ProgressiveQuizController extends AppController{
 			currentScore += ( Math.ceil(currentQuestion.getTime()-timeElapsed)*quizApp.getConfig().multiplyFactor(currentQuestions.size()));
 		}
 		payload = new UserAnswer(currentQuestion.questionId, quizApp.getUser().uid, answer, (int)timeElapsed, currentScore);
-		if(!isBotMode() || !isChallengeMode())
+		if(isNormalMode())
 			serverSocket.sendTextMessage(quizApp.getConfig().getGson().toJson(payload));
 		checkAndProceedToNextQuestion(payload);
 	}
@@ -697,7 +713,7 @@ public class ProgressiveQuizController extends AppController{
 		oldPoints = newPoints - (uAns.get(uAns.size()-1).whatUserGot+(quizResult>0?Config.QUIZ_WIN_BONUS:0));
 		
 		if(isChallengeMode()){
-			quizApp.getServerCalls().addOfflineChallange(quiz , getOtherUser(), userAnswersStack.get(quizApp.getUser().uid),  new DataInputListener<Boolean>(){
+			quizApp.getServerCalls().addOfflineChallange(quiz , getOtherUser(), userAnswersStack.get(quizApp.getUser().uid), quizMode.getId() ,new DataInputListener<Boolean>(){
 				@Override
 				public String onData(Boolean s) {
 					if(s){
@@ -732,6 +748,21 @@ public class ProgressiveQuizController extends AppController{
 					qHistory.setWin(qHistory.getWin()+1);
 					qHistory.setStreak(qHistory.getStreak()+1);
 				} 
+			}
+			final boolean hasWon = quizResult==WON;
+			if(isChallengedMode()){
+				quizApp.getServerCalls().completeOfflineChallenge( quizMode.getId() , new ChallengeData(quiz.quizId, userAnswersStack.get(quizApp.getUser().uid)),  new DataInputListener<Boolean>(){
+					@Override 
+					public String onData(Boolean s) {
+						if(s){
+							quizApp.getDataBaseHelper().updateOfflineChallenge(quizMode.getId(), true, hasWon);
+						}
+						else{
+							quizApp.getStaticPopupDialogBoxes().yesOrNo(UiText.SERVER_ERROR_MESSAGE.getValue(), null, UiText.CLOSE.getValue(), null);
+						}
+						return super.onData(s);
+					}
+				});//server call  
 			}
 			quizApp.getDataBaseHelper().createOrUpdateQuizHistory(qHistory);
 			
@@ -794,11 +825,10 @@ public class ProgressiveQuizController extends AppController{
 		else{
 			withUser = otherUser;
 		}
-		setQuizMode(CHALLENGE_MODE);
-		setQuizType(CHALLENGE_QUIZ_TYPE);
+		setQuizMode(QuizMode.CHALLENGE_MODE);
 		//TODO: clear socket , 
 		// master server get sid
-		// open new socket with &isChallenge=uid2 , get challengeId , etc from server , 
+		// open new socket with &isChallenge=uid2 , get offlineChallengeId , etc from server , 
 		// else let the user click on start now to Send message START_CHALLENGE_NOW to server , get questions , 
 		// and then wait for the opponent to connect ,
 		// users , setmode as challenge , complete it to send the offlinechallenge to server 
@@ -822,22 +852,18 @@ public class ProgressiveQuizController extends AppController{
 	
 	
 	
-	public void startChallengedGame(User otherUser , final ChallengeData challengeData ){
-		final User withUser;
-		if(otherUser==null) {
-			withUser = getOtherUser();
-		}
-		else{
-			withUser = otherUser;
-		}
-		this.challengeData = challengeData;
+	public void startChallengedGame(final OfflineChallenge offlineChallenge ){
+		final User fromUser = offlineChallenge.getFromUser(quizApp);
 		
-		setQuizMode(CHALLENGED_MODE);
-		setQuizType(CHALLENGED_QUIZ_TYPE);
+		this.challengeData = offlineChallenge.getChallengeData(quizApp);
+		QuizMode mode = QuizMode.CHALLENGED_MODE;
+		mode.setId(offlineChallenge.getOfflineChallengeId());
+		setQuizMode(mode);
 		//get questions from server , 
 		
 		gracefullyCloseSocket();//previous socket 
 		clearScreen();
+		quiz = quizApp.getDataBaseHelper().getQuizById(challengeData.quizId);
 		clashingScreen = new ClashScreen(this);
 		clashingScreen.setClashCount(2); 
 		clashingScreen.updateClashScreen(quizApp.getUser()/*quizApp.getUser()*/,quiz,  0 );
@@ -846,7 +872,6 @@ public class ProgressiveQuizController extends AppController{
 		// startQuestions 
 		// isChallengedMode , run bot answers 
 		// on end , onChallengeComplete , update on server , and notify other user
-		quiz = quizApp.getDataBaseHelper().getQuizById(challengeData.quizId);
 		challengeUserAnswers = challengeData.userAnswers;
 		ArrayList<String > questionIds = new ArrayList<String>();
 		for(UserAnswer userAnswer : challengeUserAnswers){
@@ -854,7 +879,7 @@ public class ProgressiveQuizController extends AppController{
 		}
 		currentUsers.clear();
 		currentUsers.add(quizApp.getUser());
-		currentUsers.add(otherUser);
+		currentUsers.add(fromUser);
 		quizApp.getServerCalls().loadQuestionsInOrder(questionIds,new DataInputListener<List<Question>>(){
 			@Override
 			public String onData(List<Question> s) {
