@@ -19,6 +19,7 @@ import android.util.Log;
 
 import com.amcolabs.quizapp.QuizApp;
 import com.amcolabs.quizapp.User;
+import com.amcolabs.quizapp.UserDeviceManager;
 import com.amcolabs.quizapp.appcontrollers.ProgressiveQuizController;
 import com.amcolabs.quizapp.appcontrollers.ProgressiveQuizController.UserAnswer;
 import com.amcolabs.quizapp.configuration.Config;
@@ -28,7 +29,7 @@ import com.amcolabs.quizapp.databaseutils.OfflineChallenge;
 import com.amcolabs.quizapp.databaseutils.OfflineChallenge.ChallengeData;
 import com.amcolabs.quizapp.databaseutils.Question;
 import com.amcolabs.quizapp.databaseutils.Quiz;
-import com.amcolabs.quizapp.databaseutils.UserFeed;
+import com.amcolabs.quizapp.databaseutils.Feed;
 import com.amcolabs.quizapp.databaseutils.UserInboxMessage;
 import com.amcolabs.quizapp.datalisteners.DataInputListener;
 import com.amcolabs.quizapp.datalisteners.DataInputListener2;
@@ -36,6 +37,7 @@ import com.amcolabs.quizapp.popups.StaticPopupDialogBoxes;
 import com.amcolabs.quizapp.serverutils.ServerResponse.MessageType;
 import com.amcolabs.quizapp.uiutils.UiUtils.UiText;
 import com.google.android.gcm.GCMRegistrar;
+import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
@@ -325,11 +327,14 @@ public class ServerCalls {
 	
 
 
-	public void setUserGCMKey(final Context context, String registrationId, final DataInputListener<Boolean> dataInputListener) {
-		String url = getAServerAddr()+"/func?task=setGCMRegistrationId";
-		url+="&encodedKey="+quizApp.getUserDeviceManager().getEncodedKey()+"&regId="+registrationId;
-		makeServerCall(url,new ServerNotifier() {
-			
+	public static void setUserGCMKey(final Context context, String registrationId, final DataInputListener<Boolean> dataInputListener) {
+		String url = SERVER_ADDR+"/func?task=setGCMRegistrationId"; 
+		url+="&encodedKey="+UserDeviceManager.getEncodedKey(context)+"&regId="+registrationId;
+		
+		AsyncHttpClient client  = new AsyncHttpClient();
+		client.setMaxRetriesAndTimeout(3, 10);
+
+		final ServerNotifier serverNotifier = new ServerNotifier() {
 			@Override
 			public void onServerResponse(MessageType messageType, ServerResponse response) {
 				switch(messageType){
@@ -342,13 +347,27 @@ public class ServerCalls {
 					case FAILED:
 						if(dataInputListener!=null){
 							dataInputListener.onData(false);
-							//GCMRegistrar.setRegisteredOnServer(context, false);
+							GCMRegistrar.setRegisteredOnServer(context, false);
 						}
+						break;
+					default:
 						break;
 				}
 			}
-		},false); 
-
+		};
+		client.get(url, new AsyncHttpResponseHandler() {
+			@Override
+			public void onSuccess(int arg0, Header[] arg1, byte[] responseBytes) {
+				String response = new String(responseBytes);
+			    ServerResponse serverResponse= (new Gson()).fromJson(response, ServerResponse.class);
+			    MessageType messageType = serverResponse.getStatusCode();
+			    serverNotifier.onServerResponse(messageType , serverResponse);
+			}
+			public void  onFailure(int messageType, org.apache.http.Header[] headers, byte[] responseBody, Throwable error){
+				
+				serverNotifier.onServerResponse(MessageType.FAILED , null);
+			} 
+		});
 		
 	}
 
@@ -420,7 +439,7 @@ public class ServerCalls {
 	public static void clearAllStaticVariables() {
 	}
 
-	public void getAllUpdates(final DataInputListener2<List<UserFeed> ,List<UserInboxMessage> ,List<OfflineChallenge>, Boolean> onFinishListener) {
+	public void getAllUpdates(final DataInputListener2<List<Feed> ,List<UserInboxMessage> ,List<OfflineChallenge>, Boolean> onFinishListener) {
 
 
 		String url = getAServerAddr()+"/func?task=getAllUpdates";
@@ -477,7 +496,7 @@ public class ServerCalls {
 								}
 							}
 						}
-						List<UserFeed> userFeeds = quizApp.getConfig().getGson().fromJson(response.payload3, new TypeToken<List<UserFeed>>(){}.getType());
+						List<Feed> userFeeds = quizApp.getConfig().getGson().fromJson(response.payload3, new TypeToken<List<Feed>>(){}.getType());
 						List<UserInboxMessage> inboxMessages = quizApp.getConfig().getGson().fromJson(response.payload4, new TypeToken<List<UserInboxMessage>>(){}.getType());
 						List<OfflineChallenge> offlineChallenges = quizApp.getConfig().getGson().fromJson(response.payload5, new TypeToken<List<OfflineChallenge>>(){}.getType());
 						if(response.payload6!=null && !response.payload6.trim().equalsIgnoreCase("")){
@@ -878,11 +897,12 @@ public class ServerCalls {
 	}
 
 
-	public void addOfflineChallange(Quiz quiz, User otherUser,	List<UserAnswer> userAnswers, final DataInputListener<Boolean> dataInputListener) {
+	public void addOfflineChallange(Quiz quiz, User otherUser,	List<UserAnswer> userAnswers, String offlineChallengeId, final DataInputListener<Boolean> dataInputListener) {
 			
 			String url = getAServerAddr()+"/func?task=addOfflineChallenge";
 			url+="&encodedKey="+quizApp.getUserDeviceManager().getEncodedKey();
 			url+="&uid2="+otherUser.uid;
+			url+="&offlineChallengeId="+offlineChallengeId;
 			Map<String,String > params = new HashMap<String, String>(); 
 			params.put("challengeData",quizApp.getConfig().getGson().toJson(new ChallengeData(quiz.quizId, userAnswers)));
 			makeServerPostCall(url, params, new ServerNotifier() {
@@ -921,6 +941,28 @@ public class ServerCalls {
 			}
 		}, false);
 	}
-			
+
+
+	public void completeOfflineChallenge(String offlineChallengeId, ChallengeData challengeData2, final DataInputListener<Boolean> dataInputListener) {
+
+		String url = getAServerAddr()+"/func?task=onOfflineChallengeCompleted";
+		url+="&encodedKey="+quizApp.getUserDeviceManager().getEncodedKey();
+		url+="&offlineChallengeId="+offlineChallengeId;
+		Map<String,String > params = new HashMap<String, String>(); 
+		params.put("challengeData",quizApp.getConfig().getGson().toJson(challengeData2));
+		makeServerPostCall(url, params, new ServerNotifier() {
+			@Override
+			public void onServerResponse(MessageType messageType, ServerResponse response) {
+					switch(messageType){
+						case OK:
+							dataInputListener.onData(true);
+							break;
+						default:
+							dataInputListener.onData(false);
+							break;
+					}
+			}
+		} , false);
+	}
 }
 

@@ -41,10 +41,10 @@ public class BadgeEvaluator {
 	/**
 	 * Values must be given as limits i.e., anything, greater than or equal to given value, is counted as True 
 	 * -- (0 is used to represent all, it implies condition must apply for all selected)
-	 * values must be followed by %x where x is the minimum count for the condition for given type (category and quiz only)
+	 * values must be followed by %x where x is the minimum count for the condition for given type (offlineChallenge and quiz only)
 	 * Full child match - must satisfy for all->0 ; atleast one -> 1 ; no restriction(default value) -> -1 
 	 * selected quizList will be List of lists which are bound by OR condition
-	 * Eg: (category::%0)&&(level::5|10|15) ; (category::id1|id3&id2%2)
+	 * Eg: (offlineChallenge::%0)&&(level::5|10|15) ; (offlineChallenge::id1|id3&id2%2)
 	 * @param cond
 	 * @param value
 	 * @return
@@ -186,7 +186,7 @@ public class BadgeEvaluator {
 	}
 
 	/**
-	 * Category and Quiz can be manipulated to give conditions. category
+	 * Category and Quiz can be manipulated to give conditions. offlineChallenge
 	 * default -1 -> no restrictions(one quiz match with other conditions); 0 -> must match all given entries fully; n -> must match n entries 
 	 * @param condition
 	 */
@@ -204,7 +204,7 @@ public class BadgeEvaluator {
 //		int sz;
 		ands = CommonFunctions.splitString(condition, "&&");
 		cond = CommonFunctions.splitString(ands[0], "::");
-		if(cond[0].equalsIgnoreCase("category")){
+		if(cond[0].equalsIgnoreCase("offlineChallenge")){
 			if(cond.length>1){
 				loadCategoryList(cond[1]);
 			}

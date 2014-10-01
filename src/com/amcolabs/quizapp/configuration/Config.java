@@ -33,8 +33,7 @@ public class Config{
 	private final Gson gson = new Gson();
 	public static final String PREF_SERVER_TIME_DIFF = "serverTimeDiff";
 	public static final int RETRY_URL_COUNT = 1;
-	public static final String AD_UNIT_ID = "ca-app-pub-3957510202036052/9058751323";
-	public static final String GCM_APP_ID = "246677287773";
+	public static final String GCM_APP_ID = "591807556804";
 	public static final int DEFAULT_TEXT_COLOR = Color.BLACK;
 	
 	
@@ -54,6 +53,7 @@ public class Config{
 	public static final String playStoreUrl = "https://play.google.com/store/apps/details?badgeId=com.amcolabs.quizApp";
 	public static final String sharingAppText = "Try this app \n "+playStoreUrl;
 	public static final int NOTIFICATION_ID_SERVER_PUSH = 10;
+	public static final String RECIEVER_NEW_GCM_NOTIFICATION = "com.amcolabs.quizapp.gcmnotification";
 	public static final String FORCE_APP_VERSION = "forceAppVersion";
 	public static final String PREF_ENCODED_KEY = "encodedKey";
 	public static final String PREF_NOT_ACTIVATED = "isNotActivated";

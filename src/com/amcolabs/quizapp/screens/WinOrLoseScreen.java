@@ -59,6 +59,7 @@ public class WinOrLoseScreen extends Screen{
 	private ArrayList<User> currentUsers;
 	private HashMap<String, List<UserAnswer>> userAnswersStack;
 	private ProgressiveQuizController progressviewQuizController;
+	private boolean isChallengeMode = false;
 	
 	public static class userViewHolder{
 		GothamTextView userNameView;
@@ -168,10 +169,11 @@ public class WinOrLoseScreen extends Screen{
 	public void showResult(HashMap<String, List<UserAnswer>> uAnswersStack,int matchResult,boolean levelUp, boolean isChallengeMode){
 	  // Show whether user has won or not
 	  // rematch button , addFriend button , challenge with points button ,  seeProfile button
-	// for these buttons , will use the same layout we used for category view ,list_item_layout.xml
+	// for these buttons , will use the same layout we used for offlineChallenge view ,list_item_layout.xml
 	  // and load the profileViewLayout of both users in block , one after the other
 	  //  will have place for chat block there itself users can live chat there itself
 		userAnswersStack = uAnswersStack;
+		this.isChallengeMode = isChallengeMode;
 		userViewHolder tmp;
 		ImageView imgView;
 		User cUser;
@@ -216,7 +218,7 @@ public class WinOrLoseScreen extends Screen{
 		
 		
 		List<UserAnswer> ans = userAnswersStack.get(getApp().getUser().uid);
-		animatePoints((int)Math.floor(ans.get(ans.size()-1).whatUserGot),(int)Math.floor(matchResult>0?Config.QUIZ_WIN_BONUS:0),(int)Math.floor(levelUp?Config.QUIZ_LEVEL_UP_BONUS:0));
+		animatePoints((int)Math.floor(ans.get(ans.size()-1).whatUserGot),(int)Math.floor( (matchResult>0&&!isChallengeMode)?Config.QUIZ_WIN_BONUS:0),(int)Math.floor(levelUp?Config.QUIZ_LEVEL_UP_BONUS:0));
 		showResultInChart();
 	}
 
@@ -224,7 +226,11 @@ public class WinOrLoseScreen extends Screen{
 		final Animation anim = AnimationUtils.loadAnimation(getApp().getContext(), R.anim.push_down_in);
 		final Animation fanim = AnimationUtils.loadAnimation(getApp().getContext(), R.anim.fadein);
 		quizPoints.setText("+"+qPoints);
-		quizWinPoints.setText("+"+qwPoints);
+		if(!isChallengeMode)
+			quizWinPoints.setText("+"+qwPoints);
+		else{
+			quizWinPoints.setText("?");
+		}
 		quizLevelupPoints.setText("+"+luPoints);
 		quizTotalPoints.setText("+"+(qPoints+qwPoints+luPoints));
 		new Handler().postDelayed(new Runnable() {
