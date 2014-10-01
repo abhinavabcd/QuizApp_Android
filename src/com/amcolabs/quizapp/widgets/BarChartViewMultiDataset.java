@@ -55,7 +55,7 @@ public class BarChartViewMultiDataset extends BarChart{
         // set the marker to the chart
 //        this.setMarkerView(mv);
         
-        Typeface tf = Typeface.createFromAsset(ctxt.getAssets(), "fonts/OpenSans-Regular.ttf");
+        Typeface tf = Typeface.createFromAsset(ctxt.getAssets(), "fonts/gotham-medium.ttf");
         
         Legend l = this.getLegend();
         if (l!=null){

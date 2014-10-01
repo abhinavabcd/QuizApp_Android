@@ -19,6 +19,7 @@ import com.amcolabs.quizapp.R;
 import com.amcolabs.quizapp.Screen;
 import com.amcolabs.quizapp.User;
 import com.amcolabs.quizapp.appcontrollers.ProgressiveQuizController;
+import com.amcolabs.quizapp.appcontrollers.ProgressiveQuizController.QuizMode;
 import com.amcolabs.quizapp.appcontrollers.ProgressiveQuizController.UserAnswer;
 import com.amcolabs.quizapp.configuration.Config;
 import com.amcolabs.quizapp.databaseutils.Category;
@@ -59,7 +60,7 @@ public class WinOrLoseScreen extends Screen{
 	private ArrayList<User> currentUsers;
 	private HashMap<String, List<UserAnswer>> userAnswersStack;
 	private ProgressiveQuizController progressviewQuizController;
-	private boolean isChallengeMode = false;
+	private QuizMode quizMode;
 	
 	public static class userViewHolder{
 		GothamTextView userNameView;
@@ -166,14 +167,14 @@ public class WinOrLoseScreen extends Screen{
 	 * @param userAnswersStack HashMap of list of answers mapped with users
 	 * @param matchResult has current user who won the quiz
 	 */
-	public void showResult(HashMap<String, List<UserAnswer>> uAnswersStack,int matchResult,boolean levelUp, boolean isChallengeMode){
+	public void showResult(HashMap<String, List<UserAnswer>> uAnswersStack,int matchResult,boolean levelUp, QuizMode quizMode){
 	  // Show whether user has won or not
 	  // rematch button , addFriend button , challenge with points button ,  seeProfile button
 	// for these buttons , will use the same layout we used for offlineChallenge view ,list_item_layout.xml
 	  // and load the profileViewLayout of both users in block , one after the other
 	  //  will have place for chat block there itself users can live chat there itself
 		userAnswersStack = uAnswersStack;
-		this.isChallengeMode = isChallengeMode;
+		this.quizMode = quizMode;
 		userViewHolder tmp;
 		ImageView imgView;
 		User cUser;
@@ -210,8 +211,9 @@ public class WinOrLoseScreen extends Screen{
 		else if(matchResult==-2){
 			quizResultMessage.setText(UiText.SERVER_ERROR_MESSAGE.getValue());
 		}
+		boolean isChallengeMode = quizMode==QuizMode.CHALLENGE_MODE;
 		
-		if(isChallengeMode){
+		if(quizMode == QuizMode.CHALLENGE_MODE || quizMode==QuizMode.CHALLENGED_MODE){
 			quizResultMessage.setText(UiText.YOU_CHALLENGED.getValue());	
 			buttonsWrapper.setVisibility(View.GONE);
 		}
@@ -226,7 +228,7 @@ public class WinOrLoseScreen extends Screen{
 		final Animation anim = AnimationUtils.loadAnimation(getApp().getContext(), R.anim.push_down_in);
 		final Animation fanim = AnimationUtils.loadAnimation(getApp().getContext(), R.anim.fadein);
 		quizPoints.setText("+"+qPoints);
-		if(!isChallengeMode)
+		if(quizMode!=QuizMode.CHALLENGE_MODE)
 			quizWinPoints.setText("+"+qwPoints);
 		else{
 			quizWinPoints.setText("?");
@@ -277,7 +279,7 @@ public class WinOrLoseScreen extends Screen{
         for (int i = 0; i < types + 1; i++)
             xVals.add(mParties[i % mParties.length]);
 
-        PieDataSet set1 = new PieDataSet(yVals1, "Quiz Stats");
+        PieDataSet set1 = new PieDataSet(yVals1, UiText.QUIZ_STATS.getValue());
         set1.setSliceSpace(3f);
         set1.setColors(ColorTemplate.createColors(ctxt.getApplicationContext(),
                 ColorTemplate.VORDIPLOM_COLORS));
@@ -292,7 +294,7 @@ public class WinOrLoseScreen extends Screen{
         myChart.setCenterTextSize(8);
 
         // set a text for the chart center
-        myChart.setCenterText("Total Value\n" + (int) myChart.getYValueSum() + "\n(all slices)");
+        myChart.setCenterText((int) myChart.getYValueSum() + "");
         myChart.invalidate();
 	 }
 	
@@ -314,7 +316,7 @@ public class WinOrLoseScreen extends Screen{
             yVals.add(new Entry(totalXP, i));
         }
 		
-		PieDataSet set = new PieDataSet(yVals, "Quiz Stats");
+		PieDataSet set = new PieDataSet(yVals, UiText.QUIZ_STATS.getValue());
 		set.setSliceSpace(3f);
 		set.setColors(Config.themeColors);
 //        set1.setColors(ColorTemplate.createColors(controller.getContext().getApplicationContext(),ColorTemplate.VORDIPLOM_COLORS));
@@ -328,9 +330,8 @@ public class WinOrLoseScreen extends Screen{
         mPieChart.highlightValues(null);
 
         // set a text for the chart center
-        mPieChart.setCenterText("Total \n" + (int) mPieChart.getYValueSum() + "\n(all slices)");
-        
-        mPieChart.setDescription("Total Matches Played in each Category");
+        mPieChart.setCenterText((int) mPieChart.getYValueSum() + "");
+        mPieChart.setDescription(UiText.TOTAL_MATCHES_PLAYED.getValue());
         mPieChart.invalidate();
 	}
 	
@@ -360,7 +361,7 @@ public class WinOrLoseScreen extends Screen{
 			userXp = 0;
 		}
 		
-		PieDataSet set = new PieDataSet(yVals, "Quiz Level");
+		PieDataSet set = new PieDataSet(yVals, UiText.QUIZ_LEVEL.getValue());
 		set.setSliceSpace(3f);
 		set.setColors(Config.themeColors);
 //        set1.setColors(ColorTemplate.createColors(controller.getContext().getApplicationContext(),ColorTemplate.VORDIPLOM_COLORS));
@@ -378,7 +379,7 @@ public class WinOrLoseScreen extends Screen{
         // set a text for the chart center
         mPieChart.setCenterText("Total value: " + (int) mPieChart.getYValueSum());
         
-        mPieChart.setDescription("Quiz Levels Distribution");
+        mPieChart.setDescription(UiText.QUIZ_LEVEL_DISTRIBUTION.getValue());
         mPieChart.invalidate();
 	}
 

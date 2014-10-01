@@ -663,12 +663,24 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 		return null;
 	}
 
-	public List<OfflineChallenge> getRecentOfflineChallenges(long limit) {
+	public List<OfflineChallenge> getPendingRecentOfflineChallenges(long limit) {
 		try {
 			if(limit>0)
-				return getOfflineChallengesDao().queryBuilder().limit(limit).query();
+				return getOfflineChallengesDao().queryBuilder().limit(limit).where().eq("isCompleted", false).query();
 			else
-				return getOfflineChallengesDao().queryBuilder().query();
+				return getOfflineChallengesDao().queryBuilder().where().eq("isCompleted", false).query();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	public List<OfflineChallenge> getCompleteRecentOfflineChallenges(long limit) {
+		try {
+			if(limit>0)
+				return getOfflineChallengesDao().queryBuilder().limit(limit).where().eq("isCompleted", true).query();
+			else
+				return getOfflineChallengesDao().queryBuilder().where().eq("isCompleted", true).query();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -684,6 +696,27 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 				 offlineChallenge.isCompleted = true;
 				getOfflineChallengesDao().createOrUpdate(offlineChallenge);
 			 }
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	public int getLastChallengeIndex() {
+		try {
+			OfflineChallenge offlineChallenge = getOfflineChallengesDao().queryBuilder().orderBy("toUid_userChallengeIndex", false).where().like("toUid_userChallengeIndex", quizApp.getUser().uid+"_%").queryForFirst();
+			if(offlineChallenge!=null){
+				return Integer.parseInt(offlineChallenge.toUid_userChallengeIndex.split("_")[1]);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return 0;
+	}
+
+	public void updateOfflineChallenge(OfflineChallenge offlineChallenge) {
+		try {
+			getOfflineChallengesDao().createOrUpdate(offlineChallenge);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

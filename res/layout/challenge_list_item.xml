@@ -7,7 +7,7 @@
     android:paddingTop="5dp" >
 
     <LinearLayout
-	    android:id="@+id/item_wrapper_2"
+        android:id="@+id/item_wrapper_2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="left"
@@ -42,15 +42,56 @@
             android:orientation="vertical"
             android:padding="5dp" >
 
-            <com.amcolabs.quizapp.widgets.GothamTextView
-                android:id="@+id/item_name"
+            <LinearLayout
+                android:id="@+id/wrap_1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="User Challenges you in"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:textSize="16sp"
-                android:textStyle="bold" />
+                android:gravity="center_horizontal"
+                android:orientation="horizontal" >
+
+                <com.amcolabs.quizapp.widgets.GothamTextView
+                    android:id="@+id/item_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="5dp"
+                    android:text="Medium Text"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+
+                <com.amcolabs.quizapp.widgets.GothamTextView
+                    android:id="@+id/TextView01"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="Challenges you"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textSize="14sp"
+                     />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/wrap_2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:orientation="horizontal" >
+
+                <com.amcolabs.quizapp.widgets.GothamTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="5dp"
+                    android:gravity="center"
+                    android:text="in" />
+
+                <com.amcolabs.quizapp.widgets.GothamTextView
+                    android:id="@+id/short_desc_1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="identify actresses"
+                    android:textStyle="bold" />
+            </LinearLayout>
 
             <com.amcolabs.quizapp.widgets.GothamTextView
                 android:id="@+id/short_desc"
@@ -58,8 +99,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:gravity="center"
-                android:text="identify actresses with a score of 129" />
-
+                android:text="With a score of 129" />
         </LinearLayout>
 
         <ImageView
@@ -69,7 +109,6 @@
             android:layout_weight="0.0"
             android:scaleType="fitXY"
             android:src="@drawable/abc_ab_bottom_solid_dark_holo" />
-
     </LinearLayout>
 
 </LinearLayout>

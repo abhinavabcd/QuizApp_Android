@@ -457,6 +457,7 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 	
 	public void setHorizontalMenu( HorizontalScrollView hmenu) {
 		this.menu = hmenu; 
+		this.menu.setVisibility(View.GONE);
 	} 
 	public HorizontalScrollView getMenu(){
 		return menu;

@@ -68,6 +68,10 @@ public class UserMainPageController  extends AppController implements OnInitiali
 			quizApp.getServerCalls().getAllUpdates(new DataInputListener2<List<Feed> ,List<UserInboxMessage> ,List<OfflineChallenge>, Boolean>(){
 				@Override
 				public void onData(List<Feed> feeds,List<UserInboxMessage> inboxMessages,List<OfflineChallenge> offlineChallenges, Boolean s) {
+					if(offlineChallenges!=null)
+					for(OfflineChallenge offlineChallenge : offlineChallenges){
+						quizApp.getDataBaseHelper().updateOfflineChallenge(offlineChallenge);
+					}
 					if(s){
 						showUserHomeScreen();
 					}
@@ -91,7 +95,7 @@ public class UserMainPageController  extends AppController implements OnInitiali
 			@Override
 			public String onData(String encodedKey) {
 				if(encodedKey!=null){
-					showUserHomeScreen();
+					checkAndShowCategories(); // if verified
 				}
 				return null;
 			}
@@ -146,7 +150,7 @@ public class UserMainPageController  extends AppController implements OnInitiali
 		if(recentQuizzes!=null && recentQuizzes.size()>0)
 			homeScreen.addUserQuizzesView(quizzes ,false , UiText.RECENT_QUIZZES.getValue());
 		
-		final List<OfflineChallenge> offlineChallenges = quizApp.getDataBaseHelper().getRecentOfflineChallenges(7);
+		final List<OfflineChallenge> offlineChallenges = quizApp.getDataBaseHelper().getPendingRecentOfflineChallenges(7);
 		if(offlineChallenges!=null && offlineChallenges.size()>0){
 			List<String> uidsList = new ArrayList<String>();
 			for(OfflineChallenge offlineChallenge : offlineChallenges){
@@ -154,7 +158,7 @@ public class UserMainPageController  extends AppController implements OnInitiali
 			}
 			quizApp.getDataBaseHelper().getAllUsersByUid(uidsList, new DataInputListener<Boolean>(){ // should run on ui thread
 				@Override
-				public String onData(Boolean s) { 
+				public String onData(Boolean s) {
 					homeScreen.addOfflineChallengesView(offlineChallenges, offlineChallenges.size()>6, UiText.OFFLINE_CHALLENGES.getValue() , true);
 					return null;
 				}
@@ -409,15 +413,23 @@ public class UserMainPageController  extends AppController implements OnInitiali
 		});
 	}
 
-	public void startNewOfflineChallenge(OfflineChallenge offlineChallenge) {
-		((ProgressiveQuizController)quizApp.loadAppController(ProgressiveQuizController.class)).startChallengedGame(offlineChallenge);
+	public void startNewOfflineChallenge(final OfflineChallenge offlineChallenge) {
+		quizApp.getStaticPopupDialogBoxes().yesOrNo(UiText.DO_YOU_START_CHALLENGE.getValue(), UiText.START.getValue(), UiText.CANCEL.getValue(), new DataInputListener<Boolean>(){
+			@Override
+			public String onData(Boolean s) {
+				if(s){
+					((ProgressiveQuizController)quizApp.loadAppController(ProgressiveQuizController.class)).startChallengedGame(offlineChallenge);
+				}
+				return super.onData(s);
+			}
+		});
 		
 	}
 
 	public void showAllOfflineChallenges() {
 		clearScreen();
 		HomeScreen homeScreen = new HomeScreen(this);
-		homeScreen.addOfflineChallengesView(quizApp.getDataBaseHelper().getRecentOfflineChallenges(-1), false, UiText.OFFLINE_CHALLENGES.getValue(), false);
+		homeScreen.addOfflineChallengesView(quizApp.getDataBaseHelper().getPendingRecentOfflineChallenges(-1), false, UiText.OFFLINE_CHALLENGES.getValue(), false);
 		insertScreen(homeScreen);
 	}
 }

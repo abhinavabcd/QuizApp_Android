@@ -134,7 +134,17 @@ public class UiUtils {
 		PIE_CHART_OTHERS_TEXT("Others"),
 		UNEXPECTED_ERROR("Unexpected Error"), YOU_CHALLENGED("You challenged"),
 		CANNOT_CHALLENGE_PRIVATE_USERS("Cannot Challenge private Users"), CLICK_TO_NEW_NOTIFICATIONS("Open the app to sync updates"), 
-		USER_CHALLENGES_YOU_IN("%s challenges you in"), QUIZ_WITH_SCORE("%s with %d points"), OFFLINE_CHALLENGES("Offline Challenges");
+		USER_NAME("%s"), 
+		IN_QUIZ("%s"),
+		QUIZ_WITH_SCORE("with %d points"), 
+		OFFLINE_CHALLENGES("Offline Challenges"),
+		QUIZ_STATS("Quiz Stats"),
+		TOTAL_MATCHES_PLAYED("Total Matches Played in each Category"),
+		QUIZ_LEVEL_DISTRIBUTION("Quiz Levels Distribution"),
+		QUIZ_LEVEL("Quiz Level"), 
+		DO_YOU_START_CHALLENGE("Do you want to start the challenge?"), 
+		START("Start"), 
+		CANCEL("Cancel");
 		
 		String value = null;
 		UiText(String value){

@@ -17,37 +17,34 @@ public class Feed {
 	public String message;
 
 	
-	private static HashMap<Integer , UserFeedType> feedTypeMap = null;//new HashMap<Integer , UserFeedType>();;
+	private static HashMap<Integer , FeedType> feedTypeMap = null;//new HashMap<Integer , FeedType>();
 	
-	
-	
-	public UserFeedType getUserFeedType(){
+	public FeedType getUserFeedType(){
 		return this.getUserFeedType(this.type);
 	}
 	
 	
-	public UserFeedType getUserFeedType(int value){
+	public FeedType getUserFeedType(int value){
 		if(feedTypeMap==null){
-			feedTypeMap = new HashMap<Integer, UserFeedType>();
-			for(UserFeedType s : UserFeedType.values()){
+			feedTypeMap = new HashMap<Integer, FeedType>();
+			for(FeedType s : FeedType.values()){
 				feedTypeMap.put(s.getValue(), s);
 			}
 		}
-		return feedTypeMap.containsKey(value) ? feedTypeMap.get(value):UserFeedType.FEED_GENERAL;
+		return feedTypeMap.containsKey(value) ? feedTypeMap.get(value):FeedType.FEED_GENERAL;
 	}
 	
 	
-	public static enum UserFeedType{
+	public static enum FeedType{
 		FEED_GENERAL(0),
 		FEED_USER_WON(1),
 		FEED_USER_TOOK_PART(2),
 		FEED_USER_ADDED_FRIEND(3),
 		FEED_USER_WON_BADGES(4),
-		FEED_CHALLENGE_WON(5),
-		FEED_CHALLENGE_LOOSE(6);
+		FEED_CHALLENGE(5);
 		
 		int value;
-		private UserFeedType(int v) {
+		private FeedType(int v) {
 			value =v;
 		}
 		private int getValue() {

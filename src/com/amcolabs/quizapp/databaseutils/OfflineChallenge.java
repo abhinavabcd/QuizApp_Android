@@ -37,9 +37,9 @@ public class OfflineChallenge {
 	@DatabaseField
 	String wonUid;
 	@DatabaseField
-	boolean isCompleted= false;
+	public boolean isCompleted = false;
 	@DatabaseField
-	boolean hasWon = false;
+	public boolean hasWon = false;
 	
 	
 	ChallengeData cachedChallengeData = null;

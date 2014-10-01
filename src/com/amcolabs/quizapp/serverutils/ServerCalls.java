@@ -434,7 +434,12 @@ public class ServerCalls {
 	}
 	
 	
-
+	public void getPreviousOfflineChallenges(int lastLoginIndex){
+		
+	}
+	
+	public void getPreviousFeed(int lastLoginIndex){
+	}
 	
 	public static void clearAllStaticVariables() {
 	}
@@ -454,6 +459,7 @@ public class ServerCalls {
 			}
 			url+="&maxQuizTimestamp="+Double.toString(quizApp.getDataBaseHelper().getMaxTimeStampQuiz());
 			url+="&maxBadgesTimestamp="+Double.toString(quizApp.getDataBaseHelper().getMaxTimeStampBadges());
+			url+="&lastOfflineChallengeIndex="+quizApp.getDataBaseHelper().getLastChallengeIndex();
 		}
 		else{
 			isLogin = false;
@@ -764,7 +770,8 @@ public class ServerCalls {
 			public void onServerResponse(MessageType messageType,ServerResponse response) {
 				switch(messageType){
 					case OK_SCORE_BOARD:
-						localGlobalRanksDataListener.onData((HashMap<String, Integer[]>)quizApp.getConfig().getGson().fromJson(response.payload,new TypeToken<HashMap<String,Integer[]>>(){}.getType()), (HashMap<String, Integer[]>)quizApp.getConfig().getGson().fromJson(response.payload2, new TypeToken<HashMap<String,Integer[]>>(){}.getType()), null);
+						localGlobalRanksDataListener.onData((HashMap<String, Integer[]>)quizApp.getConfig().getGson().fromJson(response.payload,new TypeToken<HashMap<String,Integer[]>>(){}.getType()), 
+															(HashMap<String, Integer[]>)quizApp.getConfig().getGson().fromJson(response.payload1, new TypeToken<HashMap<String,Integer[]>>(){}.getType()), null);
 						break;
 				}
 			}
