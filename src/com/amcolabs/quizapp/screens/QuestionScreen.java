@@ -153,13 +153,13 @@ public class QuestionScreen extends Screen implements View.OnClickListener, Anim
 			@Override
 			public void run() {
 				getTimerView().startTimer(ques.getTime(), true);
+				isOptionSelected = false;
 			}
 		}, Config.TIMER_SLIGHT_DELAY_START);
 		
 	}
 	
 	private void loadQuestion(final Question ques){
-		isOptionSelected = false;
 		boolean isImageAvailable = false;
 //		preQuestionView.setVisibility(View.INVISIBLE);
 //		questionAndOptionsViewWrapper.setVisibility(View.VISIBLE);
