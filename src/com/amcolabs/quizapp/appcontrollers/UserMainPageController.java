@@ -195,7 +195,7 @@ public class UserMainPageController  extends AppController implements OnInitiali
 						OfflineChallenge offlineChallenge = quizApp.getDataBaseHelper().getOfflineChallengeByChallegeId(feed.message);
 						if(!offlineChallenge.isCompleted()){
 							offlineChallenge.setCompleted(true);
-							//show popup that user has completed and win/lost TODO
+								//show popup that user has completed and win/lost TODO
 								offlineChallenge.setChallengeData2(feed.message2);
 								quizApp.getDataBaseHelper().updateOfflineChallenge(offlineChallenge);
 						}
