@@ -26,6 +26,7 @@ class OfflineChallengeViewHolder{
 	 GothamTextView shortDesc;
 	 ImageView uidImage2;
   	 public OfflineChallenge offlineChallenge;
+	public GothamTextView shortDesc1;
 }
 
 public  class OfflineChallengesAdapter extends ArrayAdapter<OfflineChallenge>{
@@ -49,6 +50,7 @@ public  class OfflineChallengesAdapter extends ArrayAdapter<OfflineChallenge>{
 				holder.uidImage1 = (ImageView) baseLayout.findViewById(R.id.uid_image_1);
 				holder.itemName = (GothamTextView) baseLayout.findViewById(R.id.item_name);
 				holder.shortDesc = (GothamTextView) baseLayout.findViewById(R.id.short_desc);
+				holder.shortDesc1 = (GothamTextView) baseLayout.findViewById(R.id.short_desc_1);
 				holder.uidImage2 = (ImageView) baseLayout.findViewById(R.id.uid_image_2);
 				
 				convertView.setTag(holder);
@@ -76,8 +78,11 @@ public  class OfflineChallengesAdapter extends ArrayAdapter<OfflineChallenge>{
 			 cachedQuizById.put(quizId, q);
 			}
 			quizApp.getUiUtils().loadImageIntoView(quizApp.getContext(), holder.uidImage1, info.pictureUrl,true); 
-			holder.itemName.setText(UiText.USER_CHALLENGES_YOU_IN.getValue(info.name)); 
-			holder.shortDesc.setText(UiText.QUIZ_WITH_SCORE.getValue(q.name, c.userAnswers.get(c.userAnswers.size()-1).whatUserGot)); 
+			holder.itemName.setText(UiText.USER_NAME.getValue(info.name)); 
+			String temp = UiText.IN_QUIZ.getValue(q.name);
+			holder.shortDesc1.setText(temp);
+			holder.shortDesc1.setTextColor(quizApp.getConfig().getUniqueThemeColor(temp));
+			holder.shortDesc.setText(UiText.QUIZ_WITH_SCORE.getValue(c.userAnswers.get(c.userAnswers.size()-1).whatUserGot)); 
 			quizApp.getUiUtils().loadImageIntoView(quizApp.getContext(), holder.uidImage2, quizApp.getUser().pictureUrl,true); 
 //			holder.additionalText.setText("a");
 			return convertView;

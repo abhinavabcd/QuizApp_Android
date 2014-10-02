@@ -50,7 +50,7 @@ public class HomeScreen extends Screen {
 			}
 		});
 		
-		LinearLayout lView = (LinearLayout) getApp().getActivity().getLayoutInflater().inflate(R.layout.block_list_view,null);
+		LinearLayout lView = (LinearLayout) getApp().getActivity().getLayoutInflater().inflate(R.layout.block_list_view,this,false);
 		lView.setBackgroundColor(getApp().getConfig().getAThemeColor());
 		TextView title = (TextView) lView.findViewById(R.id.title_text_view);
 		title.setText(UiText.CATEGORIES.getValue());
@@ -130,27 +130,42 @@ public class HomeScreen extends Screen {
 	public void refresh() {
 		// TODO Auto-generated method stub
 		super.refresh();
+		if(this.offlineChallengeAdaptor!=null){
+			for(int i=0;i<offlineChallengeAdaptor.getCount();i++){
+				if(offlineChallengeAdaptor.getItem(i).isCompleted()){
+					offlineChallengeAdaptor.remove(offlineChallengeAdaptor.getItem(i));
+				}
+			}
+		}
 		for(int i=0;i<listViews.size();i++){
 			listViews.get(i).invalidate();
 		}
 	}
 	
 	
-	double clickTime = 0;
+	double challengesClickTime = 0;
+	private OfflineChallengesAdapter offlineChallengeAdaptor;
+	private List<OfflineChallenge> offlineChallenges;
 	
 	public void addOfflineChallengesView(List<OfflineChallenge> offlineChallenges, boolean showViewMore , String text , boolean spanOnFullWidth) {
-		final OfflineChallengesAdapter offlineChallengeAdaptor = new OfflineChallengesAdapter(getApp(),0,offlineChallenges, new DataInputListener<OfflineChallenge>(){
+		this.offlineChallenges = offlineChallenges;
+		for(OfflineChallenge offlineChallenge : offlineChallenges){
+			if(offlineChallenge.isCompleted()){
+				offlineChallenges.remove(offlineChallenge);
+			}
+		}
+		this.offlineChallengeAdaptor = new OfflineChallengesAdapter(getApp(),0,offlineChallenges, new DataInputListener<OfflineChallenge>(){
 			@Override
 			public String onData(final OfflineChallenge offlineChallenge){
-				if(Config.getCurrentNanos()-clickTime < 1000000000.0){ // 10^9 nano sec
+				if(Config.getCurrentNanos()-challengesClickTime < 1000000000.0){ // 10^9 nano sec
 					return null;
 				}
-				clickTime = Config.getCurrentNanos();
+				challengesClickTime = Config.getCurrentNanos();
 				userMainController.startNewOfflineChallenge(offlineChallenge);
 				return null; 
 			}
 		});
-		LinearLayout lView = (LinearLayout) getApp().getActivity().getLayoutInflater().inflate(R.layout.block_list_view, null);
+		LinearLayout lView = (LinearLayout) getApp().getActivity().getLayoutInflater().inflate(R.layout.block_list_view, this, false);
 		lView.setBackgroundColor(getApp().getConfig().getAThemeColor());
 		EditText searchText = (EditText) lView.findViewById(R.id.search_text);
 		searchText.setVisibility(View.GONE);
@@ -163,7 +178,7 @@ public class HomeScreen extends Screen {
 	//	addListenersToQuizListItem(listView);
 		
 		
-		
+		addToScrollView(lView);
 		if(spanOnFullWidth)
 			UiUtils.setListViewHeightBasedOnChildren(listView);
 		
@@ -179,7 +194,6 @@ public class HomeScreen extends Screen {
 				}
 			});
 		}
-		addToScrollView(lView);
 	}
 		
 	
@@ -211,7 +225,7 @@ public class HomeScreen extends Screen {
 			}
 		});
 		quizAdaptorList.add(quizAdaptor);
-		LinearLayout lView = (LinearLayout) getApp().getActivity().getLayoutInflater().inflate(R.layout.block_list_view, null);
+		LinearLayout lView = (LinearLayout) getApp().getActivity().getLayoutInflater().inflate(R.layout.block_list_view, this, false);
 		lView.setBackgroundColor(getApp().getConfig().getAThemeColor());
 		EditText searchText = (EditText) lView.findViewById(R.id.search_text);
 		searchText.setVisibility(View.GONE);

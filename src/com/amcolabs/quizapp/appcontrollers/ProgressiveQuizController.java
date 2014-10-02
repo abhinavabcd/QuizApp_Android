@@ -52,11 +52,19 @@ public class ProgressiveQuizController extends AppController{
 		}
 		
 		String id=null;
+		private Object tag;
 		public String getId(){
 			return id;
 		}
 		public void setId(String id) {
 			this.id = id;
+		}
+		public void setTag(Object tag) {
+			this.tag =tag;
+			
+		}
+		public Object getTag() {
+			return tag;
 		}
 		
 	}
@@ -145,9 +153,9 @@ public class ProgressiveQuizController extends AppController{
 				if(isBotMode())
 					scheduleBotAnswer(currentQuestion);
 				if(isChallengedMode()){
-					for(UserAnswer userAnswer : challengeUserAnswers ){
+					for(UserAnswer userAnswer : userChallengeAnswers ){
 						if(userAnswer.questionId.equalsIgnoreCase(currentQuestion.questionId)){
-							challengeUserAnswers.remove(userAnswer);
+							//userChallengeAnswers.remove(userAnswer);
 							scheduleChallengedAnswer(userAnswer);		
 							break;
 						}
@@ -335,8 +343,17 @@ public class ProgressiveQuizController extends AppController{
 						questionScreen.animateQuestionChange(UiText.QUESTION.getValue(quiz.nQuestions - currentQuestions.size()), UiText.GET_READY.getValue(), currentQuestion);
 						if(isBotMode())
 							scheduleBotAnswer(currentQuestion);
-						
-				        userAnswers.clear();
+						if(isChallengedMode()){
+							for(UserAnswer userAnswer : userChallengeAnswers ){
+								if(userAnswer.questionId.equalsIgnoreCase(currentQuestion.questionId)){
+									userChallengeAnswers.remove(userAnswer);
+									scheduleChallengedAnswer(userAnswer);		
+									break;
+								}
+							}
+						}
+
+				        userAnswers.clear();//for new answers
 					}
 					else if(!isNormalMode()){
 						validateAndShowWinningScreen();
@@ -650,7 +667,7 @@ public class ProgressiveQuizController extends AppController{
 	final int TIE = 0;
 	final int SERVER_ERR = -2;
 	private ChallengeData challengeData;
-	private List<UserAnswer> challengeUserAnswers;
+	private List<UserAnswer> userChallengeAnswers;
 	
 	public void loadResultScreen(Quiz quiz, ArrayList<User> currentUsers, HashMap<String, List<UserAnswer>> userAnswersStack) {
 		// TODO Auto-generated method stub
@@ -728,7 +745,8 @@ public class ProgressiveQuizController extends AppController{
 		}
 
 		else if(quizResult>=LOOSE){			
-			quizApp.getServerCalls().updateQuizWinStatus(quiz.quizId , quizResult , newPoints-oldPoints, getOtherUser());//server call 
+			if(!isChallengedMode())
+				quizApp.getServerCalls().updateQuizWinStatus(quiz.quizId , quizResult , newPoints-oldPoints, getOtherUser());//server call 
 			qHistory = quizApp.getDataBaseHelper().getQuizHistoryById(quiz.quizId);
 			if(qHistory==null){
 				qHistory = new QuizHistory(quiz.quizId,quizResult,Config.getCurrentTimeStamp());
@@ -754,8 +772,12 @@ public class ProgressiveQuizController extends AppController{
 				quizApp.getServerCalls().completeOfflineChallenge( quizMode.getId() , new ChallengeData(quiz.quizId, userAnswersStack.get(quizApp.getUser().uid)),  new DataInputListener<Boolean>(){
 					@Override 
 					public String onData(Boolean s) {
-						if(s){
-							quizApp.getDataBaseHelper().updateOfflineChallenge(quizMode.getId(), true, hasWon);
+						if(s){ 
+							OfflineChallenge offlineChallenge = ((OfflineChallenge)quizMode.getTag());
+							offlineChallenge.setCompleted(true);
+							offlineChallenge.hasWon = hasWon;
+							offlineChallenge.setChallengeData2(quizApp.getConfig().getGson().toJson(new ChallengeData(ProgressiveQuizController.this.quiz.quizId, ProgressiveQuizController.this.userAnswersStack.get(quizApp.getUser().uid))));
+							quizApp.getDataBaseHelper().updateOfflineChallenge(offlineChallenge);
 						}
 						else{
 							quizApp.getStaticPopupDialogBoxes().yesOrNo(UiText.SERVER_ERROR_MESSAGE.getValue(), null, UiText.CLOSE.getValue(), null);
@@ -772,7 +794,7 @@ public class ProgressiveQuizController extends AppController{
 		if (quizResultScreen==null){
 			quizResultScreen = new WinOrLoseScreen(this,currentUsers);
 		}
-		quizResultScreen.showResult(userAnswersStack,quizResult,didUserLevelUp(oldPoints,newPoints) , isChallengeMode());
+		quizResultScreen.showResult(userAnswersStack,quizResult,didUserLevelUp(oldPoints,newPoints) , quizMode);
 		showScreen(quizResultScreen);
 		
 	}
@@ -853,11 +875,16 @@ public class ProgressiveQuizController extends AppController{
 	
 	
 	public void startChallengedGame(final OfflineChallenge offlineChallenge ){
+		if(offlineChallenge.isCompleted()){
+			quizApp.getStaticPopupDialogBoxes().yesOrNo(UiText.COMPLETED_CHALLENGE.getValue(), null, UiText.CLOSE.getValue(), null);
+			return;
+		}
 		final User fromUser = offlineChallenge.getFromUser(quizApp);
 		
 		this.challengeData = offlineChallenge.getChallengeData(quizApp);
 		QuizMode mode = QuizMode.CHALLENGED_MODE;
 		mode.setId(offlineChallenge.getOfflineChallengeId());
+		mode.setTag(offlineChallenge);
 		setQuizMode(mode);
 		//get questions from server , 
 		
@@ -867,14 +894,16 @@ public class ProgressiveQuizController extends AppController{
 		clashingScreen = new ClashScreen(this);
 		clashingScreen.setClashCount(2); 
 		clashingScreen.updateClashScreen(quizApp.getUser()/*quizApp.getUser()*/,quiz,  0 );
+		clashingScreen.updateClashScreen(offlineChallenge.getFromUser(quizApp), quiz, 1);
+		insertScreen(clashingScreen);
 		// load questions from the users answers array , 
 		// rearrange questions in the same order 
 		// startQuestions 
 		// isChallengedMode , run bot answers 
 		// on end , onChallengeComplete , update on server , and notify other user
-		challengeUserAnswers = challengeData.userAnswers;
+		userChallengeAnswers = challengeData.userAnswers;
 		ArrayList<String > questionIds = new ArrayList<String>();
-		for(UserAnswer userAnswer : challengeUserAnswers){
+		for(UserAnswer userAnswer : userChallengeAnswers){
 			questionIds.add(userAnswer.questionId);
 		}
 		currentUsers.clear();
@@ -883,6 +912,19 @@ public class ProgressiveQuizController extends AppController{
 		quizApp.getServerCalls().loadQuestionsInOrder(questionIds,new DataInputListener<List<Question>>(){
 			@Override
 			public String onData(List<Question> s) {
+				List<Question> temp = new ArrayList<Question>();
+				for(int i=0;i<userChallengeAnswers.size();i++){
+					String questionId = userChallengeAnswers.get(i).questionId;
+					int j=0;
+					for(j=0;j<s.size();j++){
+						if(questionId.equalsIgnoreCase(s.get(j).questionId)){
+							break;
+						}
+					}
+					temp.add(s.get(j));
+				}
+				s = temp;
+				
 				startQuestions(s);
 				return super.onData(s);
 			}

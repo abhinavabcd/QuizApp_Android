@@ -16,6 +16,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -188,7 +189,7 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 	}
 	
 	public User getUser(){
-		return currentUser==null?User.getDummyUser(this):currentUser;
+		return currentUser;
 	}
 
 	public void setUser(User user) {
@@ -233,12 +234,18 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 	
 	private double wantsToExitLastTimestamp = 0;
 	public void onBackPressed() {
+			if(Config.getCurrentTimeStamp() - wantsToExitLastTimestamp<2){
+				getActivity().finish();//all controllers finished
+				wantsToExitLastTimestamp = Config.getCurrentTimeStamp();
+			}
+
 			try{
 				// TODO: overridePendingTransition(R.anim.in,R.anim.out); fragment activity to animate screen out and in
 				Screen screen = peekCurrentScreen();
 				if(screen==null){
 					this.getActivity().moveTaskToBack(true);
 				}
+				Log.d(">>>screens<<<", screenStack.size()+" \n"+screenStack);
 				if(screen!=null && !screen.controller.onBackPressed()){
 					screen = popCurrentScreen();
 					screen.beforeRemove();
@@ -251,21 +258,13 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 					}
 					
 					if(oldScreen==null){
-						if(Config.getCurrentTimeStamp() - wantsToExitLastTimestamp<2){
-							//pressed twice in 3 seconds
-							getActivity().finish();//all controllers finished
-						}
-						else{
-							reinit(false);//should show first screen fetching updates and shit again
-							((UserMainPageController)loadAppController(UserMainPageController.class))
-							.checkAndShowCategories();
-
-						}
-						wantsToExitLastTimestamp = Config.getCurrentTimeStamp();
+						reinit(false);//should show first screen fetching updates and shit again
+						((UserMainPageController)loadAppController(UserMainPageController.class))
+						.checkAndShowCategories();
 						return;
 					}
-					oldScreen.refresh();
 					animateScreenIn(oldScreen);
+					oldScreen.refresh();
 				}
 			}
 			catch(EmptyStackException e) {
@@ -457,6 +456,7 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 	
 	public void setHorizontalMenu( HorizontalScrollView hmenu) {
 		this.menu = hmenu; 
+		this.menu.setVisibility(View.GONE);
 	} 
 	public HorizontalScrollView getMenu(){
 		return menu;

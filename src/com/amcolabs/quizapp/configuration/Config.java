@@ -95,6 +95,10 @@ public class Config{
 		return themeColors[++tempThemeCount%themeColors.length];
 	}
 	
+	public int getUniqueThemeColor(String a){
+		if(a==null) return 0;
+		return themeColors[a.charAt(0)%themeColors.length];
+	}
 	private int tempBgIndex = 0;
 	private List<String> userBgAssets = Arrays.asList("bg/bg_2.jpg" , "bg/bg_1.jpg");
 	public String getRandomImageBg(){

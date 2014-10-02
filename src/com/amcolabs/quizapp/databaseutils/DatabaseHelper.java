@@ -38,7 +38,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 	// name of the database file for your application -- change to something appropriate for your app
 	private static final String DATABASE_NAME = "quizApp.db";
 	// any time you make changes to your database objects, you may have to increase the database version
-	private static final int DATABASE_VERSION = 14;
+	private static final int DATABASE_VERSION = 15;
 	private static String DATABASE_PATH = "/data/data/com.amcolabs.quizapp/databases/";
 
 	// the DAO object we use to access the Category table
@@ -663,27 +663,60 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 		return null;
 	}
 
-	public List<OfflineChallenge> getRecentOfflineChallenges(long limit) {
+	public List<OfflineChallenge> getPendingRecentOfflineChallenges(long limit) {
 		try {
 			if(limit>0)
-				return getOfflineChallengesDao().queryBuilder().limit(limit).query();
+				return getOfflineChallengesDao().queryBuilder().limit(limit).where().eq("isCompleted", false).query();
 			else
-				return getOfflineChallengesDao().queryBuilder().query();
+				return getOfflineChallengesDao().queryBuilder().where().eq("isCompleted", false).query();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	public List<OfflineChallenge> getCompleteRecentOfflineChallenges(long limit) {
+		try {
+			if(limit>0)
+				return getOfflineChallengesDao().queryBuilder().limit(limit).where().eq("isCompleted", true).query();
+			else
+				return getOfflineChallengesDao().queryBuilder().where().eq("isCompleted", true).query();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 		return null;
 	}
 
-	public void updateOfflineChallenge(String id, boolean b, boolean hasWon) {
+//	public void updateOfflineChallenge(String id, boolean b, boolean hasWon) {
+//		try {
+//			 List<OfflineChallenge> offlineChallenges = getOfflineChallengesDao().queryBuilder().where().eq("offlineChallengeId", id).query();
+//			 if(offlineChallenges!=null && offlineChallenges.size()>0){
+//				 OfflineChallenge offlineChallenge = offlineChallenges.get(0);
+//				 offlineChallenge.hasWon = hasWon;
+//				 offlineChallenge.isCompleted = true;
+//				getOfflineChallengesDao().createOrUpdate(offlineChallenge);
+//			 }
+//		} catch (SQLException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//	}
+
+	public int getLastChallengeIndex() {
 		try {
-			 List<OfflineChallenge> offlineChallenges = getOfflineChallengesDao().queryBuilder().where().eq("offlineChallengeId", id).query();
-			 if(offlineChallenges!=null && offlineChallenges.size()>0){
-				 OfflineChallenge offlineChallenge = offlineChallenges.get(0);
-				 offlineChallenge.hasWon = hasWon;
-				 offlineChallenge.isCompleted = true;
-				getOfflineChallengesDao().createOrUpdate(offlineChallenge);
-			 }
+			OfflineChallenge offlineChallenge = getOfflineChallengesDao().queryBuilder().orderBy("toUid_userChallengeIndex", false).queryForFirst();
+			if(offlineChallenge!=null){
+				return Integer.parseInt(offlineChallenge.toUid_userChallengeIndex.split("_")[1]);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return 0;
+	}
+
+	public void updateOfflineChallenge(OfflineChallenge offlineChallenge) {
+		try {
+			getOfflineChallengesDao().createOrUpdate(offlineChallenge);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

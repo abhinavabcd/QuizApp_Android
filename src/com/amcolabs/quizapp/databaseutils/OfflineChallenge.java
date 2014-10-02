@@ -29,7 +29,7 @@ public class OfflineChallenge {
 	@DatabaseField
 	String toUid_userChallengeIndex;
 	@DatabaseField
-	int challengeTye;
+	int challengeType;
 	@DatabaseField
 	String  challengeData;
 	@DatabaseField
@@ -37,9 +37,9 @@ public class OfflineChallenge {
 	@DatabaseField
 	String wonUid;
 	@DatabaseField
-	boolean isCompleted= false;
+	private boolean isCompleted = false;
 	@DatabaseField
-	boolean hasWon = false;
+	public boolean hasWon = false;
 	
 	
 	ChallengeData cachedChallengeData = null;
@@ -62,5 +62,17 @@ public class OfflineChallenge {
 
 	public void setOfflineChallengeId(String offlineChallengeId) {
 		this.offlineChallengeId = offlineChallengeId;
+	}
+
+	public void setChallengeData2(String jsonStr) {
+		this.challengeData2 = jsonStr;
+	}
+
+	public boolean isCompleted() {
+		return isCompleted || (challengeData2!=null && !challengeData2.trim().equalsIgnoreCase(""));
+	}
+
+	public void setCompleted(boolean isCompleted) {
+		this.isCompleted = isCompleted;
 	}
 }

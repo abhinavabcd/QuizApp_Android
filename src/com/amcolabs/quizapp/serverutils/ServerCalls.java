@@ -82,8 +82,8 @@ class RandomSelector <T>{
 
 public class ServerCalls {
 	
-	public static final String SERVER_ADDR = Config.IS_TEST_BUILD? "http://192.168.0.10:8085":"http://quizapp-main.amcolabs.com";
-	public static final String CDN_IMAGES_PATH = "http://192.168.0.10:8081/images/";
+	public static final String SERVER_ADDR = Config.IS_TEST_BUILD? "http://192.168.0.11:8085":"http://quizapp-main.amcolabs.com";
+	public static final String CDN_IMAGES_PATH = "http://192.168.0.11:8081/images/";
 
 //	public static final String SERVER_URL = Config.IS_TEST_BUILD? "http://192.168.0.10:8084/func":"http://quizapp-main.amcolabs.com/func";
 //	private static final String GET_ENCODEDKEY_URL = SERVER_URL+"?task=getEncodedKey";
@@ -434,7 +434,12 @@ public class ServerCalls {
 	}
 	
 	
-
+	public void getPreviousOfflineChallenges(int lastLoginIndex){
+		
+	}
+	
+	public void getPreviousFeed(int lastLoginIndex){
+	}
 	
 	public static void clearAllStaticVariables() {
 	}
@@ -454,6 +459,7 @@ public class ServerCalls {
 			}
 			url+="&maxQuizTimestamp="+Double.toString(quizApp.getDataBaseHelper().getMaxTimeStampQuiz());
 			url+="&maxBadgesTimestamp="+Double.toString(quizApp.getDataBaseHelper().getMaxTimeStampBadges());
+			url+="&lastOfflineChallengeIndex="+quizApp.getDataBaseHelper().getLastChallengeIndex();
 		}
 		else{
 			isLogin = false;
@@ -764,7 +770,8 @@ public class ServerCalls {
 			public void onServerResponse(MessageType messageType,ServerResponse response) {
 				switch(messageType){
 					case OK_SCORE_BOARD:
-						localGlobalRanksDataListener.onData((HashMap<String, Integer[]>)quizApp.getConfig().getGson().fromJson(response.payload,new TypeToken<HashMap<String,Integer[]>>(){}.getType()), (HashMap<String, Integer[]>)quizApp.getConfig().getGson().fromJson(response.payload2, new TypeToken<HashMap<String,Integer[]>>(){}.getType()), null);
+						localGlobalRanksDataListener.onData((HashMap<String, Integer[]>)quizApp.getConfig().getGson().fromJson(response.payload,new TypeToken<HashMap<String,Integer[]>>(){}.getType()), 
+															(HashMap<String, Integer[]>)quizApp.getConfig().getGson().fromJson(response.payload1, new TypeToken<HashMap<String,Integer[]>>(){}.getType()), null);
 						break;
 				}
 			}

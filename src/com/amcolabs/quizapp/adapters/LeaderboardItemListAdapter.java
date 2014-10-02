@@ -7,6 +7,7 @@ import java.util.List;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.ViewGroup.LayoutParams;
 import android.widget.ArrayAdapter;
 import android.widget.Filter;
 import android.widget.FrameLayout;
@@ -39,9 +40,9 @@ public class LeaderboardItemListAdapter extends ArrayAdapter<User> {
 	private HashMap<String ,Integer[]> userScoreBoard;
 
 	public LeaderboardItemListAdapter(QuizApp quizApp, int resource,
-			List<User> objects, HashMap<String,Integer[]> userScoreBoard, DataInputListener<User> onClickListener) {
-		super(quizApp.getActivity(), resource, objects);
-		this.userList = new ArrayList<User>(objects);
+			List<User> users, HashMap<String,Integer[]> userScoreBoard, DataInputListener<User> onClickListener) {
+		super(quizApp.getActivity(), resource, users);
+		this.userList = new ArrayList<User>(users);
 		this.quizApp = quizApp;
 		this.userScoreBoard =  userScoreBoard;
 		this.clickListener = onClickListener;
@@ -52,13 +53,14 @@ public class LeaderboardItemListAdapter extends ArrayAdapter<User> {
 		LeaderBoardItemViewHolder holder;
 		User user = getItem(position);
 		Integer[] temp = userScoreBoard.get(user.uid);
-		String score = temp.length>0 ? temp[0]+" xp" : null;
-		String rank = temp.length>1 ? temp[1]+"" :null;
+		String score = temp.length>0 ? temp[1]+" xp" : null;
+		String rank = temp.length>1 ? temp[0]+"" :null;
 		if (convertView == null) {
 			convertView = quizApp.getActivity().getLayoutInflater()
 					.inflate(R.layout.list_item_layout, null);
 			holder = new LeaderBoardItemViewHolder();
 			holder.rankText = (GothamTextView) convertView.findViewById(R.id.sNoText);
+			holder.rankText.getLayoutParams().width = quizApp.getUiUtils().dp2px(30);
 			//remove bg
 			convertView.findViewById(R.id.item_wrapper_2).setBackgroundResource(0);
 			holder.imageView = (ImageView)convertView.findViewById(R.id.imageView1);
