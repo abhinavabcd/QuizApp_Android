@@ -90,7 +90,7 @@ public class ProgressiveQuizController extends AppController{
 		showWaitingScreen(quiz);
 		playType = RANDOM_USER_TYPE;
 		noResponseFromServer = true;
-		quizMode = QuizMode.UNKNOWN;
+		quizMode = QuizMode.NORMAL_MODE;
 	}
 
 	ClashScreen clashingScreen = null;
@@ -794,7 +794,7 @@ public class ProgressiveQuizController extends AppController{
 		if (quizResultScreen==null){
 			quizResultScreen = new WinOrLoseScreen(this,currentUsers);
 		}
-		quizResultScreen.showResult(userAnswersStack,quizResult,didUserLevelUp(oldPoints,newPoints) , quizMode);
+		quizResultScreen.showResult(userAnswersStack,quizResult,GameUtils.didUserLevelUp(oldPoints,newPoints) , quizMode);
 		showScreen(quizResultScreen);
 		
 	}
@@ -821,13 +821,6 @@ public class ProgressiveQuizController extends AppController{
 		return winnersList;
 	}
 	
-	public static boolean didUserLevelUp(double oldPoints,double newPoints){
-		if (Math.floor(GameUtils.getLevelFromXp(oldPoints))!=
-				Math.floor(GameUtils.getLevelFromXp(newPoints))){
-			return true;
-		}
-		return false;
-	}
 
 	public void loadProfile(User user) {
 		ProfileAndChatController profileAndChat = (ProfileAndChatController) quizApp.loadAppController(ProfileAndChatController.class);
