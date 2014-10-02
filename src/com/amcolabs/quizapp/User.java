@@ -39,7 +39,10 @@ public class User {
 	private int userType = 0;
 	@DatabaseField
 	private String jsonDump;
-	
+	@DatabaseField
+	public String gPlusUid;
+	@DatabaseField
+	public String fbUid;
 	private List<String> subscribers;//uids
 	private List<String> subscribedTo;
 	

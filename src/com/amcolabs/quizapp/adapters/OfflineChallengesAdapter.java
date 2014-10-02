@@ -79,7 +79,9 @@ public  class OfflineChallengesAdapter extends ArrayAdapter<OfflineChallenge>{
 			}
 			quizApp.getUiUtils().loadImageIntoView(quizApp.getContext(), holder.uidImage1, info.pictureUrl,true); 
 			holder.itemName.setText(UiText.USER_NAME.getValue(info.name)); 
-			holder.shortDesc1.setText(UiText.IN_QUIZ.getValue(q.name));
+			String temp = UiText.IN_QUIZ.getValue(q.name);
+			holder.shortDesc1.setText(temp);
+			holder.shortDesc1.setTextColor(quizApp.getConfig().getUniqueThemeColor(temp));
 			holder.shortDesc.setText(UiText.QUIZ_WITH_SCORE.getValue(c.userAnswers.get(c.userAnswers.size()-1).whatUserGot)); 
 			quizApp.getUiUtils().loadImageIntoView(quizApp.getContext(), holder.uidImage2, quizApp.getUser().pictureUrl,true); 
 //			holder.additionalText.setText("a");

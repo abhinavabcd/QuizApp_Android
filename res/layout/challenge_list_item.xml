@@ -10,9 +10,7 @@
         android:id="@+id/item_wrapper_2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="left"
         android:background="@drawable/list_item_bg"
-        android:gravity="left"
         android:orientation="horizontal"
         android:padding="3dp"
         android:textColor="#ffffff" >

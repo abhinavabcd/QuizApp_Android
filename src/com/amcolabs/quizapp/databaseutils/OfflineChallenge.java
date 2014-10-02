@@ -29,7 +29,7 @@ public class OfflineChallenge {
 	@DatabaseField
 	String toUid_userChallengeIndex;
 	@DatabaseField
-	int challengeTye;
+	int challengeType;
 	@DatabaseField
 	String  challengeData;
 	@DatabaseField
@@ -62,5 +62,9 @@ public class OfflineChallenge {
 
 	public void setOfflineChallengeId(String offlineChallengeId) {
 		this.offlineChallengeId = offlineChallengeId;
+	}
+
+	public void setChallengeData2(String jsonStr) {
+		this.challengeData2 = jsonStr;
 	}
 }

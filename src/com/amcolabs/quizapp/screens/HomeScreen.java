@@ -149,6 +149,11 @@ public class HomeScreen extends Screen {
 	
 	public void addOfflineChallengesView(List<OfflineChallenge> offlineChallenges, boolean showViewMore , String text , boolean spanOnFullWidth) {
 		this.offlineChallenges = offlineChallenges;
+		for(OfflineChallenge offlineChallenge : offlineChallenges){
+			if(offlineChallenge.isCompleted){
+				offlineChallenges.remove(offlineChallenge);
+			}
+		}
 		this.offlineChallengeAdaptor = new OfflineChallengesAdapter(getApp(),0,offlineChallenges, new DataInputListener<OfflineChallenge>(){
 			@Override
 			public String onData(final OfflineChallenge offlineChallenge){
@@ -173,7 +178,7 @@ public class HomeScreen extends Screen {
 	//	addListenersToQuizListItem(listView);
 		
 		
-		
+		addToScrollView(lView);
 		if(spanOnFullWidth)
 			UiUtils.setListViewHeightBasedOnChildren(listView);
 		
@@ -189,7 +194,6 @@ public class HomeScreen extends Screen {
 				}
 			});
 		}
-		addToScrollView(lView);
 	}
 		
 	

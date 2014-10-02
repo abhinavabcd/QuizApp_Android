@@ -52,7 +52,7 @@ public class PieChartView extends PieChart{
         this.setRotationEnabled(true);
         
         // display percentage values
-        this.setUsePercentValues(true);
+//        this.setUsePercentValues(true);
         // this.setUnit(" €");
         // this.setDrawUnitsInChart(true);
         this.animateXY(1500, 1500);
@@ -65,7 +65,7 @@ public class PieChartView extends PieChart{
         Legend l = this.getLegend();
         l.setTextSize(6f);
         l.setStackSpace(1f);
-        l.setPosition(LegendPosition.BELOW_CHART_LEFT);
+        l.setPosition(LegendPosition.RIGHT_OF_CHART);
         l.setXEntrySpace(1f);
         l.setYEntrySpace(5f);
     	super.onAttachedToWindow();

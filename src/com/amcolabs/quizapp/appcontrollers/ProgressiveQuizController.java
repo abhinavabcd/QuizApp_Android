@@ -155,7 +155,7 @@ public class ProgressiveQuizController extends AppController{
 				if(isChallengedMode()){
 					for(UserAnswer userAnswer : userChallengeAnswers ){
 						if(userAnswer.questionId.equalsIgnoreCase(currentQuestion.questionId)){
-							userChallengeAnswers.remove(userAnswer);
+							//userChallengeAnswers.remove(userAnswer);
 							scheduleChallengedAnswer(userAnswer);		
 							break;
 						}
@@ -772,9 +772,12 @@ public class ProgressiveQuizController extends AppController{
 				quizApp.getServerCalls().completeOfflineChallenge( quizMode.getId() , new ChallengeData(quiz.quizId, userAnswersStack.get(quizApp.getUser().uid)),  new DataInputListener<Boolean>(){
 					@Override 
 					public String onData(Boolean s) {
-						if(s){
-							quizApp.getDataBaseHelper().updateOfflineChallenge(quizMode.getId(), true, hasWon);
-							((OfflineChallenge)quizMode.getTag()).isCompleted = true;
+						if(s){ 
+							OfflineChallenge offlineChallenge = ((OfflineChallenge)quizMode.getTag());
+							offlineChallenge.isCompleted = true;
+							offlineChallenge.hasWon = hasWon;
+							offlineChallenge.setChallengeData2(quizApp.getConfig().getGson().toJson(new ChallengeData(ProgressiveQuizController.this.quiz.quizId, ProgressiveQuizController.this.userAnswersStack.get(quizApp.getUser().uid))));
+							quizApp.getDataBaseHelper().updateOfflineChallenge(offlineChallenge);
 						}
 						else{
 							quizApp.getStaticPopupDialogBoxes().yesOrNo(UiText.SERVER_ERROR_MESSAGE.getValue(), null, UiText.CLOSE.getValue(), null);
@@ -791,7 +794,7 @@ public class ProgressiveQuizController extends AppController{
 		if (quizResultScreen==null){
 			quizResultScreen = new WinOrLoseScreen(this,currentUsers);
 		}
-		quizResultScreen.showResult(userAnswersStack,quizResult,didUserLevelUp(oldPoints,newPoints) , isChallengeMode());
+		quizResultScreen.showResult(userAnswersStack,quizResult,didUserLevelUp(oldPoints,newPoints) , quizMode);
 		showScreen(quizResultScreen);
 		
 	}
@@ -872,6 +875,10 @@ public class ProgressiveQuizController extends AppController{
 	
 	
 	public void startChallengedGame(final OfflineChallenge offlineChallenge ){
+		if(offlineChallenge.isCompleted){
+			quizApp.getStaticPopupDialogBoxes().yesOrNo(UiText.COMPLETED_CHALLENGE.getValue(), null, UiText.CLOSE.getValue(), null);
+			return;
+		}
 		final User fromUser = offlineChallenge.getFromUser(quizApp);
 		
 		this.challengeData = offlineChallenge.getChallengeData(quizApp);

@@ -207,17 +207,19 @@ public class WinOrLoseScreen extends Screen{
 		}
 		else if(matchResult==0){
 			quizResultMessage.setText(UiText.TIE_QUIZ_MESAGE.getValue());
-		}
+		} 
 		else if(matchResult==-2){
 			quizResultMessage.setText(UiText.SERVER_ERROR_MESSAGE.getValue());
 		}
 		boolean isChallengeMode = quizMode==QuizMode.CHALLENGE_MODE;
 		
-		if(quizMode == QuizMode.CHALLENGE_MODE || quizMode==QuizMode.CHALLENGED_MODE){
+		if(quizMode == QuizMode.CHALLENGE_MODE){
 			quizResultMessage.setText(UiText.YOU_CHALLENGED.getValue());	
-			buttonsWrapper.setVisibility(View.GONE);
 		}
 		
+		if(quizMode==QuizMode.CHALLENGED_MODE || quizMode==QuizMode.CHALLENGED_MODE){
+			buttonsWrapper.setVisibility(View.GONE);
+		}
 		
 		List<UserAnswer> ans = userAnswersStack.get(getApp().getUser().uid);
 		animatePoints((int)Math.floor(ans.get(ans.size()-1).whatUserGot),(int)Math.floor( (matchResult>0&&!isChallengeMode)?Config.QUIZ_WIN_BONUS:0),(int)Math.floor(levelUp?Config.QUIZ_LEVEL_UP_BONUS:0));

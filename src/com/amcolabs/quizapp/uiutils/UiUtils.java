@@ -144,7 +144,7 @@ public class UiUtils {
 		QUIZ_LEVEL("Quiz Level"), 
 		DO_YOU_START_CHALLENGE("Do you want to start the challenge?"), 
 		START("Start"), 
-		CANCEL("Cancel");
+		CANCEL("Cancel"), COMPLETED_CHALLENGE("Challenge Completed");
 		
 		String value = null;
 		UiText(String value){
@@ -482,27 +482,24 @@ public class UiUtils {
 		return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp,
 				quizApp.getResources().getDisplayMetrics());
 	}
-	public static ListView setListViewHeightBasedOnChildren(ListView listView) {
-	    ListAdapter listAdapter = listView.getAdapter();
-	    if (listAdapter == null)
-	        return listView;
-
-	    int desiredWidth = MeasureSpec.makeMeasureSpec(listView.getWidth(), MeasureSpec.UNSPECIFIED);
-	    int totalHeight = 0;
-	    View view = null;
-	    for (int i = 0; i < listAdapter.getCount(); i++) {
-	        view = listAdapter.getView(i, view, listView);
-	        if (i == 0)
-	            view.setLayoutParams(new ViewGroup.LayoutParams(desiredWidth, LayoutParams.WRAP_CONTENT));
-
-	        view.measure(desiredWidth, MeasureSpec.UNSPECIFIED);
-	        totalHeight += view.getMeasuredHeight();
-	    }
-	    ViewGroup.LayoutParams params = listView.getLayoutParams();
-	    params.height = totalHeight + (listView.getDividerHeight() * (listAdapter.getCount() - 1));
-	    listView.setLayoutParams(params);
-	    listView.requestLayout();
-	    return listView;
+	public static ListView setListViewHeightBasedOnChildren(ListView myListView) {
+	      ListAdapter myListAdapter = myListView.getAdapter();
+	        if (myListAdapter == null) {
+	            //do nothing return null
+	            return myListView;
+	        }
+	        //set listAdapter in loop for getting final size
+	        int totalHeight = 0;
+	        for (int size = 0; size < myListAdapter.getCount(); size++) {
+	            View listItem = myListAdapter.getView(size, null, myListView);
+	            listItem.measure(0, 0);
+	            totalHeight += listItem.getMeasuredHeight();
+	        }
+	      //setting listview item in adapter
+	        ViewGroup.LayoutParams params = myListView.getLayoutParams();
+	        params.height = totalHeight + (myListView.getDividerHeight() * (myListAdapter.getCount() - 1));
+	        myListView.setLayoutParams(params);
+	        return myListView;
 	}
 	
 	public void blickAnimation(View view){

@@ -38,7 +38,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 	// name of the database file for your application -- change to something appropriate for your app
 	private static final String DATABASE_NAME = "quizApp.db";
 	// any time you make changes to your database objects, you may have to increase the database version
-	private static final int DATABASE_VERSION = 14;
+	private static final int DATABASE_VERSION = 15;
 	private static String DATABASE_PATH = "/data/data/com.amcolabs.quizapp/databases/";
 
 	// the DAO object we use to access the Category table
@@ -687,24 +687,24 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 		return null;
 	}
 
-	public void updateOfflineChallenge(String id, boolean b, boolean hasWon) {
-		try {
-			 List<OfflineChallenge> offlineChallenges = getOfflineChallengesDao().queryBuilder().where().eq("offlineChallengeId", id).query();
-			 if(offlineChallenges!=null && offlineChallenges.size()>0){
-				 OfflineChallenge offlineChallenge = offlineChallenges.get(0);
-				 offlineChallenge.hasWon = hasWon;
-				 offlineChallenge.isCompleted = true;
-				getOfflineChallengesDao().createOrUpdate(offlineChallenge);
-			 }
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
+//	public void updateOfflineChallenge(String id, boolean b, boolean hasWon) {
+//		try {
+//			 List<OfflineChallenge> offlineChallenges = getOfflineChallengesDao().queryBuilder().where().eq("offlineChallengeId", id).query();
+//			 if(offlineChallenges!=null && offlineChallenges.size()>0){
+//				 OfflineChallenge offlineChallenge = offlineChallenges.get(0);
+//				 offlineChallenge.hasWon = hasWon;
+//				 offlineChallenge.isCompleted = true;
+//				getOfflineChallengesDao().createOrUpdate(offlineChallenge);
+//			 }
+//		} catch (SQLException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//	}
 
 	public int getLastChallengeIndex() {
 		try {
-			OfflineChallenge offlineChallenge = getOfflineChallengesDao().queryBuilder().orderBy("toUid_userChallengeIndex", false).where().like("toUid_userChallengeIndex", quizApp.getUser().uid+"_%").queryForFirst();
+			OfflineChallenge offlineChallenge = getOfflineChallengesDao().queryBuilder().orderBy("toUid_userChallengeIndex", false).queryForFirst();
 			if(offlineChallenge!=null){
 				return Integer.parseInt(offlineChallenge.toUid_userChallengeIndex.split("_")[1]);
 			}

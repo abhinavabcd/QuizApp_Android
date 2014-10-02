@@ -188,7 +188,7 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 	}
 	
 	public User getUser(){
-		return currentUser==null?User.getDummyUser(this):currentUser;
+		return currentUser;
 	}
 
 	public void setUser(User user) {
@@ -264,8 +264,8 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 						wantsToExitLastTimestamp = Config.getCurrentTimeStamp();
 						return;
 					}
-					oldScreen.refresh();
 					animateScreenIn(oldScreen);
+					oldScreen.refresh();
 				}
 			}
 			catch(EmptyStackException e) {
