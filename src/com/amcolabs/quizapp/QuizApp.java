@@ -234,6 +234,7 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 	
 	private double wantsToExitLastTimestamp = 0;
 	public void onBackPressed() {
+			currentActiveMenu = -1;
 			if(Config.getCurrentTimeStamp() - wantsToExitLastTimestamp<2){
 				getActivity().finish();//all controllers finished
 				wantsToExitLastTimestamp = Config.getCurrentTimeStamp();
@@ -376,9 +377,20 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
             fragment.onActivityResult(requestCode, resultCode, data);
         }
     }
+    
+	double lastClick = 0;
+	public boolean isRapidReClick(){
+		if(Config.getCurrentNanos()-lastClick>1000000000){//1 sec
+			lastClick = Config.getCurrentNanos();
+			return false;
+		}
+		lastClick = Config.getCurrentNanos();
+		return true;
+	}
 
     int currentActiveMenu = -1;
 	public void onMenuClick(int id) {
+		if(isRapidReClick()) return;
 		while(screenStack.size()>1){
 			Screen s = screenStack.remove(0);
 			s.controller.decRefCount();

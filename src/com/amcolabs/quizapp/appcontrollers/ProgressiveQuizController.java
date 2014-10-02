@@ -729,17 +729,17 @@ public class ProgressiveQuizController extends AppController{
 		uAns = userAnswersStack.get(quizApp.getUser().uid);
 		oldPoints = newPoints - (uAns.get(uAns.size()-1).whatUserGot+(quizResult>0?Config.QUIZ_WIN_BONUS:0));
 		
-		if(isChallengeMode()){
-			quizApp.getServerCalls().addOfflineChallange(quiz , getOtherUser(), userAnswersStack.get(quizApp.getUser().uid), quizMode.getId() ,new DataInputListener<Boolean>(){
+		if(isChallengeMode()){ 
+			quizApp.getServerCalls().addOfflineChallange(quiz , getOtherUser(), userAnswersStack.get(quizApp.getUser().uid), quizMode.getId() ,new DataInputListener<OfflineChallenge>(){
 				@Override
-				public String onData(Boolean s) {
-					if(s){
-						
+				public String onData(OfflineChallenge offlineChallenge) {
+					if(offlineChallenge!=null){
+						quizApp.getDataBaseHelper().updateOfflineChallenge(offlineChallenge);
 					}
 					else{
 						quizApp.getStaticPopupDialogBoxes().yesOrNo(UiText.SERVER_ERROR_MESSAGE.getValue(), null, UiText.CLOSE.getValue(), null);
 					}
-					return super.onData(s);
+					return null;
 				}
 			});//server call  
 		}

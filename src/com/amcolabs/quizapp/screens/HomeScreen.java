@@ -45,6 +45,7 @@ public class HomeScreen extends Screen {
 		CategoryItemListAdapter categoryAdaptor = new CategoryItemListAdapter(getApp(),0,categories,new DataInputListener<Category>(){
 			@Override
 			public String onData(Category s) {
+				if(isRapidReClick()) return null;
 				userMainController.onCategorySelected(s);
 				return null;
 			}

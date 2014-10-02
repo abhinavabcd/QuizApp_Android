@@ -904,7 +904,7 @@ public class ServerCalls {
 	}
 
 
-	public void addOfflineChallange(Quiz quiz, User otherUser,	List<UserAnswer> userAnswers, String offlineChallengeId, final DataInputListener<Boolean> dataInputListener) {
+	public void addOfflineChallange(Quiz quiz, User otherUser,	List<UserAnswer> userAnswers, String offlineChallengeId, final DataInputListener<OfflineChallenge> dataInputListener) {
 			
 			String url = getAServerAddr()+"/func?task=addOfflineChallenge";
 			url+="&encodedKey="+quizApp.getUserDeviceManager().getEncodedKey();
@@ -917,10 +917,10 @@ public class ServerCalls {
 				public void onServerResponse(MessageType messageType, ServerResponse response) {
 						switch(messageType){
 							case OK:
-								dataInputListener.onData(true);
+								dataInputListener.onData(quizApp.getConfig().getGson().fromJson(response.payload, OfflineChallenge.class));
 								break;
 							default:
-								dataInputListener.onData(false);
+								dataInputListener.onData(null);
 								break;
 						}
 				}

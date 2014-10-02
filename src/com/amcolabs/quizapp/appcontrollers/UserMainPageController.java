@@ -15,6 +15,7 @@ import com.amcolabs.quizapp.UserDeviceManager;
 import com.amcolabs.quizapp.configuration.Config;
 import com.amcolabs.quizapp.databaseutils.Badge;
 import com.amcolabs.quizapp.databaseutils.Category;
+import com.amcolabs.quizapp.databaseutils.Feed.FeedType;
 import com.amcolabs.quizapp.databaseutils.OfflineChallenge;
 import com.amcolabs.quizapp.databaseutils.Quiz;
 import com.amcolabs.quizapp.databaseutils.Feed;
@@ -59,6 +60,8 @@ public class UserMainPageController  extends AppController implements OnInitiali
 //	public HomeScreen categoriesScreen;
 //	public TopicsScreen topicsScreen;
 	 
+	
+	
 	public void checkAndShowCategories(){
 		String encodedKey = quizApp.getUserDeviceManager().getEncodedKey();
 		if(encodedKey!=null){
@@ -76,7 +79,7 @@ public class UserMainPageController  extends AppController implements OnInitiali
 						quizApp.getDataBaseHelper().updateOfflineChallenge(offlineChallenge);
 					}
 					if(s){
-						showUserHomeScreen();
+						showUserHomeScreen(feeds);
 					}
 					else{
 						StaticPopupDialogBoxes.alertPrompt(quizApp.getFragmentManager(), UiText.COULD_NOT_CONNECT.getValue(), null);
@@ -143,7 +146,7 @@ public class UserMainPageController  extends AppController implements OnInitiali
 		progressiveQuiz.initlializeQuiz(quiz);
 	}
 	
-	private void showUserHomeScreen() {
+	private void showUserHomeScreen(List<Feed> feeds) {
 		GCMRegistrar.checkDevice(quizApp.getActivity());
         //TODO: uncomment this after testing
         //GCMRegistrar.checkManifest(quizApp.getActivity());
@@ -185,7 +188,22 @@ public class UserMainPageController  extends AppController implements OnInitiali
 				}
 			});
 		}
-		
+		if(feeds!=null){
+			for(Feed feed: feeds){
+				switch(feed.getUserFeedType()){
+					case FEED_CHALLENGE:
+						OfflineChallenge offlineChallenge = quizApp.getDataBaseHelper().getOfflineChallengeByChallegeId(feed.message);
+						if(!offlineChallenge.isCompleted()){
+							offlineChallenge.setCompleted(true);
+							//show popup that user has completed and win/lost TODO
+								offlineChallenge.setChallengeData2(feed.message2);
+								quizApp.getDataBaseHelper().updateOfflineChallenge(offlineChallenge);
+						}
+						break;
+						
+				}
+			}
+		}
 //		cs.addFeedView();
 //		cs.addQuizzes();
 		

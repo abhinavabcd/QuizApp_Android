@@ -722,6 +722,17 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 			e.printStackTrace();
 		}
 	}
+
+	public OfflineChallenge getOfflineChallengeByChallegeId(String id) {
+		try {
+			return getOfflineChallengesDao().queryBuilder().where().eq("offlineChallengeId", id).queryForFirst();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+
+	}
     
 }
 
