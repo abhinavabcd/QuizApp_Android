@@ -24,6 +24,7 @@ import com.amcolabs.quizapp.QuizApp;
 import com.amcolabs.quizapp.R;
 import com.amcolabs.quizapp.UserDeviceManager;
 import com.amcolabs.quizapp.databaseutils.Badge;
+import com.amcolabs.quizapp.databaseutils.OfflineChallenge;
 import com.amcolabs.quizapp.datalisteners.DataInputListener;
 import com.amcolabs.quizapp.uiutils.UiUtils;
 import com.amcolabs.quizapp.widgets.FancyDialog;
@@ -117,6 +118,70 @@ public class StaticPopupDialogBoxes {
         }
         return dialog;
 	}
+	public void showChallengeWinDialog(OfflineChallenge offlineChallenge , boolean hasWon){
+		 final Dialog d = new Dialog(quizApp.getContext(),R.style.CustomDialogTheme); 
+		 LinearLayout challengeWinLooseDialog = (LinearLayout)quizApp.getActivity().getLayoutInflater().inflate(R.layout.quiz_menu, null);
+
+		 GothamTextView winLooseText;
+		 GothamTextView challengeWithUser;
+		 GothamTextView quizDesc;
+		 
+		 LinearLayout points1;
+		 GothamTextView points1QuizPoints;
+		 GothamTextView points1QuizPointsText;
+		 GothamTextView points1QuizWinPoints;
+		 GothamTextView points1QuizWinPointsText;
+		 GothamTextView points1QuizLevelupPoints;
+		 GothamTextView points1QuizLevelupPointsText;
+		 GothamTextView points1QuizTotalPoints;
+		 GothamTextView points1QuizTotalPointsText;
+		 LinearLayout points2;
+		 GothamTextView points2QuizPoints;
+		 GothamTextView points2QuizPointsText;
+		 GothamTextView points2QuizWinPoints;
+		 GothamTextView points2QuizWinPointsText;
+		 GothamTextView points2QuizLevelupPoints;
+		 GothamTextView points2QuizLevelupPointsText;
+		 GothamTextView points2QuizTotalPoints;
+		 GothamTextView points2QuizTotalPointsText;
+
+		winLooseText = (GothamTextView) challengeWinLooseDialog.findViewById(R.id.win_loose_text);
+		challengeWithUser = (GothamTextView) challengeWinLooseDialog.findViewById(R.id.challenge_with_user);
+		quizDesc = (GothamTextView) challengeWinLooseDialog.findViewById(R.id.quiz_desc);
+		
+		
+		points1 = (LinearLayout) challengeWinLooseDialog.findViewById(R.id.points_1);
+		points1QuizPoints = (GothamTextView) points1.findViewById(R.id.quizPoints);
+		points1QuizPointsText = (GothamTextView) points1.findViewById(R.id.quizPointsText);
+		points1QuizWinPoints = (GothamTextView) points1.findViewById(R.id.quizWinPoints);
+		points1QuizWinPointsText = (GothamTextView) points1.findViewById(R.id.quizWinPointsText);
+		points1QuizLevelupPoints = (GothamTextView) points1.findViewById(R.id.quizLevelupPoints);
+		points1QuizLevelupPointsText = (GothamTextView) points1.findViewById(R.id.quizLevelupPointsText);
+		points1QuizTotalPoints = (GothamTextView) points1.findViewById(R.id.quizTotalPoints);
+		points1QuizTotalPointsText = (GothamTextView) points1.findViewById(R.id.quizTotalPointsText);
+		
+		points2 = (LinearLayout) challengeWinLooseDialog.findViewById(R.id.points_2);
+		points2QuizPoints = (GothamTextView) points2.findViewById(R.id.quizPoints);
+		points2QuizPointsText = (GothamTextView) points2.findViewById(R.id.quizPointsText);
+		points2QuizWinPoints = (GothamTextView) points2.findViewById(R.id.quizWinPoints);
+		points2QuizWinPointsText = (GothamTextView) points2.findViewById(R.id.quizWinPointsText);
+		points2QuizLevelupPoints = (GothamTextView) points2.findViewById(R.id.quizLevelupPoints);
+		points2QuizLevelupPointsText = (GothamTextView) points2.findViewById(R.id.quizLevelupPointsText);
+		points2QuizTotalPoints = (GothamTextView) points2.findViewById(R.id.quizTotalPoints);
+		points2QuizTotalPointsText = (GothamTextView) points2.findViewById(R.id.quizTotalPointsText);
+
+		challengeWithUser.setText(offlineChallenge.getFromUser(quizApp).name);
+		quizDesc.setText(quizApp.getDataBaseHelper().getQuizById(offlineChallenge.getChallengeData(quizApp).quizId).name);
+		
+		
+		
+		
+		d.setContentView(challengeWinLooseDialog);
+		d.show();
+		
+		
+	}
+	
 	
 	public void showQuizSelectMenu(final DataInputListener<Integer> menuListener){
 		final Dialog d = new Dialog(quizApp.getContext(),R.style.CustomDialogTheme); 

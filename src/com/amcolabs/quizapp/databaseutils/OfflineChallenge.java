@@ -43,10 +43,13 @@ public class OfflineChallenge {
 	
 	
 	ChallengeData cachedChallengeData = null;
+	private ChallengeData cachedChallengeData2=null;
 	public ChallengeData getChallengeData(QuizApp quizApp){
 		return cachedChallengeData==null?(cachedChallengeData = quizApp.getConfig().getGson().fromJson(challengeData, ChallengeData.class)) : cachedChallengeData;
 	}
-	
+	public ChallengeData getChallengeData2(QuizApp quizApp){
+		return cachedChallengeData2==null?(cachedChallengeData2 = quizApp.getConfig().getGson().fromJson(challengeData2, ChallengeData.class)) : cachedChallengeData2;
+	}
 	public String getFromUserUid(){
 		return fromUid_userChallengeIndex.split("_")[0];
 	}

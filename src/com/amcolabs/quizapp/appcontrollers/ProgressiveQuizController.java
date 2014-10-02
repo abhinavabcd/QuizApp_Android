@@ -10,7 +10,6 @@ import java.util.Random;
 import java.util.Set;
 
 import android.os.Handler;
-import android.text.style.LineHeightSpan.WithDensity;
 
 import com.amcolabs.quizapp.AppController;
 import com.amcolabs.quizapp.QuizApp;
@@ -24,6 +23,7 @@ import com.amcolabs.quizapp.databaseutils.QuizHistory;
 import com.amcolabs.quizapp.datalisteners.DataInputListener;
 import com.amcolabs.quizapp.datalisteners.DataInputListener2;
 import com.amcolabs.quizapp.gameutils.BadgeEvaluator;
+import com.amcolabs.quizapp.gameutils.GameUtils;
 import com.amcolabs.quizapp.screens.ClashScreen;
 import com.amcolabs.quizapp.screens.QuestionScreen;
 import com.amcolabs.quizapp.screens.WinOrLoseScreen;
@@ -821,9 +821,9 @@ public class ProgressiveQuizController extends AppController{
 		return winnersList;
 	}
 	
-	public boolean didUserLevelUp(double oldPoints,double newPoints){
-		if (Math.floor(quizApp.getGameUtils().getLevelFromXp(oldPoints))!=
-				Math.floor(quizApp.getGameUtils().getLevelFromXp(newPoints))){
+	public static boolean didUserLevelUp(double oldPoints,double newPoints){
+		if (Math.floor(GameUtils.getLevelFromXp(oldPoints))!=
+				Math.floor(GameUtils.getLevelFromXp(newPoints))){
 			return true;
 		}
 		return false;
