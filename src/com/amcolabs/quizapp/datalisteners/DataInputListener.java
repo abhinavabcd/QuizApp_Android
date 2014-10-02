@@ -2,12 +2,22 @@ package com.amcolabs.quizapp.datalisteners;
 
 import android.view.View;
 
+import com.amcolabs.quizapp.configuration.Config;
 import com.amcolabs.quizapp.serverutils.ServerResponse.MessageType;
 
 
 public class DataInputListener<T> implements IDataInputListener<T> {
 	
-
+	double lastClick = 0;
+	
+	public boolean isRapidReClick(){
+		if(Config.getCurrentNanos()-lastClick>1000000000){//1 sec
+			lastClick = Config.getCurrentNanos();
+			return false;
+		}
+		lastClick = Config.getCurrentNanos();
+		return true;
+	}
 	
 	@Override
 	public void onClick(View v) {

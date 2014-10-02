@@ -15,6 +15,9 @@ public class Feed {
 	private int type;
 	@DatabaseField
 	public String message;
+	@DatabaseField
+	public String message2;
+	
 
 	
 	private static HashMap<Integer , FeedType> feedTypeMap = null;//new HashMap<Integer , FeedType>();

@@ -24,6 +24,7 @@ import android.widget.LinearLayout.LayoutParams;
 
 import com.amcolabs.quizapp.QuizApp;
 import com.amcolabs.quizapp.R;
+import com.amcolabs.quizapp.configuration.Config;
 
 public class QuizAppMenuItem extends LinearLayout implements OnClickListener {
 
@@ -113,6 +114,7 @@ public class QuizAppMenuItem extends LinearLayout implements OnClickListener {
 		lParams.gravity = Gravity.CENTER_VERTICAL;
 		this.setLayoutParams(lParams);   
 	}
+
 	@Override
 	public void onClick(View v) {
 		quizApp.onMenuClick(id);
