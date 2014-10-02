@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <com.amcolabs.quizapp.widgets.GothamTextView
+        android:id="@+id/win_loose_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text="You Win!"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textSize="50sp" />
+
+    <LinearLayout
+        android:id="@+id/win_against"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal" >
+
+        <com.amcolabs.quizapp.widgets.GothamTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="against"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        <com.amcolabs.quizapp.widgets.GothamTextView
+            android:id="@+id/challenge_with_user"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:text="Medium Text"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/LinearLayout01"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal" >
+
+        <com.amcolabs.quizapp.widgets.GothamTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="in"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        <com.amcolabs.quizapp.widgets.GothamTextView
+            android:id="@+id/quiz_desc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:text="Medium Text"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    </LinearLayout>
+
+    <include
+        android:id="@+id/points_1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="5dp"
+        layout="@layout/pointswrapper" />
+
+    <include
+        android:id="@+id/points_2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        layout="@layout/pointswrapper" />
+
+</LinearLayout>
