@@ -23,9 +23,11 @@ import android.widget.TextView;
 import com.amcolabs.quizapp.QuizApp;
 import com.amcolabs.quizapp.R;
 import com.amcolabs.quizapp.UserDeviceManager;
+import com.amcolabs.quizapp.configuration.Config;
 import com.amcolabs.quizapp.databaseutils.Badge;
 import com.amcolabs.quizapp.databaseutils.OfflineChallenge;
 import com.amcolabs.quizapp.datalisteners.DataInputListener;
+import com.amcolabs.quizapp.gameutils.GameUtils;
 import com.amcolabs.quizapp.uiutils.UiUtils;
 import com.amcolabs.quizapp.widgets.FancyDialog;
 import com.amcolabs.quizapp.widgets.GothamButtonView;
@@ -173,14 +175,31 @@ public class StaticPopupDialogBoxes {
 		challengeWithUser.setText(offlineChallenge.getFromUser(quizApp).name);
 		quizDesc.setText(quizApp.getDataBaseHelper().getQuizById(offlineChallenge.getChallengeData(quizApp).quizId).name);
 		
+		int user1Points = GameUtils.getLastElement(offlineChallenge.getChallengeData(quizApp).userAnswers).whatUserGot;
+		int user2Points = GameUtils.getLastElement(offlineChallenge.getChallengeData(quizApp).userAnswers).whatUserGot;
 		
+		int user1Bonus = (int) (user1Points>user2Points?Config.QUIZ_WIN_BONUS:0);
+		int user1CurrentPoints = quizApp.getUser().getStats().get(offlineChallenge.getChallengeData(quizApp).quizId);
+		int user1LevelUpBonus = (int) (GameUtils.didUserLevelUp(user1CurrentPoints , user1CurrentPoints+ user1Bonus+user1Points)?Config.QUIZ_LEVEL_UP_BONUS:0);
+		int user1TotalPoints = user1Points+user1Bonus+user1LevelUpBonus;
+		points1QuizLevelupPoints.setText(user1LevelUpBonus+""); 
+		points1QuizPoints.setText(user1Points+"");
+		points1QuizWinPoints.setText( user1Bonus+"");
+		points1QuizTotalPoints.setText(user1TotalPoints+"");
 		
+		int user2Bonus = (int) (user2Points>user1Points?Config.QUIZ_WIN_BONUS:0);
+		int user2TotalPoints = user2Points+user2Bonus;
+		
+		points1QuizLevelupPoints.setText("0"); 
+		points1QuizPoints.setText(user2Points+"");
+		points1QuizWinPoints.setText( user2Bonus+"");
+		points1QuizTotalPoints.setText(user2TotalPoints+"");
 		
 		d.setContentView(challengeWinLooseDialog);
 		d.show();
-		
-		
 	}
+	
+	
 	
 	
 	public void showQuizSelectMenu(final DataInputListener<Integer> menuListener){

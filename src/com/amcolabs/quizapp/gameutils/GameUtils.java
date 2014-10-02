@@ -1,6 +1,9 @@
 package com.amcolabs.quizapp.gameutils;
 
+import java.util.List;
+
 import com.amcolabs.quizapp.QuizApp;
+import com.amcolabs.quizapp.appcontrollers.ProgressiveQuizController.UserAnswer;
 
 /**
  * 
@@ -22,4 +25,16 @@ public class GameUtils {
 		level--;
 		return LEVEL_ONE_POINTS*level+ (level*(level-1)/10.0d)*(LEVEL_ONE_POINTS/2);
 	}
+
+	public static<T> T getLastElement(List<T> objects){
+		return  objects.get(objects.size()-1);
+	}
+	public static boolean didUserLevelUp(double oldPoints,double newPoints){
+		if (Math.floor(GameUtils.getLevelFromXp(oldPoints))!=
+				Math.floor(GameUtils.getLevelFromXp(newPoints))){
+			return true;
+		}
+		return false;
+	}
+
 }
