@@ -70,6 +70,9 @@ public class UserMainPageController  extends AppController implements OnInitiali
 				public void onData(List<Feed> feeds,List<UserInboxMessage> inboxMessages,List<OfflineChallenge> offlineChallenges, Boolean s) {
 					if(offlineChallenges!=null)
 					for(OfflineChallenge offlineChallenge : offlineChallenges){
+						if(offlineChallenge.isCompleted()){
+							offlineChallenge.setCompleted(true);
+						}
 						quizApp.getDataBaseHelper().updateOfflineChallenge(offlineChallenge);
 					}
 					if(s){
@@ -108,9 +111,27 @@ public class UserMainPageController  extends AppController implements OnInitiali
 		List<Quiz> quizzes = category.getQuizzes(quizApp);
 		categoryQuizzesScreen.addQuizzesToList(category.description , quizzes, new DataInputListener<Quiz>(){
 			@Override
-			public String onData(Quiz s) {
-				onQuizPlaySelected(s);
-				return super.onData(s);
+			public String onData(final Quiz quiz) {
+				quizApp.getStaticPopupDialogBoxes().showQuizSelectMenu(new DataInputListener<Integer>(){
+					@Override
+					public String onData(Integer s) {
+						switch(s){
+							case 1: 
+								onQuizPlaySelected(quiz);
+								break;
+							case 2:
+								break;
+							case 3://challenge
+								onStartChallengeQuiz(quiz);
+								break;
+							case 4://scoreboard
+								showLeaderBoards(quiz.quizId);
+								break;
+						}
+						return super.onData(s);
+					}
+				});
+				return null;
 			}
 		});
 		insertScreen(categoryQuizzesScreen);

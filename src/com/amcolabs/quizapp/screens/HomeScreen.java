@@ -132,7 +132,7 @@ public class HomeScreen extends Screen {
 		super.refresh();
 		if(this.offlineChallengeAdaptor!=null){
 			for(int i=0;i<offlineChallengeAdaptor.getCount();i++){
-				if(offlineChallengeAdaptor.getItem(i).isCompleted){
+				if(offlineChallengeAdaptor.getItem(i).isCompleted()){
 					offlineChallengeAdaptor.remove(offlineChallengeAdaptor.getItem(i));
 				}
 			}
@@ -150,7 +150,7 @@ public class HomeScreen extends Screen {
 	public void addOfflineChallengesView(List<OfflineChallenge> offlineChallenges, boolean showViewMore , String text , boolean spanOnFullWidth) {
 		this.offlineChallenges = offlineChallenges;
 		for(OfflineChallenge offlineChallenge : offlineChallenges){
-			if(offlineChallenge.isCompleted){
+			if(offlineChallenge.isCompleted()){
 				offlineChallenges.remove(offlineChallenge);
 			}
 		}

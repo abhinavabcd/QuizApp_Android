@@ -774,7 +774,7 @@ public class ProgressiveQuizController extends AppController{
 					public String onData(Boolean s) {
 						if(s){ 
 							OfflineChallenge offlineChallenge = ((OfflineChallenge)quizMode.getTag());
-							offlineChallenge.isCompleted = true;
+							offlineChallenge.setCompleted(true);
 							offlineChallenge.hasWon = hasWon;
 							offlineChallenge.setChallengeData2(quizApp.getConfig().getGson().toJson(new ChallengeData(ProgressiveQuizController.this.quiz.quizId, ProgressiveQuizController.this.userAnswersStack.get(quizApp.getUser().uid))));
 							quizApp.getDataBaseHelper().updateOfflineChallenge(offlineChallenge);
@@ -875,7 +875,7 @@ public class ProgressiveQuizController extends AppController{
 	
 	
 	public void startChallengedGame(final OfflineChallenge offlineChallenge ){
-		if(offlineChallenge.isCompleted){
+		if(offlineChallenge.isCompleted()){
 			quizApp.getStaticPopupDialogBoxes().yesOrNo(UiText.COMPLETED_CHALLENGE.getValue(), null, UiText.CLOSE.getValue(), null);
 			return;
 		}

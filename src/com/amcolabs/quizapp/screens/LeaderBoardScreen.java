@@ -59,4 +59,10 @@ public class LeaderBoardScreen extends Screen {
 		addToScrollView(lView);
 		UiUtils.setListViewHeightBasedOnChildren(listView);
 	}
+	
+	@Override
+	public boolean showMenu() {
+		// TODO Auto-generated method stub
+		return true;
+	}
 }

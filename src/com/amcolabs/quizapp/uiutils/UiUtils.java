@@ -484,7 +484,7 @@ public class UiUtils {
 	}
 	public static ListView setListViewHeightBasedOnChildren(ListView myListView) {
 	      ListAdapter myListAdapter = myListView.getAdapter();
-	        if (myListAdapter == null) {
+	        if (myListAdapter == null || myListAdapter.getCount()==0) {
 	            //do nothing return null
 	            return myListView;
 	        }

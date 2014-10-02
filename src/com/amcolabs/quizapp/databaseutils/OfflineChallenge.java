@@ -37,7 +37,7 @@ public class OfflineChallenge {
 	@DatabaseField
 	String wonUid;
 	@DatabaseField
-	public boolean isCompleted = false;
+	private boolean isCompleted = false;
 	@DatabaseField
 	public boolean hasWon = false;
 	
@@ -66,5 +66,13 @@ public class OfflineChallenge {
 
 	public void setChallengeData2(String jsonStr) {
 		this.challengeData2 = jsonStr;
+	}
+
+	public boolean isCompleted() {
+		return isCompleted || (challengeData2!=null && !challengeData2.trim().equalsIgnoreCase(""));
+	}
+
+	public void setCompleted(boolean isCompleted) {
+		this.isCompleted = isCompleted;
 	}
 }
