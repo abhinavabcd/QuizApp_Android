@@ -146,7 +146,7 @@ public class UiUtils {
 		DO_YOU_START_CHALLENGE("Do you want to start the challenge?"), 
 		START("Start"), 
 		CANCEL("Cancel"), COMPLETED_CHALLENGE("Challenge Completed"), 
-		YOU_WON_LOOSE_CHALLENGE_FEED("%s! the challenge, here are the challenge details <a href='offlineChallengeId/%s'>Challenge Details</a>"),
+		YOU_WON_LOOSE_CHALLENGE_FEED("%s! , here are the <a href='offlineChallengeId/%s'>Challenge Details</a>"),
 		USER_FEED("User Feed");
 		
 		String value = null;

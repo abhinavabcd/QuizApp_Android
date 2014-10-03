@@ -11,20 +11,19 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="left"
-        android:background="@drawable/list_item_bg"
         android:gravity="left"
         android:orientation="horizontal"
         android:padding="3dp"
         android:textColor="#ffffff" >
 
-        <ImageView
+        <com.amcolabs.quizapp.widgets.CircularImageView
             android:id="@+id/title_image"
             android:layout_width="50dp"
-            android:layout_height="wrap_content"
+            android:layout_height="50dp"
             android:layout_gravity="left"
             android:layout_marginTop="10dp"
             android:layout_weight="0.0"
-            android:scaleType="fitXY"
+            android:scaleType="fitStart"
             android:src="@drawable/abc_ab_bottom_solid_dark_holo" />
 
         <LinearLayout
@@ -34,8 +33,7 @@
             android:layout_marginLeft="10dp"
             android:layout_weight="0.8"
             android:gravity="center_vertical"
-            android:orientation="vertical"
-            android:padding="5dp" >
+            android:orientation="vertical" >
 
             <com.amcolabs.quizapp.widgets.GothamTextView
                 android:id="@+id/title_name"
@@ -50,6 +48,7 @@
                 android:id="@+id/text_content_1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:lines="3"
                 android:text=""
                 android:textSize="18sp" />
 

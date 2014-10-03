@@ -716,6 +716,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 
 	public void updateOfflineChallenge(OfflineChallenge offlineChallenge) {
 		try {
+			offlineChallenge.isCompleted();
 			getOfflineChallengesDao().createOrUpdate(offlineChallenge);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block

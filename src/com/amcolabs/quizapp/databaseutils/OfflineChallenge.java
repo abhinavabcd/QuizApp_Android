@@ -72,7 +72,7 @@ public class OfflineChallenge {
 	}
 
 	public boolean isCompleted() {
-		return isCompleted || (challengeData2!=null && !challengeData2.trim().equalsIgnoreCase(""));
+		return isCompleted = (isCompleted || (challengeData2!=null && !challengeData2.trim().equalsIgnoreCase("")));
 	}
 
 	public void setCompleted(boolean isCompleted) {

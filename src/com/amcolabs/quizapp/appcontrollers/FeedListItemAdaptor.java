@@ -50,6 +50,7 @@ public class FeedListItemAdaptor extends ArrayAdapter<Feed> {
 		if(convertView==null){
 			feedHolder = new FeedViewHolder();
 			convertView = feed.createLayout(quizApp, feedHolder);
+			
 		}
 		else{
 			feedHolder = (FeedViewHolder) convertView.getTag();

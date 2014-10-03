@@ -2,7 +2,28 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="match_parent"
+    android:layout_gravity="center"
+    android:gravity="center"
     android:orientation="vertical" >
+
+    <ImageView
+        android:id="@+id/close_button"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_gravity="right"
+        android:layout_marginRight="20dp"
+        android:scaleType="fitXY"
+        android:src="@drawable/close_icon" />
+
+    <com.amcolabs.quizapp.widgets.GothamTextView
+        android:id="@+id/GothamTextView01"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:text="Challenge Results"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textColor="@color/white"
+        android:textSize="20sp" />
 
     <com.amcolabs.quizapp.widgets.GothamTextView
         android:id="@+id/win_loose_text"
@@ -10,6 +31,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:text="You Win!"
+        android:textColor="@color/white"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:textSize="50sp" />
 
@@ -23,6 +45,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="against"
+	        android:textColor="@color/white"
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
         <com.amcolabs.quizapp.widgets.GothamTextView
@@ -30,6 +53,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="5dp"
+            android:textColor="@color/white"
             android:text="Medium Text"
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
@@ -45,6 +69,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="in"
+            android:textColor="@color/white"
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
         <com.amcolabs.quizapp.widgets.GothamTextView
@@ -53,6 +78,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="5dp"
             android:text="Medium Text"
+            android:textColor="@color/white"
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
     </LinearLayout>
@@ -63,6 +89,16 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="5dp"
         layout="@layout/pointswrapper" />
+
+    <com.amcolabs.quizapp.widgets.GothamTextView
+        android:id="@+id/textView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="VS"
+        android:textColor="@color/white"
+        android:textStyle="bold"
+        android:textSize="30dp"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
 
     <include
         android:id="@+id/points_2"

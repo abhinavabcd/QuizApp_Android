@@ -7,6 +7,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
@@ -30,7 +31,6 @@ import com.amcolabs.quizapp.datalisteners.DataInputListener;
 import com.amcolabs.quizapp.gameutils.GameUtils;
 import com.amcolabs.quizapp.uiutils.UiUtils;
 import com.amcolabs.quizapp.uiutils.UiUtils.UiText;
-import com.amcolabs.quizapp.widgets.FancyDialog;
 import com.amcolabs.quizapp.widgets.GothamButtonView;
 import com.amcolabs.quizapp.widgets.GothamTextView;
 
@@ -152,26 +152,32 @@ public class StaticPopupDialogBoxes {
 		challengeWithUser = (GothamTextView) challengeWinLooseDialog.findViewById(R.id.challenge_with_user);
 		quizDesc = (GothamTextView) challengeWinLooseDialog.findViewById(R.id.quiz_desc);
 		
-		
+		ImageView closeButton = (ImageView)challengeWinLooseDialog.findViewById(R.id.close_button);
+		closeButton.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				d.dismiss();
+			}
+		});
 		points1 = (LinearLayout) challengeWinLooseDialog.findViewById(R.id.points_1);
 		points1QuizPoints = (GothamTextView) points1.findViewById(R.id.quizPoints);
-		points1QuizPointsText = (GothamTextView) points1.findViewById(R.id.quizPointsText);
+		(points1QuizPointsText = (GothamTextView) points1.findViewById(R.id.quizPointsText)).setTextColor(Color.WHITE);
 		points1QuizWinPoints = (GothamTextView) points1.findViewById(R.id.quizWinPoints);
-		points1QuizWinPointsText = (GothamTextView) points1.findViewById(R.id.quizWinPointsText);
+		(points1QuizWinPointsText = (GothamTextView) points1.findViewById(R.id.quizWinPointsText)).setTextColor(Color.WHITE);;
 		points1QuizLevelupPoints = (GothamTextView) points1.findViewById(R.id.quizLevelupPoints);
-		points1QuizLevelupPointsText = (GothamTextView) points1.findViewById(R.id.quizLevelupPointsText);
+		(points1QuizLevelupPointsText = (GothamTextView) points1.findViewById(R.id.quizLevelupPointsText)).setTextColor(Color.WHITE);;
 		points1QuizTotalPoints = (GothamTextView) points1.findViewById(R.id.quizTotalPoints);
-		points1QuizTotalPointsText = (GothamTextView) points1.findViewById(R.id.quizTotalPointsText);
+		(points1QuizTotalPointsText = (GothamTextView) points1.findViewById(R.id.quizTotalPointsText)).setTextColor(Color.WHITE);;
 		
 		points2 = (LinearLayout) challengeWinLooseDialog.findViewById(R.id.points_2);
 		points2QuizPoints = (GothamTextView) points2.findViewById(R.id.quizPoints);
-		points2QuizPointsText = (GothamTextView) points2.findViewById(R.id.quizPointsText);
+		(points2QuizPointsText = (GothamTextView) points2.findViewById(R.id.quizPointsText)).setTextColor(Color.WHITE);;
 		points2QuizWinPoints = (GothamTextView) points2.findViewById(R.id.quizWinPoints);
-		points2QuizWinPointsText = (GothamTextView) points2.findViewById(R.id.quizWinPointsText);
+		(points2QuizWinPointsText = (GothamTextView) points2.findViewById(R.id.quizWinPointsText)).setTextColor(Color.WHITE);;
 		points2QuizLevelupPoints = (GothamTextView) points2.findViewById(R.id.quizLevelupPoints);
-		points2QuizLevelupPointsText = (GothamTextView) points2.findViewById(R.id.quizLevelupPointsText);
+		(points2QuizLevelupPointsText = (GothamTextView) points2.findViewById(R.id.quizLevelupPointsText)).setTextColor(Color.WHITE);;
 		points2QuizTotalPoints = (GothamTextView) points2.findViewById(R.id.quizTotalPoints);
-		points2QuizTotalPointsText = (GothamTextView) points2.findViewById(R.id.quizTotalPointsText);
+		(points2QuizTotalPointsText = (GothamTextView) points2.findViewById(R.id.quizTotalPointsText)).setTextColor(Color.WHITE);;
 
 		challengeWithUser.setText(offlineChallenge.getFromUser(quizApp).name);
 		challengeWithUser.setTextColor(quizApp.getConfig().getUniqueThemeColor(challengeWithUser.getText().toString()));
@@ -180,7 +186,7 @@ public class StaticPopupDialogBoxes {
 		quizDesc.setTextColor(quizApp.getConfig().getUniqueThemeColor(quizDesc.getText().toString()));
 		
 		int user1Points = GameUtils.getLastElement(offlineChallenge.getChallengeData(quizApp).userAnswers).whatUserGot;
-		int user2Points = GameUtils.getLastElement(offlineChallenge.getChallengeData(quizApp).userAnswers).whatUserGot;
+		int user2Points = GameUtils.getLastElement(offlineChallenge.getChallengeData2(quizApp).userAnswers).whatUserGot;
 		
 		int user1Bonus = (int) (user1Points>user2Points?Config.QUIZ_WIN_BONUS:0);
 		if(user1Points==user2Points){
@@ -192,9 +198,9 @@ public class StaticPopupDialogBoxes {
 		}
 		
 		int user1CurrentPoints = quizApp.getUser().getStats().get(offlineChallenge.getChallengeData(quizApp).quizId);
-		int user1LevelUpBonus = (int) (GameUtils.didUserLevelUp(user1CurrentPoints , user1CurrentPoints+ user1Bonus+user1Points)?Config.QUIZ_LEVEL_UP_BONUS:0);
+		int user1LevelUpBonus = 0;//(int) (GameUtils.didUserLevelUp(user1CurrentPoints , user1CurrentPoints+ user1Bonus+user1Points)?Config.QUIZ_LEVEL_UP_BONUS:0);
 		int user1TotalPoints = user1Points+user1Bonus+user1LevelUpBonus;
-		points1QuizLevelupPoints.setText(user1LevelUpBonus+""); 
+		points1QuizLevelupPoints.setText("-"); 
 		points1QuizPoints.setText(user1Points+"");
 		points1QuizWinPoints.setText( user1Bonus+"");
 		points1QuizTotalPoints.setText(user1TotalPoints+"");
@@ -202,10 +208,11 @@ public class StaticPopupDialogBoxes {
 		int user2Bonus = (int) (user2Points>user1Points?Config.QUIZ_WIN_BONUS:0);
 		int user2TotalPoints = user2Points+user2Bonus;
 		
-		points1QuizLevelupPoints.setText("0"); 
-		points1QuizPoints.setText(user2Points+"");
-		points1QuizWinPoints.setText( user2Bonus+"");
-		points1QuizTotalPoints.setText(user2TotalPoints+"");
+		points2QuizPoints.setText(user2Points+"");
+		points2QuizWinPoints.setText( user2Bonus+"");
+		points2QuizLevelupPoints.setText("-"); 
+		points2QuizTotalPoints.setText(user2TotalPoints+"");
+		
 		
 		d.setContentView(challengeWinLooseDialog);
 		d.show();
@@ -301,30 +308,26 @@ public class StaticPopupDialogBoxes {
 		yesNoPopup= null;
 	}
 	
-	public void showUnlockedBadge(Badge badge) {
-		FancyDialog dialog = new FancyDialog(quizApp.getContext());
-		dialog.setTitle(UiUtils.UiText.NEW_BADGE_UNLOCKED_MESSAGE.getValue());
-		RelativeLayout badgeLayout = (RelativeLayout)quizApp.getActivity().getLayoutInflater().inflate(R.layout.badge_small, null);
+	public void showUnlockedBadge(Badge badge, boolean addDetail) {
+		final Dialog d = new Dialog(quizApp.getContext(),R.style.CustomDialogTheme); 
+		RelativeLayout badgeLayout = (RelativeLayout)quizApp.getActivity().getLayoutInflater().inflate(R.layout.badge_detail_view, null);
+		ImageView closeButton = (ImageView)badgeLayout.findViewById(R.id.close_button);
+		closeButton.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				d.dismiss();
+			}
+		});
+
+		((GothamTextView) badgeLayout.findViewById(R.id.title)).setText(UiUtils.UiText.NEW_BADGE_UNLOCKED_MESSAGE.getValue());
 		quizApp.getUiUtils().loadImageIntoView(quizApp.getContext(), (ImageView)badgeLayout.findViewById(R.id.badgeImage),badge.getAssetPath(), true);
 		((GothamTextView)badgeLayout.findViewById(R.id.badgeName)).setText(badge.getName());
-		dialog.setContent(badgeLayout);
-		dialog.showTitle();
-		dialog.hideAlertButtons();
-		dialog.show();
-	}
-
-	public void showBadge(Badge badge) {
-		FancyDialog dialog = new FancyDialog(quizApp.getContext());
-//		dialog.setTitle(UiUtils.UiText.NEW_BADGE_UNLOCKED_MESSAGE.getValue());
-		RelativeLayout badgeLayout = (RelativeLayout)quizApp.getActivity().getLayoutInflater().inflate(R.layout.badge_full, null);
-		quizApp.getUiUtils().loadImageIntoView(quizApp.getContext(), (ImageView)badgeLayout.findViewById(R.id.badgeImage),badge.getAssetPath(), true);
-		((GothamTextView)badgeLayout.findViewById(R.id.badgeName)).setText(badge.getName());
-		((GothamTextView)badgeLayout.findViewById(R.id.badgeDescription)).setText(badge.getDescription());
-		dialog.setContent(badgeLayout);
-
-//		dialog.showTitle();
-		dialog.hideTitle();
-		dialog.hideAlertButtons();
-		dialog.show();
+		if(addDetail)
+			((GothamTextView)badgeLayout.findViewById(R.id.badgeDescription)).setText(badge.getDescription());
+		else{
+			((GothamTextView)badgeLayout.findViewById(R.id.badgeDescription)).setVisibility(View.GONE);
+		}
+		d.setContentView(badgeLayout);
+		d.show();
 	}
 }

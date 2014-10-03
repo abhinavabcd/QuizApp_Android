@@ -51,7 +51,7 @@ public class UserMainPageController  extends AppController implements OnInitiali
     User user= null;
 	private SocialNetworkManager mSocialNetworkManager;
 	private double currentQuizMaxTimeStamp;
-	private int feedPreprocedCount;
+	private int feedPreprocessedCount;
 	public UserMainPageController(QuizApp quizApp) {
 		super(quizApp);
 	}
@@ -190,7 +190,7 @@ public class UserMainPageController  extends AppController implements OnInitiali
 			});
 		}
 		if(feeds!=null){
-			feedPreprocedCount = feeds.size();
+			feedPreprocessedCount = feeds.size();
 			List<String> uidsList = new ArrayList<String>();
 			for(Feed feed: feeds){ // pre processing all the feed
 				uidsList.add(feed.fromUid);
@@ -204,9 +204,9 @@ public class UserMainPageController  extends AppController implements OnInitiali
 								quizApp.getServerCalls().getOfflineChallenge(feed.message, new DataInputListener<OfflineChallenge>(){
 									@Override 
 									public String onData(OfflineChallenge offlineChallenge) {
-										--feedPreprocedCount;
+										--feedPreprocessedCount;
 										if(offlineChallenge==null){
-											if(feedPreprocedCount<1) homeScreen.addFeedView(feeds, UiText.USER_FEED.getValue());
+											if(feedPreprocessedCount<1) homeScreen.addFeedView(feeds, UiText.USER_FEED.getValue());
 											return null;
 										}
 										if(!offlineChallenge.isCompleted()){
@@ -216,7 +216,7 @@ public class UserMainPageController  extends AppController implements OnInitiali
 												quizApp.getDataBaseHelper().updateOfflineChallenge(offlineChallenge);
 										}
 										quizApp.getStaticPopupDialogBoxes().showChallengeWinDialog(offlineChallenge);
-										if(feedPreprocedCount<1) 		homeScreen.addFeedView(feeds, UiText.USER_FEED.getValue());
+										if(feedPreprocessedCount<1) 		homeScreen.addFeedView(feeds, UiText.USER_FEED.getValue());
 										return null;
 									}
 								}, true); 

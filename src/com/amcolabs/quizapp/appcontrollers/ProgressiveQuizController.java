@@ -771,7 +771,6 @@ public class ProgressiveQuizController extends AppController{
 			}
 			final boolean hasWon = quizResult==WON;
 			
-			// Dead Code
 			if(isChallengedMode()){
 				quizApp.getServerCalls().completeOfflineChallenge( quizMode.getId() , new ChallengeData(quiz.quizId, userAnswersStack.get(quizApp.getUser().uid)),  new DataInputListener<Boolean>(){
 					@Override 

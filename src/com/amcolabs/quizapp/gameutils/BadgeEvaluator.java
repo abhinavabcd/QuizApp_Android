@@ -168,7 +168,7 @@ public class BadgeEvaluator {
 					}
 					for(int i=0;i<unlockedBadges.size();i++){
 						quizApp.getUser().badges.add(unlockedBadges.get(i).getBadgeId());
-						quizApp.getStaticPopupDialogBoxes().showUnlockedBadge(unlockedBadges.get(i));
+						quizApp.getStaticPopupDialogBoxes().showUnlockedBadge(unlockedBadges.get(i),true);
 					}
 					if(!quizApp.getDataBaseHelper().removePendingState(unlockedBadges)){
 						System.out.println("DB update error");

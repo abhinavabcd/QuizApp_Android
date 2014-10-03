@@ -81,6 +81,7 @@ public class Feed {
 				feedHolder.titleImage = (ImageView) baseLayout.findViewById(R.id.title_image);
 				feedHolder.titleName = (GothamTextView) baseLayout.findViewById(R.id.title_name);
 				feedHolder.textContent1 = (GothamTextView) baseLayout.findViewById(R.id.text_content_1);
+				feedHolder.textContent1.setFocusable(true);
 				feedHolder.textContent2 = (GothamTextView) baseLayout.findViewById(R.id.text_content_2);
 				baseLayout.setTag(feedHolder);
 				return baseLayout;
