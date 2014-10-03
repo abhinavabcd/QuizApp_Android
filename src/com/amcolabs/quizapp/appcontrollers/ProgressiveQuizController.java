@@ -744,7 +744,9 @@ public class ProgressiveQuizController extends AppController{
 			});//server call  
 		}
 
-		else if(quizResult>=LOOSE){			
+		else if(quizResult>=LOOSE){
+			
+			// Always True
 			if(!isChallengedMode())
 				quizApp.getServerCalls().updateQuizWinStatus(quiz.quizId , quizResult , newPoints-oldPoints, getOtherUser());//server call 
 			qHistory = quizApp.getDataBaseHelper().getQuizHistoryById(quiz.quizId);
@@ -768,6 +770,8 @@ public class ProgressiveQuizController extends AppController{
 				} 
 			}
 			final boolean hasWon = quizResult==WON;
+			
+			// Dead Code
 			if(isChallengedMode()){
 				quizApp.getServerCalls().completeOfflineChallenge( quizMode.getId() , new ChallengeData(quiz.quizId, userAnswersStack.get(quizApp.getUser().uid)),  new DataInputListener<Boolean>(){
 					@Override 
@@ -784,7 +788,8 @@ public class ProgressiveQuizController extends AppController{
 						}
 						return super.onData(s);
 					}
-				});//server call  
+				});//server call
+				
 			}
 			quizApp.getDataBaseHelper().createOrUpdateQuizHistory(qHistory);
 			

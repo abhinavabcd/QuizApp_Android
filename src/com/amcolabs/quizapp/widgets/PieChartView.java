@@ -64,6 +64,7 @@ public class PieChartView extends PieChart{
     protected void onAttachedToWindow() {
         Legend l = this.getLegend();
         l.setTextSize(6f);
+
         l.setStackSpace(1f);
         l.setPosition(LegendPosition.RIGHT_OF_CHART);
         l.setXEntrySpace(1f);

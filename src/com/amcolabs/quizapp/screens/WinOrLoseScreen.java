@@ -359,7 +359,7 @@ public class WinOrLoseScreen extends Screen{
 				myindex = Config.PIE_CHART_MAX_FIELDS-1;
 			}
 //			yVals.add(new Entry((float)getApp().getGameUtils().getLevelFromXp(userXp), myindex));
-			yVals.add(new Entry((float)(userXp==0?1:userXp), myindex));
+			yVals.add(new Entry((float)userXp, myindex));
 			userXp = 0;
 		}
 		
