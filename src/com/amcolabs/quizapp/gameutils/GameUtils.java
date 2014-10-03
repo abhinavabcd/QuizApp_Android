@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.amcolabs.quizapp.QuizApp;
 import com.amcolabs.quizapp.appcontrollers.ProgressiveQuizController.UserAnswer;
+import com.amcolabs.quizapp.databaseutils.OfflineChallenge;
 
 /**
  * 
@@ -36,5 +37,8 @@ public class GameUtils {
 		}
 		return false;
 	}
-
+	
+	public static void hasUserWonChallenge(OfflineChallenge offlineChallenge){
+		
+	}
 }

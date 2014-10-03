@@ -40,4 +40,9 @@ public class WelcomeScreen extends Screen {
 
 		super.beforeRemove();
 	}
+	@Override
+	public boolean showOnBackPressed() {
+		// TODO Auto-generated method stub
+		return false;
+	}
 }

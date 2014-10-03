@@ -199,6 +199,7 @@ public class UserMainPageController  extends AppController implements OnInitiali
 								offlineChallenge.setChallengeData2(feed.message2);
 								quizApp.getDataBaseHelper().updateOfflineChallenge(offlineChallenge);
 						}
+						quizApp.getStaticPopupDialogBoxes().showChallengeWinDialog(offlineChallenge);
 						break;
 						
 				}
@@ -391,6 +392,7 @@ public class UserMainPageController  extends AppController implements OnInitiali
 
 	@Override
 	public void onError(int socialNetworkID, String requestID,String errorMessage, Object data) {
+		quizApp.removeUiBlock();
 		StaticPopupDialogBoxes.alertPrompt(quizApp.getFragmentManager(), requestID+errorMessage, null);
 	}
 	
