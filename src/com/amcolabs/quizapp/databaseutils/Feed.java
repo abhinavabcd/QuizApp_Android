@@ -97,7 +97,7 @@ public class Feed {
 				User user = quizApp.cachedUsers.get(fromUid);
 				quizApp.getUiUtils().loadImageIntoView(quizApp.getContext(), feedHolder.titleImage, user.pictureUrl, false);
 				feedHolder.titleName.setText(user.name);
-				OfflineChallenge offlineChallenge = quizApp.getDataBaseHelper().getOfflineChallengeByChallegeId(message);
+				OfflineChallenge offlineChallenge = quizApp.getDataBaseHelper().getOfflineChallengeByChallengeId(message);
 				int user1Points = GameUtils.getLastElement(offlineChallenge.getChallengeData(quizApp).userAnswers).whatUserGot;
 				int user2Points = GameUtils.getLastElement(offlineChallenge.getChallengeData(quizApp).userAnswers).whatUserGot;
 				String winText = user1Points==user2Points?UiText.TIE_QUIZ_MESAGE.getValue(): (user1Points>user2Points?UiText.WON_QUIZ_MESSAGE.getValue():UiText.LOST_QUIZ_MESAGE.getValue());
@@ -105,7 +105,7 @@ public class Feed {
 					@Override
 					public String onData(String s) {
 						if(s.startsWith("offlineChallengeId")){
-							OfflineChallenge offlineChallenge = quizApp.getDataBaseHelper().getOfflineChallengeByChallegeId(s.split("/")[1]);
+							OfflineChallenge offlineChallenge = quizApp.getDataBaseHelper().getOfflineChallengeByChallengeId(s.split("/")[1]);
 							quizApp.getStaticPopupDialogBoxes().showChallengeWinDialog(offlineChallenge);
 						}
 						return super.onData(s);

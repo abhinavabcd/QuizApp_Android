@@ -174,7 +174,10 @@ public class StaticPopupDialogBoxes {
 		points2QuizTotalPointsText = (GothamTextView) points2.findViewById(R.id.quizTotalPointsText);
 
 		challengeWithUser.setText(offlineChallenge.getFromUser(quizApp).name);
+		challengeWithUser.setTextColor(quizApp.getConfig().getUniqueThemeColor(challengeWithUser.getText().toString()));
+		
 		quizDesc.setText(quizApp.getDataBaseHelper().getQuizById(offlineChallenge.getChallengeData(quizApp).quizId).name);
+		quizDesc.setTextColor(quizApp.getConfig().getUniqueThemeColor(quizDesc.getText().toString()));
 		
 		int user1Points = GameUtils.getLastElement(offlineChallenge.getChallengeData(quizApp).userAnswers).whatUserGot;
 		int user2Points = GameUtils.getLastElement(offlineChallenge.getChallengeData(quizApp).userAnswers).whatUserGot;
@@ -185,6 +188,7 @@ public class StaticPopupDialogBoxes {
 		}
 		else{
 			winLooseText.setText(user1Points>user2Points ? UiText.WON_QUIZ_MESSAGE.getValue(): UiText.LOST_QUIZ_MESAGE.getValue());
+			winLooseText.setTextColor(quizApp.getConfig().getUniqueThemeColor(winLooseText.getText().toString()));
 		}
 		
 		int user1CurrentPoints = quizApp.getUser().getStats().get(offlineChallenge.getChallengeData(quizApp).quizId);

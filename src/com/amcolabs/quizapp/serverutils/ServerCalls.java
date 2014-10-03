@@ -189,7 +189,7 @@ public class ServerCalls {
 	}
 	public void makeServerCall(final String url,final ServerNotifier serverNotifier,final boolean blockUi , boolean sync){
 				final long nano1 = Config.getCurrentNanos();
-				AsyncHttpClient c = sync ? sClinet : client;
+				final AsyncHttpClient c = sync ? sClinet : client;
 				c.get(url, new AsyncHttpResponseHandler() {
 						int retryCount = 0;
 							@Override
@@ -212,7 +212,7 @@ public class ServerCalls {
 							
 							serverNotifier.onServerResponse(MessageType.FAILED , null);
 							if(this.retryCount++<Config.RETRY_URL_COUNT)
-								client.get(url , this); // retry Once More
+								c.get(url , this); // retry Once More
 							else
 								handleResponseCodes(MessageType.FAILED,null);
 						} 
@@ -799,7 +799,7 @@ public class ServerCalls {
 		});
 	}
 
-
+	// does not work
 	public void getUserByUidSync(Object key, final DataInputListener<Boolean> dataInputListener) {
 		// TODO Auto-generated method stub
 		final String uid = key.toString();
@@ -825,6 +825,39 @@ public class ServerCalls {
 		},true, true);//sync 
 	}
 	
+	public void getOfflineChallenge(String offlineChallengeId, final DataInputListener<OfflineChallenge> dataInputListener , boolean doCheck) {
+		// TODO Auto-generated method stub
+		String url = getAServerAddr()+"/func?task=getOfflineChallengeById";
+		url+="&encodedKey="+quizApp.getUserDeviceManager().getEncodedKey();
+		url+="&offlineChallengeId="+offlineChallengeId;
+		if(doCheck){
+			OfflineChallenge offlineChallenge = quizApp.getDataBaseHelper().getOfflineChallengeByChallengeId(offlineChallengeId);
+			if(offlineChallenge!=null){
+				dataInputListener.onData(offlineChallenge);
+				return;
+			}
+		}
+		makeServerCall(url,new ServerNotifier() {			
+		@Override
+		public void onServerResponse(MessageType messageType, ServerResponse response) {
+			OfflineChallenge offlineChallenge;
+			switch(messageType){
+				case OK_CHALLENGES:
+					offlineChallenge = quizApp.getConfig().getGson().fromJson(response.payload, OfflineChallenge.class);
+					quizApp.getDataBaseHelper().updateOfflineChallenge(offlineChallenge);
+					if(dataInputListener!=null)
+						dataInputListener.onData(offlineChallenge);
+					break;
+				case FAILED: 
+					if(dataInputListener!=null){
+						dataInputListener.onData(null);
+					}
+					break;
+				}
+			}
+		},true);//sync 
+	}
+
 	private HashMap<String, Boolean> subScribingRequests = new HashMap<String, Boolean>();
 	
 	public void subscribeTo(final User user2 ,final DataInputListener<Boolean> listener) {

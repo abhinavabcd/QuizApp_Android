@@ -723,7 +723,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 		}
 	}
 
-	public OfflineChallenge getOfflineChallengeByChallegeId(String id) {
+	public OfflineChallenge getOfflineChallengeByChallengeId(String id) {
 		try {
 			return getOfflineChallengesDao().queryBuilder().where().eq("offlineChallengeId", id).queryForFirst();
 		} catch (SQLException e) {

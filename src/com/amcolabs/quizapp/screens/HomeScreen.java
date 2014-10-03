@@ -206,6 +206,9 @@ public class HomeScreen extends Screen {
 		GothamTextView titleView = (GothamTextView) lView.findViewById(R.id.title_text_view);
 		titleView.setText(title);
 		ListView listView = (ListView) lView.findViewById(R.id.listView);
+		LayoutParams lParams = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
+		lParams.setMargins(5, 0, 0, 5);
+		listView.setLayoutParams(lParams);
 		listView.setAdapter(feedAdapter);
 		
 		listViews.add(listView);

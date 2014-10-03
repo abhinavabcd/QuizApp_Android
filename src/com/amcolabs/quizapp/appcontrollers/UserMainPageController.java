@@ -51,6 +51,7 @@ public class UserMainPageController  extends AppController implements OnInitiali
     User user= null;
 	private SocialNetworkManager mSocialNetworkManager;
 	private double currentQuizMaxTimeStamp;
+	private int feedPreprocedCount;
 	public UserMainPageController(QuizApp quizApp) {
 		super(quizApp);
 	}
@@ -146,7 +147,7 @@ public class UserMainPageController  extends AppController implements OnInitiali
 		progressiveQuiz.initlializeQuiz(quiz);
 	}
 	
-	private void showUserHomeScreen(List<Feed> feeds) {
+	private void showUserHomeScreen(final List<Feed> feeds) {
 		GCMRegistrar.checkDevice(quizApp.getActivity());
         //TODO: uncomment this after testing
         //GCMRegistrar.checkManifest(quizApp.getActivity());
@@ -189,21 +190,44 @@ public class UserMainPageController  extends AppController implements OnInitiali
 			});
 		}
 		if(feeds!=null){
-			for(Feed feed: feeds){
-				switch(feed.getUserFeedType()){
-					case FEED_CHALLENGE:
-						OfflineChallenge offlineChallenge = quizApp.getDataBaseHelper().getOfflineChallengeByChallegeId(feed.message);
-						if(!offlineChallenge.isCompleted()){
-							offlineChallenge.setCompleted(true);
-								//show popup that user has completed and win/lost TODO
-								offlineChallenge.setChallengeData2(feed.message2);
-								quizApp.getDataBaseHelper().updateOfflineChallenge(offlineChallenge);
-						}
-						quizApp.getStaticPopupDialogBoxes().showChallengeWinDialog(offlineChallenge);
-						break;
-						
-				}
+			feedPreprocedCount = feeds.size();
+			List<String> uidsList = new ArrayList<String>();
+			for(Feed feed: feeds){ // pre processing all the feed
+				uidsList.add(feed.fromUid);
 			}
+			quizApp.getDataBaseHelper().getAllUsersByUid(uidsList, new DataInputListener<Boolean>(){ // first cache all users
+				@Override
+				public String onData(Boolean s) {
+					for(final Feed feed: feeds){ // pre processing all the feed
+						switch(feed.getUserFeedType()){
+							case FEED_CHALLENGE://show popups
+								quizApp.getServerCalls().getOfflineChallenge(feed.message, new DataInputListener<OfflineChallenge>(){
+									@Override 
+									public String onData(OfflineChallenge offlineChallenge) {
+										--feedPreprocedCount;
+										if(offlineChallenge==null){
+											if(feedPreprocedCount<1) homeScreen.addFeedView(feeds, UiText.USER_FEED.getValue());
+											return null;
+										}
+										if(!offlineChallenge.isCompleted()){
+											offlineChallenge.setCompleted(true);
+												//show popup that user has completed and win/lost TODO
+												offlineChallenge.setChallengeData2(feed.message2);
+												quizApp.getDataBaseHelper().updateOfflineChallenge(offlineChallenge);
+										}
+										quizApp.getStaticPopupDialogBoxes().showChallengeWinDialog(offlineChallenge);
+										if(feedPreprocedCount<1) 		homeScreen.addFeedView(feeds, UiText.USER_FEED.getValue());
+										return null;
+									}
+								}, true); 
+								break;
+								
+						}
+					}
+					return null;
+				}
+			});
+			
 		}
 //		cs.addFeedView();
 //		cs.addQuizzes();
