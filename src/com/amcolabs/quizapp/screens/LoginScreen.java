@@ -11,4 +11,10 @@ public class LoginScreen extends Screen {
 		super(appManager);
 	}
 	
+	@Override
+	public boolean showOnBackPressed() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+	
 }

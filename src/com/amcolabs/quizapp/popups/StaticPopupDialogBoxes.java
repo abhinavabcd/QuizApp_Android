@@ -29,6 +29,7 @@ import com.amcolabs.quizapp.databaseutils.OfflineChallenge;
 import com.amcolabs.quizapp.datalisteners.DataInputListener;
 import com.amcolabs.quizapp.gameutils.GameUtils;
 import com.amcolabs.quizapp.uiutils.UiUtils;
+import com.amcolabs.quizapp.uiutils.UiUtils.UiText;
 import com.amcolabs.quizapp.widgets.FancyDialog;
 import com.amcolabs.quizapp.widgets.GothamButtonView;
 import com.amcolabs.quizapp.widgets.GothamTextView;
@@ -120,9 +121,9 @@ public class StaticPopupDialogBoxes {
         }
         return dialog;
 	}
-	public void showChallengeWinDialog(OfflineChallenge offlineChallenge , boolean hasWon){
+	public void showChallengeWinDialog(OfflineChallenge offlineChallenge ){
 		 final Dialog d = new Dialog(quizApp.getContext(),R.style.CustomDialogTheme); 
-		 LinearLayout challengeWinLooseDialog = (LinearLayout)quizApp.getActivity().getLayoutInflater().inflate(R.layout.quiz_menu, null);
+		 LinearLayout challengeWinLooseDialog = (LinearLayout)quizApp.getActivity().getLayoutInflater().inflate(R.layout.challenge_win_popup, null);
 
 		 GothamTextView winLooseText;
 		 GothamTextView challengeWithUser;
@@ -179,6 +180,13 @@ public class StaticPopupDialogBoxes {
 		int user2Points = GameUtils.getLastElement(offlineChallenge.getChallengeData(quizApp).userAnswers).whatUserGot;
 		
 		int user1Bonus = (int) (user1Points>user2Points?Config.QUIZ_WIN_BONUS:0);
+		if(user1Points==user2Points){
+			winLooseText.setText(UiText.TIE_QUIZ_MESAGE.getValue());
+		}
+		else{
+			winLooseText.setText(user1Points>user2Points ? UiText.WON_QUIZ_MESSAGE.getValue(): UiText.LOST_QUIZ_MESAGE.getValue());
+		}
+		
 		int user1CurrentPoints = quizApp.getUser().getStats().get(offlineChallenge.getChallengeData(quizApp).quizId);
 		int user1LevelUpBonus = (int) (GameUtils.didUserLevelUp(user1CurrentPoints , user1CurrentPoints+ user1Bonus+user1Points)?Config.QUIZ_LEVEL_UP_BONUS:0);
 		int user1TotalPoints = user1Points+user1Bonus+user1LevelUpBonus;

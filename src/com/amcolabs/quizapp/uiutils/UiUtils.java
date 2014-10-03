@@ -25,20 +25,21 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
+import android.text.Html;
+import android.text.SpannableStringBuilder;
+import android.text.style.ClickableSpan;
+import android.text.style.URLSpan;
 import android.util.TypedValue;
 import android.view.View;
-import android.view.View.MeasureSpec;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LinearInterpolator;
-import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.LinearLayout.LayoutParams;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.amcolabs.quizapp.QuizApp;
 import com.amcolabs.quizapp.R;
@@ -144,7 +145,8 @@ public class UiUtils {
 		QUIZ_LEVEL("Quiz Level"), 
 		DO_YOU_START_CHALLENGE("Do you want to start the challenge?"), 
 		START("Start"), 
-		CANCEL("Cancel"), COMPLETED_CHALLENGE("Challenge Completed");
+		CANCEL("Cancel"), COMPLETED_CHALLENGE("Challenge Completed"), 
+		YOU_WON_LOOSE_CHALLENGE_FEED("%s! the challenge, here are the challenge details <a href='offlineChallengeId/%s'>Challenge Details</a>");
 		
 		String value = null;
 		UiText(String value){
@@ -509,6 +511,29 @@ public class UiUtils {
 		    animation.setRepeatCount(Animation.INFINITE); // Repeat animation infinitely
 		    animation.setRepeatMode(Animation.REVERSE); // Reverse animation at the end so the button will fade back in
 		    view.startAnimation(animation);
+	}
+	
+	protected void makeLinkClickable(SpannableStringBuilder strBuilder, final URLSpan span , final DataInputListener<String> clickListener){
+	    int start = strBuilder.getSpanStart(span);
+	    int end = strBuilder.getSpanEnd(span);
+	    int flags = strBuilder.getSpanFlags(span);
+	    ClickableSpan clickable = new ClickableSpan() {
+	          public void onClick(View view) {
+	        	  clickListener.onData(span.getURL());
+	          }
+	    };
+	    strBuilder.setSpan(clickable, start, end, flags);
+	    strBuilder.removeSpan(span);
+	}
+
+	public void setTextViewHTML(TextView text, String html , DataInputListener<String> clickListener){
+	    CharSequence sequence = Html.fromHtml(html);
+	        SpannableStringBuilder strBuilder = new SpannableStringBuilder(sequence);
+	        URLSpan[] urls = strBuilder.getSpans(0, sequence.length(), URLSpan.class);   
+	        for(URLSpan span : urls) {
+	            makeLinkClickable(strBuilder, span, clickListener);
+	        }
+	    text.setText(strBuilder);       
 	}
 	
 	public DecimalFormat getDecimalFormatter(){

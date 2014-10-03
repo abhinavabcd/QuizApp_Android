@@ -243,8 +243,9 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 			try{
 				// TODO: overridePendingTransition(R.anim.in,R.anim.out); fragment activity to animate screen out and in
 				Screen screen = peekCurrentScreen();
-				if(screen==null){
+				if(screenStack.size()<2 || screen==null){
 					this.getActivity().moveTaskToBack(true);
+					return;
 				}
 				Log.d(">>>screens<<<", screenStack.size()+" \n"+screenStack);
 				if(screen!=null && !screen.controller.onBackPressed()){

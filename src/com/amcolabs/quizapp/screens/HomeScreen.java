@@ -3,9 +3,7 @@ package com.amcolabs.quizapp.screens;
 import java.util.ArrayList;
 import java.util.List;
 
-import android.app.Dialog;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
@@ -18,9 +16,11 @@ import com.amcolabs.quizapp.Screen;
 import com.amcolabs.quizapp.adapters.CategoryItemListAdapter;
 import com.amcolabs.quizapp.adapters.OfflineChallengesAdapter;
 import com.amcolabs.quizapp.adapters.QuizItemListAdapter;
+import com.amcolabs.quizapp.appcontrollers.FeedListItemAdaptor;
 import com.amcolabs.quizapp.appcontrollers.UserMainPageController;
 import com.amcolabs.quizapp.configuration.Config;
 import com.amcolabs.quizapp.databaseutils.Category;
+import com.amcolabs.quizapp.databaseutils.Feed;
 import com.amcolabs.quizapp.databaseutils.OfflineChallenge;
 import com.amcolabs.quizapp.databaseutils.Quiz;
 import com.amcolabs.quizapp.datalisteners.DataInputListener;
@@ -197,6 +197,30 @@ public class HomeScreen extends Screen {
 		}
 	}
 		
+	public void addFeedView(List<Feed> feeds, String title){
+		final FeedListItemAdaptor feedAdapter = new FeedListItemAdaptor(getApp(), 0, feeds);
+		LinearLayout lView = (LinearLayout) getApp().getActivity().getLayoutInflater().inflate(R.layout.block_list_view, this, false);
+		lView.setBackgroundColor(getApp().getConfig().getAThemeColor());
+		EditText searchText = (EditText) lView.findViewById(R.id.search_text);
+		searchText.setVisibility(View.GONE);//hide search
+		GothamTextView titleView = (GothamTextView) lView.findViewById(R.id.title_text_view);
+		titleView.setText(title);
+		ListView listView = (ListView) lView.findViewById(R.id.listView);
+		listView.setAdapter(feedAdapter);
+		
+		listViews.add(listView);
+	//	addListenersToQuizListItem(listView);
+		
+		
+		
+
+		UiUtils.setListViewHeightBasedOnChildren(listView);
+		
+		FrameLayout viewMore = (FrameLayout) lView.findViewById(R.id.view_all_wrapper);
+		viewMore.setVisibility(View.GONE);
+		addToScrollView(lView);
+
+	}
 	
 	
 	public void addUserQuizzesView(List<Quiz> quizzes, boolean showViewMore , String text) {
