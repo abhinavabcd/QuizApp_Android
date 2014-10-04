@@ -20,7 +20,7 @@ public class BadgeScreenController extends AppController{
 	}
 	
 	public void onBadgeClick(Badge badge){
-		quizApp.getStaticPopupDialogBoxes().showUnlockedBadge(badge, true);
+		quizApp.getStaticPopupDialogBoxes().showUnlockedBadge(badge, true, null);
 	}
 
 	public void showBadgeScreen() {

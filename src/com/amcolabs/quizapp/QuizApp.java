@@ -136,7 +136,8 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 			this.menu.setVisibility(View.GONE);
 		}
 		screen.controller.setActive(true);
-		screenStack.push(screen);
+		if(screen.showOnBackPressed())
+			screenStack.push(screen);
 	}
 
 	private void disposeViews() {
@@ -392,16 +393,15 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
     int currentActiveMenu = -1;
 	public void onMenuClick(int id) {
 		if(isRapidReClick()) return;
-		while(screenStack.size()>1){
-			Screen s = screenStack.remove(0);
-			s.controller.decRefCount();
-			s.beforeRemove();
-		}
 		if(currentActiveMenu==id){
 			screenStack.peek().refresh();
 			return;
+		}while(screenStack.size()>1){
+			Screen s = screenStack.pop();
+			s.controller.decRefCount();
+			s.beforeRemove();
 		}
-		currentActiveMenu = id;
+		
 		switch(id){
 			case MENU_HOME:
 				break;
@@ -412,12 +412,15 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 			case MENU_BADGES:
 				BadgeScreenController badgeController = (BadgeScreenController) loadAppController(BadgeScreenController.class);
 				badgeController.showBadgeScreen();
+				currentActiveMenu = MENU_BADGES;
 				break;
 			case MENU_FRIENDS:
 				break;
 			case MENU_CHATS:
 				ProfileAndChatController pcontroller = (ProfileAndChatController) loadAppController(ProfileAndChatController.class);
 				pcontroller.showChatScreen();
+				currentActiveMenu = MENU_CHATS;
+
 				break;
 		}
 	}

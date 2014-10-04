@@ -27,6 +27,7 @@ import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 import android.text.Html;
 import android.text.SpannableStringBuilder;
+import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.text.style.URLSpan;
 import android.util.TypedValue;
@@ -529,6 +530,7 @@ public class UiUtils {
 
 	public void setTextViewHTML(TextView text, String html , DataInputListener<String> clickListener){
 	    CharSequence sequence = Html.fromHtml(html);
+	    	text.setMovementMethod(LinkMovementMethod.getInstance());
 	        SpannableStringBuilder strBuilder = new SpannableStringBuilder(sequence);
 	        URLSpan[] urls = strBuilder.getSpans(0, sequence.length(), URLSpan.class);   
 	        for(URLSpan span : urls) {

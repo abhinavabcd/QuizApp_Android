@@ -40,5 +40,8 @@ public class BadgeScreen extends Screen implements OnItemClickListener{
 		controller.onBadgeClick(badges.get(position));
 	}
 	
-	
+	@Override
+	public boolean showMenu() {
+		return true;
+	}
 }

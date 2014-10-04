@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
+	android:descendantFocusability="blocksDescendants"
     android:paddingTop="5dp" >
 
     <LinearLayout
@@ -49,6 +50,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:lines="3"
+				android:focusable="false"
+				android:clickable="true"
+				android:longClickable="false"
                 android:text=""
                 android:textSize="18sp" />
 

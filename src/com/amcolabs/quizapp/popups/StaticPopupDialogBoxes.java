@@ -307,10 +307,12 @@ public class StaticPopupDialogBoxes {
 			yesNoPopup.dismissQuietly();
 		yesNoPopup= null;
 	}
-	
-	public void showUnlockedBadge(Badge badge, boolean addDetail) {
+	public void showUnlockedBadge(Badge badge, boolean addDetail){
+		showUnlockedBadge(badge, addDetail, null);
+	}
+	public void showUnlockedBadge(Badge badge, boolean addDetail , String titleText) {
 		final Dialog d = new Dialog(quizApp.getContext(),R.style.CustomDialogTheme); 
-		RelativeLayout badgeLayout = (RelativeLayout)quizApp.getActivity().getLayoutInflater().inflate(R.layout.badge_detail_view, null);
+		LinearLayout badgeLayout = (LinearLayout)quizApp.getActivity().getLayoutInflater().inflate(R.layout.badge_detail_view, null);
 		ImageView closeButton = (ImageView)badgeLayout.findViewById(R.id.close_button);
 		closeButton.setOnClickListener(new OnClickListener() {
 			@Override
@@ -319,7 +321,11 @@ public class StaticPopupDialogBoxes {
 			}
 		});
 
-		((GothamTextView) badgeLayout.findViewById(R.id.title)).setText(UiUtils.UiText.NEW_BADGE_UNLOCKED_MESSAGE.getValue());
+		if(titleText==null){
+			((GothamTextView) badgeLayout.findViewById(R.id.title)).setVisibility(View.GONE);
+		}
+		else
+			((GothamTextView) badgeLayout.findViewById(R.id.title)).setText(UiUtils.UiText.NEW_BADGE_UNLOCKED_MESSAGE.getValue());
 		quizApp.getUiUtils().loadImageIntoView(quizApp.getContext(), (ImageView)badgeLayout.findViewById(R.id.badgeImage),badge.getAssetPath(), true);
 		((GothamTextView)badgeLayout.findViewById(R.id.badgeName)).setText(badge.getName());
 		if(addDetail)
