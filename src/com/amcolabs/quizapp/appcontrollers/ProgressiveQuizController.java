@@ -826,7 +826,7 @@ public class ProgressiveQuizController extends AppController{
 	}
 	
 
-	public void loadProfile(User user) {
+	public void showProfileScreen(User user) {
 		ProfileAndChatController profileAndChat = (ProfileAndChatController) quizApp.loadAppController(ProfileAndChatController.class);
 //		profileAndChat.loadChatScreen(user, -1, true);
 		profileAndChat.showProfileScreen(user);

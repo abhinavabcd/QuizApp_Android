@@ -11,6 +11,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Filter;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.TabWidget;
 
 import com.amcolabs.quizapp.QuizApp;
 import com.amcolabs.quizapp.R;

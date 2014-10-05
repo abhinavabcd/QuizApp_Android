@@ -9,6 +9,7 @@ import android.widget.LinearLayout;
 import com.amcolabs.quizapp.QuizApp;
 import com.amcolabs.quizapp.R;
 import com.amcolabs.quizapp.User;
+import com.amcolabs.quizapp.appcontrollers.ProfileAndChatController;
 import com.amcolabs.quizapp.appcontrollers.FeedListItemAdaptor.FeedViewHolder;
 import com.amcolabs.quizapp.datalisteners.DataInputListener;
 import com.amcolabs.quizapp.gameutils.GameUtils;
@@ -55,7 +56,8 @@ public class Feed {
 		FEED_USER_TOOK_PART(2),
 		FEED_USER_ADDED_FRIEND(3),
 		FEED_USER_WON_BADGES(4),
-		FEED_CHALLENGE(5);
+		FEED_CHALLENGE(5),
+		FEED_USED_JOINED(6);
 		
 		int value;
 		private FeedType(int v) {
@@ -75,27 +77,46 @@ public class Feed {
 		 GothamTextView titleName;
 		 GothamTextView textContent1;
 		 GothamTextView textContent2;
+    	 LinearLayout baseLayout = null;
 		 switch(getUserFeedType()){
 		 	case FEED_CHALLENGE:
-		 		LinearLayout baseLayout = (LinearLayout) quizApp.getActivity().getLayoutInflater().inflate(R.layout.feed_generic_view, null);
+		 	case FEED_USED_JOINED:
+		 		baseLayout = (LinearLayout) quizApp.getActivity().getLayoutInflater().inflate(R.layout.feed_generic_view, null);
 				feedHolder.titleImage = (ImageView) baseLayout.findViewById(R.id.title_image);
 				feedHolder.titleName = (GothamTextView) baseLayout.findViewById(R.id.title_name);
 				feedHolder.textContent1 = (GothamTextView) baseLayout.findViewById(R.id.text_content_1);
-				feedHolder.textContent1.setFocusable(true);
 				feedHolder.textContent2 = (GothamTextView) baseLayout.findViewById(R.id.text_content_2);
 				baseLayout.setTag(feedHolder);
 				return baseLayout;
-			default:
-				break;
+				
 		 }
 		 return null;
 	}
  
-
+	public void onFeedElemClick(final QuizApp quizApp , String s){
+		 if(s.startsWith("offlineChallengeId")){
+			OfflineChallenge offlineChallenge = quizApp.getDataBaseHelper().getOfflineChallengeByChallengeId(s.split("/")[1]);
+			quizApp.getStaticPopupDialogBoxes().showChallengeWinDialog(offlineChallenge);
+		 }
+		 else if(s.startsWith("userProfile")){
+			 String uid = s.split("/")[1];
+			 	quizApp.getServerCalls().getUserByUid(uid, new DataInputListener<User>(){
+			 		@Override
+			 		public String onData(User user) {
+						ProfileAndChatController profileAndChat = (ProfileAndChatController) quizApp.loadAppController(ProfileAndChatController.class);
+						profileAndChat.showProfileScreen(user);
+			 			return null;
+			 		}
+			 	});
+		 }
+	}
+	
+	
 	public void setDataIntoView(final QuizApp quizApp ,FeedViewHolder feedHolder) {
+		User user =null; 
 		 switch(getUserFeedType()){
 			 case FEED_CHALLENGE:
-				User user = quizApp.cachedUsers.get(fromUid);
+				user = quizApp.cachedUsers.get(fromUid);
 				quizApp.getUiUtils().loadImageIntoView(quizApp.getContext(), feedHolder.titleImage, user.pictureUrl, false);
 				feedHolder.titleName.setText(user.name);
 				OfflineChallenge offlineChallenge = quizApp.getDataBaseHelper().getOfflineChallengeByChallengeId(message);
@@ -105,14 +126,24 @@ public class Feed {
 				quizApp.getUiUtils().setTextViewHTML(feedHolder.textContent1, UiText.YOU_WON_LOOSE_CHALLENGE_FEED.getValue(winText, message), new DataInputListener<String>(){
 					@Override
 					public String onData(String s) {
-						if(s.startsWith("offlineChallengeId")){
-							OfflineChallenge offlineChallenge = quizApp.getDataBaseHelper().getOfflineChallengeByChallengeId(s.split("/")[1]);
-							quizApp.getStaticPopupDialogBoxes().showChallengeWinDialog(offlineChallenge);
-						}
+						onFeedElemClick(quizApp , s);
 						return super.onData(s);
 					}
 				});
 				break;
+			 case FEED_USED_JOINED:
+				user = quizApp.cachedUsers.get(fromUid);
+				quizApp.getUiUtils().loadImageIntoView(quizApp.getContext(), feedHolder.titleImage, user.pictureUrl, false);
+				feedHolder.titleName.setText(user.name);
+				quizApp.getUiUtils().setTextViewHTML(feedHolder.textContent1, UiText.FRIEND_USER_STARTED_QUIZAPP.getValue(user.name , user.uid), new DataInputListener<String>(){
+					@Override
+					public String onData(String s) {
+						onFeedElemClick(quizApp , s);
+						return super.onData(s);
+					}
+				});
+				break;
+				
 		 }
 	}
 }

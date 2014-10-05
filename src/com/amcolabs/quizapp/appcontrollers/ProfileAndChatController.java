@@ -45,6 +45,7 @@ public class ProfileAndChatController extends AppController {
 	}
 	
 	public void showProfileScreen(User user){
+		clearScreen();
 		if(profileScreen==null){
 			profileScreen = new UserProfileScreen(this);
 		}

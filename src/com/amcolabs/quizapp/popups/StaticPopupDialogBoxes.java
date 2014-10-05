@@ -33,6 +33,7 @@ import com.amcolabs.quizapp.uiutils.UiUtils;
 import com.amcolabs.quizapp.uiutils.UiUtils.UiText;
 import com.amcolabs.quizapp.widgets.GothamButtonView;
 import com.amcolabs.quizapp.widgets.GothamTextView;
+import com.amcolabs.quizapp.widgets.QuizAppMenuItem;
 
 
 
@@ -287,7 +288,7 @@ public class StaticPopupDialogBoxes {
 			}
 		};
 		((TextView) dialogLayout.findViewById(R.id.textView1)).setText(text);
-		GothamButtonView button1 = (GothamButtonView) dialogLayout.findViewById(R.id.button1);
+		QuizAppMenuItem button1 = (QuizAppMenuItem) dialogLayout.findViewById(R.id.button1);
 		if(possitiveText!=null){
 			button1.setOnClickListener(listener);
 			button1.setText(possitiveText);
@@ -295,7 +296,7 @@ public class StaticPopupDialogBoxes {
 		else{
 			button1.setVisibility(View.GONE);
 		}
-		GothamButtonView button2 = (GothamButtonView) dialogLayout.findViewById(R.id.button2);
+		QuizAppMenuItem button2 = (QuizAppMenuItem) dialogLayout.findViewById(R.id.button2);
 		button2.setOnClickListener(listener);
 		button2.setText(negetiveText);
 		yesNoPopup.setContentView(dialogLayout);

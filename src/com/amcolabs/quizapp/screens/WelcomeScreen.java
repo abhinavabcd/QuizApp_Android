@@ -24,15 +24,20 @@ public class WelcomeScreen extends Screen {
 		addView(v);
 		googlePlusButton = (SignInButton)v.findViewById(R.id.google_plus_button);
 		facebookButton = (Button)v.findViewById(R.id.facebook_button);
+		googlePlusButton.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				userMainPageController.doGplusLogin();
+			}
+		});
+		facebookButton.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				userMainPageController.doFbLogin();
+			}
+		});
 	}
 
-	public SignInButton getPlusButton() {
-		return googlePlusButton;
-	}
-	
-	public Button getFacebookButton() {
-		return facebookButton;
-	}
 	
 	@Override
 	public void beforeRemove() {

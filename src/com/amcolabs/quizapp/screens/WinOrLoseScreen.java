@@ -152,7 +152,7 @@ public class WinOrLoseScreen extends Screen{
 			public void onClick(View v) {
 				for(User user : currentUsers){
 					if(!user.uid.equalsIgnoreCase(getApp().getUser().uid)){
-						progressviewQuizController.loadProfile(user);
+						progressviewQuizController.showProfileScreen(user);
 						break;
 					}
 				}
@@ -192,7 +192,7 @@ public class WinOrLoseScreen extends Screen{
 				@Override
 				public void onClick(View v) {
 					User user = (User) v.getTag();
-					((ProgressiveQuizController) controller).loadProfile(user);
+					((ProgressiveQuizController) controller).showProfileScreen(user);
 //					UserProfileScreen uScreen = new UserProfileScreen(controller);
 //					uScreen.showUser(user);
 //					controller.showScreen(uScreen);
