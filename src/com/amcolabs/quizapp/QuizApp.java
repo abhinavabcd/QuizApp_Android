@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Stack;
 
-import android.app.Notification;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
@@ -464,6 +463,9 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 				currentActiveMenu = MENU_BADGES;
 				break;
 			case MENU_FRIENDS:
+				ProfileAndChatController profileController =( ProfileAndChatController)loadAppController(ProfileAndChatController.class);
+				profileController.showFriendsList();
+				currentActiveMenu = MENU_FRIENDS;
 				break;
 			case MENU_CHATS:
 				ProfileAndChatController pcontroller = (ProfileAndChatController) loadAppController(ProfileAndChatController.class);

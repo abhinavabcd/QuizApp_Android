@@ -21,6 +21,7 @@ import com.amcolabs.quizapp.notificationutils.NotificationReciever;
 import com.amcolabs.quizapp.notificationutils.NotificationReciever.NotificationPayload;
 import com.amcolabs.quizapp.notificationutils.NotificationReciever.NotificationType;
 import com.amcolabs.quizapp.screens.ChatScreen;
+import com.amcolabs.quizapp.screens.SelectFriendsScreen;
 import com.amcolabs.quizapp.screens.UserProfileScreen;
 import com.amcolabs.quizapp.uiutils.UiUtils.UiText;
 
@@ -148,4 +149,33 @@ public class ProfileAndChatController extends AppController {
 		}
 		});
 	}
+	
+	public void showFriendsList(){
+		clearScreen();
+		quizApp.getDataBaseHelper().getAllUsersByUid(quizApp.getUser().getSubscribedTo(), new DataInputListener<Boolean>(){
+			@Override
+			public String onData(Boolean s) {
+				SelectFriendsScreen friendsScreen = new SelectFriendsScreen(ProfileAndChatController.this);
+				ArrayList<User> users = new ArrayList<User>();
+				for(String uid: quizApp.getUser().getSubscribedTo()){
+					if(quizApp.cachedUsers.containsKey(uid)){
+						users.add(quizApp.cachedUsers.get(uid));
+					}
+				}
+				friendsScreen.showFriendsList(UiText.SELECT_FRIENDS_TO_CHALLENGE.getValue(), users ,new DataInputListener<User>(){
+					@Override
+					public String onData(User  user) {
+						// Fetch Profile or something
+						return null;
+					}
+				}, true , true);
+				insertScreen(friendsScreen);
+
+				return null;
+			}
+		});	
+		
+
+	}
+	
 }

@@ -145,6 +145,7 @@ public class SelectFriendsScreen extends Screen {
 			debugMessageWrapper.setVisibility(View.GONE);
 		}
 		listView.setAdapter(friendsAdapter);
+		navigateToAllFriends();
 	//	addListenersToQuizListItem(listView);
 	//	setListViewHeightBasedOnChildren(listView);
 		
@@ -154,7 +155,8 @@ public class SelectFriendsScreen extends Screen {
 	public void navigateToGooglePlusFriends(){
 		fbTab.setChecked(false);
 		allTab.setChecked(false);
-		if(gPlusTab.isChecked()) return;
+	//	if(gPlusTab.isChecked()) return;
+		viewFlipper.setDisplayedChild(2);
 		
 		if(getApp().getUser().gPlusUid==null || getApp().getUser().gPlusUid.trim().equalsIgnoreCase("")){
 			debugMessageWrapper.setVisibility(View.VISIBLE);
@@ -179,13 +181,25 @@ public class SelectFriendsScreen extends Screen {
 			getApp().getUiUtils().setTextViewHTML(debugMessage, UiText.INVITE_YOUR_FRIENDS.getValue(), null);
 			gPlusButton.setVisibility(View.GONE);
 			fbButton.setVisibility(View.GONE);
-		}			
+		}		
+		viewFlipper.setDisplayedChild(2);
 	}
 	
 	public void navigateToAllFriends(){
 		gPlusTab.setChecked(false);
 		fbTab.setChecked(false);
-		
+		if(friendsAdapter.getCount()==0){
+			debugMessageWrapper.setVisibility(View.VISIBLE);
+			debugMessage.setVisibility(View.VISIBLE);
+			debugMessage.setText(UiText.NO_FRIENDS_SEARCH_AND_SUBSCRIBE.getValue());
+			fbButton.setVisibility(View.GONE);
+			gPlusButton.setVisibility(View.GONE);
+			return;
+		}
+		else{
+			debugMessageWrapper.setVisibility(View.GONE);
+		}
+		viewFlipper.setDisplayedChild(0);
 	}
 	public void navigateToFbFriends(){
 		gPlusTab.setChecked(false);
@@ -215,6 +229,8 @@ public class SelectFriendsScreen extends Screen {
 			gPlusButton.setVisibility(View.GONE);
 			fbButton.setVisibility(View.GONE);
 		}				
+		viewFlipper.setDisplayedChild(1);
+
 	}
 	
 	@Override
