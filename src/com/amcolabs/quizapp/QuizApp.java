@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Stack;
 
+import android.app.Notification;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
@@ -35,6 +36,9 @@ import com.amcolabs.quizapp.databaseutils.DatabaseHelper;
 import com.amcolabs.quizapp.datalisteners.DataInputListener;
 import com.amcolabs.quizapp.gameutils.BadgeEvaluator;
 import com.amcolabs.quizapp.gameutils.GameUtils;
+import com.amcolabs.quizapp.notificationutils.NotificationReciever;
+import com.amcolabs.quizapp.notificationutils.NotificationReciever.NotificationPayload;
+import com.amcolabs.quizapp.notificationutils.NotificationReciever.NotificationType;
 import com.amcolabs.quizapp.popups.StaticPopupDialogBoxes;
 import com.amcolabs.quizapp.screens.BadgeScreenController;
 import com.amcolabs.quizapp.serverutils.ServerCalls;
@@ -85,6 +89,10 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 	public void setMainActivity(MainActivity mainActivity) {
 		ref = mainActivity;
 	}
+	public MainActivity getMainActivity() {
+		return ref;
+	}
+
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -93,12 +101,24 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 		((UserMainPageController)loadAppController(UserMainPageController.class))
 		.checkAndShowCategories();
 		return mainFrame;
-	}
+	} 
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		reinit(false);
+	}
+	
+	@Override
+	public void onPause() {
+		removeAllNotificationListeners();
+		super.onPause();
+	}
+	
+	@Override
+	public void onResume() {
+		addNotificationListeners();
+		super.onResume();
 	}
 	
 	public void reinit(boolean force) {
@@ -117,6 +137,26 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 		}
 	}
 
+
+	private void removeAllNotificationListeners() {
+		NotificationReciever.destroyAllListeners();
+	}
+	
+	private void addNotificationListeners() {
+		NotificationReciever.setListener(NotificationType.NOTIFICATION_GCM_CHALLENGE_NOTIFICATION, new DataInputListener<NotificationPayload>(){
+			@Override
+			public String onData(final NotificationPayload payload) {
+				getDataBaseHelper().getAllUsersByUid(Arrays.asList(payload.fromUser), new DataInputListener<Boolean>(){
+					@Override
+					public String onData(Boolean s) {
+						getStaticPopupDialogBoxes().challengeRequestedPopup(cachedUsers.get(payload.fromUser) , getDataBaseHelper().getQuizById(payload.quizId));
+						return super.onData(s); 
+					}
+				});
+				return null;
+			}
+		});
+	}
 
 	public GameUtils getGameUtils() {
 		return gameUtils;
@@ -514,5 +554,6 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 		destroyAllScreens();
 		super.onDestroy();
 	}
+
 	
 }

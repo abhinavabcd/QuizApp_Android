@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/blue_light"
+    android:orientation="vertical" >
+
+    <EditText
+        android:id="@+id/search_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:drawableLeft="@drawable/abc_ic_search"
+        android:hint="Search" />
+
+    <com.amcolabs.quizapp.widgets.GothamTextView
+        android:id="@+id/title_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_margin="10dp"
+        android:text="TextView"
+        android:textAllCaps="true"
+        android:textSize="20dp" />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:layout_weight="1.0" >
+
+        <LinearLayout
+            android:id="@+id/debug_message_wrapper"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:orientation="vertical" >
+
+            <com.amcolabs.quizapp.widgets.GothamTextView
+                android:id="@+id/debugMessage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="15dp"
+                android:text="No Friends , Search and Subscribe"
+                android:textSize="20sp" />
+
+            <com.google.android.gms.common.SignInButton
+                android:id="@+id/google_plus_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/normal_padding"
+                android:text="Login with Google Plus"
+                android:textColor="@android:color/white"
+                 />
+            
+         <Button
+            android:id="@+id/facebook_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/normal_padding"
+            android:background="#3b5998"
+            android:padding="@dimen/small_padding"
+            android:text="Login with Facebook"
+            android:textColor="@android:color/white" />
+            
+            
+        </LinearLayout>
+
+        <ViewFlipper
+            android:id="@+id/friends_views"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+
+            <ListView
+                android:id="@+id/listView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="20dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:listSelector="@android:color/transparent"
+                android:scrollbarAlwaysDrawVerticalTrack="false"
+                android:scrollbars="none" >
+            </ListView>
+
+            <ListView
+                android:id="@+id/fb_friends_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="20dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:listSelector="@android:color/transparent"
+                android:scrollbarAlwaysDrawVerticalTrack="false"
+                android:scrollbars="none" >
+            </ListView>
+
+            <ListView
+                android:id="@+id/gplus_friends_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="20dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:listSelector="@android:color/transparent"
+                android:scrollbarAlwaysDrawVerticalTrack="false"
+                android:scrollbars="none" >
+            </ListView>
+        </ViewFlipper>
+    </FrameLayout>
+
+    <LinearLayout
+        android:id="@+id/tabs_wrapper"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <ToggleButton
+            android:id="@+id/all_friends_tab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.0"
+            android:text="All"
+            android:textOff="All"
+            android:textOn="All" />
+
+        <ToggleButton
+            android:id="@+id/fb_friends_tab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.0"
+            android:text="Facebook"
+            android:textOff="Facebook"
+            android:textOn="Facebook" />
+
+        <ToggleButton
+            android:id="@+id/gplus_friends_tab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.0"
+            android:text="Google"
+            android:textOff="Google"
+            android:textOn="Google" />
+    </LinearLayout>
+
+</LinearLayout>

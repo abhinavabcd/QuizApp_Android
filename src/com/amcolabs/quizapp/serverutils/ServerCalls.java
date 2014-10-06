@@ -549,6 +549,7 @@ public class ServerCalls {
 
 
 	public void doGooglePlusLogin(final User user,final DataInputListener<User> loginListener) {
+		user.deviceId = quizApp.getUserDeviceManager().getDeviceId();
 		String url = getAServerAddr()+"/func?task=registerWithGoogle";
 		Map<String,String > params = new HashMap<String, String>();
 		params.put("userJson",quizApp.getConfig().getGson().toJson(user));
@@ -573,6 +574,7 @@ public class ServerCalls {
 
 
 	public void doFacebookLogin(final User user, final DataInputListener<User> loginListener) {
+		user.deviceId = quizApp.getUserDeviceManager().getDeviceId();
 		String url = getAServerAddr()+"/func?task=registerWithFacebook";
 		Map<String,String > params = new HashMap<String, String>();
 		params.put("userJson",quizApp.getConfig().getGson().toJson(user));

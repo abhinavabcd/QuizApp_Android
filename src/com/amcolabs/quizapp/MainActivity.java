@@ -11,6 +11,7 @@ import android.widget.LinearLayout;
 
 import com.amcolabs.quizapp.UserDeviceManager.AppRunningState;
 import com.amcolabs.quizapp.appcontrollers.UserMainPageController;
+import com.amcolabs.quizapp.datalisteners.DataInputListener2;
 import com.amcolabs.quizapp.uiutils.UiUtils.UiText;
 import com.amcolabs.quizapp.widgets.QuizAppMenuItem;
 
@@ -91,13 +92,20 @@ public class MainActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
     
-    @Override
+    DataInputListener2<Integer, Integer, Intent, Void> activityResultListener = null;
+    
+
+	public void setActivityResultListener(
+			DataInputListener2<Integer, Integer, Intent, Void> activityResultListener) {
+		this.activityResultListener = activityResultListener;
+	}
+
+	@Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         
-        Fragment fragment = getSupportFragmentManager().findFragmentByTag(UserMainPageController.SOCIAL_NETWORK_TAG);
-        if (fragment != null) { //google plus unnecessary thing
-            fragment.onActivityResult(requestCode, resultCode, data);
+        if(activityResultListener!=null){
+        	activityResultListener.onData(requestCode, resultCode, data);
         }
     }
     
@@ -119,6 +127,4 @@ public class MainActivity extends ActionBarActivity {
 		UserDeviceManager.setAppRunningState(AppRunningState.IS_DESTROYED);
 		super.onDestroy();
 	}
-
-
  }

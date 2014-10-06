@@ -18,20 +18,21 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.amcolabs.quizapp.QuizApp;
 import com.amcolabs.quizapp.R;
+import com.amcolabs.quizapp.User;
 import com.amcolabs.quizapp.UserDeviceManager;
 import com.amcolabs.quizapp.configuration.Config;
 import com.amcolabs.quizapp.databaseutils.Badge;
 import com.amcolabs.quizapp.databaseutils.OfflineChallenge;
+import com.amcolabs.quizapp.databaseutils.Quiz;
 import com.amcolabs.quizapp.datalisteners.DataInputListener;
 import com.amcolabs.quizapp.gameutils.GameUtils;
 import com.amcolabs.quizapp.uiutils.UiUtils;
 import com.amcolabs.quizapp.uiutils.UiUtils.UiText;
-import com.amcolabs.quizapp.widgets.GothamButtonView;
+import com.amcolabs.quizapp.widgets.CircularImageView;
 import com.amcolabs.quizapp.widgets.GothamTextView;
 import com.amcolabs.quizapp.widgets.QuizAppMenuItem;
 
@@ -336,5 +337,41 @@ public class StaticPopupDialogBoxes {
 		}
 		d.setContentView(badgeLayout);
 		d.show();
+	}
+
+	public void challengeRequestedPopup(User user, Quiz quiz) {
+		final Dialog d = new Dialog(quizApp.getContext(),R.style.CustomDialogTheme); 
+		 LinearLayout mainWrapper;
+		 CircularImageView titleImage;
+		 GothamTextView userWantsChalengeText;
+		 GothamTextView quizName;
+		 QuizAppMenuItem startChallenge;
+		 QuizAppMenuItem closeButton;
+		 
+		LinearLayout baseLayout = (LinearLayout)quizApp.getActivity().getLayoutInflater().inflate(R.layout.user_wants_a_game, null);
+
+		titleImage = (CircularImageView) baseLayout.findViewById(R.id.title_image);
+		userWantsChalengeText = (GothamTextView) baseLayout.findViewById(R.id.user_wants_chalenge_text);
+		quizName = (GothamTextView) baseLayout.findViewById(R.id.quiz_name);
+		startChallenge = (QuizAppMenuItem) baseLayout.findViewById(R.id.start_challenge);
+		closeButton = (QuizAppMenuItem) baseLayout.findViewById(R.id.close_button);
+		
+		quizApp.getUiUtils().loadImageIntoView(quizApp.getContext(), titleImage, user.pictureUrl, false);
+		quizName.setText(quiz.name);
+		userWantsChalengeText.setText(UiText.USER_WANTS_A_GAME.getValue(user.name));
+		startChallenge.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				
+			}
+		});
+		closeButton.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+			}
+		});
+		d.setContentView(baseLayout);
+		d.show();
+		
 	}
 }

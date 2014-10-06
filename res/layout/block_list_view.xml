@@ -23,17 +23,42 @@
         android:textAllCaps="true"
         android:textSize="20dp" />
 
-    <ListView
-        android:id="@+id/listView"
+    <FrameLayout
+        android:id="@+id/listview_wrapper_2"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="20dp"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
-        android:divider="#00000000"    
-        android:listSelector="@android:color/transparent"
-        android:scrollbarAlwaysDrawVerticalTrack="false"
-        android:scrollbars="none" />
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:layout_weight="1.0" >
+
+        <com.amcolabs.quizapp.widgets.GothamTextView
+            android:id="@+id/debugMessage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="15dp"
+            android:text=""
+            android:textSize="20sp"
+            android:visibility="gone" />
+
+        <LinearLayout
+            android:id="@+id/listview_wrapper_1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:orientation="vertical" >
+
+            <ListView
+                android:id="@+id/listView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:divider="#00000000"
+                android:listSelector="@android:color/transparent"
+                android:scrollbarAlwaysDrawVerticalTrack="false"
+                android:scrollbars="none" />
+        </LinearLayout>
+    </FrameLayout>
 
     <FrameLayout
         android:id="@+id/view_all_wrapper"
@@ -52,7 +77,6 @@
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:textColor="@color/white"
             android:textSize="20dp" />
-
     </FrameLayout>
 
 </LinearLayout>

@@ -202,6 +202,11 @@ public class HomeScreen extends Screen {
 		LinearLayout lView = (LinearLayout) getApp().getActivity().getLayoutInflater().inflate(R.layout.block_list_view, this, false);
 		lView.setBackgroundColor(getApp().getConfig().getAThemeColor());
 		EditText searchText = (EditText) lView.findViewById(R.id.search_text);
+		GothamTextView debugMessage = (GothamTextView) lView.findViewById(R.id.debugMessage);
+		if(feeds.size()==0){
+			debugMessage.setVisibility(View.VISIBLE);
+			debugMessage.setText(UiText.NO_FEED_AVAILABLE.getValue());
+		}
 		searchText.setVisibility(View.GONE);//hide search
 		GothamTextView titleView = (GothamTextView) lView.findViewById(R.id.title_text_view);
 		titleView.setText(title);

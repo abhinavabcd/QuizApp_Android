@@ -18,6 +18,7 @@ import com.amcolabs.quizapp.databaseutils.UserInboxMessage;
 import com.amcolabs.quizapp.datalisteners.DataInputListener;
 import com.amcolabs.quizapp.datalisteners.DataInputListener2;
 import com.amcolabs.quizapp.notificationutils.NotificationReciever;
+import com.amcolabs.quizapp.notificationutils.NotificationReciever.NotificationPayload;
 import com.amcolabs.quizapp.notificationutils.NotificationReciever.NotificationType;
 import com.amcolabs.quizapp.screens.ChatScreen;
 import com.amcolabs.quizapp.screens.UserProfileScreen;
@@ -27,7 +28,7 @@ public class ProfileAndChatController extends AppController {
 
 	private ChatScreen chatScreen;
 	private UserProfileScreen profileScreen;
-	private DataInputListener<Bundle> gcmListener;
+	private DataInputListener<NotificationPayload> gcmListener;
 	private List<ChatList> chatList;
 
 	public ProfileAndChatController(QuizApp quizApp) {
@@ -64,17 +65,17 @@ public class ProfileAndChatController extends AppController {
 			public String onData(List<UserInboxMessage> userMessages) {
 				if(chatScreen==null){
 					chatScreen = new ChatScreen(ProfileAndChatController.this, user2);
-					gcmListener = new DataInputListener<Bundle>(){
-						public String onData(Bundle extras) {
-							if(extras.getString(Config.KEY_GCM_FROM_USER).equalsIgnoreCase(user2.uid)){
-								 String messageText = extras.getString(Config.KEY_GCM_TEXT_MESSAGE);
+					gcmListener = new DataInputListener<NotificationPayload>(){
+						public String onData(NotificationPayload payload) {
+							if(payload.fromUser.equalsIgnoreCase(user2.uid)){
+								 String messageText = payload.textMessage;
 								chatScreen.addMessage(false, -1 ,messageText);
 								try {
 									quizApp.getDataBaseHelper().getChatListDao().createOrUpdate(new ChatList(user2.uid,messageText , Config.getCurrentTimeStamp(), 0));
 								} catch (SQLException e) {
 									// TODO Auto-generated catch block
 									e.printStackTrace();
-								}
+								} 
 							}
 							return null;
 						}

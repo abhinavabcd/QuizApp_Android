@@ -27,15 +27,14 @@
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:textSize="20dp" />
 
-        <Button
+        
+          <com.facebook.widget.LoginButton
             android:id="@+id/facebook_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/normal_padding"
-            android:background="#3b5998"
-            android:padding="@dimen/small_padding"
-            android:text="Login with Facebook"
-            android:textColor="@android:color/white" />
+            android:textColor="@android:color/white"
+ 		 />
 
         <com.google.android.gms.common.SignInButton
             android:id="@+id/google_plus_button"
