@@ -36,6 +36,7 @@
             android:layout_gravity="center"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
+            android:gravity="center_horizontal"
             android:orientation="vertical" >
 
             <com.amcolabs.quizapp.widgets.GothamTextView
@@ -44,7 +45,7 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="15dp"
                 android:text="No Friends , Search and Subscribe"
-                android:textSize="20sp" />
+                android:textSize="15sp" />
 
             <com.google.android.gms.common.SignInButton
                 android:id="@+id/google_plus_button"
@@ -55,15 +56,14 @@
                 android:textColor="@android:color/white"
                  />
             
-         <Button
-            android:id="@+id/facebook_button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/normal_padding"
-            android:background="#3b5998"
-            android:padding="@dimen/small_padding"
-            android:text="Login with Facebook"
-            android:textColor="@android:color/white" />
+	          <com.facebook.widget.LoginButton
+	            android:id="@+id/facebook_button"
+	            android:layout_width="match_parent"
+	            android:layout_height="wrap_content"
+	            android:layout_marginBottom="@dimen/normal_padding"
+	            android:textColor="@android:color/white"
+	 		 />
+            
             
             
         </LinearLayout>
@@ -142,6 +142,7 @@
             android:text="Google"
             android:textOff="Google"
             android:textOn="Google" />
+        
     </LinearLayout>
 
 </LinearLayout>
