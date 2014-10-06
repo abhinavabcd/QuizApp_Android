@@ -155,7 +155,8 @@ public class UiUtils {
 		CONENCT_WITH_FACEBOOK("Connect with Facebook"),
 		INVITE_YOUR_FB_FRIENDS("Invite Your <a href='facebookInvite/friends'>Facebook Friends</a>"), CONNECTING("Connectin to Google"),
 		USER_WANTS_A_GAME("%s want to have a game with you"), NO_FEED_AVAILABLE("No Recent Feed"),
-		FRIENDS("Friends"), NO_FRIENDS_SEARCH_AND_SUBSCRIBE("You have no Friends , Search and Subscribe");
+		FRIENDS("Friends"), NO_FRIENDS_SEARCH_AND_SUBSCRIBE("You have no Friends , Search and Subscribe"),
+		NO_RANKINGS_AVAILABLE("No Ranking Data Available");
 		
 		String value = null;
 		UiText(String value){

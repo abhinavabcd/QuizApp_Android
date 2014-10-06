@@ -3,6 +3,8 @@ package com.amcolabs.quizapp.screens;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.FrameLayout;
@@ -147,6 +149,7 @@ public class HomeScreen extends Screen {
 	double challengesClickTime = 0;
 	private OfflineChallengesAdapter offlineChallengeAdaptor;
 	private List<OfflineChallenge> offlineChallenges;
+	private List<Quiz> quizzes;
 	
 	public void addOfflineChallengesView(List<OfflineChallenge> offlineChallenges, boolean showViewMore , String text , boolean spanOnFullWidth) {
 		this.offlineChallenges = offlineChallenges;
@@ -231,32 +234,35 @@ public class HomeScreen extends Screen {
 	}
 	
 	
-	public void addUserQuizzesView(List<Quiz> quizzes, boolean showViewMore , String text) {
-		final QuizItemListAdapter quizAdaptor = new QuizItemListAdapter(getApp(),0,quizzes, new DataInputListener<Quiz>(){
-			@Override
-			public String onData(final Quiz quiz) {
-				getApp().getStaticPopupDialogBoxes().showQuizSelectMenu(new DataInputListener<Integer>(){
-					@Override
-					public String onData(Integer s) {
-						switch(s){
-							case 1: 
-								userMainController.onQuizPlaySelected(quiz);
-								break;
-							case 2:
-								break;
-							case 3://challenge
-								userMainController.onStartChallengeQuiz(quiz);
-								break;
-							case 4://scoreboard
-								userMainController.showLeaderBoards(quiz.quizId);
-								break;
-						}
-						return super.onData(s);
+	
+	DataInputListener<Quiz> quizClickListener = new DataInputListener<Quiz>(){
+		@Override
+		public String onData(final Quiz quiz) {
+			getApp().getStaticPopupDialogBoxes().showQuizSelectMenu(new DataInputListener<Integer>(){
+				@Override
+				public String onData(Integer s) {
+					switch(s){
+						case 1: 
+							userMainController.onQuizPlaySelected(quiz);
+							break;
+						case 2:
+							break;
+						case 3://challenge
+							userMainController.onStartChallengeQuiz(quiz);
+							break;
+						case 4://scoreboard
+							userMainController.showLeaderBoards(quiz.quizId);
+							break;
 					}
-				});
-				return null;
-			}
-		});
+					return super.onData(s);
+				}
+			});
+			return null;
+		}
+	};
+	
+	public void addUserQuizzesView(List<Quiz> quizzes, boolean showViewMore , String text) {
+		final QuizItemListAdapter quizAdaptor = new QuizItemListAdapter(getApp(),0,quizzes, quizClickListener);
 		quizAdaptorList.add(quizAdaptor);
 		LinearLayout lView = (LinearLayout) getApp().getActivity().getLayoutInflater().inflate(R.layout.block_list_view, this, false);
 		lView.setBackgroundColor(getApp().getConfig().getAThemeColor());
@@ -290,6 +296,37 @@ public class HomeScreen extends Screen {
 		addToScrollView(lView);
 	}
 	
+	
+	
+	public void addQuizzesToListFullView(String title ,List<Quiz> quizzes){
+		this.quizzes = quizzes;
+		final QuizItemListAdapter quizAdaptor = new QuizItemListAdapter(getApp(),0,quizzes, quizClickListener);
+		LinearLayout lView = (LinearLayout) getApp().getActivity().getLayoutInflater().inflate(R.layout.block_list_view, this, false);
+		EditText searchText = (EditText) lView.findViewById(R.id.search_text);
+		GothamTextView titleView = (GothamTextView) lView.findViewById(R.id.title_text_view);
+		titleView.setText(title);
+		searchText.addTextChangedListener(new TextWatcher() {
+		    @Override
+		    public void onTextChanged(CharSequence cs, int arg1, int arg2, int arg3) {
+		        quizAdaptor.getFilter().filter(cs);  
+		    }
+		     
+		    @Override
+		    public void beforeTextChanged(CharSequence arg0, int arg1, int arg2,
+		            int arg3) {
+		    }
+
+			@Override
+			public void afterTextChanged(Editable s) {
+			}
+	
+		});
+		((ListView) lView.findViewById(R.id.listView)).setAdapter(quizAdaptor);
+		FrameLayout viewMore = (FrameLayout) lView.findViewById(R.id.view_all_wrapper);
+		viewMore.setVisibility(View.GONE);
+		addView(lView);
+	}
+
 	@Override
 	public boolean showMenu() {
 		// TODO Auto-generated method stub

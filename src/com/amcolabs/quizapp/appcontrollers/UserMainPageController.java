@@ -23,6 +23,7 @@ import com.amcolabs.quizapp.databaseutils.Feed;
 import com.amcolabs.quizapp.databaseutils.UserInboxMessage;
 import com.amcolabs.quizapp.datalisteners.DataInputListener;
 import com.amcolabs.quizapp.datalisteners.DataInputListener2;
+import com.amcolabs.quizapp.gameutils.GameUtils;
 import com.amcolabs.quizapp.loginutils.FacebookLoginHelper;
 import com.amcolabs.quizapp.loginutils.GoogleLoginHelper;
 import com.amcolabs.quizapp.popups.StaticPopupDialogBoxes;
@@ -106,33 +107,9 @@ public class UserMainPageController  extends AppController{
 	
 	public void onCategorySelected(Category category){
 		clearScreen();
-		QuizzesScreen categoryQuizzesScreen = new QuizzesScreen(this);
+		HomeScreen categoryQuizzesScreen = new HomeScreen(this);
 		List<Quiz> quizzes = category.getQuizzes(quizApp);
-		categoryQuizzesScreen.addQuizzesToList(category.description , quizzes, new DataInputListener<Quiz>(){
-			@Override
-			public String onData(final Quiz quiz) {
-				quizApp.getStaticPopupDialogBoxes().showQuizSelectMenu(new DataInputListener<Integer>(){
-					@Override
-					public String onData(Integer s) {
-						switch(s){
-							case 1: 
-								onQuizPlaySelected(quiz);
-								break;
-							case 2:
-								break;
-							case 3://challenge
-								onStartChallengeQuiz(quiz);
-								break;
-							case 4://scoreboard
-								showLeaderBoards(quiz.quizId);
-								break;
-						}
-						return super.onData(s);
-					}
-				});
-				return null;
-			}
-		});
+		categoryQuizzesScreen.addQuizzesToListFullView(category.description , quizzes);
 		insertScreen(categoryQuizzesScreen);
 	}
 	
@@ -161,12 +138,16 @@ public class UserMainPageController  extends AppController{
 //		for(int i=0;i<10;i++){
 //			categories.add(Category.createDummy());
 //		}
-		List<Category> categories = quizApp.getDataBaseHelper().getCategories(5);
-		homeScreen.addCategoriesView(categories, categories.size()>4);
+		List<Category> categories = quizApp.getDataBaseHelper().getCategories(Config.MAX_CATEGORIES_ON_HOME_SCREEN);
+		if(categories.size()==Config.MAX_CATEGORIES_ON_HOME_SCREEN)
+			categories.remove(categories.size()-1);
+		homeScreen.addCategoriesView(categories, categories.size()>Config.MAX_CATEGORIES_ON_HOME_SCREEN-1);
 		 
 		
-		List<Quiz> quizzes = quizApp.getDataBaseHelper().getAllQuizzesOrderedByXP(5);
-		homeScreen.addUserQuizzesView(quizzes ,quizzes.size()>4 , UiText.USER_FAVOURITES.getValue());
+		List<Quiz> quizzes = quizApp.getDataBaseHelper().getAllQuizzesOrderedByXP(Config.MAX_QUIZZES_ON_HOME_SCREEN);
+		if(quizzes.size()==Config.MAX_QUIZZES_ON_HOME_SCREEN)
+			quizzes.remove(quizzes.size()-1);
+		homeScreen.addUserQuizzesView(quizzes ,quizzes.size()>Config.MAX_QUIZZES_ON_HOME_SCREEN , UiText.USER_FAVOURITES.getValue());
 		
 		List<Quiz> recentQuizzes = quizApp.getDataBaseHelper().getAllQuizzes(10, currentQuizMaxTimeStamp);
 		if(recentQuizzes!=null && recentQuizzes.size()>0)
@@ -313,11 +294,19 @@ public class UserMainPageController  extends AppController{
 		
 		
 	public void showAllCategories() {
-		
+		clearScreen();
+		HomeScreen allCategoriesScreen = new HomeScreen(this);
+		List<Category> categories = quizApp.getDataBaseHelper().getAllCategories();
+		allCategoriesScreen.addCategoriesView(categories, false);
+		insertScreen(allCategoriesScreen);
 	}
 
 	public void showAllUserQuizzes() {
-		
+		clearScreen();
+		HomeScreen allQuizzesScreen = new HomeScreen(this);
+		List<Quiz> quizzes = quizApp.getDataBaseHelper().getAllQuizzesOrderedByXP();
+		allQuizzesScreen.addUserQuizzesView(quizzes ,false , UiText.USER_FAVOURITES.getValue());
+		insertScreen(allQuizzesScreen);
 	}
 	
 	public void showLeaderBoards(String  quizId){
@@ -351,6 +340,7 @@ public class UserMainPageController  extends AppController{
 			@Override
 			public String onData(Boolean s) {
 				SelectFriendsScreen selectFriendsScreen = new SelectFriendsScreen(UserMainPageController.this);
+				selectFriendsScreen.doNotShowOnBackPress = true;
 				List<User> users = new ArrayList<User>();
 				for(String uid : user.getSubscribedTo()){
 					users.add(quizApp.cachedUsers.get(uid));

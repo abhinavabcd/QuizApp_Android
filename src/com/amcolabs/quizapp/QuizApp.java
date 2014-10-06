@@ -279,6 +279,7 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 			if(Config.getCurrentTimeStamp() - wantsToExitLastTimestamp<2){
 				getActivity().finish();//all controllers finished
 				wantsToExitLastTimestamp = Config.getCurrentTimeStamp();
+				return;
 			}
 
 			try{
@@ -436,7 +437,7 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 		if(currentActiveMenu==id){
 			screenStack.peek().refresh();
 			return;
-		}while(screenStack.size()>2){
+		}while(screenStack.size()>2){ //quietly remove old screen till the first screen
 			Screen s = screenStack.pop();
 			s.controller.decRefCount();
 			s.beforeRemove();

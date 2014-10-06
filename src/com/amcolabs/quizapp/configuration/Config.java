@@ -79,7 +79,8 @@ public class Config{
 	public static final double QUIZ_WIN_BONUS = 20;
 	public static final double QUIZ_LEVEL_UP_BONUS = 20;
 	public static final int PIE_CHART_MAX_FIELDS = 4;
-	
+	public static final int MAX_CATEGORIES_ON_HOME_SCREEN = 6;
+	public static final int MAX_QUIZZES_ON_HOME_SCREEN = 6;
 	
 	private QuizApp quizApp;
 	

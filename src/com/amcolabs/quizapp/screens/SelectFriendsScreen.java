@@ -22,6 +22,7 @@ import com.amcolabs.quizapp.appcontrollers.UserMainPageController;
 import com.amcolabs.quizapp.datalisteners.DataInputListener;
 import com.amcolabs.quizapp.uiutils.UiUtils.UiText;
 import com.amcolabs.quizapp.widgets.GothamTextView;
+import com.facebook.widget.LoginButton;
 import com.google.android.gms.common.SignInButton;
 
 public class SelectFriendsScreen extends Screen {
@@ -35,7 +36,7 @@ public class SelectFriendsScreen extends Screen {
 	private SelectFriendsListAdapter gPlusFriendsAdapter;
 	private SignInButton gPlusButton;
 	private GothamTextView debugMessage;
-	private Button fbButton;
+	private LoginButton fbButton;
 	private List<User> users;
 	private LinearLayout debugMessageWrapper;
 	private ListView listView;
@@ -46,6 +47,7 @@ public class SelectFriendsScreen extends Screen {
 	private ToggleButton fbTab;
 	private ToggleButton allTab;
 	private ViewFlipper viewFlipper;
+	public boolean doNotShowOnBackPress = false;
 	
 	public void showFriendsList(String titleText ,List<User> users , DataInputListener<User> onFriendSelectedListener, boolean searchOnServer, boolean enableSocial){
 		this.users = users;
@@ -84,7 +86,7 @@ public class SelectFriendsScreen extends Screen {
 		debugMessageWrapper = (LinearLayout)lView.findViewById(R.id.debug_message_wrapper);
 		debugMessage = (GothamTextView)lView.findViewById(R.id.debugMessage);
 		gPlusButton = (SignInButton)lView.findViewById(R.id.google_plus_button);
-		fbButton = (Button)lView.findViewById(R.id.facebook_button);
+		fbButton = (LoginButton)lView.findViewById(R.id.facebook_button);
 		tabsWrapper = (LinearLayout)lView.findViewById(R.id.tabs_wrapper);
 		if(enableSocial){
 			fbFriendsView.setAdapter(fbFriendsAdapter);
@@ -248,7 +250,7 @@ public class SelectFriendsScreen extends Screen {
 	@Override
 	public boolean showOnBackPressed() {
 		// TODO Auto-generated method stub
-		return false;
+		return !doNotShowOnBackPress;
 	}
 	
 }
