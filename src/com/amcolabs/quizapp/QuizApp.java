@@ -274,6 +274,7 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 	}
 	
 	private double wantsToExitLastTimestamp = 0;
+	private boolean shouldToggleNextScreen = false;
 	public void onBackPressed() {
 			currentActiveMenu = -1;
 			if(Config.getCurrentTimeStamp() - wantsToExitLastTimestamp<2){
@@ -306,7 +307,7 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 						.checkAndShowCategories();
 						return;
 					}
-					animateScreenIn(oldScreen);
+					animateScreenIn(oldScreen, FROM_LEFT);
 					oldScreen.refresh();
 				}
 			}
@@ -436,11 +437,19 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 		if(currentActiveMenu==id){
 			screenStack.peek().refresh();
 			return;
-		}while(screenStack.size()>1){
+		}while(screenStack.size()>2){
 			Screen s = screenStack.pop();
 			s.controller.decRefCount();
 			s.beforeRemove();
 		}
+//		if(screenStack.size()==2){
+//			Screen s = screenStack.pop();
+//			s.controller.decRefCount();
+//			s.beforeRemove();
+//			animateScreenRemove(s, TO_RIGHT, null);
+//		}
+		
+		
 		
 		switch(id){
 			case MENU_HOME:
@@ -494,8 +503,9 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 				new QuizAppMenuItem(this, QuizApp.MENU_BADGES, R.drawable.badges,UiText.BADGES.getValue()),
 				new QuizAppMenuItem(this, QuizApp.MENU_ALL_QUIZZES, R.drawable.all_quizzes, UiText.SHOW_QUIZZES.getValue()),
 //				new QuizAppMenuItem(this, QuizApp.MENU_MESSAGES, R.drawable.messages , UiText.SHOW_MESSAGES.getValue()),
-				new QuizAppMenuItem(this, QuizApp.MENU_CHATS, R.drawable.home , UiText.CHATS.getValue())
-				);
+				new QuizAppMenuItem(this, QuizApp.MENU_CHATS, R.drawable.home , UiText.CHATS.getValue()),
+				new QuizAppMenuItem(this, QuizApp.MENU_FRIENDS, R.drawable.home , UiText.FRIENDS.getValue())
+			);
 		
 		for(QuizAppMenuItem item : menuItems){
 			buttonsContainer.addView(item);

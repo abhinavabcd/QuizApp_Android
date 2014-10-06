@@ -154,7 +154,8 @@ public class UiUtils {
 		INVITE_YOUR_FRIENDS("Invite your <a href='googlePlusInvite/friends'>Google Friends</a>"),
 		CONENCT_WITH_FACEBOOK("Connect with Facebook"),
 		INVITE_YOUR_FB_FRIENDS("Invite Your <a href='facebookInvite/friends'>Facebook Friends</a>"), CONNECTING("Connectin to Google"),
-		USER_WANTS_A_GAME("%s want to have a game with you"), NO_FEED_AVAILABLE("No Recent Feed");
+		USER_WANTS_A_GAME("%s want to have a game with you"), NO_FEED_AVAILABLE("No Recent Feed"),
+		FRIENDS("Friends");
 		
 		String value = null;
 		UiText(String value){
