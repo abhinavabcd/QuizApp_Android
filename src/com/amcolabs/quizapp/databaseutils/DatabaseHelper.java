@@ -344,6 +344,13 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 			Log.e(DatabaseHelper.class.getName(), "Can't create database", e);
 			throw new RuntimeException(e);
 		}
+		try {
+			Log.i(DatabaseHelper.class.getName(), "onCreate");
+			TableUtils.createTableIfNotExists(connectionSource, LocalQuizHistory.class);
+		} catch (SQLException e) {
+			Log.e(DatabaseHelper.class.getName(), "Can't create database", e);
+			throw new RuntimeException(e);
+		}
 	}
 	
 	@Override
@@ -359,6 +366,8 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 			TableUtils.dropTable(connectionSource, Badge.class, true);
 			TableUtils.dropTable(connectionSource, QuizPlaySummary.class, true);
 			TableUtils.dropTable(connectionSource, OfflineChallenge.class, true);
+			TableUtils.dropTable(connectionSource, LocalQuizHistory.class, true);
+			
 			// after we drop the old databases, we create the new ones
 			onCreate(db, connectionSource);
 		} catch (SQLException e) {
