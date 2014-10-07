@@ -64,7 +64,7 @@
         </receiver>
 
         <service android:name="com.amcolabs.quizapp.GCMIntentService" />
-
+		<service android:name="MusicService" android:enabled="true"></service> 
         <receiver
             android:name="om.amcolabs.quizapp.notificationutils.NotificationReciever"
             android:enabled="true" >
