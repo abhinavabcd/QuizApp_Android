@@ -196,7 +196,7 @@ public class StaticPopupDialogBoxes {
 		d.show();
 	}
 	
-	class YesNoDialog extends Dialog{
+	public static class YesNoDialog extends Dialog{
 
 		private DataInputListener<Boolean> acceptListener;
 		public YesNoDialog(Context context , int resId, DataInputListener<Boolean> acceptListener) {
@@ -213,9 +213,8 @@ public class StaticPopupDialogBoxes {
 		}
 	}
 	
-	YesNoDialog yesNoPopup = null; 
-	public void yesOrNo(String text, String possitiveText , String negetiveText , final DataInputListener<Boolean> acceptListener) {
-		yesNoPopup = new YesNoDialog(quizApp.getContext(),R.style.CustomDialogTheme, acceptListener);
+	public YesNoDialog yesOrNo(String text, String possitiveText , String negetiveText , final DataInputListener<Boolean> acceptListener) {
+		final YesNoDialog yesNoPopup = new YesNoDialog(quizApp.getContext(),R.style.CustomDialogTheme, acceptListener);
 		LinearLayout dialogLayout = (LinearLayout)quizApp.getActivity().getLayoutInflater().inflate(R.layout.full_screen_dialog, null);
 		OnClickListener listener = new OnClickListener() {
 			@Override
@@ -245,13 +244,9 @@ public class StaticPopupDialogBoxes {
 		button2.setText(negetiveText);
 		yesNoPopup.setContentView(dialogLayout);
 		yesNoPopup.show();
+		return yesNoPopup;
 	}
 
-	public void removeRematchRequestScreen() {
-		if(yesNoPopup!=null)
-			yesNoPopup.dismissQuietly();
-		yesNoPopup= null;
-	}
 	public void showUnlockedBadge(Badge badge, boolean addDetail){
 		showUnlockedBadge(badge, addDetail, null);
 	}

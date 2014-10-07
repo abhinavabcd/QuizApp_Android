@@ -3,6 +3,7 @@ package com.amcolabs.quizapp.screens;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.graphics.drawable.ColorDrawable;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
@@ -214,6 +215,7 @@ public class HomeScreen extends Screen {
 		GothamTextView titleView = (GothamTextView) lView.findViewById(R.id.title_text_view);
 		titleView.setText(title);
 		ListView listView = (ListView) lView.findViewById(R.id.listView);
+		listView.setDivider(new ColorDrawable(this.getResources().getColor(R.color.translucent_black)));
 		LayoutParams lParams = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
 		lParams.setMargins(5, 0, 0, 5);
 		listView.setLayoutParams(lParams);

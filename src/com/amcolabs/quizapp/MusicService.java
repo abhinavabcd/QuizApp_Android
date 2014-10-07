@@ -193,7 +193,8 @@ public class MusicService extends Service
 	}
 
 	public void playAnother(int musicId) {
-		if(musicId==this.musicId){
+		if(musicId< 0 || musicId==this.musicId){
+			if(!mPlayer.isPlaying()) play(FADE_IN_DURATION);
 			return;
 		}
 		destroy();

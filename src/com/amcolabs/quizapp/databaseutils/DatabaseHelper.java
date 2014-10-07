@@ -643,9 +643,9 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
     			if(!quizApp.cachedUsers.containsKey(uid) && u!=null)
     				quizApp.cachedUsers.put( uid , u);
     			else if(quizApp.cachedUsers.containsKey(uid) && u==null){
-    				
+    				getUsersInfoDao().createOrUpdate(u);
     			}
-    			else{
+    			else if(!quizApp.cachedUsers.containsKey(uid)){
     				pendingList.add(uid);
     			}
 			} catch (SQLException e) {

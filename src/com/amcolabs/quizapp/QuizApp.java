@@ -116,12 +116,16 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 	@Override
 	public void onPause() {
 		removeAllNotificationListeners();
+		if(mServ!=null)
+			mServ.pause();
 		super.onPause();
 	}
 	
 	@Override
 	public void onResume() {
 		addNotificationListeners();
+		if(mServ!=null)
+			mServ.playAnother(-1);
 		super.onResume();
 	}
 	

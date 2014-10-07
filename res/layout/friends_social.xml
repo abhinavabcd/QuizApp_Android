@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:background="@color/blue_light"
     android:orientation="vertical" >
 
@@ -77,9 +77,9 @@
                 android:id="@+id/listView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="20dp"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"
+                android:layout_marginBottom="15dp"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp"
                 android:listSelector="@android:color/transparent"
                 android:scrollbarAlwaysDrawVerticalTrack="false"
                 android:scrollbars="none" >
@@ -89,9 +89,9 @@
                 android:id="@+id/fb_friends_list"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="20dp"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"
+                android:layout_marginBottom="15dp"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp"
                 android:listSelector="@android:color/transparent"
                 android:scrollbarAlwaysDrawVerticalTrack="false"
                 android:scrollbars="none" >
@@ -101,9 +101,9 @@
                 android:id="@+id/gplus_friends_list"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="20dp"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"
+                android:layout_marginBottom="15dp"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp"
                 android:listSelector="@android:color/transparent"
                 android:scrollbarAlwaysDrawVerticalTrack="false"
                 android:scrollbars="none" >

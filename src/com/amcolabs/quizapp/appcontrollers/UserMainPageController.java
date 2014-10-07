@@ -27,6 +27,7 @@ import com.amcolabs.quizapp.gameutils.GameUtils;
 import com.amcolabs.quizapp.loginutils.FacebookLoginHelper;
 import com.amcolabs.quizapp.loginutils.GoogleLoginHelper;
 import com.amcolabs.quizapp.popups.StaticPopupDialogBoxes;
+import com.amcolabs.quizapp.popups.StaticPopupDialogBoxes.YesNoDialog;
 import com.amcolabs.quizapp.screens.HomeScreen;
 import com.amcolabs.quizapp.screens.LeaderBoardScreen;
 import com.amcolabs.quizapp.screens.QuizzesScreen;
@@ -48,6 +49,7 @@ public class UserMainPageController  extends AppController{
     User user= null;
 	private double currentQuizMaxTimeStamp;
 	private int feedPreprocessedCount;
+	protected YesNoDialog updatesErrorDialog=null;
 	public UserMainPageController(QuizApp quizApp) {
 		super(quizApp);
 	}
@@ -78,8 +80,14 @@ public class UserMainPageController  extends AppController{
 					if(s){
 						showUserHomeScreen(feeds);
 					}
-					else{
-						quizApp.getStaticPopupDialogBoxes().yesOrNo(UiText.COULD_NOT_CONNECT.getValue(), null , UiText.OK.getValue(),null);
+					else{ // called twice , so need a flag here
+						if(updatesErrorDialog==null)
+							updatesErrorDialog = quizApp.getStaticPopupDialogBoxes().yesOrNo(UiText.COULD_NOT_CONNECT.getValue(), null , UiText.OK.getValue(),new DataInputListener<Boolean>(){
+								public String onData(Boolean s) {
+									updatesErrorDialog = null;
+									return null;
+								};
+							});
 					}
 					return;
 				}

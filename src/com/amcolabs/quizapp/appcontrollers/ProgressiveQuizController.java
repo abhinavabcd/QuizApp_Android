@@ -14,8 +14,6 @@ import android.os.Handler;
 
 import com.amcolabs.quizapp.AppController;
 import com.amcolabs.quizapp.QuizApp;
-import com.amcolabs.quizapp.R;
-import com.amcolabs.quizapp.Screen;
 import com.amcolabs.quizapp.User;
 import com.amcolabs.quizapp.configuration.Config;
 import com.amcolabs.quizapp.databaseutils.OfflineChallenge;
@@ -27,6 +25,7 @@ import com.amcolabs.quizapp.datalisteners.DataInputListener;
 import com.amcolabs.quizapp.datalisteners.DataInputListener2;
 import com.amcolabs.quizapp.gameutils.BadgeEvaluator;
 import com.amcolabs.quizapp.gameutils.GameUtils;
+import com.amcolabs.quizapp.popups.StaticPopupDialogBoxes.YesNoDialog;
 import com.amcolabs.quizapp.screens.ClashScreen;
 import com.amcolabs.quizapp.screens.QuestionScreen;
 import com.amcolabs.quizapp.screens.WinOrLoseScreen;
@@ -232,6 +231,7 @@ public class ProgressiveQuizController extends AppController{
 	private boolean waitingForRematch;
 	private int playType = RANDOM_USER_TYPE;
 	private DataInputListener2<ServerWebSocketConnection, Quiz, Void, Void> socketConnectedListener = null;
+	private YesNoDialog rematchDialog = null;
 	
 	private void setQuizMode(QuizMode mode){
 		quizMode = mode;
@@ -488,7 +488,7 @@ public class ProgressiveQuizController extends AppController{
 	    		break; 
 	    	case REMATCH_REQUEST: 
 	    		User user = quizApp.cachedUsers.get(response.payload);
-	    		quizApp.getStaticPopupDialogBoxes().yesOrNo(UiText.USER_WANTS_REMATCH.getValue(user.name), UiText.CHALLENGE.getValue() , UiText.EXIT.getValue() , new DataInputListener<Boolean>(){
+	    		rematchDialog  = quizApp.getStaticPopupDialogBoxes().yesOrNo(UiText.USER_WANTS_REMATCH.getValue(user.name), UiText.CHALLENGE.getValue() , UiText.EXIT.getValue() , new DataInputListener<Boolean>(){
 	    			@Override
 	    			public String onData(Boolean s) {
 	    				if(s){
@@ -502,7 +502,9 @@ public class ProgressiveQuizController extends AppController{
 	    		});
 	    		break;
 	    	case OK_START_REMATCH:
-	    		quizApp.getStaticPopupDialogBoxes().removeRematchRequestScreen();
+	    		if(rematchDialog!=null && rematchDialog.isShowing())
+	    			rematchDialog.dismissQuietly();
+//	    		quizApp.getStaticPopupDialogBoxes().removeRematchRequestScreen();
 	    		currentQuestions = quizApp.getConfig().getGson().fromJson(response.payload1, new TypeToken<List<Question>>(){}.getType());
 	    		showWaitingScreen(quiz);
 	    		showQuestionScreen(currentUsers);
@@ -854,6 +856,9 @@ public class ProgressiveQuizController extends AppController{
 	}
 
 	public void startNewChallenge(User otherUser){
+		if(otherUser==null){
+			otherUser = getOtherUser();
+		}
 		startNewChallenge(otherUser , quiz);
 	}
 	public void startNewChallenge(User otherUser , final Quiz quiz){
