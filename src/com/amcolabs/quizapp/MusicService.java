@@ -193,14 +193,16 @@ public class MusicService extends Service
 	}
 
 	public void playAnother(int musicId) {
+		if(musicId==this.musicId){
+			return;
+		}
 		destroy();
 		this.musicId = musicId;
 		create();
 		// start new 
 		Thread th = new Thread(new Runnable() {
 			@Override
-			public void run()
-			{
+			public void run(){
 				play(FADE_IN_DURATION);
 			}
 		});

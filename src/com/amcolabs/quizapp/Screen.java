@@ -62,4 +62,8 @@ public class Screen extends LinearLayout {
 
 	public void refresh() {
 	}
+
+
+	public void onRemovedFromScreen() { // called each time this is disposed from screen view
+	}
 }

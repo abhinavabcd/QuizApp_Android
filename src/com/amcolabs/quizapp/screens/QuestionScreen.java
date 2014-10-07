@@ -292,7 +292,12 @@ public class QuestionScreen extends Screen implements View.OnClickListener, Anim
 	@Override
 	public void beforeRemove() {
 		timerView.cleanUp();
-		getApp().changeMusic(-1);			
 		super.beforeRemove();
+	}
+	
+	@Override
+	public void onRemovedFromScreen() {
+		getApp().changeMusic(R.raw.app_music);			
+		super.onRemovedFromScreen();
 	}
 }

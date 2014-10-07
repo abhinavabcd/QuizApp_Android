@@ -189,6 +189,10 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 			Screen screen = disposeScreens.remove(0);
 			screen.controller.setActive(false);
 			mainFrame.removeView(screen);
+			//if(!screen.showOnBackPressed()){
+			screen.onRemovedFromScreen();
+			//screen.beforeRemove(); // you can call before remove directly here because , it wont be shown again 
+			//}
 		}
 	}
 	
@@ -309,6 +313,7 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 					Screen oldScreen = popCurrentScreen();
 					while(oldScreen!=null && !oldScreen.showOnBackPressed()){
 						oldScreen = popCurrentScreen();
+						oldScreen.beforeRemove(); // we are already calling it in dispose view , that would be more appropriate
 					}
 					
 					if(oldScreen==null){
