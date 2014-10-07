@@ -80,8 +80,8 @@ public class ServerResponse {
 				OK_START_REMATCH(12),
 				START_CHALLENGE_NOW (14),
 				OK_CHALLENGE_WITHOUT_OPPONENT(15),
-				OK_ACTIVATING_BOT(16);
-				
+				OK_ACTIVATING_BOT(16),
+				USER_HAS_LEFT_POOL(17);
 		private int value;
 		
 		private MessageType(int value){

@@ -44,19 +44,22 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 	// the DAO object we use to access the Category table
 	private Dao<Category, Integer> categoriesDao = null;
 	private Dao<Quiz, Integer> quizDao = null;
-	private Dao<QuizHistory, Integer> quizHistoryDao = null;
+	private Dao<QuizPlaySummary, Integer> quizSummaryDao = null;
 	private Dao<Badge, Integer> badgesDao = null;
 	private Dao<ChatList,Integer> chatListDao = null;
 	private Dao<UserPreferences, Integer> userPreferencesDao = null;
 	private Dao<User, Integer> usersInfo = null;
 	private Dao<OfflineChallenge, Integer> offlineChallengeDao = null;
+	private Dao<LocalQuizHistory, Integer> quizHistoryDao = null;
 	
 	private RuntimeExceptionDao<Category, Integer> categoriesRuntimeExceptionDao = null;
 	private RuntimeExceptionDao<Quiz, Integer> quizRuntimeExceptionDao = null;
-	private RuntimeExceptionDao<QuizHistory, Integer> quizHistoryRuntimeExceptionDao = null;
+	private RuntimeExceptionDao<QuizPlaySummary, Integer> quizSummaryRuntimeExceptionDao = null;
 	private RuntimeExceptionDao<Badge, Integer> badgesExceptionDao = null;
 	private RuntimeExceptionDao<UserPreferences, Integer> userPreferencesRuntimeDao;
 	private RuntimeExceptionDao<OfflineChallenge, Integer> offlineChallengeRuntimeExDao = null;
+	private RuntimeExceptionDao<LocalQuizHistory, Integer> quizHistoryExceptionDao = null;
+	
 	/* for each updater
 	 * upgrade() , getter , setters for runtime ex and dao s , create tables 
 	 */
@@ -138,9 +141,9 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 		return null;
     }
 
-    public List<QuizHistory> getAllQuizHistory(){
+    public List<QuizPlaySummary> getAllQuizSummary(){
 		try {
-			return getQuizHistoryDao().queryForAll();
+			return getQuizSummaryDao().queryForAll();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -329,7 +332,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 		}
 		try {
 			Log.i(DatabaseHelper.class.getName(), "onCreate");
-			TableUtils.createTableIfNotExists(connectionSource, QuizHistory.class);
+			TableUtils.createTableIfNotExists(connectionSource, QuizPlaySummary.class);
 		} catch (SQLException e) {
 			Log.e(DatabaseHelper.class.getName(), "Can't create database", e);
 			throw new RuntimeException(e);
@@ -354,7 +357,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 			TableUtils.dropTable(connectionSource, ChatList.class, true);
 			TableUtils.dropTable(connectionSource, User.class, true);
 			TableUtils.dropTable(connectionSource, Badge.class, true);
-			TableUtils.dropTable(connectionSource, QuizHistory.class, true);
+			TableUtils.dropTable(connectionSource, QuizPlaySummary.class, true);
 			TableUtils.dropTable(connectionSource, OfflineChallenge.class, true);
 			// after we drop the old databases, we create the new ones
 			onCreate(db, connectionSource);
@@ -374,6 +377,12 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 		}
 		return categoriesDao;
 	}
+	public Dao<LocalQuizHistory, Integer> getQuizHistoryDao() throws SQLException {
+		if (quizHistoryDao == null) {
+			quizHistoryDao = getDao(LocalQuizHistory.class);
+		}
+		return quizHistoryDao;
+	}
 	
 	public Dao<Quiz, Integer> getQuizDao() throws SQLException {
 		if (quizDao == null) {
@@ -382,11 +391,11 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 		return quizDao;
 	}
 	
-	public Dao<QuizHistory, Integer> getQuizHistoryDao() throws SQLException {
-		if (quizHistoryDao == null) {
-			quizHistoryDao = getDao(QuizHistory.class);
+	public Dao<QuizPlaySummary, Integer> getQuizSummaryDao() throws SQLException {
+		if (quizSummaryDao == null) {
+			quizSummaryDao = getDao(QuizPlaySummary.class);
 		}
-		return quizHistoryDao;
+		return quizSummaryDao;
 	}
 	
 	public Dao<Badge, Integer> getBadgesDao() throws SQLException {
@@ -437,6 +446,13 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 		return categoriesRuntimeExceptionDao;
 	}
 	
+	public RuntimeExceptionDao<LocalQuizHistory, Integer> getQuizHistoryExceptionDao() {
+		if (quizHistoryExceptionDao == null) {
+			quizHistoryExceptionDao = getRuntimeExceptionDao(LocalQuizHistory.class);
+		}
+		return quizHistoryExceptionDao;
+	}
+	
 	public RuntimeExceptionDao<Quiz, Integer> getQuizDataExceptionDao() {
 		if (quizRuntimeExceptionDao == null) {
 			quizRuntimeExceptionDao = getRuntimeExceptionDao(Quiz.class);
@@ -444,11 +460,11 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 		return quizRuntimeExceptionDao;
 	}
 	
-	public RuntimeExceptionDao<QuizHistory, Integer> getQuizHistoryDataExceptionDao() {
-		if (quizHistoryRuntimeExceptionDao == null) {
-			quizHistoryRuntimeExceptionDao = getRuntimeExceptionDao(QuizHistory.class);
+	public RuntimeExceptionDao<QuizPlaySummary, Integer> getQuizSummaryDataExceptionDao() {
+		if (quizSummaryRuntimeExceptionDao == null) {
+			quizSummaryRuntimeExceptionDao = getRuntimeExceptionDao(QuizPlaySummary.class);
 		}
-		return quizHistoryRuntimeExceptionDao;
+		return quizSummaryRuntimeExceptionDao;
 	}
 
 	public RuntimeExceptionDao<Badge, Integer> getBadgesExceptionDao() {
@@ -552,20 +568,20 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 		return tmp!=null?true:false;
     }
     
-    public QuizHistory getQuizHistoryById(String quizId){
+    public QuizPlaySummary getQuizSummaryByQuizId(String quizId){
 		try {
-			return getQuizHistoryDao().queryBuilder().where().eq("quizId", quizId).queryForFirst();
+			return getQuizSummaryDao().queryBuilder().where().eq("quizId", quizId).queryForFirst();
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
+			// TODO Auto-generated catch block 
 			e.printStackTrace();
 		}
 		return null;
     }
     
-    public boolean createOrUpdateQuizHistory(QuizHistory qHistory){
+    public boolean createOrUpdateQuizSummary(QuizPlaySummary qHistory){
     	CreateOrUpdateStatus tmp=null;
     	try {
-			tmp = getQuizHistoryDao().createOrUpdate(qHistory);
+			tmp = getQuizSummaryDao().createOrUpdate(qHistory);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

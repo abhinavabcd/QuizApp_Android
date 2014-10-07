@@ -19,7 +19,7 @@ import com.amcolabs.quizapp.databaseutils.OfflineChallenge;
 import com.amcolabs.quizapp.databaseutils.OfflineChallenge.ChallengeData;
 import com.amcolabs.quizapp.databaseutils.Question;
 import com.amcolabs.quizapp.databaseutils.Quiz;
-import com.amcolabs.quizapp.databaseutils.QuizHistory;
+import com.amcolabs.quizapp.databaseutils.QuizPlaySummary;
 import com.amcolabs.quizapp.datalisteners.DataInputListener;
 import com.amcolabs.quizapp.datalisteners.DataInputListener2;
 import com.amcolabs.quizapp.gameutils.BadgeEvaluator;
@@ -507,9 +507,12 @@ public class ProgressiveQuizController extends AppController{
 	    		showQuestionScreen(currentUsers);
 	    		break;
 	    	case LOAD_CHALLENGE_FROM_OFFLINE:
+	    	case USER_HAS_LEFT_POOL:
 	    		gracefullyCloseSocket();
+	    		quizApp.getStaticPopupDialogBoxes().yesOrNo(UiText.USER_HAS_LEFT.getValue(), null, UiText.OK.getValue(), null);
 	    		loadOfflineChallenge();
 	    		break;
+	    		
 //	    	case START_CHALLENGE_NOW:
 	    	case OK_CHALLENGE_WITHOUT_OPPONENT:
 				setQuizMode(QuizMode.CHALLENGE_MODE);
@@ -723,7 +726,7 @@ public class ProgressiveQuizController extends AppController{
 //		cPoints = quizApp.getUser().getPoints(quiz);
 //		uAns = userAnswersStack.get(quizApp.getUser().uid);
 //		newPoints = cPoints+uAns.get(uAns.size()-1).whatUserGot+(quizResult>0?Config.QUIZ_WIN_BONUS:0);
-		QuizHistory qHistory;
+		QuizPlaySummary qPlaySummary;
 		
 		newPoints = quizApp.getUser().getPoints(quiz.quizId);
 		uAns = userAnswersStack.get(quizApp.getUser().uid);
@@ -749,24 +752,24 @@ public class ProgressiveQuizController extends AppController{
 			// Always True
 			if(!isChallengedMode())
 				quizApp.getServerCalls().updateQuizWinStatus(quiz.quizId , quizResult , newPoints-oldPoints, getOtherUser());//server call 
-			qHistory = quizApp.getDataBaseHelper().getQuizHistoryById(quiz.quizId);
-			if(qHistory==null){
-				qHistory = new QuizHistory(quiz.quizId,quizResult,Config.getCurrentTimeStamp());
+			qPlaySummary = quizApp.getDataBaseHelper().getQuizSummaryByQuizId(quiz.quizId);
+			if(qPlaySummary==null){
+				qPlaySummary = new QuizPlaySummary(quiz.quizId,quizResult,Config.getCurrentTimeStamp());
 			}
 			else{
-				qHistory.setTotalCount(qHistory.getTotalCount()+1);
-				qHistory.setModifiedTimeStamp(Config.getCurrentTimeStamp());
+				qPlaySummary.setTotalCount(qPlaySummary.getTotalCount()+1);
+				qPlaySummary.setModifiedTimeStamp(Config.getCurrentTimeStamp());
 				if(quizResult<0){
-					qHistory.setLose(qHistory.getLose()+1);;
-					qHistory.setStreak(0);
+					qPlaySummary.setLose(qPlaySummary.getLose()+1);;
+					qPlaySummary.setStreak(0);
 				}
 				else if(quizResult==0){
-					qHistory.setTie(qHistory.getTie()+1);;
-					qHistory.setStreak(0);
+					qPlaySummary.setTie(qPlaySummary.getTie()+1);;
+					qPlaySummary.setStreak(0);
 				}
 				else if(quizResult>0){
-					qHistory.setWin(qHistory.getWin()+1);
-					qHistory.setStreak(qHistory.getStreak()+1);
+					qPlaySummary.setWin(qPlaySummary.getWin()+1);
+					qPlaySummary.setStreak(qPlaySummary.getStreak()+1);
 				} 
 			}
 			final boolean hasWon = quizResult==WON;
@@ -790,7 +793,7 @@ public class ProgressiveQuizController extends AppController{
 				});//server call
 				
 			}
-			quizApp.getDataBaseHelper().createOrUpdateQuizHistory(qHistory);
+			quizApp.getDataBaseHelper().createOrUpdateQuizSummary(qPlaySummary);
 			
 			BadgeEvaluator badgeEvaluator = quizApp.getBadgeEvaluator();
 			badgeEvaluator.evaluateBadges();
@@ -799,7 +802,7 @@ public class ProgressiveQuizController extends AppController{
 			quizResultScreen = new WinOrLoseScreen(this,currentUsers);
 		}
 		quizResultScreen.showResult(userAnswersStack,quizResult,GameUtils.didUserLevelUp(oldPoints,newPoints) , quizMode);
-		showScreen(quizResultScreen);
+		insertScreen(quizResultScreen);
 		
 	}
 

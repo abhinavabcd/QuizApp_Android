@@ -274,7 +274,12 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 	
 	private double wantsToExitLastTimestamp = 0;
 	private boolean shouldToggleNextScreen = false;
+
+	private int isScreenAnimationActive = 0;
 	public void onBackPressed() {
+			if(isScreenAnimationActive!=0){
+				return;
+			}
 			currentActiveMenu = -1;
 			if(Config.getCurrentTimeStamp() - wantsToExitLastTimestamp<2){
 				getActivity().finish();//all controllers finished
@@ -381,8 +386,10 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 		}
 	}
 
+	
 	@Override
 	public void onAnimationStart(Animation animation) {
+		++isScreenAnimationActive;
 	}
 	@Override
 	public void onAnimationEnd(Animation animation) {
@@ -396,6 +403,7 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 		catch(NoSuchElementException e){
 			e.printStackTrace();
 		}
+		--isScreenAnimationActive;
 	}
 
 	@Override
@@ -453,6 +461,12 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 		
 		switch(id){
 			case MENU_HOME:
+				if(screenStack.size()==2){ //remove all screens including the home screen
+					animateScreenRemove(screenStack.peek() , TO_RIGHT,null);//currenly appearing screen
+					animateScreenIn(screenStack.get(0),TO_RIGHT);
+				}
+				screenStack.get(0).refresh();
+				currentActiveMenu = MENU_HOME;
 				break;
 			case MENU_MESSAGES:
 				break;

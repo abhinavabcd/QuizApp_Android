@@ -26,6 +26,7 @@ public abstract class AppController {
 		return false;
 	}
 	
+	@Deprecated
 	public void showScreen(Screen newScreen){
 		clearScreen();
 		insertScreen(newScreen);

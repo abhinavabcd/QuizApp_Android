@@ -52,7 +52,7 @@ public class ProfileAndChatController extends AppController {
 			profileScreen = new UserProfileScreen(this);
 		}
 		profileScreen.showUser(user);
-		showScreen(profileScreen);
+		insertScreen(profileScreen);
 	}
 	
 	public void loadChatScreen(final User user2 , int toIndex , boolean isNewLoad){

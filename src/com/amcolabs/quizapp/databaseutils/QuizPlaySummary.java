@@ -6,7 +6,7 @@ import com.j256.ormlite.field.DatabaseField;
  * Intended to store Win Streaks and other quiz info. In Short, Summary.
  * @author Vinay
  */
-public class QuizHistory {
+public class QuizPlaySummary {
 	
 	@DatabaseField(id=true ,index=true, unique=true)
 	String quizId;
@@ -23,11 +23,11 @@ public class QuizHistory {
 	@DatabaseField
 	double modifiedTimestamp;
 	
-	public QuizHistory(){
+	public QuizPlaySummary(){
 		
 	}
 
-	public QuizHistory(String qId,int result,double tstamp){
+	public QuizPlaySummary(String qId,int result,double tstamp){
 		quizId = qId;
 		totalCount = 1;
 		modifiedTimestamp = tstamp;

@@ -26,6 +26,6 @@ public class BadgeScreenController extends AppController{
 	public void showBadgeScreen() {
 		clearScreen();
 		badgeScreen = new BadgeScreen(this);
-		showScreen(badgeScreen);
+		insertScreen(badgeScreen);
 	}
 }
