@@ -9,8 +9,10 @@ import android.graphics.Bitmap;
 import android.graphics.Matrix;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.widget.Toast;
 
 import com.amcolabs.quizapp.popups.StaticPopupDialogBoxes;
+import com.amcolabs.quizapp.uiutils.UiUtils.UiText;
 
 public class CommonFunctions {
 
@@ -46,7 +48,8 @@ public class CommonFunctions {
 		if (activeNetwork != null && activeNetwork.isAvailable()) {
 		    return true;
 		} else {
-			StaticPopupDialogBoxes.alertPrompt(currentActivity, "You are offline!", null);
+			Toast.makeText(currentActivity, UiText.COULD_NOT_CONNECT.getValue(), Toast.LENGTH_SHORT);
+			//StaticPopupDialogBoxes.alertPrompt(currentActivity, "You are offline!", null);
 		    return false;
 		} 
 	}

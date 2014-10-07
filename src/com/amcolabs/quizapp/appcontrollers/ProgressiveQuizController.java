@@ -9,10 +9,13 @@ import java.util.List;
 import java.util.Random;
 import java.util.Set;
 
+import android.media.MediaPlayer;
 import android.os.Handler;
 
 import com.amcolabs.quizapp.AppController;
 import com.amcolabs.quizapp.QuizApp;
+import com.amcolabs.quizapp.R;
+import com.amcolabs.quizapp.Screen;
 import com.amcolabs.quizapp.User;
 import com.amcolabs.quizapp.configuration.Config;
 import com.amcolabs.quizapp.databaseutils.OfflineChallenge;
@@ -85,8 +88,6 @@ public class ProgressiveQuizController extends AppController{
 	
 	public void initlializeQuiz(Quiz quiz) {
 		this.quiz = quiz;
-//		QuestionScreen questionScreen = new QuestionScreen(this);
-//		insertScreen(questionScreen);
 		showWaitingScreen(quiz);
 		playType = RANDOM_USER_TYPE;
 		noResponseFromServer = true;
@@ -129,13 +130,13 @@ public class ProgressiveQuizController extends AppController{
 
 		//pre download assets if ever its possible
 		questionScreen = new QuestionScreen(this);
-		questionScreen.showUserInfo(users,getMaxScore());
+		questionScreen.showUserInfo(users,getMaxScore()); //load user info
 		//animate TODO:
 		new Handler().postDelayed(new Runnable() {
 			
 			@Override
 			public void run() {
-				clearScreen();
+				clearScreen();//removes the clash screen
 				clashingScreen = null; // dispose of it 
 				insertScreen(questionScreen);
 			}
@@ -671,6 +672,8 @@ public class ProgressiveQuizController extends AppController{
 	final int SERVER_ERR = -2;
 	private ChallengeData challengeData;
 	private List<UserAnswer> userChallengeAnswers;
+	private MediaPlayer possitiveButtonSounds;
+	private MediaPlayer negetiveButtonSounds;
 	
 	public void loadResultScreen(Quiz quiz, ArrayList<User> currentUsers, HashMap<String, List<UserAnswer>> userAnswersStack) {
 		// TODO Auto-generated method stub

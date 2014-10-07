@@ -10,11 +10,14 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Stack;
 
+import android.content.ComponentName;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.IBinder;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -45,7 +48,7 @@ import com.amcolabs.quizapp.uiutils.UiUtils;
 import com.amcolabs.quizapp.uiutils.UiUtils.UiText;
 import com.amcolabs.quizapp.widgets.QuizAppMenuItem;
 
-public class QuizApp extends Fragment implements AnimationListener , IMenuClickListener {
+public class QuizApp extends Fragment implements AnimationListener , IMenuClickListener ,ServiceConnection {
 
 
 
@@ -106,6 +109,8 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		reinit(false);
+		// start music 
+		startMusicService();
 	}
 	
 	@Override
@@ -175,8 +180,8 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 			this.menu.setVisibility(View.GONE);
 		}
 		screen.controller.setActive(true);
-		if(screen.showOnBackPressed())
-			screenStack.push(screen);
+		//if(screen.showOnBackPressed())
+		screenStack.push(screen);
 	}
 
 	private void disposeViews() {
@@ -569,6 +574,10 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 //		};
 //	};
 
+	private MusicService mServ;
+
+	private boolean mIsBound;
+
 
 	public void cacheUsersList(ArrayList<User> users) {
 		for(User user : users){
@@ -580,7 +589,45 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 	public void onDestroy() {
 		destroyAllScreens();
 		super.onDestroy();
+		doUnbindMusicService();
 	}
 
 	
+	public void doBindMusicService(){
+			Intent intent = new Intent(this.getActivity(), MusicService.class);
+			intent.putExtra(Config.MUSIC_ID, R.raw.app_music);
+			getActivity().bindService(intent, this, Context.BIND_AUTO_CREATE);
+			mIsBound = true;
+	}
+	public void doUnbindMusicService(){
+		if(mIsBound){
+			getActivity().unbindService(this);
+			mIsBound = false;
+		}
+	}
+	
+	@Override
+	public void onServiceConnected(ComponentName name, IBinder binder){
+		mServ = ((MusicService.ServiceBinder) binder).getService();
+		mServ.start();
+	}
+	
+	@Override
+	public void onServiceDisconnected(ComponentName name){
+		mServ = null;
+	}
+	
+	private void startMusicService() {
+		Intent music = new Intent(getActivity(), MusicService.class);
+		getActivity().startService(music);
+		doBindMusicService();
+		
+	}
+	
+	public void changeMusic(int musicId){
+		if(musicId<0){
+			musicId = R.raw.app_music;
+		}
+		mServ.playAnother(musicId);
+	}
 }

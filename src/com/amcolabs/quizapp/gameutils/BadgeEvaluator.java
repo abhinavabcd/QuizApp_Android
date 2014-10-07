@@ -12,6 +12,7 @@ import com.amcolabs.quizapp.databaseutils.Quiz;
 import com.amcolabs.quizapp.databaseutils.QuizPlaySummary;
 import com.amcolabs.quizapp.datalisteners.DataInputListener;
 import com.amcolabs.quizapp.fileandcommonutils.CommonFunctions;
+import com.amcolabs.quizapp.uiutils.UiUtils.UiText;
 import com.google.gson.reflect.TypeToken;
 
 public class BadgeEvaluator {
@@ -168,7 +169,7 @@ public class BadgeEvaluator {
 					}
 					for(int i=0;i<unlockedBadges.size();i++){
 						quizApp.getUser().badges.add(unlockedBadges.get(i).getBadgeId());
-						quizApp.getStaticPopupDialogBoxes().showUnlockedBadge(unlockedBadges.get(i),true);
+						quizApp.getStaticPopupDialogBoxes().showUnlockedBadge(unlockedBadges.get(i),false, UiText.NEW_BADGE_UNLOCKED_MESSAGE.getValue());
 					}
 					if(!quizApp.getDataBaseHelper().removePendingState(unlockedBadges)){
 						System.out.println("DB update error");

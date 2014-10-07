@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 
 import android.graphics.Color;
+import android.media.MediaPlayer;
 import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -57,6 +58,9 @@ public class QuestionScreen extends Screen implements View.OnClickListener, Anim
 	private CircularCounter timerView;
 	private Animation animTextScale;
 	private DataInputListener<Boolean> onQuestionTimeEnd;
+	private MediaPlayer possitiveButtonSounds;
+	private MediaPlayer negetiveButtonSounds;
+
 	
 	
 	public QuestionScreen(AppController controller) {
@@ -99,6 +103,10 @@ public class QuestionScreen extends Screen implements View.OnClickListener, Anim
 			};
 		};
 		timerView.setTimerEndListener(onQuestionTimeEnd);
+		
+        possitiveButtonSounds = MediaPlayer.create(getApp().getActivity(),R.raw.tap_correct);
+        negetiveButtonSounds = MediaPlayer.create(getApp().getActivity(),R.raw.tap_wrong);
+        getApp().changeMusic(R.raw.quiz_play);
 		addView(fullQuestionLayout);
 	}
 	
@@ -225,9 +233,11 @@ public class QuestionScreen extends Screen implements View.OnClickListener, Anim
 		Boolean isAnwer = currentQuestion.isCorrectAnwer((String)b.getTag());
 		if(!isAnwer){
 			b.setTextColor(Color.RED);
+			negetiveButtonSounds.start();
 			highlightCorrectAnswer();
 		}
 		else{
+			possitiveButtonSounds.start();
 			b.setTextColor(Color.GREEN);
 		}
 		pQuizController.onOptionSelected(isAnwer,(String) b.getText() , currentQuestion);
@@ -282,6 +292,7 @@ public class QuestionScreen extends Screen implements View.OnClickListener, Anim
 	@Override
 	public void beforeRemove() {
 		timerView.cleanUp();
+		getApp().changeMusic(-1);			
 		super.beforeRemove();
 	}
 }

@@ -79,7 +79,7 @@ public class UserMainPageController  extends AppController{
 						showUserHomeScreen(feeds);
 					}
 					else{
-						StaticPopupDialogBoxes.alertPrompt(quizApp.getFragmentManager(), UiText.COULD_NOT_CONNECT.getValue(), null);
+						quizApp.getStaticPopupDialogBoxes().yesOrNo(UiText.COULD_NOT_CONNECT.getValue(), null , UiText.OK.getValue(),null);
 					}
 					return;
 				}

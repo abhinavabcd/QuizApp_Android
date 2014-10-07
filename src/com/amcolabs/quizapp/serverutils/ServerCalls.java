@@ -166,10 +166,10 @@ public class ServerCalls {
 		switch(code){
 			case FAILED:
 				if(serverErrorMsgShownCount++%2==0)
-					StaticPopupDialogBoxes.alertPrompt(quizApp.getFragmentManager(), UiText.SERVER_ERROR.getValue(), null);
+					quizApp.getStaticPopupDialogBoxes().yesOrNo(UiText.SERVER_ERROR.getValue(), UiText.OK.getValue(), null , null);
 				break;
 			case NOT_AUTHORIZED:
-				StaticPopupDialogBoxes.alertPrompt(quizApp.getFragmentManager(), UiText.NOT_AUTHORIZED.getValue(), new DataInputListener<Boolean>(){
+				quizApp.getStaticPopupDialogBoxes().yesOrNo(UiText.SERVER_ERROR.getValue(), UiText.OK.getValue(), null, new DataInputListener<Boolean>(){
 					@Override
 					public String onData(Boolean s) {
 						if(s){
