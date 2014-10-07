@@ -121,7 +121,7 @@ fieldName=data
 # --table-end--
 #################################
 # --table-start--
-dataClass=com.amcolabs.quizapp.databaseutils.QuizHistory
+dataClass=com.amcolabs.quizapp.databaseutils.QuizPlaySummary
 tableName=quizhistory
 # --table-fields-start--
 # --field-start--

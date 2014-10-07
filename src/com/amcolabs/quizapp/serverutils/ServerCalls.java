@@ -25,11 +25,11 @@ import com.amcolabs.quizapp.appcontrollers.ProgressiveQuizController.UserAnswer;
 import com.amcolabs.quizapp.configuration.Config;
 import com.amcolabs.quizapp.databaseutils.Badge;
 import com.amcolabs.quizapp.databaseutils.Category;
+import com.amcolabs.quizapp.databaseutils.Feed;
 import com.amcolabs.quizapp.databaseutils.OfflineChallenge;
 import com.amcolabs.quizapp.databaseutils.OfflineChallenge.ChallengeData;
 import com.amcolabs.quizapp.databaseutils.Question;
 import com.amcolabs.quizapp.databaseutils.Quiz;
-import com.amcolabs.quizapp.databaseutils.Feed;
 import com.amcolabs.quizapp.databaseutils.UserInboxMessage;
 import com.amcolabs.quizapp.datalisteners.DataInputListener;
 import com.amcolabs.quizapp.datalisteners.DataInputListener2;
@@ -781,15 +781,20 @@ public class ServerCalls {
 	}
 
 
-	public void updateQuizWinStatus(String quizId, int winStatus , double newPoints, User user) {
+	public void updateQuizWinStatus(String quizId, int winStatus , double newPoints, User user , List<UserAnswer> userAnswers1 , List<UserAnswer> userAnswers2) {
 		String url = getAServerAddr()+"/func?task=updateQuizWinStatus";
 		url+="&encodedKey="+quizApp.getUserDeviceManager().getEncodedKey();
 		url+="&quizId="+quizId;
 		url+="&xpPoints="+newPoints;
 		url+="&winStatus="+winStatus+"";
 		url+="&uid2="+user.uid;
+		HashMap<String, String> params = new HashMap<String, String>();
+		if(userAnswers1!=null)
+			params.put("userAnswers1",quizApp.getConfig().getGson().toJson(userAnswers1));
+		if(userAnswers2!=null)
+			params.put("userAnswers2",quizApp.getConfig().getGson().toJson(userAnswers2));
 		
-		makeServerCall(url, new ServerNotifier() {
+		makeServerPostCall(url, params , new ServerNotifier() {
 		@Override
 		public void onServerResponse(MessageType messageType,ServerResponse response) {
 			switch(messageType){

@@ -750,8 +750,12 @@ public class ProgressiveQuizController extends AppController{
 		else if(quizResult>=LOOSE){
 			
 			// Always True
-			if(!isChallengedMode())
-				quizApp.getServerCalls().updateQuizWinStatus(quiz.quizId , quizResult , newPoints-oldPoints, getOtherUser());//server call 
+			if(!isChallengedMode()){
+				if(shouldUserSendAllUserAnswers()) // this is a funny mechanism we choose  , where one user with higher preference sends the all the game details to the server , we keep this check on the server too
+					quizApp.getServerCalls().updateQuizWinStatus(quiz.quizId , quizResult , newPoints-oldPoints, getOtherUser() , userAnswersStack.get(quizApp.getUser().uid) , userAnswersStack.get(getOtherUser().uid));//server call 
+				else
+					quizApp.getServerCalls().updateQuizWinStatus(quiz.quizId , quizResult , newPoints-oldPoints, getOtherUser() ,null , null);//server call 
+			}
 			qPlaySummary = quizApp.getDataBaseHelper().getQuizSummaryByQuizId(quiz.quizId);
 			if(qPlaySummary==null){
 				qPlaySummary = new QuizPlaySummary(quiz.quizId,quizResult,Config.getCurrentTimeStamp());
@@ -805,6 +809,17 @@ public class ProgressiveQuizController extends AppController{
 		insertScreen(quizResultScreen);
 		
 	}
+
+	private boolean shouldUserSendAllUserAnswers() {
+		User currentUser = quizApp.getUser();
+		for(User user : getOtherUsers()){
+			if(!user.isBotUser()  && currentUser.uid.compareTo(user.uid)<=0){
+				return false;
+			}
+		}
+		return true;
+	}
+
 
 	private ArrayList<String> whoWon(HashMap<String, List<UserAnswer>> userAnswersStack){
 		List<UserAnswer> uAns;
