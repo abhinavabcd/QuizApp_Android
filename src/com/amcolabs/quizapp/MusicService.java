@@ -224,7 +224,7 @@ public class MusicService extends Service
 	    updateVolume(0);
 
 	    //Play music
-	    if(!mPlayer.isPlaying()) play(FADE_IN_DURATION);
+	    if(!mPlayer.isPlaying()) mPlayer.start();
 
 	    //Start increasing volume in increments
 	    if(fadeDuration > 0)
