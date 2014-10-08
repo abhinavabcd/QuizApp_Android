@@ -314,7 +314,7 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 				// TODO: overridePendingTransition(R.anim.in,R.anim.out); fragment activity to animate screen out and in
 				Screen screen = peekCurrentScreen();
 				if(screenStack.size()<2 || screen==null){
-					this.getActivity().moveTaskToBack(true);
+					this.getActivity().finish();
 					return;
 				}
 				Log.d(">>>screens<<<", screenStack.size()+" \n"+screenStack);
@@ -378,14 +378,14 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 	}
 
 	public void animateScreenIn(Screen newScreen, boolean fromRight){
-		synchronized (uiSync) {
+//		synchronized (uiSync) {
 			addView(newScreen);
 			loadingView.setVisibility(View.INVISIBLE);
 			if(fromRight)
 				newScreen.startAnimation(getUiUtils().getAnimationSlideInRight());
 			else
 				newScreen.startAnimation(getUiUtils().getAnimationSlideInLeft());		
-		}
+	//	}
 	}
 	
 	public void setAnimationListener(Animation a , AnimationListener l){
@@ -395,7 +395,7 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 			a.setAnimationListener(this);
 	}
 	public void animateScreenRemove(Screen currentScreen , boolean toLeft, AnimationListener endListener) {
-		synchronized (uiSync) {
+		//synchronized (uiSync) {
 			if(currentScreen==null) return;
 			loadingView.setVisibility(View.VISIBLE);//while removing
 			disposeScreens.add(currentScreen);
@@ -407,7 +407,7 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 				setAnimationListener(getUiUtils().getAnimationSlideOutRight(), endListener);
 				currentScreen.startAnimation(getUiUtils().getAnimationSlideOutRight());
 			}
-		}
+//		}
 	}
 
 	
@@ -472,11 +472,15 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 		if(currentActiveMenu==id){
 			screenStack.peek().refresh();
 			return;
-		}while(screenStack.size()>2){ //quietly remove old screen till the first screen
-			Screen s = screenStack.pop();
+		}
+		Screen s;
+		Screen lastScreen = s = screenStack.pop();
+		while(screenStack.size()>1){ //quietly remove old screen till the first screen
+			s = screenStack.pop();
 			s.controller.decRefCount();
 			s.beforeRemove();
 		}
+		screenStack.push(lastScreen);
 //		if(screenStack.size()==2){
 //			Screen s = screenStack.pop();
 //			s.controller.decRefCount();

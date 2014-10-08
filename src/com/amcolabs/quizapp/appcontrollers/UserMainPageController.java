@@ -386,4 +386,10 @@ public class UserMainPageController  extends AppController{
 		homeScreen.addOfflineChallengesView(quizApp.getDataBaseHelper().getPendingRecentOfflineChallenges(-1), false, UiText.OFFLINE_CHALLENGES.getValue(), false);
 		insertScreen(homeScreen);
 	}
+
+	public void showUserActivity() {
+		// TODO Auto-generated method stub
+		
+	}
+	
 }
