@@ -420,7 +420,7 @@ public class WinOrLoseScreen extends Screen{
 	}
 	@Override
 	public boolean showOnBackPressed() {
-		return false;
+		return true;
 	}
 	
 }
