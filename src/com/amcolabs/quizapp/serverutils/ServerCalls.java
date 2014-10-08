@@ -392,7 +392,7 @@ public class ServerCalls {
 	}		
 	
 	public void getUserByUid(String uid , final DataInputListener<User> dataInputListener) {
-		String url = getAServerAddr()+"/func?task=getUserById";
+		String url = getAServerAddr()+"/func?task=getUserByUid";
 		url+="&encodedKey="+quizApp.getUserDeviceManager().getEncodedKey();
 		url+="&uid="+uid;
 		makeServerCall(url,new ServerNotifier() {			

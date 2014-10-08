@@ -158,7 +158,7 @@ public class ProfileAndChatController extends AppController {
 				SelectFriendsScreen friendsScreen = new SelectFriendsScreen(ProfileAndChatController.this);
 				ArrayList<User> users = new ArrayList<User>();
 				for(String uid: quizApp.getUser().getSubscribedTo()){
-					if(quizApp.cachedUsers.containsKey(uid)){
+					if(quizApp.cachedUsers.containsKey(uid)){//if exists in db
 						users.add(quizApp.cachedUsers.get(uid));
 					}
 				}

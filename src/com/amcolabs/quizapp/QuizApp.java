@@ -456,6 +456,9 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
     int currentActiveMenu = -1;
 	public void onMenuClick(int id) {
 		if(isRapidReClick()) return;
+		if(isScreenAnimationActive!=0){
+			return;
+		}
 		if(currentActiveMenu==id){
 			screenStack.peek().refresh();
 			return;

@@ -157,6 +157,7 @@ public class SelectFriendsScreen extends Screen {
 	public void navigateToGooglePlusFriends(){
 		fbTab.setChecked(false);
 		allTab.setChecked(false);
+		gPlusTab.setChecked(true);
 	//	if(gPlusTab.isChecked()) return;
 		viewFlipper.setDisplayedChild(2);
 		
@@ -184,12 +185,13 @@ public class SelectFriendsScreen extends Screen {
 			gPlusButton.setVisibility(View.GONE);
 			fbButton.setVisibility(View.GONE);
 		}		
-		viewFlipper.setDisplayedChild(2);
 	}
 	
 	public void navigateToAllFriends(){
 		gPlusTab.setChecked(false);
 		fbTab.setChecked(false);
+		allTab.setChecked(true);
+		viewFlipper.setDisplayedChild(0);
 		if(friendsAdapter.getCount()==0){
 			debugMessageWrapper.setVisibility(View.VISIBLE);
 			debugMessage.setVisibility(View.VISIBLE);
@@ -201,12 +203,12 @@ public class SelectFriendsScreen extends Screen {
 		else{
 			debugMessageWrapper.setVisibility(View.GONE);
 		}
-		viewFlipper.setDisplayedChild(0);
 	}
 	public void navigateToFbFriends(){
 		gPlusTab.setChecked(false);
 		allTab.setChecked(false);
-
+		fbTab.setChecked(true);
+		viewFlipper.setDisplayedChild(1);
 		if(getApp().getUser().fbUid==null || getApp().getUser().fbUid.trim().equalsIgnoreCase("")){
 			debugMessageWrapper.setVisibility(View.VISIBLE);
 			debugMessage.setVisibility(View.VISIBLE);
@@ -214,7 +216,7 @@ public class SelectFriendsScreen extends Screen {
 			fbButton.setVisibility(View.VISIBLE);
 			gPlusButton.setVisibility(View.GONE);
 			return;
-		}
+		}	
 		ArrayList<User> friendsConnectedToGoogle = new ArrayList<User>();
 		for(User user :users){
 			if(user.fbUid!=null){
@@ -231,7 +233,6 @@ public class SelectFriendsScreen extends Screen {
 			gPlusButton.setVisibility(View.GONE);
 			fbButton.setVisibility(View.GONE);
 		}				
-		viewFlipper.setDisplayedChild(1);
 
 	}
 	

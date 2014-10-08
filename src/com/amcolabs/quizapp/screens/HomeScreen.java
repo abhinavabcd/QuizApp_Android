@@ -216,6 +216,8 @@ public class HomeScreen extends Screen {
 		titleView.setText(title);
 		ListView listView = (ListView) lView.findViewById(R.id.listView);
 		listView.setDivider(new ColorDrawable(this.getResources().getColor(R.color.translucent_black)));
+		listView.setDividerHeight(1);
+
 		LayoutParams lParams = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
 		lParams.setMargins(5, 0, 0, 5);
 		listView.setLayoutParams(lParams);
