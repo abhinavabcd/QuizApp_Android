@@ -184,8 +184,8 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 			this.menu.setVisibility(View.GONE);
 		}
 		screen.controller.setActive(true);
-		//if(screen.showOnBackPressed())
-		screenStack.push(screen);
+		if(screen.shouldAddtoScreenStack())
+			screenStack.push(screen);
 	}
 
 	private void disposeViews() {

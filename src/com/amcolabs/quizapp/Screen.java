@@ -51,7 +51,10 @@ public class Screen extends LinearLayout {
 		
 	}
 	
-	public boolean showOnBackPressed(){
+	public boolean shouldAddtoScreenStack(){
+		return true;
+	}
+	public boolean showOnBackPressed(){ //should show on back press
 		return true;
 	}
 	
@@ -60,7 +63,7 @@ public class Screen extends LinearLayout {
 	}
 
 
-	public void refresh() {
+	public void refresh() { //called when added back to screen
 	}
 
 

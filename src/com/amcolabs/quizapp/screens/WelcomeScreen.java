@@ -46,6 +46,11 @@ public class WelcomeScreen extends Screen {
 	}
 	@Override
 	public boolean showOnBackPressed() {
+		return false;
+	}
+	
+	@Override
+	public boolean shouldAddtoScreenStack() {
 		// TODO Auto-generated method stub
 		return false;
 	}
