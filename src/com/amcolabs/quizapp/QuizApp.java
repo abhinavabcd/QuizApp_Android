@@ -184,7 +184,7 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 			this.menu.setVisibility(View.GONE);
 		}
 		screen.controller.setActive(true);
-		if(screen.shouldAddtoScreenStack())
+	//	if(screen.shouldAddtoScreenStack())
 			screenStack.push(screen);
 	}
 
@@ -246,6 +246,16 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 	}
 
 	public void setUser(User user) {
+		if(user==null){
+			getStaticPopupDialogBoxes().yesOrNo(UiText.SERVER_ERROR.getValue(), UiText.OK.getValue(), UiText.CANCEL.getValue() , new DataInputListener<Boolean>(){
+					@Override
+					public String onData(Boolean s) {
+						getActivity().finish();
+						return super.onData(s);
+					}
+			});
+			return;
+		}
 		currentUser = user;
 		cachedUsers.put(user.uid , user);
 	}
