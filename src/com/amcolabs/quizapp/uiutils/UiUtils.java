@@ -151,7 +151,15 @@ public class UiUtils {
 		START("Start"), 
 		CANCEL("Cancel"), COMPLETED_CHALLENGE("Challenge Completed"), 
 		YOU_WON_LOOSE_CHALLENGE_FEED("%s! , here are the <a href='offlineChallengeId/%s'>Challenge Details</a>"),
-		USER_FEED("User Feed");
+		USER_FEED("User Feed"),
+		FRIEND_USER_STARTED_QUIZAPP("You Friend %s started using quizApp <a href='userProfile/%s'>view profile</a>"), 
+		CONENCT_WITH_GOOGLE("Connect With Google"),
+		INVITE_YOUR_FRIENDS("Invite your <a href='googlePlusInvite/friends'>Google Friends</a>"),
+		CONENCT_WITH_FACEBOOK("Connect with Facebook"),
+		INVITE_YOUR_FB_FRIENDS("Invite Your <a href='facebookInvite/friends'>Facebook Friends</a>"), CONNECTING("Connectin to Google"),
+		USER_WANTS_A_GAME("%s want to have a game with you"), NO_FEED_AVAILABLE("No Recent Feed"),
+		FRIENDS("Friends"), NO_FRIENDS_SEARCH_AND_SUBSCRIBE("You have no Friends , Search and Subscribe"),
+		NO_RANKINGS_AVAILABLE("No Ranking Data Available");
 		
 		String value = null;
 		UiText(String value){
@@ -524,11 +532,20 @@ public class UiUtils {
 	    int flags = strBuilder.getSpanFlags(span);
 	    ClickableSpan clickable = new ClickableSpan() {
 	          public void onClick(View view) {
-	        	  clickListener.onData(span.getURL());
+	        	  if(clickListener!=null)
+	        		  clickListener.onData(span.getURL());
+	        	  else{
+	        		  genericLinkClickListener(span.getURL());
+	        	  }
 	          }
 	    };
 	    strBuilder.setSpan(clickable, start, end, flags);
 	    strBuilder.removeSpan(span);
+	}
+
+	protected void genericLinkClickListener(String url) {
+		// TODO Auto-generated method stub
+		
 	}
 
 	public void setTextViewHTML(TextView text, String html , DataInputListener<String> clickListener){

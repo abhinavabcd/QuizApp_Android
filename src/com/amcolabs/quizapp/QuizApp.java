@@ -10,11 +10,14 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Stack;
 
+import android.content.ComponentName;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.IBinder;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -35,6 +38,9 @@ import com.amcolabs.quizapp.databaseutils.DatabaseHelper;
 import com.amcolabs.quizapp.datalisteners.DataInputListener;
 import com.amcolabs.quizapp.gameutils.BadgeEvaluator;
 import com.amcolabs.quizapp.gameutils.GameUtils;
+import com.amcolabs.quizapp.notificationutils.NotificationReciever;
+import com.amcolabs.quizapp.notificationutils.NotificationReciever.NotificationPayload;
+import com.amcolabs.quizapp.notificationutils.NotificationReciever.NotificationType;
 import com.amcolabs.quizapp.popups.StaticPopupDialogBoxes;
 import com.amcolabs.quizapp.screens.BadgeScreenController;
 import com.amcolabs.quizapp.serverutils.ServerCalls;
@@ -42,7 +48,7 @@ import com.amcolabs.quizapp.uiutils.UiUtils;
 import com.amcolabs.quizapp.uiutils.UiUtils.UiText;
 import com.amcolabs.quizapp.widgets.QuizAppMenuItem;
 
-public class QuizApp extends Fragment implements AnimationListener , IMenuClickListener {
+public class QuizApp extends Fragment implements AnimationListener , IMenuClickListener ,ServiceConnection {
 
 
 
@@ -85,6 +91,10 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 	public void setMainActivity(MainActivity mainActivity) {
 		ref = mainActivity;
 	}
+	public MainActivity getMainActivity() {
+		return ref;
+	}
+
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -93,12 +103,30 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 		((UserMainPageController)loadAppController(UserMainPageController.class))
 		.checkAndShowCategories();
 		return mainFrame;
-	}
+	} 
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		reinit(false);
+		// start music 
+		startMusicService();
+	}
+	
+	@Override
+	public void onPause() {
+		removeAllNotificationListeners();
+		if(mServ!=null)
+			mServ.pause();
+		super.onPause();
+	}
+	
+	@Override
+	public void onResume() {
+		addNotificationListeners();
+		if(mServ!=null)
+			mServ.playAnother(-1);
+		super.onResume();
 	}
 	
 	public void reinit(boolean force) {
@@ -118,6 +146,26 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 	}
 
 
+	private void removeAllNotificationListeners() {
+		NotificationReciever.destroyAllListeners();
+	}
+	
+	private void addNotificationListeners() {
+		NotificationReciever.setListener(NotificationType.NOTIFICATION_GCM_CHALLENGE_NOTIFICATION, new DataInputListener<NotificationPayload>(){
+			@Override
+			public String onData(final NotificationPayload payload) {
+				getDataBaseHelper().getAllUsersByUid(Arrays.asList(payload.fromUser), new DataInputListener<Boolean>(){
+					@Override
+					public String onData(Boolean s) {
+						getStaticPopupDialogBoxes().challengeRequestedPopup(cachedUsers.get(payload.fromUser) , getDataBaseHelper().getQuizById(payload.quizId));
+						return super.onData(s); 
+					}
+				});
+				return null;
+			}
+		});
+	}
+
 	public GameUtils getGameUtils() {
 		return gameUtils;
 	}
@@ -136,7 +184,7 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 			this.menu.setVisibility(View.GONE);
 		}
 		screen.controller.setActive(true);
-		if(screen.showOnBackPressed())
+		if(screen.shouldAddtoScreenStack())
 			screenStack.push(screen);
 	}
 
@@ -145,6 +193,10 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 			Screen screen = disposeScreens.remove(0);
 			screen.controller.setActive(false);
 			mainFrame.removeView(screen);
+			//if(!screen.showOnBackPressed()){
+			screen.onRemovedFromScreen();
+			//screen.beforeRemove(); // you can call before remove directly here because , it wont be shown again 
+			//}
 		}
 	}
 	
@@ -234,11 +286,18 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 	}
 	
 	private double wantsToExitLastTimestamp = 0;
+	private boolean shouldToggleNextScreen = false;
+
+	private int isScreenAnimationActive = 0;
 	public void onBackPressed() {
+			if(isScreenAnimationActive!=0){
+				return;
+			}
 			currentActiveMenu = -1;
 			if(Config.getCurrentTimeStamp() - wantsToExitLastTimestamp<2){
 				getActivity().finish();//all controllers finished
 				wantsToExitLastTimestamp = Config.getCurrentTimeStamp();
+				return;
 			}
 
 			try{
@@ -258,6 +317,7 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 					Screen oldScreen = popCurrentScreen();
 					while(oldScreen!=null && !oldScreen.showOnBackPressed()){
 						oldScreen = popCurrentScreen();
+						oldScreen.beforeRemove(); // we are already calling it in dispose view , that would be more appropriate
 					}
 					
 					if(oldScreen==null){
@@ -266,7 +326,7 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 						.checkAndShowCategories();
 						return;
 					}
-					animateScreenIn(oldScreen);
+					animateScreenIn(oldScreen, FROM_LEFT);
 					oldScreen.refresh();
 				}
 			}
@@ -340,8 +400,10 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 		}
 	}
 
+	
 	@Override
 	public void onAnimationStart(Animation animation) {
+		++isScreenAnimationActive;
 	}
 	@Override
 	public void onAnimationEnd(Animation animation) {
@@ -355,6 +417,7 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 		catch(NoSuchElementException e){
 			e.printStackTrace();
 		}
+		--isScreenAnimationActive;
 	}
 
 	@Override
@@ -393,17 +456,34 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
     int currentActiveMenu = -1;
 	public void onMenuClick(int id) {
 		if(isRapidReClick()) return;
+		if(isScreenAnimationActive!=0){
+			return;
+		}
 		if(currentActiveMenu==id){
 			screenStack.peek().refresh();
 			return;
-		}while(screenStack.size()>1){
+		}while(screenStack.size()>2){ //quietly remove old screen till the first screen
 			Screen s = screenStack.pop();
 			s.controller.decRefCount();
 			s.beforeRemove();
 		}
+//		if(screenStack.size()==2){
+//			Screen s = screenStack.pop();
+//			s.controller.decRefCount();
+//			s.beforeRemove();
+//			animateScreenRemove(s, TO_RIGHT, null);
+//		}
+		
+		
 		
 		switch(id){
 			case MENU_HOME:
+				if(screenStack.size()==2){ //remove all screens including the home screen
+					animateScreenRemove(screenStack.peek() , TO_RIGHT,null);//currenly appearing screen
+					animateScreenIn(screenStack.get(0),TO_RIGHT);
+				}
+				screenStack.get(0).refresh();
+				currentActiveMenu = MENU_HOME;
 				break;
 			case MENU_MESSAGES:
 				break;
@@ -415,6 +495,9 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 				currentActiveMenu = MENU_BADGES;
 				break;
 			case MENU_FRIENDS:
+				ProfileAndChatController profileController =( ProfileAndChatController)loadAppController(ProfileAndChatController.class);
+				profileController.showFriendsList();
+				currentActiveMenu = MENU_FRIENDS;
 				break;
 			case MENU_CHATS:
 				ProfileAndChatController pcontroller = (ProfileAndChatController) loadAppController(ProfileAndChatController.class);
@@ -454,8 +537,9 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 				new QuizAppMenuItem(this, QuizApp.MENU_BADGES, R.drawable.badges,UiText.BADGES.getValue()),
 				new QuizAppMenuItem(this, QuizApp.MENU_ALL_QUIZZES, R.drawable.all_quizzes, UiText.SHOW_QUIZZES.getValue()),
 //				new QuizAppMenuItem(this, QuizApp.MENU_MESSAGES, R.drawable.messages , UiText.SHOW_MESSAGES.getValue()),
-				new QuizAppMenuItem(this, QuizApp.MENU_CHATS, R.drawable.home , UiText.CHATS.getValue())
-				);
+				new QuizAppMenuItem(this, QuizApp.MENU_CHATS, R.drawable.home , UiText.CHATS.getValue()),
+				new QuizAppMenuItem(this, QuizApp.MENU_FRIENDS, R.drawable.home , UiText.FRIENDS.getValue())
+			);
 		
 		for(QuizAppMenuItem item : menuItems){
 			buttonsContainer.addView(item);
@@ -502,6 +586,10 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 //		};
 //	};
 
+	private MusicService mServ;
+
+	private boolean mIsBound;
+
 
 	public void cacheUsersList(ArrayList<User> users) {
 		for(User user : users){
@@ -513,6 +601,45 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 	public void onDestroy() {
 		destroyAllScreens();
 		super.onDestroy();
+		doUnbindMusicService();
+	}
+
+	
+	public void doBindMusicService(){
+			Intent intent = new Intent(this.getActivity(), MusicService.class);
+			intent.putExtra(Config.MUSIC_ID, R.raw.app_music);
+			getActivity().bindService(intent, this, Context.BIND_AUTO_CREATE);
+			mIsBound = true;
+	}
+	public void doUnbindMusicService(){
+		if(mIsBound){
+			getActivity().unbindService(this);
+			mIsBound = false;
+		}
 	}
 	
+	@Override
+	public void onServiceConnected(ComponentName name, IBinder binder){
+		mServ = ((MusicService.ServiceBinder) binder).getService();
+		mServ.start();
+	}
+	
+	@Override
+	public void onServiceDisconnected(ComponentName name){
+		mServ = null;
+	}
+	
+	private void startMusicService() {
+		Intent music = new Intent(getActivity(), MusicService.class);
+		getActivity().startService(music);
+		doBindMusicService();
+		
+	}
+	
+	public void changeMusic(int musicId){
+		if(musicId<0){
+			musicId = R.raw.app_music;
+		}
+		mServ.playAnother(musicId);
+	}
 }

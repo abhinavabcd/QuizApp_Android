@@ -19,6 +19,7 @@ public class BadgeListAdapter extends ArrayAdapter<Badge>{
 	class ViewHolder{
 		ImageView badgeImage;
 		GothamTextView badgeName;
+		public GothamTextView badgeDesc;
 	}
 
 	private QuizApp quizApp;
@@ -39,7 +40,7 @@ public class BadgeListAdapter extends ArrayAdapter<Badge>{
             holder = new ViewHolder();
             holder.badgeName = (GothamTextView) convertView.findViewById(R.id.badgeName);
             holder.badgeImage = (ImageView) convertView.findViewById(R.id.badgeImage);
-            
+            holder.badgeDesc = (GothamTextView) convertView.findViewById(R.id.badge_desc);
             convertView.setTag(holder);
     	}
     	else{
@@ -55,6 +56,7 @@ public class BadgeListAdapter extends ArrayAdapter<Badge>{
 //    	}
     	holder.badgeName.setText(currentBadge.getName());
     	holder.badgeName.setTextColor(quizApp.getConfig().getUniqueThemeColor(currentBadge.getName()));
+    	holder.badgeDesc.setText(currentBadge.getDescription());
         return convertView;
     }
 }

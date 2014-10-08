@@ -18,54 +18,26 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.amcolabs.quizapp.QuizApp;
 import com.amcolabs.quizapp.R;
+import com.amcolabs.quizapp.User;
 import com.amcolabs.quizapp.UserDeviceManager;
 import com.amcolabs.quizapp.configuration.Config;
 import com.amcolabs.quizapp.databaseutils.Badge;
 import com.amcolabs.quizapp.databaseutils.OfflineChallenge;
+import com.amcolabs.quizapp.databaseutils.Quiz;
 import com.amcolabs.quizapp.datalisteners.DataInputListener;
 import com.amcolabs.quizapp.gameutils.GameUtils;
 import com.amcolabs.quizapp.uiutils.UiUtils;
 import com.amcolabs.quizapp.uiutils.UiUtils.UiText;
-import com.amcolabs.quizapp.widgets.GothamButtonView;
+import com.amcolabs.quizapp.widgets.CircularImageView;
 import com.amcolabs.quizapp.widgets.GothamTextView;
+import com.amcolabs.quizapp.widgets.QuizAppMenuItem;
 
 
 
-class AlertMessage extends DialogFragment {
-	private String message;
-	private DataInputListener<Boolean> listener;
-
-	public  AlertMessage(String message , DataInputListener<Boolean> listener){
-		this.message  = message;
-		this.listener = listener;
-	}
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-            Bundle savedInstanceState) {
-        // Inflate the layout to use as dialog or embedded fragment
-        return super.onCreateView(inflater, container, savedInstanceState);//inflater.inflate(R.layout.purchase_items, container, false);
-    }
-
-    public Dialog onCreateDialog(Bundle savedInstanceState) {
-        // Use the Builder class for convenient dialog construction
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setMessage(this.message)
-               .setPositiveButton("okay", new android.content.DialogInterface.OnClickListener(){
-   				@Override
-   				public void onClick(DialogInterface dialog, int which) {
-   					if (listener!=null)listener.onData(true);
-   				}
-        });      
-        Dialog dialog = builder.create();//super.onCreateDialog(savedInstanceState);
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        return dialog;
-    }
-}
 
 
 public class StaticPopupDialogBoxes {
@@ -94,33 +66,6 @@ public class StaticPopupDialogBoxes {
 		
 	}
 	
-	public static void alertPrompt(FragmentManager A, String message , DataInputListener<Boolean> listener){
-		if (!UserDeviceManager.isRunning()) return;
-		(new AlertMessage(message, listener)).show(A, "");
-	}
-	
-	public static Dialog alertPrompt(Activity A, String message , final DataInputListener<Boolean> listener){
-		if (!UserDeviceManager.isRunning()) return null;
-        AlertDialog.Builder builder = new AlertDialog.Builder(A);
-        builder.setMessage(message)
-               .setPositiveButton("OK", new android.content.DialogInterface.OnClickListener(){
-   				@Override
-   				public void onClick(DialogInterface dialog, int which) {
-   					if (listener!=null)listener.onData(true);
-   				}
-        });      
-        Dialog dialog = builder.create();//super.onCreateDialog(savedInstanceState);
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        if(!A.isFinishing()){
-        	dialog.setCanceledOnTouchOutside(false);
-//    		openDialogs.add(dialog);
-			dialog.show();
-        }
-        else{
-        	dialog.dismiss();
-        }
-        return dialog;
-	}
 	public void showChallengeWinDialog(OfflineChallenge offlineChallenge ){
 		 final Dialog d = new Dialog(quizApp.getContext(),R.style.CustomDialogTheme); 
 		 LinearLayout challengeWinLooseDialog = (LinearLayout)quizApp.getActivity().getLayoutInflater().inflate(R.layout.challenge_win_popup, null);
@@ -251,7 +196,7 @@ public class StaticPopupDialogBoxes {
 		d.show();
 	}
 	
-	class YesNoDialog extends Dialog{
+	public static class YesNoDialog extends Dialog{
 
 		private DataInputListener<Boolean> acceptListener;
 		public YesNoDialog(Context context , int resId, DataInputListener<Boolean> acceptListener) {
@@ -268,9 +213,8 @@ public class StaticPopupDialogBoxes {
 		}
 	}
 	
-	YesNoDialog yesNoPopup = null; 
-	public void yesOrNo(String text, String possitiveText , String negetiveText , final DataInputListener<Boolean> acceptListener) {
-		yesNoPopup = new YesNoDialog(quizApp.getContext(),R.style.CustomDialogTheme, acceptListener);
+	public YesNoDialog yesOrNo(String text, String possitiveText , String negetiveText , final DataInputListener<Boolean> acceptListener) {
+		final YesNoDialog yesNoPopup = new YesNoDialog(quizApp.getContext(),R.style.CustomDialogTheme, acceptListener);
 		LinearLayout dialogLayout = (LinearLayout)quizApp.getActivity().getLayoutInflater().inflate(R.layout.full_screen_dialog, null);
 		OnClickListener listener = new OnClickListener() {
 			@Override
@@ -287,7 +231,7 @@ public class StaticPopupDialogBoxes {
 			}
 		};
 		((TextView) dialogLayout.findViewById(R.id.textView1)).setText(text);
-		GothamButtonView button1 = (GothamButtonView) dialogLayout.findViewById(R.id.button1);
+		QuizAppMenuItem button1 = (QuizAppMenuItem) dialogLayout.findViewById(R.id.button1);
 		if(possitiveText!=null){
 			button1.setOnClickListener(listener);
 			button1.setText(possitiveText);
@@ -295,18 +239,14 @@ public class StaticPopupDialogBoxes {
 		else{
 			button1.setVisibility(View.GONE);
 		}
-		GothamButtonView button2 = (GothamButtonView) dialogLayout.findViewById(R.id.button2);
+		QuizAppMenuItem button2 = (QuizAppMenuItem) dialogLayout.findViewById(R.id.button2);
 		button2.setOnClickListener(listener);
 		button2.setText(negetiveText);
 		yesNoPopup.setContentView(dialogLayout);
 		yesNoPopup.show();
+		return yesNoPopup;
 	}
 
-	public void removeRematchRequestScreen() {
-		if(yesNoPopup!=null)
-			yesNoPopup.dismissQuietly();
-		yesNoPopup= null;
-	}
 	public void showUnlockedBadge(Badge badge, boolean addDetail){
 		showUnlockedBadge(badge, addDetail, null);
 	}
@@ -335,5 +275,41 @@ public class StaticPopupDialogBoxes {
 		}
 		d.setContentView(badgeLayout);
 		d.show();
+	}
+
+	public void challengeRequestedPopup(User user, Quiz quiz) {
+		final Dialog d = new Dialog(quizApp.getContext(),R.style.CustomDialogTheme); 
+		 LinearLayout mainWrapper;
+		 CircularImageView titleImage;
+		 GothamTextView userWantsChalengeText;
+		 GothamTextView quizName;
+		 QuizAppMenuItem startChallenge;
+		 QuizAppMenuItem closeButton;
+		 
+		LinearLayout baseLayout = (LinearLayout)quizApp.getActivity().getLayoutInflater().inflate(R.layout.user_wants_a_game, null);
+
+		titleImage = (CircularImageView) baseLayout.findViewById(R.id.title_image);
+		userWantsChalengeText = (GothamTextView) baseLayout.findViewById(R.id.user_wants_chalenge_text);
+		quizName = (GothamTextView) baseLayout.findViewById(R.id.quiz_name);
+		startChallenge = (QuizAppMenuItem) baseLayout.findViewById(R.id.start_challenge);
+		closeButton = (QuizAppMenuItem) baseLayout.findViewById(R.id.close_button);
+		
+		quizApp.getUiUtils().loadImageIntoView(quizApp.getContext(), titleImage, user.pictureUrl, false);
+		quizName.setText(quiz.name);
+		userWantsChalengeText.setText(UiText.USER_WANTS_A_GAME.getValue(user.name));
+		startChallenge.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				
+			}
+		});
+		closeButton.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+			}
+		});
+		d.setContentView(baseLayout);
+		d.show();
+		
 	}
 }

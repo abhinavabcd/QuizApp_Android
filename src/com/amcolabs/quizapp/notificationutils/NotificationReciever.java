@@ -1,8 +1,10 @@
 package com.amcolabs.quizapp.notificationutils;
 
-import java.security.acl.NotOwnerException;
 import java.util.HashMap;
-import java.util.List;
+import java.util.Set;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -12,12 +14,21 @@ import android.os.Bundle;
 import com.amcolabs.quizapp.UserDeviceManager;
 import com.amcolabs.quizapp.configuration.Config;
 import com.amcolabs.quizapp.datalisteners.DataInputListener;
-import com.amcolabs.quizapp.notificationutils.NotificationReciever.NotificationType;
 import com.amcolabs.quizapp.uiutils.UiUtils;
-
+import com.google.gson.Gson;
 
 
 public class NotificationReciever extends BroadcastReceiver{
+				
+			public static class NotificationPayload{
+				public String fromUser;
+				public String fromUserName;
+				public String quizPoolWaitId;   
+				public String serverId;
+				public String quizId;
+				public String quizName;
+				public String textMessage;
+			}
 	
 			public static enum NotificationType{
 
@@ -36,9 +47,20 @@ public class NotificationReciever extends BroadcastReceiver{
 				private NotificationType(int val) {
 					this.value = val;
 				}
-				
 			}
-			
+			public NotificationPayload getNotificationPayload(Bundle bundle){
+					JSONObject json = new JSONObject();
+					Set<String> keys = bundle.keySet();
+					for (String key : keys) {
+					    try {
+					        // json.put(key, bundle.get(key)); see edit below
+					        json.put(key, bundle.get(key));
+					    } catch(JSONException e) {
+					        //Handle exception here
+					    }
+					}
+					return new Gson().fromJson(json.toString(),NotificationPayload.class );
+			}
 			public static NotificationType getNotificationTypeFromInt(int x){
 				NotificationType[] values = NotificationType.values();
 				if(x >0 && x < values.length)
@@ -68,11 +90,27 @@ public class NotificationReciever extends BroadcastReceiver{
 				if(extras!=null){
 					switch(type){
 						case NOTIFICATION_GCM_INBOX_MESSAGE:
-							if(UserDeviceManager.isRunning()){
-								if(this.listeners.containsKey(NotificationType.NOTIFICATION_GCM_INBOX_MESSAGE)){
-									listeners.get(NotificationType.NOTIFICATION_GCM_INBOX_MESSAGE).onData(extras);
-								}
-							}
+							//type.setPayload(extras);
+							checkAndCallListener(type , getNotificationPayload(extras));
+							break;
+						case DONT_KNOW:
+							break;
+						case NOTIFICATION_GCM_CHALLENGE_NOTIFICATION:
+							checkAndCallListener(type , getNotificationPayload(extras));
+							break;
+						case NOTIFICATION_GCM_GENERAL_FROM_SERVER:
+							break;
+						case NOTIFICATION_GCM_OFFLINE_CHALLENGE_NOTIFICATION:
+							checkAndCallListener(type , getNotificationPayload(extras));
+							break;
+						case NOTIFICATION_NEW_BADGE:
+							break;
+						case NOTIFICATION_SERVER_COMMAND:
+							break;
+						case NOTIFICATION_SERVER_MESSAGE:
+							break;
+						case NOTIFICATION_USER_CHALLENGE:
+							break;
 						default:
 							break;
 					}
@@ -83,10 +121,18 @@ public class NotificationReciever extends BroadcastReceiver{
 					UiUtils.generateNotification(context,messageToDisplay,extras);
 		 	}
 			
-			static HashMap<NotificationType, DataInputListener<Bundle>> listeners = new HashMap<NotificationReciever.NotificationType, DataInputListener<Bundle>>();
+			private void checkAndCallListener(NotificationType type , NotificationPayload notificationPayload) {
+				if(UserDeviceManager.isRunning()){
+					if(listeners.containsKey(NotificationType.NOTIFICATION_GCM_INBOX_MESSAGE)){
+						listeners.get(NotificationType.NOTIFICATION_GCM_INBOX_MESSAGE).onData(notificationPayload);
+					}
+				}
+			}
+
+			static HashMap<NotificationType, DataInputListener<NotificationPayload>> listeners = new HashMap<NotificationReciever.NotificationType, DataInputListener<NotificationPayload>>();
 			
-			public static void setListener(NotificationType type , DataInputListener<Bundle> listener){
-				listeners.put(type, listener);
+			public static void setListener(NotificationType type , DataInputListener<NotificationPayload> gcmListener){
+				listeners.put(type, gcmListener);
 			}
 			
 			public static void destroyAllListeners(){
@@ -96,7 +142,7 @@ public class NotificationReciever extends BroadcastReceiver{
 
 			public static void removeListener(
 					NotificationType notificationGcmInboxMessage,
-					DataInputListener<Bundle> gcmListener) {
+					DataInputListener<NotificationPayload> gcmListener) {
 				listeners.remove(notificationGcmInboxMessage);
 								
 			}

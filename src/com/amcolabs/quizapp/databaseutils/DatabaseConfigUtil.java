@@ -18,7 +18,7 @@ public class DatabaseConfigUtil extends OrmLiteConfigUtil {
 	    Quiz.class,
 	    Category.class,
 	    UserPreferences.class,
-	    UserQuizStats.class,
+	    QuizPlaySummary.class,
 	    Badge.class,
 	    ChatList.class,
 	    User.class,

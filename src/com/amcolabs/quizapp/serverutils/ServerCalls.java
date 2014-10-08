@@ -25,11 +25,11 @@ import com.amcolabs.quizapp.appcontrollers.ProgressiveQuizController.UserAnswer;
 import com.amcolabs.quizapp.configuration.Config;
 import com.amcolabs.quizapp.databaseutils.Badge;
 import com.amcolabs.quizapp.databaseutils.Category;
+import com.amcolabs.quizapp.databaseutils.Feed;
 import com.amcolabs.quizapp.databaseutils.OfflineChallenge;
 import com.amcolabs.quizapp.databaseutils.OfflineChallenge.ChallengeData;
 import com.amcolabs.quizapp.databaseutils.Question;
 import com.amcolabs.quizapp.databaseutils.Quiz;
-import com.amcolabs.quizapp.databaseutils.Feed;
 import com.amcolabs.quizapp.databaseutils.UserInboxMessage;
 import com.amcolabs.quizapp.datalisteners.DataInputListener;
 import com.amcolabs.quizapp.datalisteners.DataInputListener2;
@@ -82,8 +82,8 @@ class RandomSelector <T>{
 
 public class ServerCalls {
 	
-	public static final String SERVER_ADDR = Config.IS_TEST_BUILD? "http://192.168.0.10:8085":"http://quizapp-main.amcolabs.com";
-	public static final String CDN_IMAGES_PATH = "http://192.168.0.10:8081/images/";
+	public static final String SERVER_ADDR = Config.IS_TEST_BUILD? "http://54.187.73.133:8085":"http://quizapp-main.amcolabs.com";
+	public static final String CDN_IMAGES_PATH = "http://appsandlabs.com/quizApp/images/";
 
 //	public static final String SERVER_URL = Config.IS_TEST_BUILD? "http://192.168.0.10:8084/func":"http://quizapp-main.amcolabs.com/func";
 //	private static final String GET_ENCODEDKEY_URL = SERVER_URL+"?task=getEncodedKey";
@@ -166,10 +166,10 @@ public class ServerCalls {
 		switch(code){
 			case FAILED:
 				if(serverErrorMsgShownCount++%2==0)
-					StaticPopupDialogBoxes.alertPrompt(quizApp.getFragmentManager(), UiText.SERVER_ERROR.getValue(), null);
+					quizApp.getStaticPopupDialogBoxes().yesOrNo(UiText.SERVER_ERROR.getValue(), UiText.OK.getValue(), UiText.CANCEL.getValue() , null);
 				break;
 			case NOT_AUTHORIZED:
-				StaticPopupDialogBoxes.alertPrompt(quizApp.getFragmentManager(), UiText.NOT_AUTHORIZED.getValue(), new DataInputListener<Boolean>(){
+				quizApp.getStaticPopupDialogBoxes().yesOrNo(UiText.SERVER_ERROR.getValue(), UiText.OK.getValue(), UiText.CANCEL.getValue(), new DataInputListener<Boolean>(){
 					@Override
 					public String onData(Boolean s) {
 						if(s){
@@ -392,7 +392,7 @@ public class ServerCalls {
 	}		
 	
 	public void getUserByUid(String uid , final DataInputListener<User> dataInputListener) {
-		String url = getAServerAddr()+"/func?task=getUserById";
+		String url = getAServerAddr()+"/func?task=getUserByUid";
 		url+="&encodedKey="+quizApp.getUserDeviceManager().getEncodedKey();
 		url+="&uid="+uid;
 		makeServerCall(url,new ServerNotifier() {			
@@ -549,6 +549,7 @@ public class ServerCalls {
 
 
 	public void doGooglePlusLogin(final User user,final DataInputListener<User> loginListener) {
+		user.deviceId = quizApp.getUserDeviceManager().getDeviceId();
 		String url = getAServerAddr()+"/func?task=registerWithGoogle";
 		Map<String,String > params = new HashMap<String, String>();
 		params.put("userJson",quizApp.getConfig().getGson().toJson(user));
@@ -573,6 +574,7 @@ public class ServerCalls {
 
 
 	public void doFacebookLogin(final User user, final DataInputListener<User> loginListener) {
+		user.deviceId = quizApp.getUserDeviceManager().getDeviceId();
 		String url = getAServerAddr()+"/func?task=registerWithFacebook";
 		Map<String,String > params = new HashMap<String, String>();
 		params.put("userJson",quizApp.getConfig().getGson().toJson(user));
@@ -779,15 +781,20 @@ public class ServerCalls {
 	}
 
 
-	public void updateQuizWinStatus(String quizId, int winStatus , double newPoints, User user) {
+	public void updateQuizWinStatus(String quizId, int winStatus , double newPoints, User user , List<UserAnswer> userAnswers1 , List<UserAnswer> userAnswers2) {
 		String url = getAServerAddr()+"/func?task=updateQuizWinStatus";
 		url+="&encodedKey="+quizApp.getUserDeviceManager().getEncodedKey();
 		url+="&quizId="+quizId;
 		url+="&xpPoints="+newPoints;
 		url+="&winStatus="+winStatus+"";
 		url+="&uid2="+user.uid;
+		HashMap<String, String> params = new HashMap<String, String>();
+		if(userAnswers1!=null)
+			params.put("userAnswers1",quizApp.getConfig().getGson().toJson(userAnswers1));
+		if(userAnswers2!=null)
+			params.put("userAnswers2",quizApp.getConfig().getGson().toJson(userAnswers2));
 		
-		makeServerCall(url, new ServerNotifier() {
+		makeServerPostCall(url, params , new ServerNotifier() {
 		@Override
 		public void onServerResponse(MessageType messageType,ServerResponse response) {
 			switch(messageType){

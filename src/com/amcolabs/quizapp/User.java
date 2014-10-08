@@ -46,8 +46,11 @@ public class User {
 	private List<String> subscribers;//uids
 	private List<String> subscribedTo;
 	
+	public String fbFriends;
+	public String gPlusFriends;
 	public boolean isFriend = true;
-	
+	public ArrayList<String> gPlusFriendUids = new ArrayList<String>();
+	public ArrayList<String> fbFriendUids= new ArrayList<String>();
 	
 	
 	public User(){

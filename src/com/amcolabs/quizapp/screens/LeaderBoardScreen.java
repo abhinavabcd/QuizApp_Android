@@ -20,6 +20,8 @@ import com.amcolabs.quizapp.User;
 import com.amcolabs.quizapp.adapters.LeaderboardItemListAdapter;
 import com.amcolabs.quizapp.datalisteners.DataInputListener;
 import com.amcolabs.quizapp.uiutils.UiUtils;
+import com.amcolabs.quizapp.uiutils.UiUtils.UiText;
+import com.amcolabs.quizapp.widgets.GothamTextView;
 
 public class LeaderBoardScreen extends Screen {
 
@@ -29,6 +31,23 @@ public class LeaderBoardScreen extends Screen {
 	
 	public void addLeaderBoards(final HashMap<String , Integer[]> uidRankMap, String titleText){
 		List<User> users = new ArrayList<User>();
+		LinearLayout lView = (LinearLayout) getApp().getActivity().getLayoutInflater().inflate(R.layout.block_list_view, null);;
+		lView.setBackgroundColor(getApp().getConfig().getAThemeColor());
+		TextView title = (TextView) lView.findViewById(R.id.title_text_view);
+		title.setText(titleText);
+		GothamTextView debugMessage = (GothamTextView)lView.findViewById(R.id.debugMessage);
+		lView.findViewById(R.id.search_text).setVisibility(View.GONE);
+		FrameLayout viewMore = (FrameLayout) lView.findViewById(R.id.view_all_wrapper);
+		viewMore.setVisibility(View.GONE);
+		ListView listView = ((ListView) lView.findViewById(R.id.listView));
+		ColorDrawable sage = new ColorDrawable(this.getResources().getColor(R.color.translucent_black));
+		listView.setDivider(sage);
+		listView.setDividerHeight(1);
+	
+		if(uidRankMap.size()==0){ 
+			debugMessage.setText(UiText.NO_RANKINGS_AVAILABLE.getValue());
+			return;
+		}
 		for(String uid: uidRankMap.keySet()){
 			users.add(getApp().cachedUsers.get(uid));
 		}
@@ -44,18 +63,7 @@ public class LeaderBoardScreen extends Screen {
 				return null;
 			}
 		});
-		LinearLayout lView = (LinearLayout) getApp().getActivity().getLayoutInflater().inflate(R.layout.block_list_view, null);;
-		lView.setBackgroundColor(getApp().getConfig().getAThemeColor());
-		TextView title = (TextView) lView.findViewById(R.id.title_text_view);
-		title.setText(titleText);
-		lView.findViewById(R.id.search_text).setVisibility(View.GONE);
-		FrameLayout viewMore = (FrameLayout) lView.findViewById(R.id.view_all_wrapper);
-		viewMore.setVisibility(View.GONE);
-		ListView listView = ((ListView) lView.findViewById(R.id.listView));
-		ColorDrawable sage = new ColorDrawable(this.getResources().getColor(R.color.translucent_black));
-		listView.setDivider(sage);
-		listView.setDividerHeight(1);
-		listView.setAdapter(leaderBoardAdaptor);
+			listView.setAdapter(leaderBoardAdaptor);
 		addToScrollView(lView);
 		UiUtils.setListViewHeightBasedOnChildren(listView);
 	}
