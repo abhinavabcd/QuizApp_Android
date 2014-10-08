@@ -19,7 +19,7 @@ import com.amcolabs.quizapp.databaseutils.OfflineChallenge;
 import com.amcolabs.quizapp.databaseutils.OfflineChallenge.ChallengeData;
 import com.amcolabs.quizapp.databaseutils.Question;
 import com.amcolabs.quizapp.databaseutils.Quiz;
-import com.amcolabs.quizapp.databaseutils.QuizHistory;
+import com.amcolabs.quizapp.databaseutils.UserQuizStats;
 import com.amcolabs.quizapp.datalisteners.DataInputListener;
 import com.amcolabs.quizapp.datalisteners.DataInputListener2;
 import com.amcolabs.quizapp.gameutils.BadgeEvaluator;
@@ -723,7 +723,7 @@ public class ProgressiveQuizController extends AppController{
 //		cPoints = quizApp.getUser().getPoints(quiz);
 //		uAns = userAnswersStack.get(quizApp.getUser().uid);
 //		newPoints = cPoints+uAns.get(uAns.size()-1).whatUserGot+(quizResult>0?Config.QUIZ_WIN_BONUS:0);
-		QuizHistory qHistory;
+		UserQuizStats qHistory;
 		
 		newPoints = quizApp.getUser().getPoints(quiz.quizId);
 		uAns = userAnswersStack.get(quizApp.getUser().uid);
@@ -749,9 +749,9 @@ public class ProgressiveQuizController extends AppController{
 			// Always True
 			if(!isChallengedMode())
 				quizApp.getServerCalls().updateQuizWinStatus(quiz.quizId , quizResult , newPoints-oldPoints, getOtherUser());//server call 
-			qHistory = quizApp.getDataBaseHelper().getQuizHistoryById(quiz.quizId);
+			qHistory = quizApp.getDataBaseHelper().getUserQuizStatsById(quiz.quizId);
 			if(qHistory==null){
-				qHistory = new QuizHistory(quiz.quizId,quizResult,Config.getCurrentTimeStamp());
+				qHistory = new UserQuizStats(quiz.quizId,quizResult,Config.getCurrentTimeStamp());
 			}
 			else{
 				qHistory.setTotalCount(qHistory.getTotalCount()+1);
@@ -790,7 +790,7 @@ public class ProgressiveQuizController extends AppController{
 				});//server call
 				
 			}
-			quizApp.getDataBaseHelper().createOrUpdateQuizHistory(qHistory);
+			quizApp.getDataBaseHelper().createOrUpdateUserQuizStats(qHistory);
 			
 			BadgeEvaluator badgeEvaluator = quizApp.getBadgeEvaluator();
 			badgeEvaluator.evaluateBadges();

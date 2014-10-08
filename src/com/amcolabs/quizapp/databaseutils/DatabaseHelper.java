@@ -38,13 +38,13 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 	// name of the database file for your application -- change to something appropriate for your app
 	private static final String DATABASE_NAME = "quizApp.db";
 	// any time you make changes to your database objects, you may have to increase the database version
-	private static final int DATABASE_VERSION = 15;
+	private static final int DATABASE_VERSION = 16;
 	private static String DATABASE_PATH = "/data/data/com.amcolabs.quizapp/databases/";
 
 	// the DAO object we use to access the Category table
 	private Dao<Category, Integer> categoriesDao = null;
 	private Dao<Quiz, Integer> quizDao = null;
-	private Dao<QuizHistory, Integer> quizHistoryDao = null;
+	private Dao<UserQuizStats, Integer> userQuizStatsDao = null;
 	private Dao<Badge, Integer> badgesDao = null;
 	private Dao<ChatList,Integer> chatListDao = null;
 	private Dao<UserPreferences, Integer> userPreferencesDao = null;
@@ -53,7 +53,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 	
 	private RuntimeExceptionDao<Category, Integer> categoriesRuntimeExceptionDao = null;
 	private RuntimeExceptionDao<Quiz, Integer> quizRuntimeExceptionDao = null;
-	private RuntimeExceptionDao<QuizHistory, Integer> quizHistoryRuntimeExceptionDao = null;
+	private RuntimeExceptionDao<UserQuizStats, Integer> userQuizStatsRuntimeExceptionDao = null;
 	private RuntimeExceptionDao<Badge, Integer> badgesExceptionDao = null;
 	private RuntimeExceptionDao<UserPreferences, Integer> userPreferencesRuntimeDao;
 	private RuntimeExceptionDao<OfflineChallenge, Integer> offlineChallengeRuntimeExDao = null;
@@ -138,9 +138,9 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 		return null;
     }
 
-    public List<QuizHistory> getAllQuizHistory(){
+    public List<UserQuizStats> getAllUserQuizStats(){
 		try {
-			return getQuizHistoryDao().queryForAll();
+			return getUserQuizStatsDao().queryForAll();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -329,7 +329,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 		}
 		try {
 			Log.i(DatabaseHelper.class.getName(), "onCreate");
-			TableUtils.createTableIfNotExists(connectionSource, QuizHistory.class);
+			TableUtils.createTableIfNotExists(connectionSource, UserQuizStats.class);
 		} catch (SQLException e) {
 			Log.e(DatabaseHelper.class.getName(), "Can't create database", e);
 			throw new RuntimeException(e);
@@ -354,7 +354,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 			TableUtils.dropTable(connectionSource, ChatList.class, true);
 			TableUtils.dropTable(connectionSource, User.class, true);
 			TableUtils.dropTable(connectionSource, Badge.class, true);
-			TableUtils.dropTable(connectionSource, QuizHistory.class, true);
+			TableUtils.dropTable(connectionSource, UserQuizStats.class, true);
 			TableUtils.dropTable(connectionSource, OfflineChallenge.class, true);
 			// after we drop the old databases, we create the new ones
 			onCreate(db, connectionSource);
@@ -382,11 +382,11 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 		return quizDao;
 	}
 	
-	public Dao<QuizHistory, Integer> getQuizHistoryDao() throws SQLException {
-		if (quizHistoryDao == null) {
-			quizHistoryDao = getDao(QuizHistory.class);
+	public Dao<UserQuizStats, Integer> getUserQuizStatsDao() throws SQLException {
+		if (userQuizStatsDao == null) {
+			userQuizStatsDao = getDao(UserQuizStats.class);
 		}
-		return quizHistoryDao;
+		return userQuizStatsDao;
 	}
 	
 	public Dao<Badge, Integer> getBadgesDao() throws SQLException {
@@ -444,11 +444,11 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 		return quizRuntimeExceptionDao;
 	}
 	
-	public RuntimeExceptionDao<QuizHistory, Integer> getQuizHistoryDataExceptionDao() {
-		if (quizHistoryRuntimeExceptionDao == null) {
-			quizHistoryRuntimeExceptionDao = getRuntimeExceptionDao(QuizHistory.class);
+	public RuntimeExceptionDao<UserQuizStats, Integer> getUserQuizStatsDataExceptionDao() {
+		if (userQuizStatsRuntimeExceptionDao == null) {
+			userQuizStatsRuntimeExceptionDao = getRuntimeExceptionDao(UserQuizStats.class);
 		}
-		return quizHistoryRuntimeExceptionDao;
+		return userQuizStatsRuntimeExceptionDao;
 	}
 
 	public RuntimeExceptionDao<Badge, Integer> getBadgesExceptionDao() {
@@ -552,9 +552,9 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 		return tmp!=null?true:false;
     }
     
-    public QuizHistory getQuizHistoryById(String quizId){
+    public UserQuizStats getUserQuizStatsById(String quizId){
 		try {
-			return getQuizHistoryDao().queryBuilder().where().eq("quizId", quizId).queryForFirst();
+			return getUserQuizStatsDao().queryBuilder().where().eq("quizId", quizId).queryForFirst();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -562,10 +562,10 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 		return null;
     }
     
-    public boolean createOrUpdateQuizHistory(QuizHistory qHistory){
+    public boolean createOrUpdateUserQuizStats(UserQuizStats qHistory){
     	CreateOrUpdateStatus tmp=null;
     	try {
-			tmp = getQuizHistoryDao().createOrUpdate(qHistory);
+			tmp = getUserQuizStatsDao().createOrUpdate(qHistory);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
