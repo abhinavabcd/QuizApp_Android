@@ -237,6 +237,7 @@ public class WinOrLoseScreen extends Screen{
 		}
 		quizLevelupPoints.setText("+"+luPoints);
 		quizTotalPoints.setText("+"+(qPoints+qwPoints+luPoints));
+		quizTotalPoints.setVisibility(View.INVISIBLE);
 		new Handler().postDelayed(new Runnable() {
 			@Override
 			public void run() {
@@ -246,6 +247,7 @@ public class WinOrLoseScreen extends Screen{
 				new Handler().postDelayed(new Runnable() {
 					@Override
 					public void run() {
+						quizTotalPoints.setVisibility(View.VISIBLE);
 						quizTotalPoints.startAnimation(fanim);
 					}
 				}, 2000);
@@ -399,6 +401,7 @@ public class WinOrLoseScreen extends Screen{
         ArrayList<BarDataSet> dataSets = new ArrayList<BarDataSet>();
         BarDataSet set;
         ArrayList<BarEntry> yVals;
+        boolean nonZeroFlag = false;
 		for(int i=0;i<currentUsers.size();i++){
 			if (userAnswersStack.containsKey(currentUsers.get(i).uid)){
 				List<UserAnswer> answers = userAnswersStack.get(currentUsers.get(i).uid);
@@ -407,16 +410,21 @@ public class WinOrLoseScreen extends Screen{
 					UserAnswer tmp = answers.get(j);
 					yVals.add(new BarEntry((float)tmp.whatUserGot,j));
 				}
+				nonZeroFlag = getApp().getUiUtils().hasNonZeroValues(yVals);
+
 				set = new BarDataSet(yVals, currentUsers.get(i).name);
 				set.setColor(this.getApp().getConfig().getAThemeColor());
 				dataSets.add(set);
 			}
 		}
+		
 		BarData data = new BarData(xVals, dataSets);
 		data.setGroupSpace(30f);
 
-        mChart.setData(data);
-        mChart.invalidate();
+		if(nonZeroFlag){
+			mChart.setData(data);
+	        mChart.invalidate();
+		}
 	}
 	@Override
 	public boolean showOnBackPressed() {

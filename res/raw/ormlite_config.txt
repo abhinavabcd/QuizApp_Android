@@ -1,5 +1,5 @@
 #
-# generated on 2014/09/21 11:52:36
+# generated on 2014/10/08 11:34:50
 #
 # --table-start--
 dataClass=com.amcolabs.quizapp.databaseutils.Question
@@ -122,13 +122,13 @@ fieldName=data
 #################################
 # --table-start--
 dataClass=com.amcolabs.quizapp.databaseutils.QuizPlaySummary
-tableName=quizhistory
+tableName=quizplaysummary
 # --table-fields-start--
 # --field-start--
 fieldName=quizId
 id=true
 unique=true
-indexName=quizhistory_quizId_idx
+indexName=quizplaysummary_quizId_idx
 # --field-end--
 # --field-start--
 fieldName=streak
@@ -243,6 +243,49 @@ fieldName=status
 # --field-end--
 # --field-start--
 fieldName=jsonDump
+# --field-end--
+# --field-start--
+fieldName=gPlusUid
+# --field-end--
+# --field-start--
+fieldName=fbUid
+# --field-end--
+# --table-fields-end--
+# --table-end--
+#################################
+# --table-start--
+dataClass=com.amcolabs.quizapp.databaseutils.OfflineChallenge
+tableName=offlinechallenge
+# --table-fields-start--
+# --field-start--
+fieldName=offlineChallengeId
+id=true
+unique=true
+indexName=offlinechallenge_offlineChallengeId_idx
+# --field-end--
+# --field-start--
+fieldName=fromUid_userChallengeIndex
+# --field-end--
+# --field-start--
+fieldName=toUid_userChallengeIndex
+# --field-end--
+# --field-start--
+fieldName=challengeType
+# --field-end--
+# --field-start--
+fieldName=challengeData
+# --field-end--
+# --field-start--
+fieldName=challengeData2
+# --field-end--
+# --field-start--
+fieldName=wonUid
+# --field-end--
+# --field-start--
+fieldName=isCompleted
+# --field-end--
+# --field-start--
+fieldName=hasWon
 # --field-end--
 # --table-fields-end--
 # --table-end--

@@ -8,14 +8,14 @@
 
     <LinearLayout
         android:id="@+id/quizPointsWrapper"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="1"
         android:orientation="vertical" >
 
         <com.amcolabs.quizapp.widgets.GothamTextView
             android:id="@+id/quizPoints"
-            android:layout_width="70dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
             android:background="@drawable/list_item_bg"
@@ -34,14 +34,14 @@
 
     <LinearLayout
         android:id="@+id/quizWinPointsWrapper"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="1"
         android:orientation="vertical" >
 
         <com.amcolabs.quizapp.widgets.GothamTextView
             android:id="@+id/quizWinPoints"
-            android:layout_width="70dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
             android:background="@drawable/list_item_bg"
@@ -60,14 +60,14 @@
 
     <LinearLayout
         android:id="@+id/quizLevelupPointsWrapper"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="1"
         android:orientation="vertical" >
 
         <com.amcolabs.quizapp.widgets.GothamTextView
             android:id="@+id/quizLevelupPoints"
-            android:layout_width="70dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_margin="10dp"
@@ -87,14 +87,14 @@
 
     <LinearLayout
         android:id="@+id/quizTotalPointsWrapper"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="1"
         android:orientation="vertical" >
 
         <com.amcolabs.quizapp.widgets.GothamTextView
             android:id="@+id/quizTotalPoints"
-            android:layout_width="70dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_margin="10dp"

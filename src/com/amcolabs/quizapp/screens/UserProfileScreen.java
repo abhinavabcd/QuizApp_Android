@@ -117,8 +117,23 @@ public class UserProfileScreen extends Screen {
 		lostTextView.setText(lose_count+" "+UiUtils.UiText.PROFILE_LOST_STATS_TEXT.getValue());
 		tieTextView.setText(tie_count+" "+UiUtils.UiText.PROFILE_TIE_STATS_TEXT.getValue());
 		
-		drawUserActivityDistributionChart(xVals,yVals1);
-		drawCategoryWiseLevelsChart(xVals,yValsWins,yValsLosses,yValsTies);
+		// TODO: Reduce code redundancy by checking for nonzero values in a method (present in uiutils, conflict for BarEntry and Entry)
+		boolean nonZeroFlag = false;
+		for(int i=0;i<yVals1.size();i++){
+			if(yVals1.get(i).getVal() > 0){
+				nonZeroFlag = true;
+			}
+		}
+		if(nonZeroFlag)
+			drawUserActivityDistributionChart(xVals,yVals1);
+		nonZeroFlag = false;
+		for(int i=0;i<yVals1.size();i++){
+			if(yValsWins.get(i).getVal() > 0 || yValsLosses.get(i).getVal() > 0 || yValsTies.get(i).getVal() > 0 ){
+				nonZeroFlag = true;
+			}
+		}
+		if(nonZeroFlag)
+			drawCategoryWiseLevelsChart(xVals,yValsWins,yValsLosses,yValsTies);
 	}
 	
 	public void drawUserCategoryChartsAndUpdateStats(User user){
@@ -160,8 +175,23 @@ public class UserProfileScreen extends Screen {
 		lostTextView.setText(lose_count+" "+UiUtils.UiText.PROFILE_LOST_STATS_TEXT.getValue());
 		tieTextView.setText(tie_count+" "+UiUtils.UiText.PROFILE_TIE_STATS_TEXT.getValue());
 		
-		drawUserActivityDistributionChart(xVals,yVals1);
-		drawCategoryWiseLevelsChart(xVals,yValsWins,yValsLosses,yValsTies);
+		// TODO: Reduce code redundancy by checking for nonzero values in a method (present in uiutils, conflict for BarEntry and Entry)
+		boolean nonZeroFlag = false;
+		for(int i=0;i<yVals1.size();i++){
+			if(yVals1.get(i).getVal() > 0){
+				nonZeroFlag = true;
+			}
+		}
+		if(nonZeroFlag)
+			drawUserActivityDistributionChart(xVals,yVals1);
+		nonZeroFlag = false;
+		for(int i=0;i<yVals1.size();i++){
+			if(yValsWins.get(i).getVal() > 0 || yValsLosses.get(i).getVal() > 0 || yValsTies.get(i).getVal() > 0 ){
+				nonZeroFlag = true;
+			}
+		}
+		if(nonZeroFlag)
+			drawCategoryWiseLevelsChart(xVals,yValsWins,yValsLosses,yValsTies);
 	}
 	
 	public void drawCategoryWiseLevelsChart(ArrayList<String> xVals,ArrayList<BarEntry> yValsWins,ArrayList<BarEntry> yValsLosses,ArrayList<BarEntry> yValsTies){

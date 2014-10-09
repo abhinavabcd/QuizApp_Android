@@ -745,6 +745,7 @@ public class ProgressiveQuizController extends AppController{
 //		cPoints = quizApp.getUser().getPoints(quiz);
 //		uAns = userAnswersStack.get(quizApp.getUser().uid);
 //		newPoints = cPoints+uAns.get(uAns.size()-1).whatUserGot+(quizResult>0?Config.QUIZ_WIN_BONUS:0);
+
 		QuizPlaySummary qPlaySummary;
 		
 		newPoints = quizApp.getUser().getPoints(quiz.quizId);
@@ -767,7 +768,6 @@ public class ProgressiveQuizController extends AppController{
 		}
 
 		else if(quizResult>=LOOSE){
-			
 			//Upates quiz history 
 			
 			String userAnswers1Json =quizApp.getConfig().getGson().toJson(userAnswersStack.get(quizApp.getUser().uid));
@@ -834,6 +834,7 @@ public class ProgressiveQuizController extends AppController{
 				});//server call
 				
 			}
+
 			quizApp.getDataBaseHelper().createOrUpdateQuizSummary(qPlaySummary);
 			
 			BadgeEvaluator badgeEvaluator = quizApp.getBadgeEvaluator();

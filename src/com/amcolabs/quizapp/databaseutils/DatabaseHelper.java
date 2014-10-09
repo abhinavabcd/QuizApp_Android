@@ -44,7 +44,9 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 	// the DAO object we use to access the Category table
 	private Dao<Category, Integer> categoriesDao = null;
 	private Dao<Quiz, Integer> quizDao = null;
+
 	private Dao<QuizPlaySummary, Integer> quizSummaryDao = null;
+
 	private Dao<Badge, Integer> badgesDao = null;
 	private Dao<ChatList,Integer> chatListDao = null;
 	private Dao<UserPreferences, Integer> userPreferencesDao = null;
@@ -55,7 +57,9 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 
 	private RuntimeExceptionDao<Category, Integer> categoriesRuntimeExceptionDao = null;
 	private RuntimeExceptionDao<Quiz, Integer> quizRuntimeExceptionDao = null;
+
 	private RuntimeExceptionDao<QuizPlaySummary, Integer> quizSummaryRuntimeExceptionDao = null;
+
 	private RuntimeExceptionDao<Badge, Integer> badgesExceptionDao = null;
 	private RuntimeExceptionDao<UserPreferences, Integer> userPreferencesRuntimeDao;
 	private RuntimeExceptionDao<OfflineChallenge, Integer> offlineChallengeRuntimeExDao = null;
@@ -148,6 +152,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 		}
 		return null;
     }
+
 
     public List<QuizPlaySummary> getAllQuizSummary(){
 		try {

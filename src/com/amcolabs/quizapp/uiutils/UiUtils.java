@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -48,6 +49,8 @@ import com.amcolabs.quizapp.configuration.Config;
 import com.amcolabs.quizapp.datalisteners.DataInputListener;
 import com.amcolabs.quizapp.notificationutils.NotificationReciever;
 import com.amcolabs.quizapp.serverutils.ServerCalls;
+import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.data.Entry;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
@@ -568,5 +571,14 @@ public class UiUtils {
 		df.setMaximumFractionDigits(1);
 		df.setMinimumFractionDigits(0);
 		return df; 
+	}
+	
+	public boolean hasNonZeroValues(ArrayList<BarEntry> yVals){
+		for(int k=0;k<yVals.size();k++){
+			if(yVals.get(k).getVal() > 0){
+				return true;
+			}
+		}
+		return false;
 	}
 }

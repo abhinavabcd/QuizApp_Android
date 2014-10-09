@@ -136,8 +136,9 @@ public class BadgeEvaluator {
 				mainQuizList.put(tmp1.get(i).quizId, tmp1.get(i));
 			}
 		}
-		
+
 		List<QuizPlaySummary> tmp2 = quizApp.getDataBaseHelper().getAllQuizSummary();
+
 		if(tmp2!=null){
 			for(int i=0;i<tmp2.size();i++){
 				mainQuizHistoryList.put(tmp2.get(i).getQuizId(), tmp2.get(i));
@@ -449,6 +450,7 @@ public class BadgeEvaluator {
 	
 	private boolean matchQuizListStreak(int index,int count,String value){
 		int tmp_count = 0;
+
 		QuizPlaySummary qh;
 		for(int i=0;i<quizList.get(index).size();i++){
 			qh = mainQuizHistoryList.get(quizList.get(index).get(i));
@@ -476,6 +478,7 @@ public class BadgeEvaluator {
 	private boolean matchQuizListQuizCount(int index,int count,String value){
 		int tmp_count = 0;
 		QuizPlaySummary qh;
+
 		for(int i=0;i<quizList.get(index).size();i++){
 			qh = mainQuizHistoryList.get(quizList.get(index).get(i));
 			if(qh==null)
@@ -491,6 +494,7 @@ public class BadgeEvaluator {
 	
 	private boolean matchQuizListQuizCount(ArrayList<String> quizIds,String value){
 		QuizPlaySummary qh;
+
 		for(int i=0;i<quizIds.size();i++){
 			qh = mainQuizHistoryList.get(quizIds.get(i));
 			if(qh==null || Integer.valueOf(value)>qh.getTotalCount())
@@ -501,6 +505,7 @@ public class BadgeEvaluator {
 	
 	private boolean matchQuizListTotalQuizCount(ArrayList<String> quizIds, String value) {
 		QuizPlaySummary qh;
+
 		int totalCount = 0;
 		for(int i=0;i<quizIds.size();i++){
 			qh = mainQuizHistoryList.get(quizIds.get(i));
