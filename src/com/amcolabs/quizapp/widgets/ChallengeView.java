@@ -25,7 +25,6 @@ public class ChallengeView extends LinearLayout implements OnClickListener, Targ
 
 	public ChallengeView(Context context) {
 		super(context);
-		// TODO Auto-generated constructor stub
 	}
 
 	public ChallengeView(QuizApp quizApp, User otherUser, String bgAssetPath, DataInputListener<Integer> dataInputListener) {
@@ -85,7 +84,6 @@ public class ChallengeView extends LinearLayout implements OnClickListener, Targ
 
 	@Override
 	public ViewType getViewType() {
-		// TODO Auto-generated method stub
 		return ViewType.CHALLENGE_VIEW;
 	}
 	

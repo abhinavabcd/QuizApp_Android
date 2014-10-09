@@ -16,6 +16,9 @@ import com.amcolabs.quizapp.AppController;
 import com.amcolabs.quizapp.QuizApp;
 import com.amcolabs.quizapp.User;
 import com.amcolabs.quizapp.configuration.Config;
+import com.amcolabs.quizapp.databaseutils.GameEvents;
+import com.amcolabs.quizapp.databaseutils.GameEvents.EventType;
+import com.amcolabs.quizapp.databaseutils.LocalQuizHistory;
 import com.amcolabs.quizapp.databaseutils.OfflineChallenge;
 import com.amcolabs.quizapp.databaseutils.OfflineChallenge.ChallengeData;
 import com.amcolabs.quizapp.databaseutils.Question;
@@ -357,7 +360,7 @@ public class ProgressiveQuizController extends AppController{
 				        userAnswers.clear();//for new answers
 					}
 					else if(!isNormalMode()){
-						validateAndShowWinningScreen();
+						validateAndShowWinningScreen(false);
 					}
 				}
 			}, Config.QUESTION_END_DELAY_TIME);
@@ -420,22 +423,29 @@ public class ProgressiveQuizController extends AppController{
 		return otherUsers;
 	}
 	
-	public void validateAndShowWinningScreen(){
+	public void validateAndShowWinningScreen(boolean isServerError){
 		List<UserAnswer> l = userAnswersStack.get(quizApp.getUser().uid);
 		clearScreen();
 		
 //		ProfileAndChatController profileAndChat = (ProfileAndChatController) quizApp.loadAppController(ProfileAndChatController.class);
 //
 //		profileAndChat.loadChatScreen(getOtherUsers().get(0), -1, true);
-		 
-		loadResultScreen(quiz,currentUsers,userAnswersStack);
-
+		
+		if(!isServerError)
+			loadResultScreen(quiz,currentUsers,userAnswersStack);
+		else{
+			//TODO: add game event of server error
+			quizResultScreen = new WinOrLoseScreen(this,currentUsers);
+			quizResultScreen.showResult(userAnswersStack,SERVER_ERR, false , quizMode);
+			insertScreen(quizResultScreen);
+		}
 //		WinOrLoseScreen resultScreen = new WinOrLoseScreen(this,currentUsers);
 //		resultScreen.showResult(userAnswersStack,true);
 //		showScreen(resultScreen);
 
 	}
 	
+
 	public void onMessageRecieved(MessageType messageType, ServerResponse response, String data) {
 		switch(messageType){
 			case USER_ANSWERED_QUESTION:
@@ -451,7 +461,7 @@ public class ProgressiveQuizController extends AppController{
 	    		startQuestions(response);
 	    		break;
 	    	case ANNOUNCING_WINNER:
-	    		validateAndShowWinningScreen();
+	    		validateAndShowWinningScreen(false);
 	    		break; 
 	    	case USER_DISCONNECTED:
 	    		if(currentQuestions.size()>0){ // still there are questions ? 
@@ -463,7 +473,7 @@ public class ProgressiveQuizController extends AppController{
 	    						//setQuizMode(CHALLENGE_MODE);
 	    					}
 	    					else{
-	    						validateAndShowWinningScreen();
+	    						validateAndShowWinningScreen(true);
 	    					}
 	    					return super.onData(s);
 	    				}
@@ -688,31 +698,32 @@ public class ProgressiveQuizController extends AppController{
 		List<UserAnswer> uAns;
 		
 		// All user updates
-		if(!isChallengeMode())
-		for(int i=0,qResult = TIE;i<currentUsers.size();i++){
-			curUser = currentUsers.get(i);
-			if(winnersList.contains(curUser.uid)){
-				if(winnersList.size()==1){
-					qResult = WON;
+		if(!isChallengeMode()){
+			for(int i=0,qResult = TIE;i<currentUsers.size();i++){
+				curUser = currentUsers.get(i);
+				if(winnersList.contains(curUser.uid)){
+					if(winnersList.size()==1){
+						qResult = WON;
+					}
+					else{
+						qResult = TIE;
+					}
 				}
 				else{
-					qResult = TIE;
+					qResult = LOOSE;
 				}
-			}
-			else{
-				qResult = LOOSE;
-			}
-			oldPoints = curUser.getPoints(quiz.quizId);
-			uAns = userAnswersStack.get(curUser.uid);
-			newPoints = oldPoints+uAns.get(uAns.size()-1).whatUserGot+(qResult>0?Config.QUIZ_WIN_BONUS:0);
-			
-			if(qResult!=-2){
-				curUser.setPoints(quiz.quizId, (int) newPoints);
+				oldPoints = curUser.getPoints(quiz.quizId);
+				uAns = userAnswersStack.get(curUser.uid);
+				newPoints = oldPoints+uAns.get(uAns.size()-1).whatUserGot+(qResult>0?Config.QUIZ_WIN_BONUS:0);
 				
-				Integer[] winsLossesQuiz = curUser.getWinsLosses(quiz.quizId);
-				winsLossesQuiz[0]+= (qResult==WON?1:0);
-				winsLossesQuiz[1]+= (qResult==LOOSE?1:0);
-				winsLossesQuiz[2]+= (qResult==TIE?1:0); 
+				if(qResult!=-2){
+					curUser.setPoints(quiz.quizId, (int) newPoints);
+					
+					Integer[] winsLossesQuiz = curUser.getWinsLosses(quiz.quizId);
+					winsLossesQuiz[0]+= (qResult==WON?1:0);
+					winsLossesQuiz[1]+= (qResult==LOOSE?1:0);
+					winsLossesQuiz[2]+= (qResult==TIE?1:0); 
+				}
 			}
 		}
 		
@@ -754,15 +765,22 @@ public class ProgressiveQuizController extends AppController{
 		}
 
 		else if(quizResult>=LOOSE){
+			//Upates quiz history 
 			
-			// Always True
-
+			String userAnswers1Json =quizApp.getConfig().getGson().toJson(userAnswersStack.get(quizApp.getUser().uid));
+			String userAnswers2Json =quizApp.getConfig().getGson().toJson(userAnswersStack.get(getOtherUser().uid));
+			LocalQuizHistory quizHistory = new LocalQuizHistory(quiz.quizId , quizResult , newPoints, getOtherUser().uid , userAnswers1Json , userAnswers2Json);
+			quizApp.getDataBaseHelper().addToQuizHistory(quizHistory);
+			
 			if(!isChallengedMode()){
-				if(shouldUserSendAllUserAnswers()) // this is a funny mechanism we choose  , where one user with higher preference sends the all the game details to the server , we keep this check on the server too
-					quizApp.getServerCalls().updateQuizWinStatus(quiz.quizId , quizResult , newPoints-oldPoints, getOtherUser() , userAnswersStack.get(quizApp.getUser().uid) , userAnswersStack.get(getOtherUser().uid));//server call 
+				if(shouldUserSendAllUserAnswers()){ // this is a funny mechanism we choose  , where one user with higher preference sends the all the game details to the server , we keep this check on the server too
+					quizApp.getServerCalls().updateQuizWinStatus(quiz.quizId , quizResult , newPoints-oldPoints, getOtherUser() , userAnswers1Json , userAnswers2Json);//server call 
+				}
 				else
 					quizApp.getServerCalls().updateQuizWinStatus(quiz.quizId , quizResult , newPoints-oldPoints, getOtherUser() ,null , null);//server call 
 			}
+			
+			//update stats in the quizSummary table
 			qPlaySummary = quizApp.getDataBaseHelper().getQuizSummaryByQuizId(quiz.quizId);
 			if(qPlaySummary==null){
 				qPlaySummary = new QuizPlaySummary(quiz.quizId,quizResult,Config.getCurrentTimeStamp());
@@ -782,7 +800,13 @@ public class ProgressiveQuizController extends AppController{
 					qPlaySummary.setWin(qPlaySummary.getWin()+1);
 					qPlaySummary.setStreak(qPlaySummary.getStreak()+1);
 				} 
+				
+				// TODO: update in local summary -NOT NEEDED REMOVE < ADDED DURING SERVER CALLS
+				// TODO: update game event 
 			}
+			
+			
+			
 			final boolean hasWon = quizResult==WON;
 			
 			if(isChallengedMode()){
@@ -813,7 +837,12 @@ public class ProgressiveQuizController extends AppController{
 		if (quizResultScreen==null){
 			quizResultScreen = new WinOrLoseScreen(this,currentUsers);
 		}
-		quizResultScreen.showResult(userAnswersStack,quizResult,GameUtils.didUserLevelUp(oldPoints,newPoints) , quizMode);
+		boolean isLevelUp = GameUtils.didUserLevelUp(oldPoints,newPoints);
+		if(isLevelUp){
+			//update game event
+			quizApp.getDataBaseHelper().addGameEvents(new GameEvents(EventType.LEVEL_UP , quiz.quizId ,null , null));
+		}
+		quizResultScreen.showResult(userAnswersStack,quizResult,isLevelUp , quizMode);
 		insertScreen(quizResultScreen);
 		
 	}

@@ -239,7 +239,8 @@ public class MusicService extends Service
 	            public void run() 
 	            {
 	                updateVolume(1);
-	                if (iVolume == INT_VOLUME_MAX)
+	                
+	                if (iVolume >= (musicId == R.raw.app_music ? INT_VOLUME_MAX:(INT_VOLUME_MAX*2)/3))
 	                {
 	                    timer.cancel();
 	                    timer.purge();

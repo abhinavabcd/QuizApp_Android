@@ -53,7 +53,8 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 	private Dao<User, Integer> usersInfo = null;
 	private Dao<OfflineChallenge, Integer> offlineChallengeDao = null;
 	private Dao<LocalQuizHistory, Integer> quizHistoryDao = null;
-	
+	private Dao<GameEvents, Integer> gameEventsDao = null;
+
 	private RuntimeExceptionDao<Category, Integer> categoriesRuntimeExceptionDao = null;
 	private RuntimeExceptionDao<Quiz, Integer> quizRuntimeExceptionDao = null;
 
@@ -63,6 +64,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 	private RuntimeExceptionDao<UserPreferences, Integer> userPreferencesRuntimeDao;
 	private RuntimeExceptionDao<OfflineChallenge, Integer> offlineChallengeRuntimeExDao = null;
 	private RuntimeExceptionDao<LocalQuizHistory, Integer> quizHistoryExceptionDao = null;
+	private RuntimeExceptionDao<GameEvents, Integer> gameEventsExceptionDao = null;
 	
 	/* for each updater
 	 * upgrade() , getter , setters for runtime ex and dao s , create tables 
@@ -356,6 +358,13 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 			Log.e(DatabaseHelper.class.getName(), "Can't create database", e);
 			throw new RuntimeException(e);
 		}
+		try {
+			Log.i(DatabaseHelper.class.getName(), "onCreate");
+			TableUtils.createTableIfNotExists(connectionSource, GameEvents.class);
+		} catch (SQLException e) {
+			Log.e(DatabaseHelper.class.getName(), "Can't create database", e);
+			throw new RuntimeException(e);
+		}
 	}
 	
 	@Override
@@ -372,6 +381,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 			TableUtils.dropTable(connectionSource, QuizPlaySummary.class, true);
 			TableUtils.dropTable(connectionSource, OfflineChallenge.class, true);
 			TableUtils.dropTable(connectionSource, LocalQuizHistory.class, true);
+			TableUtils.dropTable(connectionSource, GameEvents.class, true);
 			
 			// after we drop the old databases, we create the new ones
 			onCreate(db, connectionSource);
@@ -433,6 +443,12 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 		return usersInfo;
 	}
 
+	public Dao<GameEvents, Integer> getGameEventsDao() throws SQLException {
+		if (gameEventsDao == null) {
+			gameEventsDao = getDao(GameEvents.class); 
+		}
+		return gameEventsDao;
+	}
 	public Dao<OfflineChallenge, Integer> getOfflineChallengesDao() throws SQLException {
 		if (offlineChallengeDao == null) {
 			offlineChallengeDao = getDao(OfflineChallenge.class); 
@@ -479,6 +495,13 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 			quizSummaryRuntimeExceptionDao = getRuntimeExceptionDao(QuizPlaySummary.class);
 		}
 		return quizSummaryRuntimeExceptionDao;
+	}
+
+	public RuntimeExceptionDao<GameEvents, Integer> getGameEventsExceptionDao() {
+		if (gameEventsExceptionDao == null) {
+			gameEventsExceptionDao = getRuntimeExceptionDao(GameEvents.class);
+		}
+		return gameEventsExceptionDao;
 	}
 
 	public RuntimeExceptionDao<Badge, Integer> getBadgesExceptionDao() {
@@ -765,8 +788,32 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 			e.printStackTrace();
 		}
 		return null;
+	}
+	
+	public void addGameEvents(GameEvents evt){
+		try {
+			getGameEventsDao().create(evt);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public List<GameEvents> getAllGameEvents(double timestamp){
+		try {
+			return getGameEventsDao().queryBuilder().limit((long)50).orderBy("timestamp", false).query();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return null;		
+	}
+
+	public void addToQuizHistory(LocalQuizHistory q) {
+		try {
+			getQuizHistoryDao().create(q);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 
 	}
-    
 }
 

@@ -185,6 +185,14 @@ public class User {
 	public void setStatus(String status) {
 		this.status = status;
 	}
+
+	public int getTotalPoints() {
+		int t = 0;
+		for(String quizId : getStats().keySet()){
+			t+=stats.get(quizId);
+		}
+		return t;
+	}
 	
 
 }

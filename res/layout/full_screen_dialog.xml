@@ -25,28 +25,30 @@
         android:gravity="center" >
         
         <com.amcolabs.quizapp.widgets.QuizAppMenuItem
-           android:id="@+id/button1"
-           android:layout_width="wrap_content"
-           android:layout_height="wrap_content"
-           android:layout_marginRight="30dp"
-           android:padding="10dp"
-           fancy:borderColor="#FFFFFF"
-           fancy:borderWidth="1dp"
-           fancy:defaultColor="#3b5998"
-           fancy:focusColor="#5577bd"
-           fancy:fontIconSize="10sp"
-           fancy:iconPosition="right"
-           fancy:radius="30dp"
-           fancy:text="Yes"
-           fancy:textColor="#FFFFFF" >
+            android:id="@+id/button1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:padding="10dp"
+            fancy:borderColor="#FFFFFF"
+            fancy:borderWidth="1dp"
+            fancy:defaultColor="#3b5998"
+            fancy:focusColor="#5577bd"
+            fancy:fontIconSize="10sp"
+            fancy:iconPosition="right"
+            fancy:radius="30dp"
+            fancy:text="Yes"
+            fancy:textColor="#FFFFFF" >
+
         </com.amcolabs.quizapp.widgets.QuizAppMenuItem>
         
-
        <com.amcolabs.quizapp.widgets.QuizAppMenuItem
            android:id="@+id/button2"
            android:layout_width="wrap_content"
            android:layout_height="wrap_content"
-           android:layout_marginRight="20dp"
+           android:layout_marginLeft="10dp"
+           android:layout_marginRight="10dp"
            android:padding="10dp"
            fancy:borderColor="#FFFFFF"
            fancy:borderWidth="1dp"
@@ -57,6 +59,7 @@
            fancy:radius="30dp"
            fancy:text="No"
            fancy:textColor="#FFFFFF" >
+
 	  </com.amcolabs.quizapp.widgets.QuizAppMenuItem>
         
     </LinearLayout>

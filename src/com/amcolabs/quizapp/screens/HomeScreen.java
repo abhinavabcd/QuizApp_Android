@@ -9,6 +9,7 @@ import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -141,6 +142,8 @@ public class HomeScreen extends Screen {
 				}
 			}
 		}
+		totalXp.setText(getApp().getUser().getTotalPoints()+"xp");
+		
 		for(int i=0;i<listViews.size();i++){
 			listViews.get(i).invalidate();
 		}
@@ -151,6 +154,7 @@ public class HomeScreen extends Screen {
 	private OfflineChallengesAdapter offlineChallengeAdaptor;
 	private List<OfflineChallenge> offlineChallenges;
 	private List<Quiz> quizzes;
+	private TextView totalXp;
 	
 	public void addOfflineChallengesView(List<OfflineChallenge> offlineChallenges, boolean showViewMore , String text , boolean spanOnFullWidth) {
 		this.offlineChallenges = offlineChallenges;
@@ -233,13 +237,37 @@ public class HomeScreen extends Screen {
 		
 		FrameLayout viewMore = (FrameLayout) lView.findViewById(R.id.view_all_wrapper);
 		viewMore.setVisibility(View.GONE);
+		((LayoutParams)lView.getLayoutParams()).weight = 1.0f;
 		addToScrollView(lView);
-
+		addShortProfileStats();
 	}
 	
 	
 	
-	DataInputListener<Quiz> quizClickListener = new DataInputListener<Quiz>(){
+	private void addShortProfileStats() {
+		 LinearLayout wrapUserStrip;
+		 GothamTextView userName;
+		 ImageButton viewProfileButton;
+		LinearLayout baseLayout = (LinearLayout) getApp().getActivity().getLayoutInflater().inflate(R.layout.user_strip, null);
+		baseLayout.setBackgroundColor(getResources().getColor(R.color.black));
+		wrapUserStrip = (LinearLayout) baseLayout.findViewById(R.id.wrap_user_strip);
+		userName = (GothamTextView) baseLayout.findViewById(R.id.user_name);
+		totalXp = (GothamTextView) baseLayout.findViewById(R.id.totalXp);
+		viewProfileButton = (ImageButton) baseLayout.findViewById(R.id.view_profile_button);
+		
+		userName.setText(getApp().getUser().name);
+		totalXp.setText(getApp().getUser().getTotalPoints()+"xp");
+		viewProfileButton.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				userMainController.showUserActivity();
+			}
+		});
+		addToScrollView(baseLayout);
+	}
+
+
+	private DataInputListener<Quiz> quizClickListener = new DataInputListener<Quiz>(){
 		@Override
 		public String onData(final Quiz quiz) {
 			getApp().getStaticPopupDialogBoxes().showQuizSelectMenu(new DataInputListener<Integer>(){
@@ -265,6 +293,14 @@ public class HomeScreen extends Screen {
 		}
 	};
 	
+	public DataInputListener<Quiz> getQuizClickListener() {
+		return quizClickListener;
+	}
+
+	public void setQuizClickListener(DataInputListener<Quiz> quizClickListener) {
+		this.quizClickListener = quizClickListener;
+	}
+
 	public void addUserQuizzesView(List<Quiz> quizzes, boolean showViewMore , String text) {
 		final QuizItemListAdapter quizAdaptor = new QuizItemListAdapter(getApp(),0,quizzes, quizClickListener);
 		quizAdaptorList.add(quizAdaptor);

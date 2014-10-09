@@ -1,26 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:sat="http://schemas.android.com/apk/lib/android.view.ext"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/LinearLayout1"
+    android:id="@+id/FrameLayout1"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_gravity="center"
-    android:orientation="vertical"
     tools:context="com.amcolabs.quizapp.QuizApp"
     tools:ignore="MergeRootFrame" >
-
-    <include
-        android:id="@+id/nav_menu"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        layout="@layout/nav_menu"
-        android:scrollbarAlwaysDrawVerticalTrack="false" />
-
-    <FrameLayout
+   	<FrameLayout
         android:id="@+id/container"
         android:layout_width="match_parent"
         android:layout_height="match_parent" >
     </FrameLayout>
 
-</LinearLayout>
+   	<com.amcolabs.quizapp.widgets.GothamTextView
+   	    android:id="@+id/menu_button"
+   	    android:layout_width="wrap_content"
+   	    android:layout_height="wrap_content"
+   	    android:background="@color/translucent_black"
+   	    android:padding="5dp"
+   	    android:text="Menu"
+   	    android:textAppearance="?android:attr/textAppearanceMedium"
+   	    android:textColor="@color/white"
+   	    android:textSize="20sp"
+   	    android:textStyle="bold" />
+
+</FrameLayout>

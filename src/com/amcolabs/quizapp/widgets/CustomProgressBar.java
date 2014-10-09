@@ -17,7 +17,6 @@ public class CustomProgressBar extends ProgressBar{
 	private Paint pt; 
 	public CustomProgressBar(Context context, AttributeSet attr, int progressbarstylehorizontal) {
 		super(context,attr,android.R.attr.progressBarStyleHorizontal);
-		// TODO Auto-generated constructor stub
 		pt = new Paint();
 		pt.setColor(Color.GREEN);
 //		this.setProgressDrawable(context.getResources().getDrawable(R.drawable.fat_progress_bar));
@@ -71,7 +70,6 @@ public class CustomProgressBar extends ProgressBar{
 //					try {
 //						Thread.sleep(100);
 //					} catch (InterruptedException e) {
-//						// TODO Auto-generated catch block
 //						e.printStackTrace();
 //					}
 //				}
@@ -82,7 +80,6 @@ public class CustomProgressBar extends ProgressBar{
 	
 	@Override
 	protected synchronized void onDraw(Canvas canvas) {
-		// TODO Auto-generated method stub
 //		canvas.drawText("Hello world", 0, 0, pt);
 		super.onDraw(canvas);
 	}

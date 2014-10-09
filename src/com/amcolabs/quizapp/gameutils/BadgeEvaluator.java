@@ -8,6 +8,8 @@ import java.util.List;
 import com.amcolabs.quizapp.QuizApp;
 import com.amcolabs.quizapp.databaseutils.Badge;
 import com.amcolabs.quizapp.databaseutils.Category;
+import com.amcolabs.quizapp.databaseutils.GameEvents;
+import com.amcolabs.quizapp.databaseutils.GameEvents.EventType;
 import com.amcolabs.quizapp.databaseutils.Quiz;
 import com.amcolabs.quizapp.databaseutils.QuizPlaySummary;
 import com.amcolabs.quizapp.datalisteners.DataInputListener;
@@ -159,7 +161,9 @@ public class BadgeEvaluator {
 			return;
 		ArrayList<String> badgeIds = new ArrayList<String>();
 		for(int i=0;i<unlockedBadges.size();i++){
-			badgeIds.add(unlockedBadges.get(i).getBadgeId());
+			String badgeId = unlockedBadges.get(i).getBadgeId();
+			badgeIds.add(badgeId);
+			quizApp.getDataBaseHelper().addGameEvents(new GameEvents(EventType.UNLOCKED_BADGE, badgeId, null, null));
 		}
 		quizApp.getServerCalls().addBadges(badgeIds, new DataInputListener<Boolean>(){
 			@Override
