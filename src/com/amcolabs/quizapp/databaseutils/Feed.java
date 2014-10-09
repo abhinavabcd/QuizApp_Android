@@ -9,8 +9,8 @@ import android.widget.LinearLayout;
 import com.amcolabs.quizapp.QuizApp;
 import com.amcolabs.quizapp.R;
 import com.amcolabs.quizapp.User;
+import com.amcolabs.quizapp.adapters.FeedListItemAdaptor.FeedViewHolder;
 import com.amcolabs.quizapp.appcontrollers.ProfileAndChatController;
-import com.amcolabs.quizapp.appcontrollers.FeedListItemAdaptor.FeedViewHolder;
 import com.amcolabs.quizapp.datalisteners.DataInputListener;
 import com.amcolabs.quizapp.gameutils.GameUtils;
 import com.amcolabs.quizapp.uiutils.UiUtils.UiText;
@@ -72,27 +72,6 @@ public class Feed {
 		
 	}
 	
-	public View createLayout(QuizApp quizApp, FeedViewHolder feedHolder){
-		 ImageView titleImage;
-		 GothamTextView titleName;
-		 GothamTextView textContent1;
-		 GothamTextView textContent2;
-    	 LinearLayout baseLayout = null;
-		 switch(getUserFeedType()){
-		 	case FEED_CHALLENGE:
-		 	case FEED_USED_JOINED:
-		 		baseLayout = (LinearLayout) quizApp.getActivity().getLayoutInflater().inflate(R.layout.feed_generic_view, null);
-				feedHolder.titleImage = (ImageView) baseLayout.findViewById(R.id.title_image);
-				feedHolder.titleName = (GothamTextView) baseLayout.findViewById(R.id.title_name);
-				feedHolder.textContent1 = (GothamTextView) baseLayout.findViewById(R.id.text_content_1);
-				feedHolder.textContent2 = (GothamTextView) baseLayout.findViewById(R.id.text_content_2);
-				baseLayout.setTag(feedHolder);
-				return baseLayout;
-				
-		 }
-		 return null;
-	}
- 
 	public void onFeedElemClick(final QuizApp quizApp , String s){
 		 if(s.startsWith("offlineChallengeId")){
 			OfflineChallenge offlineChallenge = quizApp.getDataBaseHelper().getOfflineChallengeByChallengeId(s.split("/")[1]);
@@ -110,40 +89,5 @@ public class Feed {
 			 	});
 		 }
 	}
-	
-	
-	public void setDataIntoView(final QuizApp quizApp ,FeedViewHolder feedHolder) {
-		User user =null; 
-		 switch(getUserFeedType()){
-			 case FEED_CHALLENGE:
-				user = quizApp.cachedUsers.get(fromUid);
-				quizApp.getUiUtils().loadImageIntoView(quizApp.getContext(), feedHolder.titleImage, user.pictureUrl, false);
-				feedHolder.titleName.setText(user.name);
-				OfflineChallenge offlineChallenge = quizApp.getDataBaseHelper().getOfflineChallengeByChallengeId(message);
-				int user1Points = GameUtils.getLastElement(offlineChallenge.getChallengeData(quizApp).userAnswers).whatUserGot;
-				int user2Points = GameUtils.getLastElement(offlineChallenge.getChallengeData2(quizApp).userAnswers).whatUserGot;
-				String winText = user1Points==user2Points?UiText.TIE_QUIZ_MESAGE.getValue(): (user1Points>user2Points?UiText.WON_QUIZ_MESSAGE.getValue():UiText.LOST_QUIZ_MESAGE.getValue());
-				quizApp.getUiUtils().setTextViewHTML(feedHolder.textContent1, UiText.YOU_WON_LOOSE_CHALLENGE_FEED.getValue(winText, message), new DataInputListener<String>(){
-					@Override
-					public String onData(String s) {
-						onFeedElemClick(quizApp , s);
-						return super.onData(s);
-					}
-				});
-				break;
-			 case FEED_USED_JOINED:
-				user = quizApp.cachedUsers.get(fromUid);
-				quizApp.getUiUtils().loadImageIntoView(quizApp.getContext(), feedHolder.titleImage, user.pictureUrl, false);
-				feedHolder.titleName.setText(user.name);
-				quizApp.getUiUtils().setTextViewHTML(feedHolder.textContent1, UiText.FRIEND_USER_STARTED_QUIZAPP.getValue(user.name , user.uid), new DataInputListener<String>(){
-					@Override
-					public String onData(String s) {
-						onFeedElemClick(quizApp , s);
-						return super.onData(s);
-					}
-				});
-				break;
-				
-		 }
-	}
+
 }

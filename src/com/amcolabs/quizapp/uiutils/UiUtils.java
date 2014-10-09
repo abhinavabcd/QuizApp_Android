@@ -153,10 +153,17 @@ public class UiUtils {
 		CONENCT_WITH_GOOGLE("Connect With Google"),
 		INVITE_YOUR_FRIENDS("Invite your <a href='googlePlusInvite/friends'>Google Friends</a>"),
 		CONENCT_WITH_FACEBOOK("Connect with Facebook"),
-		INVITE_YOUR_FB_FRIENDS("Invite Your <a href='facebookInvite/friends'>Facebook Friends</a>"), CONNECTING("Connectin to Google"),
-		USER_WANTS_A_GAME("%s want to have a game with you"), NO_FEED_AVAILABLE("No Recent Feed"),
+		INVITE_YOUR_FB_FRIENDS("Invite Your <a href='facebookInvite/friends'>Facebook Friends</a>"),
+		CONNECTING("Connectin to Google"),
+		USER_WANTS_A_GAME("%s want to have a game with you"), 
+		NO_FEED_AVAILABLE("No Recent Feed"),
 		FRIENDS("Friends"), NO_FRIENDS_SEARCH_AND_SUBSCRIBE("You have no Friends , Search and Subscribe"),
-		NO_RANKINGS_AVAILABLE("No Ranking Data Available");
+		NO_RANKINGS_AVAILABLE("No Ranking Data Available"),
+		YOU_LEVELED_UP("You have level up'ed in %s"),
+		YOU_LOST_TO_USER("You lost to <a href='userProfile/%s'>%s</a> in <a href='quizStats/%s'>%s</a> by %s xp Points"),	
+		YOU_DEFEATED_USER("You defeated <a href='userProfile/%s'>%s</a> in <a href='quizStats/%s'>%s</a> with %s xp Points"),
+		THERE_WAS_SERVER_ERROR("There was a server error while you were playing with <a href='userProfile/%s'>%s</a> in <a href='quizStats/%s'>%s</a>"),
+		YOU_UNLOCKED_BADGE("You unlocked a badge <a href='badge/%s'>%s</a>");	
 		
 		String value = null;
 		UiText(String value){

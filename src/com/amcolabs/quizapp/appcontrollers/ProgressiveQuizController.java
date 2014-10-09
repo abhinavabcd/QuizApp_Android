@@ -279,11 +279,13 @@ public class ProgressiveQuizController extends AppController{
 		waitinStartTime = Config.getCurrentTimeStamp();
 
 		if(isNormalMode()){
+			// TODO : remove handler on screen remove , this triggers of in like 15 seconds
 			new Handler().postDelayed(new Runnable() {
 				@Override
 				public void run() {
 					if(noResponseFromServer){
-						serverSocket.sendTextMessage(constructSocketMessage(MessageType.ACTIVATE_BOT, null, null));
+						if(serverSocket!=null)
+							serverSocket.sendTextMessage(constructSocketMessage(MessageType.ACTIVATE_BOT, null, null));
 					}
 				}
 			}, Config.BOT_INTIALIZE_AFTER_NO_USER_TIME);
@@ -431,10 +433,11 @@ public class ProgressiveQuizController extends AppController{
 //
 //		profileAndChat.loadChatScreen(getOtherUsers().get(0), -1, true);
 		
-		if(!isServerError)
+		if(!isServerError){
 			loadResultScreen(quiz,currentUsers,userAnswersStack);
+		}
 		else{
-			quizApp.getDataBaseHelper().addGameEvents(new GameEvents(EventType.SERVER_ERROR, quiz.quizId , getOtherUser().uid , null));
+			quizApp.getDataBaseHelper().addGameEvents(new GameEvents(EventType.SERVER_ERROR_QUIZ, quiz.quizId , getOtherUser().uid , null));
 			quizResultScreen = new WinOrLoseScreen(this,currentUsers);
 			quizResultScreen.showResult(userAnswersStack,SERVER_ERR, false , quizMode);
 			insertScreen(quizResultScreen);
@@ -470,7 +473,7 @@ public class ProgressiveQuizController extends AppController{
 	    				@Override
 	    				public String onData(Boolean s) {
 	    					if(s){
-	    						//setQuizMode(CHALLENGE_MODE);
+	    						startNewChallenge(getOtherUser());
 	    					}
 	    					else{
 	    						validateAndShowWinningScreen(true);
@@ -771,7 +774,10 @@ public class ProgressiveQuizController extends AppController{
 			String userAnswers2Json =quizApp.getConfig().getGson().toJson(userAnswersStack.get(getOtherUser().uid));
 			LocalQuizHistory quizHistory = new LocalQuizHistory(quiz.quizId , quizResult , newPoints, getOtherUser().uid , userAnswers1Json , userAnswers2Json);
 			quizApp.getDataBaseHelper().addToQuizHistory(quizHistory);
-			
+			quizApp.getDataBaseHelper().addGameEvents(new GameEvents(quizResult==TIE? EventType.TIE_QUIZ : (quizResult==LOOSE? EventType.LOST_QUIZ : EventType.WON_QUIZ),
+													quiz.quizId , getOtherUser().uid , 
+													null));
+
 			if(!isChallengedMode()){
 				if(shouldUserSendAllUserAnswers()){ // this is a funny mechanism we choose  , where one user with higher preference sends the all the game details to the server , we keep this check on the server too
 					quizApp.getServerCalls().updateQuizWinStatus(quiz.quizId , quizResult , newPoints-oldPoints, getOtherUser() , userAnswers1Json , userAnswers2Json);//server call 

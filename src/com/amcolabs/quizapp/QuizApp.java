@@ -601,19 +601,18 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 
 	
 	
-	public HashMap<String , User> cachedUsers = new HashMap<String, User>();
-//	{
-//		
-//		public User get(Object key) {
-//			if(!super.containsKey(key)){
-//				//wtf
-//				getServerCalls().getUserByUidSync(key, new DataInputListener<Boolean>(){
-//					
-//				});
-//			}
-//			return super.get(key);
-//		};
-//	};
+	public HashMap<String , User> cachedUsers = new HashMap<String, User>(){
+		public User get(Object key) {
+			if(!super.containsKey(key)){
+				User u =getDataBaseHelper().getUserByUid(key.toString());
+				if(u!=null){
+					put(u.uid, u);
+					return u;
+				}
+			}
+			return super.get(key);
+		};
+	};
 
 	private MusicService mServ;
 
