@@ -17,6 +17,9 @@ public class GameEvents {
 	@DatabaseField
 	public String message3;
 	
+	public GameEvents() {
+	}
+	
 	public static enum EventType{
 		SOMETHING_ELSE(-1),
 		UNLOCKED_BADGE(0),
@@ -25,7 +28,8 @@ public class GameEvents {
 		LEVEL_UP(3),
 		USER_JOINED(4),
 		SHARED_WITH_FB(5),
-		SHARED_WITH_GOOGLE(6);
+		SHARED_WITH_GOOGLE(6),
+		SERVER_ERROR(7);
 		
 		int value = 0;
 		EventType(int i){

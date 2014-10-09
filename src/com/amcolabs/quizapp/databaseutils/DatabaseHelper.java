@@ -38,7 +38,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 	// name of the database file for your application -- change to something appropriate for your app
 	private static final String DATABASE_NAME = "quizApp.db";
 	// any time you make changes to your database objects, you may have to increase the database version
-	private static final int DATABASE_VERSION = 16;
+	private static final int DATABASE_VERSION = 17;
 	private static String DATABASE_PATH = "/data/data/com.amcolabs.quizapp/databases/";
 
 	// the DAO object we use to access the Category table
@@ -787,6 +787,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 	
 	public void addGameEvents(GameEvents evt){
 		try {
+			evt.timestamp = Config.getCurrentTimeStamp();
 			getGameEventsDao().create(evt);
 		} catch (SQLException e) {
 			e.printStackTrace();

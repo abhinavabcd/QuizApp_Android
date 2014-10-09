@@ -434,7 +434,7 @@ public class ProgressiveQuizController extends AppController{
 		if(!isServerError)
 			loadResultScreen(quiz,currentUsers,userAnswersStack);
 		else{
-			//TODO: add game event of server error
+			quizApp.getDataBaseHelper().addGameEvents(new GameEvents(EventType.SERVER_ERROR, quiz.quizId , getOtherUser().uid , null));
 			quizResultScreen = new WinOrLoseScreen(this,currentUsers);
 			quizResultScreen.showResult(userAnswersStack,SERVER_ERR, false , quizMode);
 			insertScreen(quizResultScreen);
