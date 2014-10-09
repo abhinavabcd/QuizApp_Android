@@ -147,7 +147,13 @@ public class SelectFriendsScreen extends Screen {
 			debugMessageWrapper.setVisibility(View.GONE);
 		}
 		listView.setAdapter(friendsAdapter);
-		navigateToAllFriends();
+		if(enableSocial)
+			navigateToAllFriends();
+		else if(friendsAdapter.getCount()==0){
+				debugMessageWrapper.setVisibility(View.VISIBLE);
+			debugMessage.setVisibility(View.VISIBLE);
+			debugMessage.setText(UiText.NO_FRIENDS_SEARCH_AND_SUBSCRIBE.getValue());
+		}
 	//	addListenersToQuizListItem(listView);
 	//	setListViewHeightBasedOnChildren(listView);
 		

@@ -22,14 +22,13 @@ import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.ViewParent;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
 import android.widget.FrameLayout;
-import android.widget.HorizontalScrollView;
-import android.widget.LinearLayout;
 
 import com.amcolabs.quizapp.appcontrollers.ProfileAndChatController;
 import com.amcolabs.quizapp.appcontrollers.UserMainPageController;
@@ -141,7 +140,7 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 			setStaticPopupDialogBoxes(new StaticPopupDialogBoxes(this));
 			loadingView = userDeviceManager.getLoadingView(this.getActivity());
 			disposeScreens = new ArrayList<Screen>();
-			addMenuItems();
+//			addMenuItems();
 		}
 	}
 
@@ -358,9 +357,8 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 	private Object uiSync = new Object();
 	Stack<Screen> screenStack = new Stack<Screen>();
 
-	private HorizontalScrollView menu;
+	private View menu;
 
-	private List<QuizAppMenuItem> menuItems;
 
 
 
@@ -464,6 +462,8 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 	}
 
     int currentActiveMenu = -1;
+
+	private HashMap<Integer, UiText> menuItems = null;
 	public void onMenuClick(int id) {
 		if(isRapidReClick()) return;
 		if(isScreenAnimationActive!=0){
@@ -543,39 +543,54 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 		}
 	}
 	
-	public void addMenuItems(){
-		LinearLayout buttonsContainer = (LinearLayout) menu.findViewById(R.id.nav_items_container);
-		buttonsContainer.removeAllViews();
-		menuItems = Arrays.asList(
-				new QuizAppMenuItem(this, QuizApp.MENU_HOME, R.drawable.home , UiText.HOME.getValue()),
-				new QuizAppMenuItem(this, QuizApp.MENU_BADGES, R.drawable.badges,UiText.BADGES.getValue()),
-				new QuizAppMenuItem(this, QuizApp.MENU_ALL_QUIZZES, R.drawable.all_quizzes, UiText.SHOW_QUIZZES.getValue()),
-//				new QuizAppMenuItem(this, QuizApp.MENU_MESSAGES, R.drawable.messages , UiText.SHOW_MESSAGES.getValue()),
-				new QuizAppMenuItem(this, QuizApp.MENU_CHATS, R.drawable.home , UiText.CHATS.getValue()),
-				new QuizAppMenuItem(this, QuizApp.MENU_FRIENDS, R.drawable.home , UiText.FRIENDS.getValue())
-			);
-		
-		for(QuizAppMenuItem item : menuItems){
-			buttonsContainer.addView(item);
-		}
-	}
+//	public void addMenuItems(){
+//		LinearLayout buttonsContainer = (LinearLayout) menu.findViewById(R.id.nav_items_container);
+//		buttonsContainer.removeAllViews();
+//		menuItems = Arrays.asList(
+//				new QuizAppMenuItem(this, QuizApp.MENU_HOME, R.drawable.home , UiText.HOME.getValue()),
+//				new QuizAppMenuItem(this, QuizApp.MENU_BADGES, R.drawable.badges,UiText.BADGES.getValue()),
+//				new QuizAppMenuItem(this, QuizApp.MENU_ALL_QUIZZES, R.drawable.all_quizzes, UiText.SHOW_QUIZZES.getValue()),
+////				new QuizAppMenuItem(this, QuizApp.MENU_MESSAGES, R.drawable.messages , UiText.SHOW_MESSAGES.getValue()),
+//				new QuizAppMenuItem(this, QuizApp.MENU_CHATS, R.drawable.home , UiText.CHATS.getValue()),
+//				new QuizAppMenuItem(this, QuizApp.MENU_FRIENDS, R.drawable.home , UiText.FRIENDS.getValue())
+//			);
+//		
+//		for(QuizAppMenuItem item : menuItems){
+//			buttonsContainer.addView(item);
+//		}
+//	}
 	
-	public void setMenuItemDirty(int id , String text){
-		for(QuizAppMenuItem item : menuItems){
-			if(item.getId()==id){
-				item.setDirtyText(text);
+//	public void setMenuItemDirty(int id , String text){
+//		for(QuizAppMenuItem item : menuItems){
+//			if(item.getId()==id){
+//				item.setDirtyText(text);
+//			}
+//		}
+//	}
+	
+	public void setMenu( View view) {
+		this.menu = view; 
+		menu.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				getStaticPopupDialogBoxes().showMenu(getMenuItems());	
 			}
-		}
-	}
-	
-	public void setHorizontalMenu( HorizontalScrollView hmenu) {
-		this.menu = hmenu; 
+		});
 		this.menu.setVisibility(View.GONE);
 	} 
-	public HorizontalScrollView getMenu(){
-		return menu;
+
+	protected HashMap<Integer, UiText> getMenuItems() {
+		if(menuItems==null){
+			menuItems = new HashMap<Integer, UiUtils.UiText>();
+			menuItems.put(QuizApp.MENU_HOME, UiText.HOME);
+			menuItems.put(QuizApp.MENU_BADGES,UiText.BADGES);
+			menuItems.put(QuizApp.MENU_ALL_QUIZZES, UiText.SHOW_QUIZZES);
+			menuItems.put(QuizApp.MENU_CHATS,UiText.CHATS);
+			menuItems.put(QuizApp.MENU_FRIENDS, UiText.FRIENDS);
+		}
+		return menuItems;
 	}
-	
 	public StaticPopupDialogBoxes getStaticPopupDialogBoxes() {
 		return staticPopupDialogBoxes;
 	}

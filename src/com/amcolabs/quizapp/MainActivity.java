@@ -57,24 +57,22 @@ public class MainActivity extends ActionBarActivity {
 //		});
 //        
 //        quizApp.setMenu(menu);
-       HorizontalScrollView hmenu = (HorizontalScrollView)findViewById(R.id.nav_menu);
-       hmenu.setBackgroundColor(getResources().getColor(R.color.translucent_black));
    	
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.container, quizApp)
                     .commit();
-            quizApp.setHorizontalMenu(hmenu);             
+            quizApp.setMenu(findViewById(R.id.menu_button));             
         }
 
         if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        }
+        } 
         
         
         
     }
-
+ 
     @Override
     public void onBackPressed() {
         quizApp.onBackPressed();

@@ -26,6 +26,7 @@ import com.amcolabs.quizapp.configuration.Config;
 import com.amcolabs.quizapp.databaseutils.Badge;
 import com.amcolabs.quizapp.databaseutils.Category;
 import com.amcolabs.quizapp.databaseutils.Feed;
+import com.amcolabs.quizapp.databaseutils.LocalQuizHistory;
 import com.amcolabs.quizapp.databaseutils.OfflineChallenge;
 import com.amcolabs.quizapp.databaseutils.OfflineChallenge.ChallengeData;
 import com.amcolabs.quizapp.databaseutils.Question;
@@ -783,30 +784,38 @@ public class ServerCalls {
 		});
 	}
 
-
-	public void updateQuizWinStatus(String quizId, int winStatus , double newPoints, User user , List<UserAnswer> userAnswers1 , List<UserAnswer> userAnswers2) {
+	/* This will update the quiz history db too */
+	public void updateQuizWinStatus(String quizId, int winStatus , double newPoints, User otherUser , String userAnswers1Json , String userAnswers2Json) {
 		String url = getAServerAddr()+"/func?task=updateQuizWinStatus";
 		url+="&encodedKey="+quizApp.getUserDeviceManager().getEncodedKey();
 		url+="&quizId="+quizId;
 		url+="&xpPoints="+newPoints;
 		url+="&winStatus="+winStatus+"";
-		url+="&uid2="+user.uid;
-		HashMap<String, String> params = new HashMap<String, String>();
-		if(userAnswers1!=null)
-			params.put("userAnswers1",quizApp.getConfig().getGson().toJson(userAnswers1));
-		if(userAnswers2!=null)
-			params.put("userAnswers2",quizApp.getConfig().getGson().toJson(userAnswers2));
+		url+="&uid2="+otherUser.uid;
 		
+
+		HashMap<String, String> params = new HashMap<String, String>();
+		String userAnswersJson;
+		if(userAnswers1Json!=null){
+			params.put("userAnswers1",userAnswers1Json);
+		}
+		if(userAnswers2Json!=null){
+			params.put("userAnswers2",userAnswers2Json);
+		}
+		
+		
+		
+
 		makeServerPostCall(url, params , new ServerNotifier() {
 		@Override
 		public void onServerResponse(MessageType messageType,ServerResponse response) {
 			switch(messageType){
 				case OK:
-					// User score has to be updated here but instead doing it in ProgressiveQuizhandler
 					break;
 			}
 		}
 		});
+		//update history item
 	}
 
 	// does not work

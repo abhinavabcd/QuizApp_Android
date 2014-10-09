@@ -1,29 +1,22 @@
 package com.amcolabs.quizapp.popups;
 
 import java.util.ArrayList;
-
-import android.app.Activity;
-import android.app.AlertDialog;
+import java.util.HashMap;
+import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.graphics.Color;
-import android.os.Bundle;
-import android.support.v4.app.DialogFragment;
-import android.support.v4.app.FragmentManager;
-import android.view.LayoutInflater;
+import android.graphics.Typeface;
+import android.view.Gravity;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.ViewGroup;
-import android.view.Window;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
-
 import com.amcolabs.quizapp.QuizApp;
 import com.amcolabs.quizapp.R;
 import com.amcolabs.quizapp.User;
-import com.amcolabs.quizapp.UserDeviceManager;
 import com.amcolabs.quizapp.configuration.Config;
 import com.amcolabs.quizapp.databaseutils.Badge;
 import com.amcolabs.quizapp.databaseutils.OfflineChallenge;
@@ -311,5 +304,42 @@ public class StaticPopupDialogBoxes {
 		d.setContentView(baseLayout);
 		d.show();
 		
+	}
+	Dialog  menuDialog = null;
+	@SuppressLint("NewApi")
+	public void showMenu(final HashMap<Integer, UiText> map) {
+		if(menuDialog==null){
+			menuDialog = new Dialog(quizApp.getContext(),R.style.CustomDialogTheme); 
+			ScrollView dialogLayout = (ScrollView)quizApp.getActivity().getLayoutInflater().inflate(R.layout.menu_items, null);
+			OnClickListener listener = new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					if(map.containsKey(v.getId()))
+						quizApp.onMenuClick(v.getId());
+					menuDialog.dismiss();
+				}
+			};
+			LinearLayout container = (LinearLayout)dialogLayout.findViewById(R.id.menu_items_container);
+			for(int id : map.keySet()){
+				GothamTextView t = new GothamTextView(quizApp.getActivity());
+				t.setText(map.get(id).getValue().toUpperCase());
+				t.setId(id);
+				t.setTextSize(25);
+				t.setAllCaps(true);
+				t.setPadding(10, 10, 10, 10);
+//				t.setGravity(Gravity.CENTER);
+				t.setTextColor(quizApp.getConfig().getUniqueThemeColor(t.getText().toString()));
+				t.setOnClickListener(listener);
+				container.addView(t);
+			}
+			container.setOnClickListener(listener);
+			
+			dialogLayout.setOnClickListener(listener);
+			menuDialog.setContentView(dialogLayout);
+		}	
+		if(menuDialog.isShowing()){
+			return;
+		}
+		menuDialog.show();
 	}
 }

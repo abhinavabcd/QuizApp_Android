@@ -237,6 +237,7 @@ public class HomeScreen extends Screen {
 		
 		FrameLayout viewMore = (FrameLayout) lView.findViewById(R.id.view_all_wrapper);
 		viewMore.setVisibility(View.GONE);
+		((LayoutParams)lView.getLayoutParams()).weight = 1.0f;
 		addToScrollView(lView);
 		addShortProfileStats();
 	}
@@ -248,7 +249,7 @@ public class HomeScreen extends Screen {
 		 GothamTextView userName;
 		 ImageButton viewProfileButton;
 		LinearLayout baseLayout = (LinearLayout) getApp().getActivity().getLayoutInflater().inflate(R.layout.user_strip, null);
-		baseLayout.setBackgroundColor(getResources().getColor(R.color.translucent_black));
+		baseLayout.setBackgroundColor(getResources().getColor(R.color.black));
 		wrapUserStrip = (LinearLayout) baseLayout.findViewById(R.id.wrap_user_strip);
 		userName = (GothamTextView) baseLayout.findViewById(R.id.user_name);
 		totalXp = (GothamTextView) baseLayout.findViewById(R.id.totalXp);
@@ -266,7 +267,7 @@ public class HomeScreen extends Screen {
 	}
 
 
-	DataInputListener<Quiz> quizClickListener = new DataInputListener<Quiz>(){
+	private DataInputListener<Quiz> quizClickListener = new DataInputListener<Quiz>(){
 		@Override
 		public String onData(final Quiz quiz) {
 			getApp().getStaticPopupDialogBoxes().showQuizSelectMenu(new DataInputListener<Integer>(){
@@ -292,6 +293,14 @@ public class HomeScreen extends Screen {
 		}
 	};
 	
+	public DataInputListener<Quiz> getQuizClickListener() {
+		return quizClickListener;
+	}
+
+	public void setQuizClickListener(DataInputListener<Quiz> quizClickListener) {
+		this.quizClickListener = quizClickListener;
+	}
+
 	public void addUserQuizzesView(List<Quiz> quizzes, boolean showViewMore , String text) {
 		final QuizItemListAdapter quizAdaptor = new QuizItemListAdapter(getApp(),0,quizzes, quizClickListener);
 		quizAdaptorList.add(quizAdaptor);

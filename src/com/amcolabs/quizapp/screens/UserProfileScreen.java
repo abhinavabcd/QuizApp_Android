@@ -253,4 +253,8 @@ public class UserProfileScreen extends Screen {
         mPieChart.setCenterText("Total Value\n" + (int) mPieChart.getYValueSum() + "\n(all slices)");
         mPieChart.invalidate();
 	 }
+	
+	public void addInfoLocalSummary(){
+		
+	}
 }

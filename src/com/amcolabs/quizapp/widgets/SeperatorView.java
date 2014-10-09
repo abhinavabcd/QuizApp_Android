@@ -17,7 +17,6 @@ public class SeperatorView extends View{
 	private int color;
 	public SeperatorView(Context context) {
 		super(context);
-		// TODO Auto-generated constructor stub
 //		paint.setColor(Color.BLACK);
 		color = 0;
 		color = context.getResources().getColor(R.color.barDarkColor);
@@ -25,7 +24,6 @@ public class SeperatorView extends View{
 	
 	public SeperatorView(Context context,AttributeSet attrs) {
 		super(context,attrs);
-		// TODO Auto-generated constructor stub
 //		paint.setColor(Color.parseColor("#e7e7e7"));
 //		paint.setColor(context.getResources().getColor(R.color.immutable_bg));
 //		for(int i=0;i<attrs.getAttributeCount();i++){
