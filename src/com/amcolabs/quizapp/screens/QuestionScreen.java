@@ -139,7 +139,9 @@ public class QuestionScreen extends Screen implements View.OnClickListener, Anim
 	public void animateXpPoints(String uid,  int xpPoints){
 		userViews.get(uid).userScoreView.setText(xpPoints+" xp");
 		animTextScale.reset();
-		userViews.get(uid).userScoreView.startAnimation(animTextScale);
+//		TODO: uncomment below line to animate
+//		userViews.get(uid).userScoreView.startAnimation(animTextScale);
+		
 //		userViews.get(uid).userScoreView.refreshDrawableState();
 //		userViews.get(uid).userScoreView.invalidate();
 	}
