@@ -247,8 +247,6 @@ public class UserProfileScreen extends Screen {
 			BarData data = new BarData(xVals, dataSets);
 //			data.setGroupSpace(5f);
 
-	        mBarChart.setValueTypeface(Typeface.MONOSPACE);
-	        mBarChart.setDescriptionTypeface(Typeface.MONOSPACE);
 	        mBarChart.setData(data);
 //	        mBarChart.setDescriptionTextSize(6f);
 //	        mBarChart.setValueTextSize(5f);
@@ -259,7 +257,7 @@ public class UserProfileScreen extends Screen {
 	public void drawUserActivityDistributionChart(ArrayList<String> xVals,ArrayList<Entry> yVals){
 	
 		PieDataSet set = new PieDataSet(yVals, "Quiz Stats");
-//		set.setSliceSpace(3f);
+		set.setSliceSpace(3f);
 		set.setColors(Config.themeColors);
 //        set1.setColors(ColorTemplate.createColors(controller.getContext().getApplicationContext(),ColorTemplate.VORDIPLOM_COLORS));
         PieData data = new PieData(xVals, set);
