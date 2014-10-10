@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.content.Context;
+import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.widget.ImageView;
 import android.widget.ScrollView;
@@ -87,7 +88,7 @@ public class UserProfileScreen extends Screen {
 			if (i<Config.PIE_CHART_MAX_FIELDS-1){
 				userXp = user.getPoints(quizList.get(i).quizId);
 				qIdList.add(quizList.get(i).quizId);
-				xVals.add(quizList.get(i).name);
+				xVals.add(getApp().getGameUtils().reduceString(quizList.get(i).name));
 				myindex = i;
 			}
 			else{
@@ -211,6 +212,8 @@ public class UserProfileScreen extends Screen {
 			BarData data = new BarData(xVals, dataSets);
 //			data.setGroupSpace(5f);
 
+	        mBarChart.setValueTypeface(Typeface.MONOSPACE);
+	        mBarChart.setDescriptionTypeface(Typeface.MONOSPACE);
 	        mBarChart.setData(data);
 //	        mBarChart.setDescriptionTextSize(6f);
 //	        mBarChart.setValueTextSize(5f);

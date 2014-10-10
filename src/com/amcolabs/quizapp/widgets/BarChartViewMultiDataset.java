@@ -80,12 +80,12 @@ public class BarChartViewMultiDataset extends BarChart{
     @Override
     protected void onAttachedToWindow() {
         Legend l = this.getLegend();
-        l.setTextSize(6f);
+        l.setTextSize(7f);
 
         l.setStackSpace(1f);
  //       l.setPosition(LegendPosition.RIGHT_OF_CHART);
-        l.setXEntrySpace(1f);
-        l.setYEntrySpace(5f);
+        l.setXEntrySpace(4f);
+        l.setYEntrySpace(1f);
     	super.onAttachedToWindow();
     }
 }

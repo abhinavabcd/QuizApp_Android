@@ -21,9 +21,9 @@
             android:layout_margin="10dp"
             android:background="@drawable/list_item_bg"
             android:gravity="center_horizontal"
+            android:lines="1"
             android:text="+20"
-            android:textSize="16sp"
-            android:textStyle="bold" />
+            android:textSize="15sp" />
 
         <com.amcolabs.quizapp.widgets.GothamTextView
             android:id="@+id/quizPointsText"
@@ -31,9 +31,9 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:gravity="center_horizontal"
+            android:lines="1"
             android:text="Quiz Points"
-            android:textSize="10sp"
-            android:textStyle="bold" />
+            android:textSize="10sp" />
 
     </LinearLayout>
 
@@ -52,9 +52,9 @@
             android:layout_margin="10dp"
             android:background="@drawable/list_item_bg"
             android:gravity="center_horizontal"
+            android:lines="1"
             android:text="+20"
-            android:textSize="16sp"
-            android:textStyle="bold" />
+            android:textSize="15sp" />
 
         <com.amcolabs.quizapp.widgets.GothamTextView
             android:id="@+id/quizWinPointsText"
@@ -62,9 +62,9 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:gravity="center_horizontal"
+            android:lines="1"
             android:text="Win Bonus"
-            android:textSize="10sp"
-            android:textStyle="bold" />
+            android:textSize="10sp" />
 
     </LinearLayout>
 
@@ -84,9 +84,9 @@
             android:layout_margin="10dp"
             android:background="@drawable/list_item_bg"
             android:gravity="center_horizontal"
+            android:lines="1"
             android:text="+20"
-            android:textSize="16sp"
-            android:textStyle="bold" />
+            android:textSize="15sp" />
 
         <com.amcolabs.quizapp.widgets.GothamTextView
             android:id="@+id/quizLevelupPointsText"
@@ -94,9 +94,9 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:gravity="center_horizontal"
+            android:lines="1"
             android:text="Level Up Bonus"
-            android:textSize="10sp"
-            android:textStyle="bold" />
+            android:textSize="10sp" />
 
     </LinearLayout>
 
@@ -116,9 +116,9 @@
             android:layout_margin="10dp"
             android:background="@drawable/list_item_bg"
             android:gravity="center_horizontal"
+            android:lines="1"
             android:text="+60"
-            android:textSize="16sp"
-            android:textStyle="bold" />
+            android:textSize="15sp" />
 
         <com.amcolabs.quizapp.widgets.GothamTextView
             android:id="@+id/quizTotalPointsText"
@@ -127,8 +127,7 @@
             android:layout_gravity="center"
             android:gravity="center_horizontal"
             android:text="Total Points"
-            android:textSize="10sp"
-            android:textStyle="bold" />
+            android:textSize="10sp"/>
 
     </LinearLayout>
 

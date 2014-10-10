@@ -48,6 +48,9 @@ public class GameUtils {
 			for(String s:name.split(" ")){
 				newStr+=Character.toUpperCase(s.charAt(0));
 			}
+			if(newStr.length()==1){
+				newStr = newStr+name.substring(1, 8);
+			}
 			return newStr;
 		}
 		return name;

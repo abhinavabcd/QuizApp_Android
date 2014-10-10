@@ -350,7 +350,7 @@ public class WinOrLoseScreen extends Screen{
 		for (int i = 0; i < sz; i++) {
 			if (i<Config.PIE_CHART_MAX_FIELDS-1){
 				userXp = user.getPoints(quizList.get(i).quizId);
-				xVals.add(quizList.get(i).name);
+				xVals.add(getApp().getGameUtils().reduceString(quizList.get(i).name));
 				myindex = i;
 			}
 			else{
@@ -420,7 +420,7 @@ public class WinOrLoseScreen extends Screen{
 		
 		BarData data = new BarData(xVals, dataSets);
 //		data.setGroupSpace(30f);
-
+		mChart.setValueFormatter(getApp().getUiUtils().getDecimalFormatter());
 		if(nonZeroFlag){
 			mChart.setData(data);
 	        mChart.invalidate();
