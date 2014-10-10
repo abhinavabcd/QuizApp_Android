@@ -47,6 +47,7 @@ public class SelectFriendsScreen extends Screen {
 	public boolean doNotShowOnBackPress = false;
 	private TabWidget tabs;
 	private TabHost tabsHost;
+	private int t_White;
 	
 	public void showFriendsList(String titleText ,List<User> users , DataInputListener<User> onFriendSelectedListener, boolean searchOnServer, boolean enableSocial){
 		this.users = users;
@@ -113,10 +114,10 @@ public class SelectFriendsScreen extends Screen {
 					 .setContent(R.id.gplus_friends_list);
 			tabsHost.addTab(spec);
 			
-			
+			t_White = getResources().getColor(R.color.translucent_white);
 			for(int i=0;i<tabsHost.getTabWidget().getChildCount();i++){
-	              tabsHost.getTabWidget().getChildAt(i).setBackgroundColor(Color.LTGRAY);
-			}
+	              tabsHost.getTabWidget().getChildAt(i).setBackgroundColor(t_White);
+  			}
 			tabsHost.setOnTabChangedListener(new OnTabChangeListener() {
 				@Override
 				public void onTabChanged(String tabId) {
@@ -130,7 +131,7 @@ public class SelectFriendsScreen extends Screen {
 						refreshAllFriends();
 					}
 					 for(int i=0;i<tabsHost.getTabWidget().getChildCount();i++){
-				              tabsHost.getTabWidget().getChildAt(i).setBackgroundColor(Color.LTGRAY);
+				              tabsHost.getTabWidget().getChildAt(i).setBackgroundColor(t_White);
 			         }
 			         tabsHost.getTabWidget().getChildAt(tabsHost.getCurrentTab()).setBackgroundColor(getResources().getColor(R.color.translucent_black));
 				}
