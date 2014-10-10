@@ -251,31 +251,32 @@ public class StaticPopupDialogBoxes {
 	public YesNoDialog yesOrNo(String text, String possitiveText , String negetiveText , final DataInputListener<Boolean> acceptListener) {
 		final YesNoDialog yesNoPopup = new YesNoDialog(quizApp.getContext(),R.style.CustomDialogTheme, acceptListener);
 		LinearLayout dialogLayout = (LinearLayout)quizApp.getActivity().getLayoutInflater().inflate(R.layout.full_screen_dialog, null);
-		OnClickListener listener = new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				if(v.getId()==R.id.button1){
-					if(acceptListener!=null)
-						acceptListener.onData(true);
-				}
-				else if(v.getId()==R.id.button2){
-					if(acceptListener!=null)
-						acceptListener.onData(false);
-				}
-				yesNoPopup.dismiss();
-			}
-		};
 		((TextView) dialogLayout.findViewById(R.id.textView1)).setText(text);
 		QuizAppMenuItem button1 = (QuizAppMenuItem) dialogLayout.findViewById(R.id.button1);
 		if(possitiveText!=null){
-			button1.setOnClickListener(listener);
+			button1.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					if(acceptListener!=null)
+						acceptListener.onData(true);	
+					yesNoPopup.dismiss();
+					}
+				
+			});
 			button1.setText(possitiveText);
 		}
 		else{
 			button1.setVisibility(View.GONE);
 		}
 		QuizAppMenuItem button2 = (QuizAppMenuItem) dialogLayout.findViewById(R.id.button2);
-		button2.setOnClickListener(listener);
+		button2.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				if(acceptListener!=null)
+					acceptListener.onData(false);		
+				yesNoPopup.dismiss();
+				}
+		});
 		button2.setText(negetiveText);
 		yesNoPopup.setContentView(dialogLayout);
 		yesNoPopup.show();

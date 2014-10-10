@@ -17,6 +17,7 @@ import com.amcolabs.quizapp.databaseutils.Feed.FeedType;
 import com.amcolabs.quizapp.databaseutils.GameEvents;
 import com.amcolabs.quizapp.databaseutils.Quiz;
 import com.amcolabs.quizapp.datalisteners.DataInputListener;
+import com.amcolabs.quizapp.uiutils.UiUtils;
 import com.amcolabs.quizapp.uiutils.UiUtils.UiText;
 import com.amcolabs.quizapp.widgets.GothamTextView;
 
@@ -143,7 +144,7 @@ public class GameEventsListItemAdaptor extends ArrayAdapter<GameEvents> {
 			case LEVEL_UP:
 				genericTextView = (LinearLayout)quizApp.getActivity().getLayoutInflater().inflate(R.layout.generic_event_view, null); 
 				textView = (GothamTextView)genericTextView.findViewById(R.id.data);
-				textView.setText(UiText.YOU_LEVELED_UP.getValue(quizApp.getDataBaseHelper().getQuizById(evt.message).name));
+				quizApp.getUiUtils().setTextViewHTML(textView, UiText.YOU_LEVELED_UP.getValue(quizApp.getDataBaseHelper().getQuizById(evt.message).name),null);
 				return genericTextView;
 			case LOST_QUIZ:
 				genericTextView = (LinearLayout)quizApp.getActivity().getLayoutInflater().inflate(R.layout.generic_event_view, null); 
@@ -163,12 +164,12 @@ public class GameEventsListItemAdaptor extends ArrayAdapter<GameEvents> {
 				textView = (GothamTextView)genericTextView.findViewById(R.id.data); 
 				user = quizApp.cachedUsers.get(evt.message2);
 				quiz = quizApp.getDataBaseHelper().getQuizById(evt.message);
-				textView.setText(UiText.THERE_WAS_SERVER_ERROR.getValue(
+				quizApp.getUiUtils().setTextViewHTML(textView, UiText.THERE_WAS_SERVER_ERROR.getValue(
 								user.uid,
 								user.name,
 								quiz.quizId,
 								quiz.name
-						));
+						),null);
 				return genericTextView;
 			case SHARED_WITH_FB:
 				break;
@@ -182,10 +183,10 @@ public class GameEventsListItemAdaptor extends ArrayAdapter<GameEvents> {
 				genericTextView = (LinearLayout)quizApp.getActivity().getLayoutInflater().inflate(R.layout.generic_event_view, null); 
 				textView = (GothamTextView)genericTextView.findViewById(R.id.data); 
 				Badge badge = quizApp.getDataBaseHelper().getBadgeById(evt.message);
-				textView.setText(UiText.YOU_UNLOCKED_BADGE.getValue(
+				quizApp.getUiUtils().setTextViewHTML(textView, UiText.YOU_UNLOCKED_BADGE.getValue(
 								badge.getBadgeId(),
 								badge.getName()
-						));
+						),null);
 				return genericTextView;
 			case USER_JOINED:
 				break;
