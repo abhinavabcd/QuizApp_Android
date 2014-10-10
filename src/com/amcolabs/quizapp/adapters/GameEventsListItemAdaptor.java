@@ -151,13 +151,13 @@ public class GameEventsListItemAdaptor extends ArrayAdapter<GameEvents> {
 				textView = (GothamTextView)genericTextView.findViewById(R.id.data); 
 				user = quizApp.cachedUsers.get(evt.message2);
 				quiz = quizApp.getDataBaseHelper().getQuizById(evt.message);
-				textView.setText(UiText.YOU_LOST_TO_USER.getValue(
+				quizApp.getUiUtils().setTextViewHTML(textView,UiText.YOU_LOST_TO_USER.getValue(
 								user.uid,
 								user.name,
 								quiz.quizId,
 								quiz.name,
 								"0"
-						));
+						),null);
 				return genericTextView;
 			case SERVER_ERROR_QUIZ:
 				genericTextView = (LinearLayout)quizApp.getActivity().getLayoutInflater().inflate(R.layout.generic_event_view, null); 
@@ -195,13 +195,13 @@ public class GameEventsListItemAdaptor extends ArrayAdapter<GameEvents> {
 				textView = (GothamTextView)genericTextView.findViewById(R.id.data); 
 				user = quizApp.cachedUsers.get(evt.message2);
 				quiz = quizApp.getDataBaseHelper().getQuizById(evt.message);
-				textView.setText(UiText.YOU_DEFEATED_USER.getValue(
+				quizApp.getUiUtils().setTextViewHTML(textView,UiText.YOU_DEFEATED_USER.getValue(
 								user.uid,
 								user.name,
 								quiz.quizId,
 								quiz.name,
 								"0"
-					));
+					),null);
 				return genericTextView;
 			default:
 				break;

@@ -7,10 +7,12 @@ import android.graphics.drawable.ColorDrawable;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -36,7 +38,7 @@ import com.amcolabs.quizapp.widgets.GothamTextView;
 public class HomeScreen extends Screen { 
 	List<Category> categories = new ArrayList<Category>();
 	List<QuizItemListAdapter> quizAdaptorList = new ArrayList<QuizItemListAdapter>();
-	List<ListView> listViews = new ArrayList<ListView>();
+	List<ArrayAdapter> listViewsAdaptors = new ArrayList<ArrayAdapter>();
 	
 	private UserMainPageController userMainController;
 	public HomeScreen(AppController appController) {
@@ -145,8 +147,8 @@ public class HomeScreen extends Screen {
 		}
 		totalXp.setText(getApp().getUser().getTotalPoints()+"xp");
 		
-		for(int i=0;i<listViews.size();i++){
-			listViews.get(i).invalidate();
+		for(int i=0;i<listViewsAdaptors.size();i++){
+			listViewsAdaptors.get(i).notifyDataSetChanged();;
 		}
 	}
 	
@@ -184,7 +186,7 @@ public class HomeScreen extends Screen {
 		ListView listView = (ListView) lView.findViewById(R.id.listView);
 		listView.setAdapter(offlineChallengeAdaptor);
 		
-		listViews.add(listView);
+		listViewsAdaptors.add(offlineChallengeAdaptor);
 	//	addListenersToQuizListItem(listView);
 		
 		
@@ -228,7 +230,7 @@ public class HomeScreen extends Screen {
 		listView.setLayoutParams(lParams);
 		listView.setAdapter(feedAdapter);
 		
-		listViews.add(listView);
+		listViewsAdaptors.add(feedAdapter);
 	//	addListenersToQuizListItem(listView);
 		
 		
@@ -315,7 +317,7 @@ public class HomeScreen extends Screen {
 		ListView listView = (ListView) lView.findViewById(R.id.listView);
 		listView.setAdapter(quizAdaptor);
 		
-		listViews.add(listView);
+		listViewsAdaptors.add(quizAdaptor);
 	//	addListenersToQuizListItem(listView);
 		
 		
