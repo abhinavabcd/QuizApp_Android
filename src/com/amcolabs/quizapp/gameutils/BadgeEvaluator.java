@@ -6,6 +6,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import com.amcolabs.quizapp.QuizApp;
+import com.amcolabs.quizapp.appcontrollers.ProgressiveQuizController.UserAnswer;
 import com.amcolabs.quizapp.databaseutils.Badge;
 import com.amcolabs.quizapp.databaseutils.Category;
 import com.amcolabs.quizapp.databaseutils.GameEvents;
@@ -52,7 +53,7 @@ public class BadgeEvaluator {
 	 * @param value
 	 * @return
 	 */
-	public void evaluateBadges(){
+	public void evaluateBadges(HashMap<String, List<UserAnswer>> userAnswersStack){
 		initialize(); // To load All quiz history, quizzes and categories
 		List<Badge> badges = quizApp.getDataBaseHelper().getAllBadges();
 		if(badges==null){

@@ -255,89 +255,89 @@ public class WinOrLoseScreen extends Screen{
 		}, 1000);
 	}
 	
-	// TODO : below method must be remove at the end
-	public void setSampleData(Context ctxt,PieChartView myChart){
-		int types = 4;
-		float scale = 4;
-		String[] mParties = new String[] {"Quiz1", "Quiz2", "Quiz3", "Quiz4"};
-		
-        float mult = (float) scale;
-
-        ArrayList<Entry> yVals1 = new ArrayList<Entry>();
-        // ArrayList<Entry> yVals2 = new ArrayList<Entry>();
-
-        // IMPORTANT: In a PieChart, no values (Entry) should have the same
-        // xIndex (even if from different DataSets), since no values can be
-        // drawn above each other.
-        for (int i = 0; i < types + 1; i++) {
-            yVals1.add(new Entry((float) (Math.random() * mult) + mult / 5, i));
-        }
-
-        // for (int i = types / 2; i <
-        // types; i++) {
-        // yVals2.add(new Entry((float) (Math.random() * mult) + mult / 5, i));
-        // }
-
-        ArrayList<String> xVals = new ArrayList<String>();
-
-        for (int i = 0; i < types + 1; i++)
-            xVals.add(mParties[i % mParties.length]);
-
-        PieDataSet set1 = new PieDataSet(yVals1, UiText.QUIZ_STATS.getValue());
-        set1.setSliceSpace(3f);
-        set1.setColors(ColorTemplate.createColors(ctxt.getApplicationContext(),
-                ColorTemplate.VORDIPLOM_COLORS));
-
-        PieData data = new PieData(xVals, set1);
-        myChart.setData(data);
-        myChart.setValueTextSize(8);
-        myChart.setDescriptionTextSize(8);
-
-        // undo all highlights
-        myChart.highlightValues(null);
-        myChart.setCenterTextSize(8);
-
-        // set a text for the chart center
-        myChart.setCenterText((int) myChart.getYValueSum() + "");
-        myChart.invalidate();
-	 }
+//	// TODO : below method must be remove at the end
+//	public void setSampleData(Context ctxt,PieChartView myChart){
+//		int types = 4;
+//		float scale = 4;
+//		String[] mParties = new String[] {"Quiz1", "Quiz2", "Quiz3", "Quiz4"};
+//		
+//        float mult = (float) scale;
+//
+//        ArrayList<Entry> yVals1 = new ArrayList<Entry>();
+//        // ArrayList<Entry> yVals2 = new ArrayList<Entry>();
+//
+//        // IMPORTANT: In a PieChart, no values (Entry) should have the same
+//        // xIndex (even if from different DataSets), since no values can be
+//        // drawn above each other.
+//        for (int i = 0; i < types + 1; i++) {
+//            yVals1.add(new Entry((float) (Math.random() * mult) + mult / 5, i));
+//        }
+//
+//        // for (int i = types / 2; i <
+//        // types; i++) {
+//        // yVals2.add(new Entry((float) (Math.random() * mult) + mult / 5, i));
+//        // }
+//
+//        ArrayList<String> xVals = new ArrayList<String>();
+//
+//        for (int i = 0; i < types + 1; i++)
+//            xVals.add(mParties[i % mParties.length]);
+//
+//        PieDataSet set1 = new PieDataSet(yVals1, UiText.QUIZ_STATS.getValue());
+//        set1.setSliceSpace(3f);
+//        set1.setColors(ColorTemplate.createColors(ctxt.getApplicationContext(),
+//                ColorTemplate.VORDIPLOM_COLORS));
+//
+//        PieData data = new PieData(xVals, set1);
+//        myChart.setData(data);
+//        myChart.setValueTextSize(8);
+//        myChart.setDescriptionTextSize(8);
+//
+//        // undo all highlights
+//        myChart.highlightValues(null);
+//        myChart.setCenterTextSize(8);
+//
+//        // set a text for the chart center
+//        myChart.setCenterText((int) myChart.getYValueSum() + "");
+//        myChart.invalidate();
+//	 }
 	
-	public void drawUserActivityCategoryDistributionChart(User user,PieChartView mPieChart){
-		List<Category> categories = getApp().getDataBaseHelper().getAllCategories();
-		ArrayList<Entry> yVals = new ArrayList<Entry>();
-		ArrayList<String> xVals = new ArrayList<String>();
-		int sz = categories.size();
-		
-		for(int i=0;i<sz;i++){
-			xVals.add(categories.get(i).shortDescription);
-		}
-		for (int i = 0; i < sz; i++) {
-			List<Quiz> qList = categories.get(i).getQuizzes(getApp());
-			float totalXP = 0;
-			for(int j=0;j<qList.size();j++){
-				totalXP = totalXP + (float)user.getPoints(qList.get(j).quizId);
-			}
-            yVals.add(new Entry(totalXP, i));
-        }
-		
-		PieDataSet set = new PieDataSet(yVals, UiText.QUIZ_STATS.getValue());
-		set.setSliceSpace(3f);
-		set.setColors(Config.themeColors);
-//        set1.setColors(ColorTemplate.createColors(controller.getContext().getApplicationContext(),ColorTemplate.VORDIPLOM_COLORS));
-        PieData data = new PieData(xVals, set);
-        mPieChart.setData(data);
-        mPieChart.setDescriptionTextSize(5f);
-        mPieChart.setValueTextSize(5f);    
-        mPieChart.setCenterTextSize(5f);
-
-        // undo all highlights
-        mPieChart.highlightValues(null);
-
-        // set a text for the chart center
-        mPieChart.setCenterText((int) mPieChart.getYValueSum() + "");
-        mPieChart.setDescription(UiText.TOTAL_MATCHES_PLAYED.getValue());
-        mPieChart.invalidate();
-	}
+//	public void drawUserActivityCategoryDistributionChart(User user,PieChartView mPieChart){
+//		List<Category> categories = getApp().getDataBaseHelper().getAllCategories();
+//		ArrayList<Entry> yVals = new ArrayList<Entry>();
+//		ArrayList<String> xVals = new ArrayList<String>();
+//		int sz = categories.size();
+//		
+//		for(int i=0;i<sz;i++){
+//			xVals.add(categories.get(i).shortDescription);
+//		}
+//		for (int i = 0; i < sz; i++) {
+//			List<Quiz> qList = categories.get(i).getQuizzes(getApp());
+//			float totalXP = 0;
+//			for(int j=0;j<qList.size();j++){
+//				totalXP = totalXP + (float)user.getPoints(qList.get(j).quizId);
+//			}
+//            yVals.add(new Entry(totalXP, i));
+//        }
+//		
+//		PieDataSet set = new PieDataSet(yVals, UiText.QUIZ_STATS.getValue());
+//		set.setSliceSpace(3f);
+//		set.setColors(Config.themeColors);
+////        set1.setColors(ColorTemplate.createColors(controller.getContext().getApplicationContext(),ColorTemplate.VORDIPLOM_COLORS));
+//        PieData data = new PieData(xVals, set);
+//        mPieChart.setData(data);
+//        mPieChart.setDescriptionTextSize(5f);
+//        mPieChart.setValueTextSize(5f);    
+//        mPieChart.setCenterTextSize(5f);
+//
+//        // undo all highlights
+//        mPieChart.highlightValues(null);
+//
+//        // set a text for the chart center
+//        mPieChart.setCenterText((int) mPieChart.getYValueSum() + "");
+//        mPieChart.setDescription(UiText.TOTAL_MATCHES_PLAYED.getValue());
+//        mPieChart.invalidate();
+//	}
 	
 	public void drawUserActivityQuizDistributionChart(User user,PieChartView mPieChart){
 		List<Quiz> quizList = getApp().getDataBaseHelper().getAllQuizzesOrderedByXP();
@@ -372,8 +372,8 @@ public class WinOrLoseScreen extends Screen{
         PieData data = new PieData(xVals, set);
         mPieChart.setValueFormatter(getApp().getUiUtils().getDecimalFormatter());
         mPieChart.setData(data);
-        mPieChart.setDescriptionTextSize(5f);
-        mPieChart.setValueTextSize(5f);
+        mPieChart.setDescriptionTextSize(4f);
+        mPieChart.setValueTextSize(4f);
 
         mPieChart.setCenterTextSize(5f); 
 
@@ -381,7 +381,7 @@ public class WinOrLoseScreen extends Screen{
         mPieChart.highlightValues(null);
 
         // set a text for the chart center
-        mPieChart.setCenterText("Total value: " + (int) mPieChart.getYValueSum());
+        mPieChart.setCenterText("Total XP: " + (int) mPieChart.getYValueSum());
         
         mPieChart.setDescription(UiText.QUIZ_LEVEL_DISTRIBUTION.getValue());
         mPieChart.invalidate();
@@ -419,7 +419,7 @@ public class WinOrLoseScreen extends Screen{
 		}
 		
 		BarData data = new BarData(xVals, dataSets);
-		data.setGroupSpace(30f);
+//		data.setGroupSpace(30f);
 
 		if(nonZeroFlag){
 			mChart.setData(data);

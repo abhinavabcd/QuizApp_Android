@@ -53,7 +53,7 @@ public class UserProfileScreen extends Screen {
 		tieTextView = (GothamTextView) userProfile.findViewById(R.id.tie_count);
 		mPieChart = (PieChartView) userProfile.findViewById(R.id.pie_chart);
 		mBarChart = (BarChartViewMultiDataset) userProfile.findViewById(R.id.bar_chart);
-        setSampleData(controller.getContext());
+ //       setSampleData(controller.getContext());
 
 		addView(userProfile);
 	}
@@ -133,68 +133,68 @@ public class UserProfileScreen extends Screen {
 			}
 		}
 		if(nonZeroFlag)
-			drawCategoryWiseLevelsChart(xVals,yValsWins,yValsLosses,yValsTies);
+			drawWinLoseTieChart(xVals,yValsWins,yValsLosses,yValsTies);
 	}
 	
-	public void drawUserCategoryChartsAndUpdateStats(User user){
-		int win_count = 0;
-		int lose_count = 0;
-		int tie_count = 0;
-		List<Category> categories = getApp().getDataBaseHelper().getAllCategories();
-		ArrayList<Entry> yVals1 = new ArrayList<Entry>();
-		ArrayList<BarEntry> yValsWins = new ArrayList<BarEntry>();
-		ArrayList<BarEntry> yValsLosses = new ArrayList<BarEntry>();
-		ArrayList<BarEntry> yValsTies = new ArrayList<BarEntry>();
-		ArrayList<String> xVals = new ArrayList<String>();
-		int sz = categories.size();
-		
-		for(int i=0;i<sz;i++){
-			xVals.add(categories.get(i).shortDescription);
-		}
-		int[] winsLosses;
-		List<String> qIdList = new ArrayList<String>();
-		List<Quiz> qList = null;
-		for (int i = 0; i < sz; i++) {
-			qList = categories.get(i).getQuizzes(getApp());
-			qIdList.clear();
-			float totalXP = 0;
-			for(int j=0;j<qList.size();j++){
-				totalXP = totalXP + (float)user.getPoints(qList.get(j).quizId);
-				qIdList.add(((Quiz)qList.get(i)).quizId);
-			}
-			winsLosses = user.getWinsLossesSum(qIdList);
-            yVals1.add(new Entry((float)getApp().getGameUtils().getLevelFromXp(totalXP), i));
-            // update win lose tie counts here
-            yValsWins.add(new BarEntry(winsLosses[0],i));
-            yValsLosses.add(new BarEntry(winsLosses[1],i));
-            yValsTies.add(new BarEntry(winsLosses[2],i));
-        }
-		
-		//update stats
-		wonTextView.setText(win_count+" "+UiUtils.UiText.PROFILE_WON_STATS_TEXT.getValue());
-		lostTextView.setText(lose_count+" "+UiUtils.UiText.PROFILE_LOST_STATS_TEXT.getValue());
-		tieTextView.setText(tie_count+" "+UiUtils.UiText.PROFILE_TIE_STATS_TEXT.getValue());
-		
-		// TODO: Reduce code redundancy by checking for nonzero values in a method (present in uiutils, conflict for BarEntry and Entry)
-		boolean nonZeroFlag = false;
-		for(int i=0;i<yVals1.size();i++){
-			if(yVals1.get(i).getVal() > 0){
-				nonZeroFlag = true;
-			}
-		}
-		if(nonZeroFlag)
-			drawUserActivityDistributionChart(xVals,yVals1);
-		nonZeroFlag = false;
-		for(int i=0;i<yVals1.size();i++){
-			if(yValsWins.get(i).getVal() > 0 || yValsLosses.get(i).getVal() > 0 || yValsTies.get(i).getVal() > 0 ){
-				nonZeroFlag = true;
-			}
-		}
-		if(nonZeroFlag)
-			drawCategoryWiseLevelsChart(xVals,yValsWins,yValsLosses,yValsTies);
-	}
+//	public void drawUserCategoryChartsAndUpdateStats(User user){
+//		int win_count = 0;
+//		int lose_count = 0;
+//		int tie_count = 0;
+//		List<Category> categories = getApp().getDataBaseHelper().getAllCategories();
+//		ArrayList<Entry> yVals1 = new ArrayList<Entry>();
+//		ArrayList<BarEntry> yValsWins = new ArrayList<BarEntry>();
+//		ArrayList<BarEntry> yValsLosses = new ArrayList<BarEntry>();
+//		ArrayList<BarEntry> yValsTies = new ArrayList<BarEntry>();
+//		ArrayList<String> xVals = new ArrayList<String>();
+//		int sz = categories.size();
+//		
+//		for(int i=0;i<sz;i++){
+//			xVals.add(categories.get(i).shortDescription);
+//		}
+//		int[] winsLosses;
+//		List<String> qIdList = new ArrayList<String>();
+//		List<Quiz> qList = null;
+//		for (int i = 0; i < sz; i++) {
+//			qList = categories.get(i).getQuizzes(getApp());
+//			qIdList.clear();
+//			float totalXP = 0;
+//			for(int j=0;j<qList.size();j++){
+//				totalXP = totalXP + (float)user.getPoints(qList.get(j).quizId);
+//				qIdList.add(((Quiz)qList.get(i)).quizId);
+//			}
+//			winsLosses = user.getWinsLossesSum(qIdList);
+//            yVals1.add(new Entry((float)getApp().getGameUtils().getLevelFromXp(totalXP), i));
+//            // update win lose tie counts here
+//            yValsWins.add(new BarEntry(winsLosses[0],i));
+//            yValsLosses.add(new BarEntry(winsLosses[1],i));
+//            yValsTies.add(new BarEntry(winsLosses[2],i));
+//        }
+//		
+//		//update stats
+//		wonTextView.setText(win_count+" "+UiUtils.UiText.PROFILE_WON_STATS_TEXT.getValue());
+//		lostTextView.setText(lose_count+" "+UiUtils.UiText.PROFILE_LOST_STATS_TEXT.getValue());
+//		tieTextView.setText(tie_count+" "+UiUtils.UiText.PROFILE_TIE_STATS_TEXT.getValue());
+//		
+//		// TODO: Reduce code redundancy by checking for nonzero values in a method (present in uiutils, conflict for BarEntry and Entry)
+//		boolean nonZeroFlag = false;
+//		for(int i=0;i<yVals1.size();i++){
+//			if(yVals1.get(i).getVal() > 0){
+//				nonZeroFlag = true;
+//			}
+//		}
+//		if(nonZeroFlag)
+//			drawUserActivityDistributionChart(xVals,yVals1);
+//		nonZeroFlag = false;
+//		for(int i=0;i<yVals1.size();i++){
+//			if(yValsWins.get(i).getVal() > 0 || yValsLosses.get(i).getVal() > 0 || yValsTies.get(i).getVal() > 0 ){
+//				nonZeroFlag = true;
+//			}
+//		}
+//		if(nonZeroFlag)
+//			drawCategoryWiseLevelsChart(xVals,yValsWins,yValsLosses,yValsTies);
+//	}
 	
-	public void drawCategoryWiseLevelsChart(ArrayList<String> xVals,ArrayList<BarEntry> yValsWins,ArrayList<BarEntry> yValsLosses,ArrayList<BarEntry> yValsTies){
+	public void drawWinLoseTieChart(ArrayList<String> xVals,ArrayList<BarEntry> yValsWins,ArrayList<BarEntry> yValsLosses,ArrayList<BarEntry> yValsTies){
 	        ArrayList<BarDataSet> dataSets = new ArrayList<BarDataSet>();
 	        BarDataSet set;
 
@@ -209,11 +209,11 @@ public class UserProfileScreen extends Screen {
 			dataSets.add(set);
 			
 			BarData data = new BarData(xVals, dataSets);
-			data.setGroupSpace(20f);
+//			data.setGroupSpace(5f);
 
 	        mBarChart.setData(data);
-	        mBarChart.setDescriptionTextSize(6f);
-	        mBarChart.setValueTextSize(5f);
+//	        mBarChart.setDescriptionTextSize(6f);
+//	        mBarChart.setValueTextSize(5f);
 	        mBarChart.setDescription("Quiz Stats");
 	        mBarChart.invalidate();
 	}
@@ -221,68 +221,68 @@ public class UserProfileScreen extends Screen {
 	public void drawUserActivityDistributionChart(ArrayList<String> xVals,ArrayList<Entry> yVals){
 	
 		PieDataSet set = new PieDataSet(yVals, "Quiz Stats");
-		set.setSliceSpace(3f);
+//		set.setSliceSpace(3f);
 		set.setColors(Config.themeColors);
 //        set1.setColors(ColorTemplate.createColors(controller.getContext().getApplicationContext(),ColorTemplate.VORDIPLOM_COLORS));
         PieData data = new PieData(xVals, set);
         mPieChart.setValueFormatter(getApp().getUiUtils().getDecimalFormatter());
         mPieChart.setData(data);
         mPieChart.setDescriptionTextSize(6f);
-        mPieChart.setValueTextSize(5f);
+        mPieChart.setValueTextSize(6f);
 
         // undo all highlights
         mPieChart.highlightValues(null);
 
         // set a text for the chart center
-        mPieChart.setCenterText("Total value:" + (int) mPieChart.getYValueSum());
+        mPieChart.setCenterText("Total XP: " + (int) mPieChart.getYValueSum());
         
         mPieChart.setDescription("Total Matches Played");
         mPieChart.invalidate();
 	}
 	
-	// TODO : below method must be remove at the end
-	public void setSampleData(Context ctxt){
-		int types = 4;
-		float scale = 4;
-		String[] mParties = new String[] {"Quiz1", "Quiz2", "Quiz3", "Quiz4"};
-		
-        float mult = (float) scale;
-
-        ArrayList<Entry> yVals1 = new ArrayList<Entry>();
-        // ArrayList<Entry> yVals2 = new ArrayList<Entry>();
-
-        // IMPORTANT: In a PieChart, no values (Entry) should have the same
-        // xIndex (even if from different DataSets), since no values can be
-        // drawn above each other.
-        for (int i = 0; i < types + 1; i++) {
-            yVals1.add(new Entry((float) (Math.random() * mult) + mult / 5, i));
-        }
-
-        // for (int i = types / 2; i <
-        // types; i++) {
-        // yVals2.add(new Entry((float) (Math.random() * mult) + mult / 5, i));
-        // }
-
-        ArrayList<String> xVals = new ArrayList<String>();
-
-        for (int i = 0; i < types + 1; i++)
-            xVals.add(mParties[i % mParties.length]);
-
-        PieDataSet set1 = new PieDataSet(yVals1, "Quiz Stats");
-        set1.setSliceSpace(3f);
-        set1.setColors(ColorTemplate.createColors(ctxt.getApplicationContext(),
-                ColorTemplate.VORDIPLOM_COLORS));
-
-        PieData data = new PieData(xVals, set1);
-        mPieChart.setData(data);
-
-        // undo all highlights
-        mPieChart.highlightValues(null);
-
-        // set a text for the chart center
-        mPieChart.setCenterText("Total Value\n" + (int) mPieChart.getYValueSum() + "\n(all slices)");
-        mPieChart.invalidate();
-	 }
+//	// TODO : below method must be remove at the end
+//	public void setSampleData(Context ctxt){
+//		int types = 4;
+//		float scale = 4;
+//		String[] mParties = new String[] {"Quiz1", "Quiz2", "Quiz3", "Quiz4"};
+//		
+//        float mult = (float) scale;
+//
+//        ArrayList<Entry> yVals1 = new ArrayList<Entry>();
+//        // ArrayList<Entry> yVals2 = new ArrayList<Entry>();
+//
+//        // IMPORTANT: In a PieChart, no values (Entry) should have the same
+//        // xIndex (even if from different DataSets), since no values can be
+//        // drawn above each other.
+//        for (int i = 0; i < types + 1; i++) {
+//            yVals1.add(new Entry((float) (Math.random() * mult) + mult / 5, i));
+//        }
+//
+//        // for (int i = types / 2; i <
+//        // types; i++) {
+//        // yVals2.add(new Entry((float) (Math.random() * mult) + mult / 5, i));
+//        // }
+//
+//        ArrayList<String> xVals = new ArrayList<String>();
+//
+//        for (int i = 0; i < types + 1; i++)
+//            xVals.add(mParties[i % mParties.length]);
+//
+//        PieDataSet set1 = new PieDataSet(yVals1, "Quiz Stats");
+//        set1.setSliceSpace(3f);
+//        set1.setColors(ColorTemplate.createColors(ctxt.getApplicationContext(),
+//                ColorTemplate.VORDIPLOM_COLORS));
+//
+//        PieData data = new PieData(xVals, set1);
+//        mPieChart.setData(data);
+//
+//        // undo all highlights
+//        mPieChart.highlightValues(null);
+//
+//        // set a text for the chart center
+//        mPieChart.setCenterText("Total Value\n" + (int) mPieChart.getYValueSum() + "\n(all slices)");
+//        mPieChart.invalidate();
+//	 }
 	
 	public void addInfoLocalSummary(){
 		
