@@ -63,10 +63,29 @@
                 android:textColor="@android:color/white" />
         </LinearLayout>
 
-        <TabHost
-            android:id="@+id/friends_views"
+<TabHost
+    android:id="@android:id/tabhost"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical" >
+
+        <TabWidget
+            android:id="@android:id/tabs"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" >
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true">
+
+            
+        </TabWidget>
+
+        <FrameLayout
+            android:id="@android:id/tabcontent"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" >
 
             <ListView
                 android:id="@+id/listView"
@@ -103,40 +122,13 @@
                 android:scrollbarAlwaysDrawVerticalTrack="false"
                 android:scrollbars="none" >
             </ListView>
-        </TabHost>
+        </FrameLayout>
+
+    </RelativeLayout>
+</TabHost>
+
     </FrameLayout>
 
-    <LinearLayout
-        android:id="@+id/tabs_wrapper"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
-
-        <ToggleButton
-            android:id="@+id/all_friends_tab"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1.0"
-            android:text="All"
-            android:textOff="All"
-            android:textOn="All" />
-
-        <ToggleButton
-            android:id="@+id/fb_friends_tab"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1.0"
-            android:text="Facebook"
-            android:textOff="Facebook"
-            android:textOn="Facebook" />
-
-        <ToggleButton
-            android:id="@+id/gplus_friends_tab"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1.0"
-            android:text="Google"
-            android:textOff="Google"
-            android:textOn="Google" />
-    </LinearLayout>
+    
 
 </LinearLayout>

@@ -224,7 +224,7 @@ public class StaticPopupDialogBoxes {
 			} 
 		};
 		menuContainer.addView(getMenuItem(UiText.VIEW_PROFILE.getValue(), 1, listener , Gravity.CENTER));
-		menuContainer.addView(getMenuItem(UiText.START_CONVERSATION.getValue(), 2, listener , Gravity.CENTER));
+		menuContainer.addView(getMenuItem(UiText.START_CONVERSATION.getValue(""), 2, listener , Gravity.CENTER));
 		((GothamTextView)dialogLayout.findViewById(R.id.descText)).setText(user.name); 
 		quizApp.getUiUtils().loadImageIntoView(quizApp.getContext(), (ImageView) userMenu.findViewById(R.id.quiz_icon) , user.pictureUrl , true);
 		userMenu.show();

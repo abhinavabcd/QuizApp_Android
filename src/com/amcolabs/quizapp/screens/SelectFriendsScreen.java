@@ -3,15 +3,17 @@ package com.amcolabs.quizapp.screens;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.graphics.Color;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.ToggleButton;
-import android.widget.ViewFlipper;
+import android.widget.TabHost;
+import android.widget.TabHost.OnTabChangeListener;
+import android.widget.TabHost.TabSpec;
+import android.widget.TabWidget;
 
 import com.amcolabs.quizapp.AppController;
 import com.amcolabs.quizapp.R;
@@ -42,18 +44,13 @@ public class SelectFriendsScreen extends Screen {
 	private ListView listView;
 	private ListView fbFriendsView;
 	private ListView gPlusFriendsView;
-	private LinearLayout tabsWrapper;
-	private ToggleButton gPlusTab;
-	private ToggleButton fbTab;
-	private ToggleButton allTab;
-	private ViewFlipper viewFlipper;
 	public boolean doNotShowOnBackPress = false;
+	private TabWidget tabs;
+	private TabHost tabsHost;
 	
 	public void showFriendsList(String titleText ,List<User> users , DataInputListener<User> onFriendSelectedListener, boolean searchOnServer, boolean enableSocial){
 		this.users = users;
 		friendsAdapter = new SelectFriendsListAdapter(getApp(),0, users, onFriendSelectedListener,searchOnServer);
-		fbFriendsAdapter = new SelectFriendsListAdapter(getApp(),0, users, onFriendSelectedListener,false);
-		gPlusFriendsAdapter = new SelectFriendsListAdapter(getApp(),0, users, onFriendSelectedListener,false);
 		LinearLayout lView = (LinearLayout) getApp().getActivity().getLayoutInflater().inflate(R.layout.friends_social, this, false);		
 		lView.getLayoutParams().height = LayoutParams.MATCH_PARENT;
 				
@@ -80,7 +77,6 @@ public class SelectFriendsScreen extends Screen {
 		titleView.setTextSize(12);
 		titleView.setText(titleText);
 		
-		viewFlipper = (ViewFlipper) lView.findViewById(R.id.friends_views);
 		listView = (ListView) lView.findViewById(R.id.listView);
 		fbFriendsView = (ListView)lView.findViewById(R.id.fb_friends_list);
 		gPlusFriendsView = (ListView)lView.findViewById(R.id.gplus_friends_list);
@@ -88,29 +84,49 @@ public class SelectFriendsScreen extends Screen {
 		debugMessage = (GothamTextView)lView.findViewById(R.id.debugMessage);
 		gPlusButton = (SignInButton)lView.findViewById(R.id.google_plus_button);
 		fbButton = (LoginButton)lView.findViewById(R.id.facebook_button);
-		tabsWrapper = (LinearLayout)lView.findViewById(R.id.tabs_wrapper);
+		tabs = (TabWidget)lView.findViewById(android.R.id.tabs);
+		tabsHost = (TabHost)lView.findViewById(android.R.id.tabhost);
+		
 		if(enableSocial){
+			// add adapters
+			fbFriendsAdapter = new SelectFriendsListAdapter(getApp(),0, getFbUsers(users), onFriendSelectedListener,false);
+			gPlusFriendsAdapter = new SelectFriendsListAdapter(getApp(),0, getGPlusUsers(users), onFriendSelectedListener,false);
+			
 			fbFriendsView.setAdapter(fbFriendsAdapter);
 			gPlusFriendsView.setAdapter(gPlusFriendsAdapter);			
-			(gPlusTab = (ToggleButton)tabsWrapper.findViewById(R.id.gplus_friends_tab)).setOnClickListener(new OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					navigateToGooglePlusFriends();
-				}
-			});
-			(fbTab = (ToggleButton)tabsWrapper.findViewById(R.id.fb_friends_tab)).setOnClickListener(new OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					navigateToFbFriends();
-				}
-			});
+			// add tabs here
+			tabsHost.setup();
+			TabSpec spec;
+			// all tab
+			spec = tabsHost.newTabSpec(UiText.ALL.getValue())
+					 .setIndicator("", getResources().getDrawable(R.drawable.logo))
+					 .setContent(R.id.listView);
+			tabsHost.addTab(spec);
+			// fb tab
+			spec = tabsHost.newTabSpec(UiText.FB.getValue())
+					 .setIndicator("", getResources().getDrawable(R.drawable.fb))
+					 .setContent(R.id.fb_friends_list);
+			tabsHost.addTab(spec);
+			// gplus tab
+			spec = tabsHost.newTabSpec(UiText.GPLUS.getValue())
+					 .setIndicator("", getResources().getDrawable(R.drawable.gplus))
+					 .setContent(R.id.gplus_friends_list);
+			tabsHost.addTab(spec);
 			
-			(allTab = (ToggleButton)tabsWrapper.findViewById(R.id.all_friends_tab)).setOnClickListener(new OnClickListener() {
+			
+			for(int i=0;i<tabsHost.getTabWidget().getChildCount();i++){
+	              tabsHost.getTabWidget().getChildAt(i).setBackgroundColor(Color.LTGRAY);
+			}
+			tabsHost.setOnTabChangedListener(new OnTabChangeListener() {
 				@Override
-				public void onClick(View v) {
-					navigateToAllFriends();
+				public void onTabChanged(String tabId) {
+					 for(int i=0;i<tabsHost.getTabWidget().getChildCount();i++){
+				              tabsHost.getTabWidget().getChildAt(i).setBackgroundColor(Color.LTGRAY);
+			         }
+			         tabsHost.getTabWidget().getChildAt(tabsHost.getCurrentTab()).setBackgroundColor(getResources().getColor(R.color.translucent_black));
 				}
-			});			
+			});
+			tabsHost.setCurrentTab(0);
 			gPlusButton.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
@@ -144,14 +160,17 @@ public class SelectFriendsScreen extends Screen {
 			
 		}
 		else{
-			tabsWrapper.setVisibility(View.GONE);
 			debugMessageWrapper.setVisibility(View.GONE);
 		}
 		listView.setAdapter(friendsAdapter);
 		if(enableSocial)
 			navigateToAllFriends();
-		else if(friendsAdapter.getCount()==0){
-				debugMessageWrapper.setVisibility(View.VISIBLE);
+		else{
+			tabsHost.setVisibility(View.GONE);
+		}
+		
+		if(friendsAdapter.getCount()==0){
+			debugMessageWrapper.setVisibility(View.VISIBLE);
 			debugMessage.setVisibility(View.VISIBLE);
 			debugMessage.setText(UiText.NO_FRIENDS_SEARCH_AND_SUBSCRIBE.getValue());
 		}
@@ -161,13 +180,28 @@ public class SelectFriendsScreen extends Screen {
 		addToScrollView(lView);
 	}
 	
+	private List<User> getGPlusUsers(List<User> users) {
+		// TODO Auto-generated method stub
+		ArrayList<User> friendsConnectedToGoogle = new ArrayList<User>();
+		for(User user :users){
+			if(user.gPlusUid!=null){
+				friendsConnectedToGoogle.add(user);
+			}
+		}
+		return friendsConnectedToGoogle;
+	}
+
+	private List<User> getFbUsers(List<User> users2) {
+		ArrayList<User> friendsConnectedToFb = new ArrayList<User>();
+		for(User user :users){
+			if(user.fbUid!=null){
+				friendsConnectedToFb.add(user);
+			}
+		}
+		return friendsConnectedToFb;
+	}
+
 	public void navigateToGooglePlusFriends(){
-		fbTab.setChecked(false);
-		allTab.setChecked(false);
-		gPlusTab.setChecked(true);
-	//	if(gPlusTab.isChecked()) return;
-		viewFlipper.setDisplayedChild(2);
-		
 		if(getApp().getUser().gPlusUid==null || getApp().getUser().gPlusUid.trim().equalsIgnoreCase("")){
 			debugMessageWrapper.setVisibility(View.VISIBLE);
 			debugMessage.setVisibility(View.VISIBLE);
@@ -176,15 +210,7 @@ public class SelectFriendsScreen extends Screen {
 			gPlusButton.setVisibility(View.VISIBLE);
 			return;
 		}
-		ArrayList<User> friendsConnectedToGoogle = new ArrayList<User>();
-		for(User user :users){
-			if(user.gPlusUid!=null){
-				friendsConnectedToGoogle.add(user);
-			}
-		}
-		gPlusFriendsAdapter.clear();
-		gPlusFriendsAdapter.addAll(friendsConnectedToGoogle);
-		gPlusFriendsAdapter.notifyDataSetChanged();
+		// TODO : show a popup
 		if(gPlusFriendsAdapter.getCount()==0){
 			debugMessageWrapper.setVisibility(View.VISIBLE);
 			debugMessage.setVisibility(View.VISIBLE);
@@ -195,10 +221,9 @@ public class SelectFriendsScreen extends Screen {
 	}
 	
 	public void navigateToAllFriends(){
-		gPlusTab.setChecked(false);
-		fbTab.setChecked(false);
-		allTab.setChecked(true);
-		viewFlipper.setDisplayedChild(0);
+//		gPlusTab.setChecked(false);
+//		fbTab.setChecked(false);
+//		allTab.setChecked(true);
 		if(friendsAdapter.getCount()==0){
 			debugMessageWrapper.setVisibility(View.VISIBLE);
 			debugMessage.setVisibility(View.VISIBLE);
@@ -212,10 +237,6 @@ public class SelectFriendsScreen extends Screen {
 		}
 	}
 	public void navigateToFbFriends(){
-		gPlusTab.setChecked(false);
-		allTab.setChecked(false);
-		fbTab.setChecked(true);
-		viewFlipper.setDisplayedChild(1);
 		if(getApp().getUser().fbUid==null || getApp().getUser().fbUid.trim().equalsIgnoreCase("")){
 			debugMessageWrapper.setVisibility(View.VISIBLE);
 			debugMessage.setVisibility(View.VISIBLE);
@@ -224,15 +245,7 @@ public class SelectFriendsScreen extends Screen {
 			gPlusButton.setVisibility(View.GONE);
 			return;
 		}	
-		ArrayList<User> friendsConnectedToGoogle = new ArrayList<User>();
-		for(User user :users){
-			if(user.fbUid!=null){
-				friendsConnectedToGoogle.add(user);
-			}
-		}
-		fbFriendsAdapter.clear();
-		fbFriendsAdapter.addAll(friendsConnectedToGoogle);
-		fbFriendsAdapter.notifyDataSetChanged();
+		// TODO :add popup to invite for the first time
 		if(fbFriendsAdapter.getCount()==0){
 			debugMessageWrapper.setVisibility(View.VISIBLE);
 			debugMessage.setVisibility(View.VISIBLE);

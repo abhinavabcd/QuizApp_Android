@@ -175,7 +175,10 @@ public class UiUtils {
 		SELECT_FRIENDS_TO_CHALLENGE_IN("Challenge friends in %s"),
 		YOUR_FRIENDS("Your Friends"),
 		VIEW_PROFILE("View Profile"),
-		START_CONVERSATION("Chat%s");	
+		START_CONVERSATION("Chat%s"), 
+		ALL("All"),
+		FB("Facebook"),
+		GPLUS("G+");	
 		
 		String value = null;
 		UiText(String value){

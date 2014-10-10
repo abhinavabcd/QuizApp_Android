@@ -48,11 +48,13 @@ public class UserProfileScreen extends Screen {
 	private GothamTextView userStatusMessage;
 	private GothamTextView userMoreInfo;
 	private AppController controller;
+	private LinearLayout userProfileWrapper;
 	
 	public UserProfileScreen(AppController cont) {
 		super(cont);
 		controller = cont;
 		userProfile = (ScrollView) LayoutInflater.from(controller.getContext()).inflate(R.layout.user_profile, this, false);
+		userProfileWrapper = (LinearLayout) userProfile.findViewById(R.id.profile_data_wrapper);
 		userName = (GothamTextView) userProfile.findViewById(R.id.user_card_name);
 		userImage = (ImageView)userProfile.findViewById(R.id.user_card_small_pic);
 		userStatusMessage = (GothamTextView) userProfile.findViewById(R.id.user_status_msg);
@@ -101,7 +103,7 @@ public class UserProfileScreen extends Screen {
 	//	addListenersToQuizListItem(listView);
 
 		UiUtils.setListViewHeightBasedOnChildren(listView);
-		userProfile.addView(lView);
+		userProfileWrapper.addView(lView , 1);
 	}
 
 	public void drawUserQuizChartsAndUpdateStats(User user){

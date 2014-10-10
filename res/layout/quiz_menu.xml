@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center"
-    android:orientation="vertical" >
+    android:orientation="vertical" xmlns:app="http://schemas.android.com/apk/res/com.amcolabs.quizapp">
 
     <LinearLayout
         android:id="@+id/description_wrapper"
@@ -17,7 +17,9 @@
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:scaleType="fitXY"
-            android:src="@drawable/abc_ab_bottom_solid_dark_holo" />
+            android:src="@drawable/abc_ab_bottom_solid_dark_holo"
+            app:border_color="@color/white"
+            app:border_width="3dp" />
 
         <com.amcolabs.quizapp.widgets.GothamTextView
             android:id="@+id/descText"

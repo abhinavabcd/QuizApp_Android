@@ -17,7 +17,6 @@ import com.amcolabs.quizapp.databaseutils.Quiz;
 import com.amcolabs.quizapp.databaseutils.UserInboxMessage;
 import com.amcolabs.quizapp.datalisteners.DataInputListener;
 import com.amcolabs.quizapp.datalisteners.DataInputListener2;
-import com.amcolabs.quizapp.gameutils.GameUtils;
 import com.amcolabs.quizapp.loginutils.FacebookLoginHelper;
 import com.amcolabs.quizapp.loginutils.GoogleLoginHelper;
 import com.amcolabs.quizapp.popups.StaticPopupDialogBoxes.YesNoDialog;
@@ -358,7 +357,7 @@ public class UserMainPageController  extends AppController{
 				for(String uid : user.getSubscribedTo()){
 					users.add(quizApp.cachedUsers.get(uid));
 				}
-				selectFriendsScreen.showFriendsList(UiText.SELECT_FRIENDS_TO_CHALLENGE.getValue(GameUtils.reduceString(quiz.name)), users,new DataInputListener<User>(){
+				selectFriendsScreen.showFriendsList(UiText.SELECT_FRIENDS_TO_CHALLENGE_IN.getValue(quiz.name), users,new DataInputListener<User>(){
 					@Override
 					public String onData(User s) {
 						ProgressiveQuizController progressiveQuiz = (ProgressiveQuizController) quizApp.loadAppController(ProgressiveQuizController.class);
