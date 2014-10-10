@@ -136,10 +136,16 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 			}
     		return new ArrayList<Category>();
     }
-    
+    HashMap<String, Quiz> cachedQuizzes = new HashMap<String, Quiz>();
     public Quiz getQuizById(String quizId){
 		try {
-			return getQuizDao().queryBuilder().where().eq("quizId", quizId).queryForFirst();
+			if(cachedQuizzes.containsKey(quizId)){
+				return cachedQuizzes.get(quizId);
+			}
+			
+			Quiz quiz = getQuizDao().queryBuilder().where().eq("quizId", quizId).queryForFirst();
+			cachedQuizzes.put(quizId , quiz);
+			return quiz;
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -662,7 +668,17 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 			e.printStackTrace();
 		}
     }
-    
+
+    public User getUserByUid(String uid){
+		try {
+			User u = getUsersInfoDao().queryBuilder().where().eq("uid",uid).queryForFirst();
+			return u;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
+
+    }
     public HashMap<String , User> getAllUsersByUid(List<String> uids , final DataInputListener<Boolean> usersListener){
     	ArrayList<String> pendingList = new ArrayList<String>();
     	for(String uid : uids){
@@ -815,6 +831,16 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 			e.printStackTrace();
 		}
 
+	}
+
+	public Badge getBadgeById(String badgeId) {
+		try {
+			return getBadgesDao().queryBuilder().where().eq("badgeId", badgeId).queryForFirst();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
 	}
 }
 

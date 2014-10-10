@@ -41,4 +41,15 @@ public class GameUtils {
 	public static void hasUserWonChallenge(OfflineChallenge offlineChallenge){
 		
 	}
+	
+	public String reduceString(String name){
+		String newStr="";
+		if(name.length()>9){
+			for(String s:name.split(" ")){
+				newStr+=Character.toUpperCase(s.charAt(0));
+			}
+			return newStr;
+		}
+		return name;
+	}
 }

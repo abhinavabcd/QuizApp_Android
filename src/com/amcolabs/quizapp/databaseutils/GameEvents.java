@@ -29,7 +29,8 @@ public class GameEvents {
 		USER_JOINED(4),
 		SHARED_WITH_FB(5),
 		SHARED_WITH_GOOGLE(6),
-		SERVER_ERROR(7);
+		SERVER_ERROR_QUIZ(7),
+		TIE_QUIZ(8);
 		
 		int value = 0;
 		EventType(int i){
