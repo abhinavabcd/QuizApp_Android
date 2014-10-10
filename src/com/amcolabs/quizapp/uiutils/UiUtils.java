@@ -126,7 +126,7 @@ public class UiUtils {
 		OK("Ok"),
 		NEW_BADGE_UNLOCKED_MESSAGE("New Badge Unlocked!"),
 		USER_HAS_LEFT("User left the quiz"), 
-		SELECT_FRIENDS_TO_CHALLENGE("Select Friends to Challenge"),
+//		SELECT_FRIENDS_TO_CHALLENGE("Select Friends to Challenge"),
 		BEGINNER("Beginner"),
 		RUNNER("Runner"),
 		GO_GETTER("Go Getter"), TREND_SETTER("Trend Setter"),
@@ -166,7 +166,16 @@ public class UiUtils {
 		YOU_LOST_TO_USER("You lost to <a href='userProfile/%s'>%s</a> in <a href='quizStats/%s'>%s</a> by %s xp Points"),	
 		YOU_DEFEATED_USER("You defeated <a href='userProfile/%s'>%s</a> in <a href='quizStats/%s'>%s</a> with %s xp Points"),
 		THERE_WAS_SERVER_ERROR("There was a server error while you were playing with <a href='userProfile/%s'>%s</a> in <a href='quizStats/%s'>%s</a>"),
-		YOU_UNLOCKED_BADGE("You unlocked a badge <a href='badge/%s'>%s</a>");	
+		YOU_UNLOCKED_BADGE("You unlocked a badge <a href='badge/%s'>%s</a>"),
+		NO_ACTIVITY_AVAILABLE("No Activity Available"),
+		ACTIVITY_LOG("Activity log"),
+		PLAY_QUIZ("Play Quiz"),
+		VIEW_HISTORY("View History"),
+		SCORE_BOARDS("ScoreBoards"),
+		SELECT_FRIENDS_TO_CHALLENGE_IN("Challenge friends in %s"),
+		YOUR_FRIENDS("Your Friends"),
+		VIEW_PROFILE("View Profile"),
+		START_CONVERSATION("Chat%s");	
 		
 		String value = null;
 		UiText(String value){

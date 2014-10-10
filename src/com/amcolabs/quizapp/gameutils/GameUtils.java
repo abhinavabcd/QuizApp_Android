@@ -42,7 +42,7 @@ public class GameUtils {
 		
 	}
 	
-	public String reduceString(String name){
+	public static String reduceString(String name){
 		String newStr="";
 		if(name.length()>9){
 			for(String s:name.split(" ")){

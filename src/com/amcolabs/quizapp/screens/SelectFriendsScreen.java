@@ -77,6 +77,7 @@ public class SelectFriendsScreen extends Screen {
 		});
 
 		GothamTextView titleView = (GothamTextView) lView.findViewById(R.id.title_text_view);
+		titleView.setTextSize(12);
 		titleView.setText(titleText);
 		
 		viewFlipper = (ViewFlipper) lView.findViewById(R.id.friends_views);

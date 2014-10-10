@@ -3,20 +3,26 @@ package com.amcolabs.quizapp.screens;
 import java.util.ArrayList;
 import java.util.List;
 
-import android.content.Context;
 import android.graphics.Typeface;
+import android.graphics.drawable.ColorDrawable;
 import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.ScrollView;
 
 import com.amcolabs.quizapp.AppController;
 import com.amcolabs.quizapp.R;
 import com.amcolabs.quizapp.Screen;
 import com.amcolabs.quizapp.User;
+import com.amcolabs.quizapp.adapters.GameEventsListItemAdaptor;
 import com.amcolabs.quizapp.configuration.Config;
-import com.amcolabs.quizapp.databaseutils.Category;
+import com.amcolabs.quizapp.databaseutils.GameEvents;
 import com.amcolabs.quizapp.databaseutils.Quiz;
 import com.amcolabs.quizapp.uiutils.UiUtils;
+import com.amcolabs.quizapp.uiutils.UiUtils.UiText;
 import com.amcolabs.quizapp.widgets.BarChartViewMultiDataset;
 import com.amcolabs.quizapp.widgets.GothamTextView;
 import com.amcolabs.quizapp.widgets.PieChartView;
@@ -26,7 +32,6 @@ import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
-import com.github.mikephil.charting.utils.ColorTemplate;
 
 public class UserProfileScreen extends Screen {
 	public GothamTextView wonTextView;
@@ -68,6 +73,34 @@ public class UserProfileScreen extends Screen {
 		drawUserQuizChartsAndUpdateStats(user);
 	}
 	
+	
+	public void addEventsListView(List<GameEvents> events){
+		final GameEventsListItemAdaptor gameEventsAdapter = new GameEventsListItemAdaptor(getApp(), 0, events);
+		LinearLayout lView = (LinearLayout) getApp().getActivity().getLayoutInflater().inflate(R.layout.block_list_view, this, false);
+		lView.setBackgroundColor(getApp().getConfig().getAThemeColor());
+		EditText searchText = (EditText) lView.findViewById(R.id.search_text);
+		GothamTextView debugMessage = (GothamTextView) lView.findViewById(R.id.debugMessage);
+		if(events.size()==0){
+			debugMessage.setVisibility(View.VISIBLE);
+			debugMessage.setText(UiText.NO_ACTIVITY_AVAILABLE.getValue());
+		}
+		searchText.setVisibility(View.GONE);//hide search
+		GothamTextView titleView = (GothamTextView) lView.findViewById(R.id.title_text_view);
+		titleView.setText(UiText.ACTIVITY_LOG.getValue());
+		ListView listView = (ListView) lView.findViewById(R.id.listView);
+		listView.setDivider(new ColorDrawable(this.getResources().getColor(R.color.translucent_black)));
+		listView.setDividerHeight(1);
+
+		LayoutParams lParams = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
+		lParams.setMargins(5, 0, 0, 5);
+		listView.setLayoutParams(lParams);
+		listView.setAdapter(gameEventsAdapter);
+	//	addListenersToQuizListItem(listView);
+
+		UiUtils.setListViewHeightBasedOnChildren(listView);
+		userProfile.addView(lView);
+	}
+
 	public void drawUserQuizChartsAndUpdateStats(User user){
 		int win_count = 0;
 		int lose_count = 0;
@@ -288,6 +321,11 @@ public class UserProfileScreen extends Screen {
 //	 }
 	
 	public void addInfoLocalSummary(){
+		
+	}
+
+	public void showHistoryWithUser() {
+		// TODO Auto-generated method stub
 		
 	}
 }

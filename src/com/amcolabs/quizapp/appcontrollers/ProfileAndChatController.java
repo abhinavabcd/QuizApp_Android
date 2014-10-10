@@ -52,6 +52,13 @@ public class ProfileAndChatController extends AppController {
 			profileScreen = new UserProfileScreen(this);
 		}
 		profileScreen.showUser(user);
+		if(user.uid.equalsIgnoreCase(quizApp.getUser().uid)){
+			profileScreen.addEventsListView(quizApp.getDataBaseHelper().getAllGameEvents(-1));
+		}
+		else{
+			profileScreen.showHistoryWithUser();
+		}
+
 		insertScreen(profileScreen);
 	}
 	
@@ -161,11 +168,28 @@ public class ProfileAndChatController extends AppController {
 					if(quizApp.cachedUsers.containsKey(uid)){//if exists in db
 						users.add(quizApp.cachedUsers.get(uid));
 					}
-				}
-				friendsScreen.showFriendsList(UiText.SELECT_FRIENDS_TO_CHALLENGE.getValue(), users ,new DataInputListener<User>(){
+				} 
+				friendsScreen.showFriendsList(UiText.YOUR_FRIENDS.getValue(), users ,new DataInputListener<User>(){
 					@Override
-					public String onData(User  user) {
-						// Fetch Profile or something
+					public String onData(final User  user) {
+						quizApp.getStaticPopupDialogBoxes().showUserSelectedMenu(user, new DataInputListener<Integer>(){
+							public String onData(Integer s) {
+								switch(s){
+								case 1:
+									quizApp.getServerCalls().getUserByUid(user.uid, new DataInputListener<User>(){
+										public String onData(User s) {
+											showProfileScreen(s); // show full profile only
+											return null;
+										};
+										
+									});
+									break;
+								case 2:
+									break;
+								}
+								return null;
+							};
+						});
 						return null;
 					}
 				}, true , true);

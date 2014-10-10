@@ -53,22 +53,17 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/normal_padding"
                 android:text="Login with Google Plus"
-                android:textColor="@android:color/white"
-                 />
-            
-	          <com.facebook.widget.LoginButton
-	            android:id="@+id/facebook_button"
-	            android:layout_width="match_parent"
-	            android:layout_height="wrap_content"
-	            android:layout_marginBottom="@dimen/normal_padding"
-	            android:textColor="@android:color/white"
-	 		 />
-            
-            
-            
+                android:textColor="@android:color/white" />
+
+            <com.facebook.widget.LoginButton
+                android:id="@+id/facebook_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/normal_padding"
+                android:textColor="@android:color/white" />
         </LinearLayout>
 
-        <ViewFlipper
+        <TabHost
             android:id="@+id/friends_views"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" >
@@ -108,7 +103,7 @@
                 android:scrollbarAlwaysDrawVerticalTrack="false"
                 android:scrollbars="none" >
             </ListView>
-        </ViewFlipper>
+        </TabHost>
     </FrameLayout>
 
     <LinearLayout
@@ -142,7 +137,6 @@
             android:text="Google"
             android:textOff="Google"
             android:textOn="Google" />
-        
     </LinearLayout>
 
 </LinearLayout>

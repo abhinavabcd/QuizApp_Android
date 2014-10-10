@@ -6,127 +6,37 @@
     android:orientation="vertical" >
 
     <LinearLayout
-        android:id="@+id/menu_row_1"
+        android:id="@+id/description_wrapper"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" >
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="40dp"
+        android:gravity="center_vertical" >
 
-        <LinearLayout
-            android:id="@+id/icon1"
+        <com.amcolabs.quizapp.widgets.CircularImageView
+            android:id="@+id/quiz_icon"
             android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:scaleType="fitXY"
+            android:src="@drawable/abc_ab_bottom_solid_dark_holo" />
+
+        <com.amcolabs.quizapp.widgets.GothamTextView
+            android:id="@+id/descText"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="15dp"
-            android:layout_weight="1.0"
-            android:gravity="center_horizontal"
-            android:orientation="vertical" >
+            android:text=""
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="@color/white"
+            android:textStyle="bold" />
 
-            <ImageView
-                android:id="@+id/ImageView01"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:src="@drawable/play_icon" />
+    </LinearLayout>
 
-            <com.amcolabs.quizapp.widgets.GothamTextView
-                android:id="@+id/TextView01"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Play"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:textColor="@color/white"
-                android:textColorLink="@color/white"
-                android:textSize="16sp" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/icon2"
-            android:layout_width="100dp"
-            android:layout_height="wrap_content"
-            android:layout_margin="15dp"
-            android:gravity="center_horizontal"
-            android:orientation="vertical" >
-
-            <ImageView
-                android:id="@+id/imageView1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:src="@drawable/ewport_icon" />
-
-            <com.amcolabs.quizapp.widgets.GothamTextView
-                android:id="@+id/textView1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Statistics"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:textColor="@color/white"
-                android:textColorLink="@color/white"
-                android:textSize="16sp" />
-
-        </LinearLayout>
-  </LinearLayout>
-  
     <LinearLayout
-        android:id="@+id/menu_row_2"
+        android:id="@+id/menu_items_container"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" >
-
-        <LinearLayout
-            android:id="@+id/icon3"
-            android:layout_width="100dp"
-            android:layout_height="wrap_content"
-            android:layout_margin="15dp"
-            android:gravity="center_horizontal"
-            android:orientation="vertical" >
-
-            <ImageView
-                android:id="@+id/ImageView03"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:src="@drawable/challenge_icon" />
-
-            <com.amcolabs.quizapp.widgets.GothamTextView
-                android:id="@+id/TextView03"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="challenge"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:textColor="@color/white"
-                android:textColorLink="@color/white"
-                android:textSize="16sp" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/icon4"
-            android:layout_width="100dp"
-            android:layout_height="wrap_content"
-            android:layout_margin="15dp"
-            android:gravity="center_horizontal"
-            android:orientation="vertical" >
-
-            <ImageView
-                android:id="@+id/imageView4"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:src="@drawable/scoreboard_icon" />
-
-            <com.amcolabs.quizapp.widgets.GothamTextView
-                android:id="@+id/textView4"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Scoreboard"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:textColor="@color/white"
-                android:textColorLink="@color/white"
-                android:textSize="16sp" />
-
-        </LinearLayout>
-  </LinearLayout>
-
-    
-    
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center_horizontal"
+        android:orientation="vertical" >
+    </LinearLayout>
 
 </LinearLayout>
