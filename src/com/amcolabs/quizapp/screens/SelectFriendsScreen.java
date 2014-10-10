@@ -120,6 +120,15 @@ public class SelectFriendsScreen extends Screen {
 			tabsHost.setOnTabChangedListener(new OnTabChangeListener() {
 				@Override
 				public void onTabChanged(String tabId) {
+					if(tabId.equalsIgnoreCase(UiText.GPLUS.getValue())){
+						refreshToGooglePlusFriends();
+					}
+					else if(tabId.equalsIgnoreCase(UiText.FB.getValue())){
+						refreshFbFriends();
+					}
+					else{
+						refreshAllFriends();
+					}
 					 for(int i=0;i<tabsHost.getTabWidget().getChildCount();i++){
 				              tabsHost.getTabWidget().getChildAt(i).setBackgroundColor(Color.LTGRAY);
 			         }
@@ -135,7 +144,7 @@ public class SelectFriendsScreen extends Screen {
 						@Override
 						public String onData(User user) {
 							getApp().setUser(user);
-							navigateToGooglePlusFriends();
+							refreshToGooglePlusFriends();
 							return null;
 						}
 					});
@@ -150,7 +159,7 @@ public class SelectFriendsScreen extends Screen {
 						@Override
 						public String onData(User user) {
 							getApp().setUser(user);
-							navigateToGooglePlusFriends();
+							refreshToGooglePlusFriends();
 							return null;
 						}
 					});
@@ -164,7 +173,7 @@ public class SelectFriendsScreen extends Screen {
 		}
 		listView.setAdapter(friendsAdapter);
 		if(enableSocial)
-			navigateToAllFriends();
+			refreshAllFriends();
 		else{
 			tabsHost.setVisibility(View.GONE);
 		}
@@ -201,7 +210,7 @@ public class SelectFriendsScreen extends Screen {
 		return friendsConnectedToFb;
 	}
 
-	public void navigateToGooglePlusFriends(){
+	public void refreshToGooglePlusFriends(){
 		if(getApp().getUser().gPlusUid==null || getApp().getUser().gPlusUid.trim().equalsIgnoreCase("")){
 			debugMessageWrapper.setVisibility(View.VISIBLE);
 			debugMessage.setVisibility(View.VISIBLE);
@@ -209,6 +218,9 @@ public class SelectFriendsScreen extends Screen {
 			fbButton.setVisibility(View.GONE);
 			gPlusButton.setVisibility(View.VISIBLE);
 			return;
+		}
+		else{
+			debugMessageWrapper.setVisibility(View.GONE);
 		}
 		// TODO : show a popup
 		if(gPlusFriendsAdapter.getCount()==0){
@@ -220,7 +232,7 @@ public class SelectFriendsScreen extends Screen {
 		}		
 	}
 	
-	public void navigateToAllFriends(){
+	public void refreshAllFriends(){
 //		gPlusTab.setChecked(false);
 //		fbTab.setChecked(false);
 //		allTab.setChecked(true);
@@ -236,7 +248,7 @@ public class SelectFriendsScreen extends Screen {
 			debugMessageWrapper.setVisibility(View.GONE);
 		}
 	}
-	public void navigateToFbFriends(){
+	public void refreshFbFriends(){
 		if(getApp().getUser().fbUid==null || getApp().getUser().fbUid.trim().equalsIgnoreCase("")){
 			debugMessageWrapper.setVisibility(View.VISIBLE);
 			debugMessage.setVisibility(View.VISIBLE);
@@ -244,7 +256,10 @@ public class SelectFriendsScreen extends Screen {
 			fbButton.setVisibility(View.VISIBLE);
 			gPlusButton.setVisibility(View.GONE);
 			return;
-		}	
+		}
+		else{
+			debugMessageWrapper.setVisibility(View.GONE);
+		}
 		// TODO :add popup to invite for the first time
 		if(fbFriendsAdapter.getCount()==0){
 			debugMessageWrapper.setVisibility(View.VISIBLE);
