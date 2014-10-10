@@ -21,6 +21,7 @@ import com.amcolabs.quizapp.adapters.CategoryItemListAdapter;
 import com.amcolabs.quizapp.adapters.FeedListItemAdaptor;
 import com.amcolabs.quizapp.adapters.OfflineChallengesAdapter;
 import com.amcolabs.quizapp.adapters.QuizItemListAdapter;
+import com.amcolabs.quizapp.appcontrollers.ProfileAndChatController;
 import com.amcolabs.quizapp.appcontrollers.UserMainPageController;
 import com.amcolabs.quizapp.configuration.Config;
 import com.amcolabs.quizapp.databaseutils.Category;
@@ -260,7 +261,8 @@ public class HomeScreen extends Screen {
 		viewProfileButton.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				userMainController.showUserActivity();
+				ProfileAndChatController c = (ProfileAndChatController) getApp().loadAppController(ProfileAndChatController.class);
+				c.showProfileScreen(getApp().getUser());
 			}
 		});
 		addToScrollView(baseLayout);
@@ -270,7 +272,7 @@ public class HomeScreen extends Screen {
 	private DataInputListener<Quiz> quizClickListener = new DataInputListener<Quiz>(){
 		@Override
 		public String onData(final Quiz quiz) {
-			getApp().getStaticPopupDialogBoxes().showQuizSelectMenu(new DataInputListener<Integer>(){
+			getApp().getStaticPopupDialogBoxes().showQuizSelectMenu(quiz, new DataInputListener<Integer>(){ 
 				@Override
 				public String onData(Integer s) {
 					switch(s){

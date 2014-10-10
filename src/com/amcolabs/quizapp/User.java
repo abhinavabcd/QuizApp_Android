@@ -2,10 +2,11 @@ package com.amcolabs.quizapp;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
-import com.amcolabs.quizapp.databaseutils.Quiz;
 import com.amcolabs.quizapp.uiutils.UiUtils.UiText;
 import com.j256.ormlite.field.DatabaseField;
 
@@ -43,8 +44,8 @@ public class User {
 	public String gPlusUid;
 	@DatabaseField
 	public String fbUid;
-	private List<String> subscribers;//uids
-	private List<String> subscribedTo;
+	private Set<String> subscribers;//uids
+	private Set<String> subscribedTo;
 	
 	public String fbFriends;
 	public String gPlusFriends;
@@ -152,14 +153,14 @@ public class User {
 
 	public List<String> getSubscribers() {
 		if(subscribers==null)
-			subscribers = new ArrayList<String>();
-		return subscribers;
+			subscribers = new HashSet<String>();
+		return new ArrayList<String>(subscribers);
 	}
 
 	public List<String> getSubscribedTo() {
 		if(subscribedTo==null)
-			subscribedTo = new ArrayList<String>();
-		return subscribedTo;
+			subscribedTo = new HashSet<String>();
+		return new ArrayList<String>(subscribedTo);
 	}
 
 	public String getStatus(double level) {

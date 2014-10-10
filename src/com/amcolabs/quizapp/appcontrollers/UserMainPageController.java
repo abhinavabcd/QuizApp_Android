@@ -17,6 +17,7 @@ import com.amcolabs.quizapp.databaseutils.Quiz;
 import com.amcolabs.quizapp.databaseutils.UserInboxMessage;
 import com.amcolabs.quizapp.datalisteners.DataInputListener;
 import com.amcolabs.quizapp.datalisteners.DataInputListener2;
+import com.amcolabs.quizapp.gameutils.GameUtils;
 import com.amcolabs.quizapp.loginutils.FacebookLoginHelper;
 import com.amcolabs.quizapp.loginutils.GoogleLoginHelper;
 import com.amcolabs.quizapp.popups.StaticPopupDialogBoxes.YesNoDialog;
@@ -161,10 +162,30 @@ public class UserMainPageController  extends AppController{
 				@Override
 				public String onData(Boolean s) {
 					homeScreen.addOfflineChallengesView(offlineChallenges, offlineChallenges.size()>6, UiText.OFFLINE_CHALLENGES.getValue() , true);
+					preProcessAndAddFeeds(feeds);
 					return null;
 				}
 			});
+		}else{
+			preProcessAndAddFeeds(feeds);
 		}
+		
+		
+//		cs.addFeedView();
+//		cs.addQuizzes();
+		
+		insertScreen(homeScreen);
+		List<Badge> pendingBadges = quizApp.getDataBaseHelper().getAllPendingBadges();
+		if(pendingBadges!=null)
+			quizApp.getBadgeEvaluator().newBadgeUnlocked(new ArrayList<Badge>(pendingBadges));
+		
+		
+//		insertScreen(new UserProfileScreen(this));
+//		insertScreen(new WinOrLoseScreen(this));
+	}
+
+
+    private void preProcessAndAddFeeds(final List<Feed> feeds) {
 		if(feeds!=null){
 			feedPreprocessedCount = feeds.size();
 			List<String> uidsList = new ArrayList<String>();
@@ -200,10 +221,15 @@ public class UserMainPageController  extends AppController{
 									}
 								}, true); 
 								break;
-							case FEED_USED_JOINED:
-								--feedPreprocessedCount;
-								if(feedPreprocessedCount<1) homeScreen.addFeedView(feeds, UiText.USER_FEED.getValue());
-								break;
+						case FEED_USED_JOINED:
+						case FEED_GENERAL:
+						case FEED_USER_ADDED_FRIEND:
+						case FEED_USER_TOOK_PART:
+						case FEED_USER_WON:
+						case FEED_USER_WON_BADGES:
+							--feedPreprocessedCount;
+							if(feedPreprocessedCount<1) homeScreen.addFeedView(feeds, UiText.USER_FEED.getValue());
+							break;
 						}
 					} 
 					return null;
@@ -211,21 +237,10 @@ public class UserMainPageController  extends AppController{
 			});
 			
 		}
-//		cs.addFeedView();
-//		cs.addQuizzes();
-		
-		insertScreen(homeScreen);
-		List<Badge> pendingBadges = quizApp.getDataBaseHelper().getAllPendingBadges();
-		if(pendingBadges!=null)
-			quizApp.getBadgeEvaluator().newBadgeUnlocked(new ArrayList<Badge>(pendingBadges));
-		
-		
-//		insertScreen(new UserProfileScreen(this));
-//		insertScreen(new WinOrLoseScreen(this));
+
 	}
 
-
-    public void doGplusLogin(){
+	public void doGplusLogin(){
     	GoogleLoginHelper gPlusHelper = new GoogleLoginHelper(quizApp);
     	
     	gPlusHelper.doLogin(new DataInputListener<User>(){
@@ -343,7 +358,7 @@ public class UserMainPageController  extends AppController{
 				for(String uid : user.getSubscribedTo()){
 					users.add(quizApp.cachedUsers.get(uid));
 				}
-				selectFriendsScreen.showFriendsList(UiText.SELECT_FRIENDS_TO_CHALLENGE.getValue(), users,new DataInputListener<User>(){
+				selectFriendsScreen.showFriendsList(UiText.SELECT_FRIENDS_TO_CHALLENGE.getValue(GameUtils.reduceString(quiz.name)), users,new DataInputListener<User>(){
 					@Override
 					public String onData(User s) {
 						ProgressiveQuizController progressiveQuiz = (ProgressiveQuizController) quizApp.loadAppController(ProgressiveQuizController.class);
@@ -368,18 +383,13 @@ public class UserMainPageController  extends AppController{
 			}
 		});
 		
-	}
+	}	
 
 	public void showAllOfflineChallenges() {
 		clearScreen();
 		HomeScreen homeScreen = new HomeScreen(this);
 		homeScreen.addOfflineChallengesView(quizApp.getDataBaseHelper().getPendingRecentOfflineChallenges(-1), false, UiText.OFFLINE_CHALLENGES.getValue(), false);
 		insertScreen(homeScreen);
-	}
-
-	public void showUserActivity() {
-		// TODO Auto-generated method stub
-		
 	}
 	
 }
