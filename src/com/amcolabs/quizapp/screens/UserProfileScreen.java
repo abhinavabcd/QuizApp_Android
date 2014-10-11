@@ -248,8 +248,8 @@ public class UserProfileScreen extends Screen {
 //			data.setGroupSpace(5f);
 
 	        mBarChart.setData(data);
-//	        mBarChart.setDescriptionTextSize(6f);
-//	        mBarChart.setValueTextSize(5f);
+	        mBarChart.setDescriptionTextSize(6f);
+	        mBarChart.setValueTextSize(6f);
 	        mBarChart.setDescription("Quiz Stats");
 	        mBarChart.invalidate();
 	}
