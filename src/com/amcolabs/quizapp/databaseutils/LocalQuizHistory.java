@@ -13,7 +13,7 @@ public class LocalQuizHistory {
 
 	@DatabaseField(index=true , unique = true ,  generatedId=true)
 	private
-	String	quizHistoryid; // game with uid
+	long quizHistoryid; // game with uid
 	
 	@DatabaseField(index=true)
 	private
