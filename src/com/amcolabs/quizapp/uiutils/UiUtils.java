@@ -182,7 +182,8 @@ public class UiUtils {
 		GPLUS("G+"),
 		SET_STATUS("Update your status"),
 		YOU_VS_USER("You vs %s"),
-		LOCAL_QUIZ_HISTORY("Local Quiz History");	
+		LOCAL_QUIZ_HISTORY("Local Quiz History"),
+		SELECT_TO_CHALLENGE_USER("Select Quiz to Challenge %s");	
 		
 		String value = null;
 		UiText(String value){

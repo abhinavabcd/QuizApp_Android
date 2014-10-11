@@ -8,6 +8,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -86,6 +87,7 @@ public class UserProfileScreen extends Screen {
 		LinearLayout lView = (LinearLayout) getApp().getActivity().getLayoutInflater().inflate(R.layout.block_list_view, this, false);
  		lView.setBackgroundColor(getResources().getColor(R.color.translucent_white));
 		EditText searchText = (EditText) lView.findViewById(R.id.search_text);
+		FrameLayout viewMore = (FrameLayout) lView.findViewById(R.id.view_all_wrapper);
 		GothamTextView debugMessage = (GothamTextView) lView.findViewById(R.id.debugMessage);
 		if(events.size()==0){
 			debugMessage.setVisibility(View.VISIBLE);
@@ -104,7 +106,13 @@ public class UserProfileScreen extends Screen {
 		listView.setAdapter(gameEventsAdapter);
 	//	addListenersToQuizListItem(listView);
 		UiUtils.setListViewHeightBasedOnChildren(listView);
-		userProfileWrapper.addView(lView );
+		if(userProfileWrapper!=null){
+			viewMore.setVisibility(View.GONE);
+			userProfileWrapper.addView(lView );
+		}
+		else{
+			addView(lView);
+		}
 	}
 
 	public void drawUserQuizChartsAndUpdateStats(User user){
@@ -341,7 +349,10 @@ public class UserProfileScreen extends Screen {
 		GothamTextView debugMessage = (GothamTextView) winLoseStrip.findViewById(R.id.debugMessage);
 		debugMessage.setTextSize(25);
 		debugMessage.setText(wins+"-"+lose);
-		addToScrollView(winLoseStrip);
+		if(userProfileWrapper!=null)
+			userProfileWrapper.addView(winLoseStrip);
+		else
+			addToScrollView(winLoseStrip);
 		showHistory(history, true);
 	}
 	
@@ -362,6 +373,7 @@ public class UserProfileScreen extends Screen {
 		LinearLayout lView = (LinearLayout) getApp().getActivity().getLayoutInflater().inflate(R.layout.block_list_view, this, false);
  		lView.setBackgroundColor(getResources().getColor(R.color.translucent_white));
 		EditText searchText = (EditText) lView.findViewById(R.id.search_text);
+		
 		GothamTextView debugMessage = (GothamTextView) lView.findViewById(R.id.debugMessage);
 		if(history.size()==0){ 
 			debugMessage.setVisibility(View.VISIBLE);
@@ -381,8 +393,11 @@ public class UserProfileScreen extends Screen {
 	//	addListenersToQuizListItem(listView);
 		if(isAdddedToScroller){
 			UiUtils.setListViewHeightBasedOnChildren(listView);
-			if(userProfileWrapper!=null)
+			if(userProfileWrapper!=null){
+				FrameLayout viewMore = (FrameLayout) lView.findViewById(R.id.view_all_wrapper);
+				viewMore.setVisibility(View.GONE);
 				userProfileWrapper.addView(lView);
+			}
 			else
 				addToScrollView(lView );
 		}

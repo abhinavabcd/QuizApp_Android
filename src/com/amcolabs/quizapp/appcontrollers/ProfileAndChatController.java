@@ -57,9 +57,7 @@ public class ProfileAndChatController extends AppController {
 	
 	public void showProfileScreen(final User user){
 		clearScreen();
-		if(profileScreen==null){
-			profileScreen = new UserProfileScreen(this);
-		}
+		profileScreen = new UserProfileScreen(this);
 		profileScreen.showUser(user);
 		if(user.uid.equalsIgnoreCase(quizApp.getUser().uid)){
 			
@@ -212,7 +210,7 @@ public class ProfileAndChatController extends AppController {
 									loadChatScreen(user, -1, true);
 									break;
 								case 3:
-									((UserMainPageController)quizApp.loadAppController(UserMainPageController.class)).showAllUserQuizzes();
+									((UserMainPageController)quizApp.loadAppController(UserMainPageController.class)).showAllUserQuizzes(UiText.SELECT_TO_CHALLENGE_USER.getValue(user.name));
 									break;
 								}
 								return null;

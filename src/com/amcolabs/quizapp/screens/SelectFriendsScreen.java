@@ -47,7 +47,8 @@ public class SelectFriendsScreen extends Screen {
 	public boolean doNotShowOnBackPress = false;
 	private TabWidget tabs;
 	private TabHost tabsHost;
-	private int t_White;
+	private int t_Black;
+	private int t_Blacker;
 	
 	public void showFriendsList(String titleText ,List<User> users , DataInputListener<User> onFriendSelectedListener, boolean searchOnServer, boolean enableSocial){
 		this.users = users;
@@ -97,11 +98,11 @@ public class SelectFriendsScreen extends Screen {
 			gPlusFriendsView.setAdapter(gPlusFriendsAdapter);			
 			// add tabs here
 			tabsHost.setup();
-			tabs.setDividerDrawable(null);
+//			tabs.setDividerDrawable(null);
 			TabSpec spec;
 			// all tab
 			spec = tabsHost.newTabSpec(UiText.ALL.getValue())
-					 .setIndicator("", getResources().getDrawable(R.drawable.small_logo))
+					 .setIndicator("", getResources().getDrawable(R.drawable.smaller_logo))
 					 .setContent(R.id.listView);
 			tabsHost.addTab(spec);
 			// fb tab
@@ -115,9 +116,10 @@ public class SelectFriendsScreen extends Screen {
 					 .setContent(R.id.gplus_friends_list);
 			tabsHost.addTab(spec);
 			
-			t_White = Color.BLACK;//getResources().getColor(R.color.black);
+			t_Black = getResources().getColor(R.color.translucent_black);
+			t_Blacker =  getResources().getColor(R.color.darker_translucent_black);
 			for(int i=0;i<tabsHost.getTabWidget().getChildCount();i++){
-	              tabsHost.getTabWidget().getChildAt(i).setBackgroundColor(t_White);
+	              tabsHost.getTabWidget().getChildAt(i).setBackgroundColor(t_Black);
   			}
 			OnTabChangeListener tabChangeListner = new OnTabChangeListener() {
 				@Override
@@ -132,9 +134,9 @@ public class SelectFriendsScreen extends Screen {
 						refreshAllFriends();
 					}
 					 for(int i=0;i<tabsHost.getTabWidget().getChildCount();i++){
-				              tabsHost.getTabWidget().getChildAt(i).setBackgroundColor(t_White);
+				              tabsHost.getTabWidget().getChildAt(i).setBackgroundColor(t_Black);
 			         }
-			         tabsHost.getTabWidget().getChildAt(tabsHost.getCurrentTab()).setBackgroundColor(getResources().getColor(R.color.translucent_black));
+			         tabsHost.getTabWidget().getChildAt(tabsHost.getCurrentTab()).setBackgroundColor(t_Blacker);
 				}
 			};
 			tabsHost.setOnTabChangedListener(tabChangeListner);

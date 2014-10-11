@@ -313,11 +313,16 @@ public class UserMainPageController  extends AppController{
 		insertScreen(allCategoriesScreen);
 	}
 
+	
 	public void showAllUserQuizzes() {
+		showAllUserQuizzes(UiText.USER_FAVOURITES.getValue());
+	}
+
+	public void showAllUserQuizzes(String titleText) {
 		clearScreen();
 		HomeScreen allQuizzesScreen = new HomeScreen(this);
 		List<Quiz> quizzes = quizApp.getDataBaseHelper().getAllQuizzesOrderedByXP();
-		allQuizzesScreen.addUserQuizzesView(quizzes ,false , UiText.USER_FAVOURITES.getValue());
+		allQuizzesScreen.addUserQuizzesView(quizzes ,false , titleText);
 		insertScreen(allQuizzesScreen);
 	}
 	
