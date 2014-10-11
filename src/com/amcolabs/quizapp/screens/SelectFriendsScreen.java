@@ -97,10 +97,11 @@ public class SelectFriendsScreen extends Screen {
 			gPlusFriendsView.setAdapter(gPlusFriendsAdapter);			
 			// add tabs here
 			tabsHost.setup();
+			tabs.setDividerDrawable(null);
 			TabSpec spec;
 			// all tab
 			spec = tabsHost.newTabSpec(UiText.ALL.getValue())
-					 .setIndicator("", getResources().getDrawable(R.drawable.logo))
+					 .setIndicator("", getResources().getDrawable(R.drawable.small_logo))
 					 .setContent(R.id.listView);
 			tabsHost.addTab(spec);
 			// fb tab
@@ -114,11 +115,11 @@ public class SelectFriendsScreen extends Screen {
 					 .setContent(R.id.gplus_friends_list);
 			tabsHost.addTab(spec);
 			
-			t_White = getResources().getColor(R.color.translucent_white);
+			t_White = Color.BLACK;//getResources().getColor(R.color.black);
 			for(int i=0;i<tabsHost.getTabWidget().getChildCount();i++){
 	              tabsHost.getTabWidget().getChildAt(i).setBackgroundColor(t_White);
   			}
-			tabsHost.setOnTabChangedListener(new OnTabChangeListener() {
+			OnTabChangeListener tabChangeListner = new OnTabChangeListener() {
 				@Override
 				public void onTabChanged(String tabId) {
 					if(tabId.equalsIgnoreCase(UiText.GPLUS.getValue())){
@@ -135,8 +136,10 @@ public class SelectFriendsScreen extends Screen {
 			         }
 			         tabsHost.getTabWidget().getChildAt(tabsHost.getCurrentTab()).setBackgroundColor(getResources().getColor(R.color.translucent_black));
 				}
-			});
-			tabsHost.setCurrentTab(0);
+			};
+			tabsHost.setOnTabChangedListener(tabChangeListner);
+			
+			tabChangeListner.onTabChanged(UiText.ALL.getValue());
 			gPlusButton.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
@@ -173,10 +176,9 @@ public class SelectFriendsScreen extends Screen {
 			debugMessageWrapper.setVisibility(View.GONE);
 		}
 		listView.setAdapter(friendsAdapter);
-		if(enableSocial)
-			refreshAllFriends();
-		else{
-			tabsHost.setVisibility(View.GONE);
+		refreshAllFriends();
+		if(!enableSocial){
+			tabs.setVisibility(View.GONE);
 		}
 		
 		if(friendsAdapter.getCount()==0){

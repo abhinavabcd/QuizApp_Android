@@ -55,6 +55,7 @@ public  class SelectFriendsListAdapter extends ArrayAdapter<User>{
 				holder.statusDescription = (GothamTextView) convertView.findViewById(R.id.category_short_name);
 				holder.additionalcontainer = (FrameLayout)convertView.findViewById(R.id.additional_container);
 				convertView.findViewById(R.id.additional_text).setVisibility(View.GONE);
+
 				holder.addFriendButton = new QuizAppMenuItem(quizApp, 0, 0, UiText.ADD.getValue());
 				holder.addFriendButton.setTag(holder);
 				holder.addFriendButton.setOnClickListener(new OnClickListener() {

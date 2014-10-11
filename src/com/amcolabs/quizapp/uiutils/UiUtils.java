@@ -165,11 +165,12 @@ public class UiUtils {
 		YOU_LEVELED_UP("You have level up'ed in %s"),
 		YOU_LOST_TO_USER("You lost to <a href='userProfile/%s'>%s</a> in <a href='quizStats/%s'>%s</a> by %s xp Points"),	
 		YOU_DEFEATED_USER("You defeated <a href='userProfile/%s'>%s</a> in <a href='quizStats/%s'>%s</a> with %s xp Points"),
+		THE_QUIZ_WAS_TIE("It was a tie with <a href='userProfile/%s'>%s</a> in <a href='quizStats/%s'>%s</a> with %s xp Points"),
 		THERE_WAS_SERVER_ERROR("There was a server error while you were playing with <a href='userProfile/%s'>%s</a> in <a href='quizStats/%s'>%s</a>"),
 		YOU_UNLOCKED_BADGE("You unlocked a badge <a href='badge/%s'>%s</a>"),
 		NO_ACTIVITY_AVAILABLE("No Activity Available"),
 		ACTIVITY_LOG("Activity log"),
-		PLAY_QUIZ("Play Quiz"),
+		PLAY_QUIZ("Play Multiplayer"),
 		VIEW_HISTORY("View History"),
 		SCORE_BOARDS("ScoreBoards"),
 		SELECT_FRIENDS_TO_CHALLENGE_IN("Challenge friends in %s"),
@@ -178,7 +179,10 @@ public class UiUtils {
 		START_CONVERSATION("Chat%s"), 
 		ALL("All"),
 		FB("Facebook"),
-		GPLUS("G+");	
+		GPLUS("G+"),
+		SET_STATUS("Update your status"),
+		YOU_VS_USER("You vs %s"),
+		LOCAL_QUIZ_HISTORY("Local Quiz History");	
 		
 		String value = null;
 		UiText(String value){

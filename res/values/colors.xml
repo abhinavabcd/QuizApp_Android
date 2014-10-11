@@ -10,14 +10,15 @@
     <color name="blue_light">#FFAAAAFF</color>
     <color name="grey_cloud">#FFAAAAAA</color>
     <color name="black">#FF000000</color>
+    <color name="zero">#00000000</color>
     <color name="white">#FFFFFFFF</color>
 	<color name="translucent_black">#55000000</color>    
-	<color name="translucent_white">#55ffffff</color>    
+	<color name="translucent_white">#aaffffff</color>    
 		<color name="textColor">#FFF</color>
 	<color name="textFieldColor">#000</color>
 	<color name="textShadow">#FFF</color>
 	<color name="listViewBg">#DADFEE</color>
-	<color name="darker_translucent_black">#AA000000</color>
+	<color name="darker_translucent_black">#BB000000</color>
 	<color name="sendLightColor">#8897BF</color>
 	<color name="sendMeduimColor">#5D6CA5</color>
 	<color name="sendDarkColor">#515F9F</color>

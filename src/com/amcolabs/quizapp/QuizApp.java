@@ -46,7 +46,12 @@ import com.amcolabs.quizapp.serverutils.ServerCalls;
 import com.amcolabs.quizapp.uiutils.UiUtils;
 import com.amcolabs.quizapp.uiutils.UiUtils.UiText;
 import com.amcolabs.quizapp.widgets.QuizAppMenuItem;
-
+/**
+ * 
+ * @author abhinav2
+ * Main base , and delegate to other objects in controllers and screen 
+ * takes care of layouts/screen animations
+ */
 public class QuizApp extends Fragment implements AnimationListener , IMenuClickListener ,ServiceConnection {
 
 

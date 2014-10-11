@@ -2,18 +2,23 @@ package com.amcolabs.quizapp.appcontrollers;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
-import android.os.Bundle;
 import android.view.View;
 
 import com.amcolabs.quizapp.AppController;
 import com.amcolabs.quizapp.QuizApp;
 import com.amcolabs.quizapp.User;
 import com.amcolabs.quizapp.adapters.ChatListAdapter;
+import com.amcolabs.quizapp.adapters.GameEventsListItemAdaptor;
+import com.amcolabs.quizapp.adapters.QuizHistoryListAdapter;
 import com.amcolabs.quizapp.adapters.UserChatListScreen;
 import com.amcolabs.quizapp.configuration.Config;
 import com.amcolabs.quizapp.databaseutils.ChatList;
+import com.amcolabs.quizapp.databaseutils.GameEvents;
+import com.amcolabs.quizapp.databaseutils.LocalQuizHistory;
+import com.amcolabs.quizapp.databaseutils.Quiz;
 import com.amcolabs.quizapp.databaseutils.UserInboxMessage;
 import com.amcolabs.quizapp.datalisteners.DataInputListener;
 import com.amcolabs.quizapp.datalisteners.DataInputListener2;
@@ -24,7 +29,11 @@ import com.amcolabs.quizapp.screens.ChatScreen;
 import com.amcolabs.quizapp.screens.SelectFriendsScreen;
 import com.amcolabs.quizapp.screens.UserProfileScreen;
 import com.amcolabs.quizapp.uiutils.UiUtils.UiText;
-
+/**
+ * 
+ * @author abhinav2
+ * takes cares of chatlist , and conversation screen 
+ */
 public class ProfileAndChatController extends AppController {
 
 	private ChatScreen chatScreen;
@@ -46,19 +55,28 @@ public class ProfileAndChatController extends AppController {
 		return super.onBackPressed();
 	}
 	
-	public void showProfileScreen(User user){
+	public void showProfileScreen(final User user){
 		clearScreen();
 		if(profileScreen==null){
 			profileScreen = new UserProfileScreen(this);
 		}
 		profileScreen.showUser(user);
 		if(user.uid.equalsIgnoreCase(quizApp.getUser().uid)){
-			profileScreen.addEventsListView(quizApp.getDataBaseHelper().getAllGameEvents(-1));
+			
+			final List<GameEvents> events = quizApp.getDataBaseHelper().getAllGameEvents(-1);
+			quizApp.getDataBaseHelper().getAllUsersByUid(GameEventsListItemAdaptor.getAllUids(events), new DataInputListener<Boolean>(){
+				@Override
+				public String onData(Boolean s) {
+					profileScreen.addEventsListView(events);
+					return super.onData(s);
+				}
+			});
 		}
 		else{
-			profileScreen.showHistoryWithUser();
+				final List<LocalQuizHistory> history = quizApp.getDataBaseHelper().getQuizHistoryByUid(user.uid);
+				profileScreen.showHistoryWithUser(user , history);
 		}
-
+ 
 		insertScreen(profileScreen);
 	}
 	
@@ -79,7 +97,7 @@ public class ProfileAndChatController extends AppController {
 								 String messageText = payload.textMessage;
 								chatScreen.addMessage(false, -1 ,messageText);
 								try {
-									quizApp.getDataBaseHelper().getChatListDao().createOrUpdate(new ChatList(user2.uid,messageText , Config.getCurrentTimeStamp(), 0));
+									quizApp.getDataBaseHelper().getChatListDao().createOrUpdate(new ChatList(user2.uid,messageText , Config.getCurrentTimeStamp(), ChatList.UNSEEN));
 								} catch (SQLException e) {
 									// TODO Auto-generated catch block
 									e.printStackTrace();
@@ -107,7 +125,7 @@ public class ProfileAndChatController extends AppController {
 			public String onData(Boolean s) {
 				if(s){
 					try {
-						quizApp.getDataBaseHelper().getChatListDao().createOrUpdate(new ChatList(user2.uid,string , Config.getCurrentTimeStamp(), 0));
+						quizApp.getDataBaseHelper().getChatListDao().createOrUpdate(new ChatList(user2.uid,string , Config.getCurrentTimeStamp(), ChatList.UNSEEN));
 					} catch (SQLException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -129,10 +147,17 @@ public class ProfileAndChatController extends AppController {
 	public void showChatScreen() {
 		clearScreen();
 		chatList = quizApp.getDataBaseHelper().getAllChatList();
-		List<String> uidsList = new ArrayList<String>();
+		HashMap<String , Boolean > uidHash = new HashMap<String, Boolean>();
 		for(ChatList item : chatList){
-			uidsList.add(item.uid);
+			uidHash.put(item.uid , true);
 		}
+		for(String uid : quizApp.getUser().getSubscribedTo()){
+			if(!uidHash.containsKey(uid)){
+				uidHash.put(uid, true);
+				chatList.add(new ChatList(uid, "", 0 , ChatList.SEEN));
+			}
+		}
+		List<String> uidsList = new ArrayList<String>(uidHash.keySet());
 		
 		quizApp.getDataBaseHelper().getAllUsersByUid(uidsList, new DataInputListener<Boolean>(){ // should run on ui thread
 			@Override
@@ -181,10 +206,13 @@ public class ProfileAndChatController extends AppController {
 											showProfileScreen(s); // show full profile only
 											return null;
 										};
-										
 									});
 									break;
 								case 2:
+									loadChatScreen(user, -1, true);
+									break;
+								case 3:
+									((UserMainPageController)quizApp.loadAppController(UserMainPageController.class)).showAllUserQuizzes();
 									break;
 								}
 								return null;
@@ -201,5 +229,4 @@ public class ProfileAndChatController extends AppController {
 		
 
 	}
-	
 }

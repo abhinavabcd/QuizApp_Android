@@ -405,7 +405,10 @@ public class ServerCalls {
 			switch(messageType){
 				case OK_USER_INFO:
 					if(dataInputListener!=null){
-						dataInputListener.onData(quizApp.getConfig().getGson().fromJson(response.payload,User.class));
+						User user = quizApp.getConfig().getGson().fromJson(response.payload,User.class);
+						quizApp.cachedUsers.put(user.uid , user);
+						quizApp.getDataBaseHelper().saveUser(user);
+						dataInputListener.onData(user);
 					}
 					break;
 				case FAILED: 
@@ -1022,6 +1025,26 @@ public class ServerCalls {
 					}
 			}
 		} , false);
+	}
+
+
+	public void updateUserStatus(String status , final DataInputListener<Boolean> dataInputListener) {
+		String url = getAServerAddr()+"/func?task=setStatusMsg";
+		url+="&encodedKey="+quizApp.getUserDeviceManager().getEncodedKey();
+		url+="&statusMsg="+status.substring(0, status.length()>30 ? 30 : status.length());
+		makeServerCall(url,new ServerNotifier() {			
+		@Override
+		public void onServerResponse(MessageType messageType, ServerResponse response) {
+			switch (messageType) {
+			case OK:
+				dataInputListener.onData(true);
+				break;
+			default:
+				dataInputListener.onData(false);
+				break;
+			}
+		}
+		});
 	}
 }
 

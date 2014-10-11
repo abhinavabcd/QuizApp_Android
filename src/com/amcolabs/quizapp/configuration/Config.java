@@ -67,11 +67,17 @@ public class Config{
 	public static final long QUESTION_END_DELAY_TIME = 3000;
 	public static final String KEY_GCM_FROM_USER = "fromUser";
 	public static final String KEY_GCM_TEXT_MESSAGE = "textMessage";
-	public static int[] themeColors = new int []{Color.rgb(139, 171,66),
-									    		Color.rgb(232, 93,12),
-									    		Color.rgb(37, 142,161),
-									    		Color.rgb(216, 159,57),
-									    		Color.rgb(58, 129,186),
+	public static int[] themeColors = new int []{
+											Color.rgb(149, 181,76),
+								    		Color.rgb(242, 103,22),
+								    		Color.rgb(47, 152,171),
+								    		Color.rgb(226, 169,67),
+								    		Color.rgb(68, 139,196),
+//											Color.rgb(255, 250, 120),
+//											Color.rgb(102, 232, 148),
+//											Color.rgb(156, 197, 255),
+//											Color.rgb(209, 113, 232),
+//											Color.rgb(252, 187, 157)
 										};
 	
 	public static int  TIMER_SLIGHT_DELAY_START = 500;
@@ -99,7 +105,7 @@ public class Config{
 	
 	public int getUniqueThemeColor(String a){
 		if(a==null) return 0;
-		return themeColors[a.charAt(0)%themeColors.length];
+		return themeColors[(a.charAt(0)+ a.charAt(a.length()-1))%themeColors.length];
 	}
 	private int tempBgIndex = 0;
 	private List<String> userBgAssets = Arrays.asList("bg/bg_2.jpg" , "bg/bg_1.jpg");

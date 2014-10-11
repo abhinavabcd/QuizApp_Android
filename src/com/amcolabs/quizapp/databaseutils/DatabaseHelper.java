@@ -38,7 +38,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 	// name of the database file for your application -- change to something appropriate for your app
 	private static final String DATABASE_NAME = "quizApp.db";
 	// any time you make changes to your database objects, you may have to increase the database version
-	private static final int DATABASE_VERSION = 18;
+	private static final int DATABASE_VERSION = 19;
 	private static String DATABASE_PATH = "/data/data/com.amcolabs.quizapp/databases/";
 
 	// the DAO object we use to access the Category table
@@ -633,7 +633,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
     
     public void setRecentChat(String uid, String message , boolean unseen){
     	try {
-			getChatListDao().createOrUpdate(new ChatList(uid, message,Config.getCurrentTimeStamp() , unseen?0:1)); 
+			getChatListDao().createOrUpdate(new ChatList(uid, message,Config.getCurrentTimeStamp() , unseen?ChatList.UNSEEN:ChatList.SEEN)); 
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -836,6 +836,16 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 	public Badge getBadgeById(String badgeId) {
 		try {
 			return getBadgesDao().queryBuilder().where().eq("badgeId", badgeId).queryForFirst();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	public List<LocalQuizHistory> getQuizHistoryByUid(String uid) {
+		try {
+			return getQuizHistoryDao().queryBuilder().where().eq("uid", uid).query();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

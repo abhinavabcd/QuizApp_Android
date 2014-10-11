@@ -24,55 +24,16 @@ import com.amcolabs.quizapp.widgets.GothamTextView;
 public class GameEventsListItemAdaptor extends ArrayAdapter<GameEvents> {
 
 	public static class GameEventViewHolder{
-		public GothamTextView titleName;
-		public GothamTextView textContent1;
-		public GothamTextView textContent2;
 		public ImageView titleImage;
+		public GothamTextView data;
 	}
 	
 	private QuizApp quizApp;
-	private boolean dataInitialized = false;
+//	private boolean dataInitialized = false;
 
 	public GameEventsListItemAdaptor(QuizApp quizApp , int resource,
 			 List<GameEvents> events) {
 		super(quizApp.getContext(), resource, events);
-		List<String> uids = new ArrayList<String>();
-		for(GameEvents evt: events){
-			switch(evt.getEventType()){
-			case LEVEL_UP:
-				break;
-			case LOST_QUIZ:
-				uids.add(evt.message2);
-				break;
-			case SERVER_ERROR_QUIZ:
-				uids.add(evt.message2);
-				break;
-			case SHARED_WITH_FB:
-				break;
-			case SHARED_WITH_GOOGLE:
-				break;
-			case SOMETHING_ELSE:
-				break;
-			case TIE_QUIZ:
-				break;
-			case UNLOCKED_BADGE:
-				break;
-			case USER_JOINED:
-				break;
-			case WON_QUIZ:
-				uids.add(evt.message2);
-				break;
-			default:
-				break;
-			}	
-		}
-		quizApp.getDataBaseHelper().getAllUsersByUid(uids, new DataInputListener<Boolean>(){
-			@Override
-			public String onData(Boolean s) {
-				dataInitialized = true;
-				return super.onData(s);
-			}
-		});
 		this.quizApp = quizApp;
 	}
 	
@@ -90,14 +51,15 @@ public class GameEventsListItemAdaptor extends ArrayAdapter<GameEvents> {
 	
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
-		if(!dataInitialized){
-			return new View(quizApp.getContext());
-		}
+//		if(!dataInitialized){
+//			return new View(quizApp.getContext());
+//		}
 		GameEvents evt = this.getItem(position);
 		GameEventViewHolder viewHolder = null;
 		if(convertView==null){
 			viewHolder = new GameEventViewHolder();
 			convertView = createLayout(evt, quizApp, viewHolder);
+			convertView.setTag(viewHolder);
 		}
 		else{
 			viewHolder = (GameEventViewHolder) convertView.getTag();
@@ -108,12 +70,32 @@ public class GameEventsListItemAdaptor extends ArrayAdapter<GameEvents> {
 	}
 
 	private void setDataIntoView(GameEvents evt, QuizApp quizApp,GameEventViewHolder viewHolder) {
+		User user = null;
+		Quiz quiz = null;
 		switch(evt.getEventType()){
 		case LEVEL_UP:
+			quizApp.getUiUtils().setTextViewHTML(viewHolder.data, UiText.YOU_LEVELED_UP.getValue(quizApp.getDataBaseHelper().getQuizById(evt.getMessage()).name),null);
 			break;
 		case LOST_QUIZ:
+			user = quizApp.cachedUsers.get(evt.getMessage2());
+			quiz = quizApp.getDataBaseHelper().getQuizById(evt.getMessage());
+			quizApp.getUiUtils().setTextViewHTML(viewHolder.data,UiText.YOU_LOST_TO_USER.getValue(
+							user.uid,
+							user.name,
+							quiz.quizId,
+							quiz.name,
+							evt.getMessage3("0")
+					),null);
 			break;
 		case SERVER_ERROR_QUIZ:
+			user = quizApp.cachedUsers.get(evt.getMessage2());
+			quiz = quizApp.getDataBaseHelper().getQuizById(evt.getMessage());
+			quizApp.getUiUtils().setTextViewHTML(viewHolder.data, UiText.THERE_WAS_SERVER_ERROR.getValue(
+							user.uid,
+							user.name,
+							quiz.quizId,
+							quiz.name
+					),null);
 			break;
 		case SHARED_WITH_FB:
 			break;
@@ -124,10 +106,28 @@ public class GameEventsListItemAdaptor extends ArrayAdapter<GameEvents> {
 		case TIE_QUIZ:
 			break;
 		case UNLOCKED_BADGE:
+			ImageView img = viewHolder.titleImage;
+			img.setVisibility(View.VISIBLE);
+			Badge badge = quizApp.getDataBaseHelper().getBadgeById(evt.getMessage());
+			quizApp.getUiUtils().loadImageIntoView(quizApp.getContext(), img, badge.getAssetPath(), true);
+			quizApp.getUiUtils().setTextViewHTML(viewHolder.data, UiText.YOU_UNLOCKED_BADGE.getValue(
+							badge.getBadgeId(),
+							badge.getName()
+					),null);
+
 			break;
 		case USER_JOINED:
 			break;
 		case WON_QUIZ:
+			user = quizApp.cachedUsers.get(evt.getMessage2());
+			quiz = quizApp.getDataBaseHelper().getQuizById(evt.getMessage());
+			quizApp.getUiUtils().setTextViewHTML(viewHolder.data,UiText.YOU_DEFEATED_USER.getValue(
+							user.uid,
+							user.name,
+							quiz.quizId,
+							quiz.name,
+							evt.getMessage3("0")
+				),null);
 			break;
 		default:
 			break;
@@ -138,38 +138,18 @@ public class GameEventsListItemAdaptor extends ArrayAdapter<GameEvents> {
 	private View createLayout(GameEvents evt, QuizApp quizApp, GameEventViewHolder viewHolder) {
 		LinearLayout genericTextView = null;
 		GothamTextView textView = null;
-		User user = null;
-		Quiz quiz = null;
 		switch(evt.getEventType()){ 
 			case LEVEL_UP:
 				genericTextView = (LinearLayout)quizApp.getActivity().getLayoutInflater().inflate(R.layout.generic_event_view, null); 
-				textView = (GothamTextView)genericTextView.findViewById(R.id.data);
-				quizApp.getUiUtils().setTextViewHTML(textView, UiText.YOU_LEVELED_UP.getValue(quizApp.getDataBaseHelper().getQuizById(evt.message).name),null);
+				viewHolder.data = textView = (GothamTextView)genericTextView.findViewById(R.id.data);
 				return genericTextView;
 			case LOST_QUIZ:
 				genericTextView = (LinearLayout)quizApp.getActivity().getLayoutInflater().inflate(R.layout.generic_event_view, null); 
-				textView = (GothamTextView)genericTextView.findViewById(R.id.data); 
-				user = quizApp.cachedUsers.get(evt.message2);
-				quiz = quizApp.getDataBaseHelper().getQuizById(evt.message);
-				quizApp.getUiUtils().setTextViewHTML(textView,UiText.YOU_LOST_TO_USER.getValue(
-								user.uid,
-								user.name,
-								quiz.quizId,
-								quiz.name,
-								"0"
-						),null);
+				viewHolder.data = textView = (GothamTextView)genericTextView.findViewById(R.id.data); 
 				return genericTextView;
 			case SERVER_ERROR_QUIZ:
 				genericTextView = (LinearLayout)quizApp.getActivity().getLayoutInflater().inflate(R.layout.generic_event_view, null); 
-				textView = (GothamTextView)genericTextView.findViewById(R.id.data); 
-				user = quizApp.cachedUsers.get(evt.message2);
-				quiz = quizApp.getDataBaseHelper().getQuizById(evt.message);
-				quizApp.getUiUtils().setTextViewHTML(textView, UiText.THERE_WAS_SERVER_ERROR.getValue(
-								user.uid,
-								user.name,
-								quiz.quizId,
-								quiz.name
-						),null);
+				viewHolder.data = textView = (GothamTextView)genericTextView.findViewById(R.id.data); 
 				return genericTextView;
 			case SHARED_WITH_FB:
 				break;
@@ -181,31 +161,53 @@ public class GameEventsListItemAdaptor extends ArrayAdapter<GameEvents> {
 				break;
 			case UNLOCKED_BADGE:
 				genericTextView = (LinearLayout)quizApp.getActivity().getLayoutInflater().inflate(R.layout.generic_event_view, null); 
-				textView = (GothamTextView)genericTextView.findViewById(R.id.data); 
-				Badge badge = quizApp.getDataBaseHelper().getBadgeById(evt.message);
-				quizApp.getUiUtils().setTextViewHTML(textView, UiText.YOU_UNLOCKED_BADGE.getValue(
-								badge.getBadgeId(),
-								badge.getName()
-						),null);
+				viewHolder.data = textView = (GothamTextView)genericTextView.findViewById(R.id.data); 
+				ImageView img = viewHolder.titleImage = (ImageView)genericTextView.findViewById(R.id.image);
 				return genericTextView;
 			case USER_JOINED:
 				break;
 			case WON_QUIZ:
 				genericTextView = (LinearLayout)quizApp.getActivity().getLayoutInflater().inflate(R.layout.generic_event_view, null); 
-				textView = (GothamTextView)genericTextView.findViewById(R.id.data); 
-				user = quizApp.cachedUsers.get(evt.message2);
-				quiz = quizApp.getDataBaseHelper().getQuizById(evt.message);
-				quizApp.getUiUtils().setTextViewHTML(textView,UiText.YOU_DEFEATED_USER.getValue(
-								user.uid,
-								user.name,
-								quiz.quizId,
-								quiz.name,
-								"0"
-					),null);
+				viewHolder.data = textView = (GothamTextView)genericTextView.findViewById(R.id.data); 
 				return genericTextView;
 			default:
 				break;
 		}
 		return null;
+	}
+
+
+	public static List<String> getAllUids(List<GameEvents> events) {
+		List<String> uids = new ArrayList<String>();
+		for(GameEvents evt: events){
+			switch(evt.getEventType()){
+			case LEVEL_UP:
+				break;
+			case LOST_QUIZ:
+				uids.add(evt.getMessage2());//uid
+				break;
+			case SERVER_ERROR_QUIZ:
+				uids.add(evt.getMessage2());//uid
+				break;
+			case SHARED_WITH_FB:
+				break;
+			case SHARED_WITH_GOOGLE:
+				break;
+			case SOMETHING_ELSE:
+				break;
+			case TIE_QUIZ:
+				break;
+			case UNLOCKED_BADGE:
+				break;
+			case USER_JOINED:
+				break;
+			case WON_QUIZ:
+				uids.add(evt.getMessage2());
+				break;
+			default:
+				break;
+			}	
+		}
+		return uids;
 	}
 }

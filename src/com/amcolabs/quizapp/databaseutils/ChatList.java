@@ -4,6 +4,9 @@ import com.j256.ormlite.field.DatabaseField;
 
 public class ChatList {
 	
+	public static final int SEEN = 1;
+	public static final int UNSEEN = 0;
+	
 	public ChatList(String uid2, String message, double currentTimeStamp, int hasSeen) {
 		uid = uid2;
 		recentMessage = message;

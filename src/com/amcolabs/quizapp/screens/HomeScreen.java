@@ -255,18 +255,38 @@ public class HomeScreen extends Screen {
 		baseLayout.setBackgroundColor(getResources().getColor(R.color.black));
 		wrapUserStrip = (LinearLayout) baseLayout.findViewById(R.id.wrap_user_strip);
 		userName = (GothamTextView) baseLayout.findViewById(R.id.user_name);
+		final GothamTextView userStatus = (GothamTextView) baseLayout.findViewById(R.id.status_msg);
 		totalXp = (GothamTextView) baseLayout.findViewById(R.id.totalXp);
 		viewProfileButton = (ImageButton) baseLayout.findViewById(R.id.view_profile_button);
 		
 		userName.setText(getApp().getUser().name);
 		totalXp.setText(getApp().getUser().getTotalPoints()+"xp");
-		viewProfileButton.setOnClickListener(new OnClickListener() {
+		userStatus.setText(getApp().getUser().getStatus());
+		OnClickListener statusMessageClick = new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				getApp().getStaticPopupDialogBoxes().promptInput(UiText.SET_STATUS.getValue(), 30 , getApp().getUser().getStatus() , new DataInputListener<String>(){
+					@Override
+					public String onData(String s) {
+						userStatus.setText(s);
+						userMainController.updateUserStatus(s);
+						return super.onData(s);
+					}
+				});
+			}
+		};
+		
+		userStatus.setOnClickListener(statusMessageClick);
+		
+		OnClickListener profileClickListener = new OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				ProfileAndChatController c = (ProfileAndChatController) getApp().loadAppController(ProfileAndChatController.class);
 				c.showProfileScreen(getApp().getUser());
 			}
-		});
+		};
+		totalXp.setOnClickListener(profileClickListener);
+		viewProfileButton.setOnClickListener(profileClickListener);
 		addToScrollView(baseLayout);
 	}
 

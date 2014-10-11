@@ -7,10 +7,11 @@
 
     <LinearLayout
         android:id="@+id/description_wrapper"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="40dp"
-        android:gravity="center_vertical" >
+        android:gravity="center"
+        android:orientation="vertical" >
 
         <com.amcolabs.quizapp.widgets.CircularImageView
             android:id="@+id/quiz_icon"
@@ -23,8 +24,9 @@
 
         <com.amcolabs.quizapp.widgets.GothamTextView
             android:id="@+id/descText"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
             android:text=""
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:textColor="@color/white"

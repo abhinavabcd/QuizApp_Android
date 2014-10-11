@@ -176,8 +176,8 @@ public class WinOrLoseScreen extends Screen{
 	public void showResult(HashMap<String, List<UserAnswer>> uAnswersStack,int matchResult,boolean levelUp, QuizMode quizMode){
 	  // Show whether user has won or not
 	  // rematch button , addFriend button , challenge with points button ,  seeProfile button
-	// for these buttons , will use the same layout we used for offlineChallenge view ,list_item_layout.xml
-	  // and load the profileViewLayout of both users in block , one after the other
+      // for these buttons , will use the same layout we used for offlineChallenge view ,list_item_layout.xml
+ 	  // and load the profileViewLayout of both users in block , one after the other
 	  //  will have place for chat block there itself users can live chat there itself
 		userAnswersStack = uAnswersStack;
 		this.quizMode = quizMode;
