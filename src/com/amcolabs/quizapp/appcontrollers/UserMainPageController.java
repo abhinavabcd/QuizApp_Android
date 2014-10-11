@@ -203,19 +203,14 @@ public class UserMainPageController  extends AppController{
 								quizApp.getServerCalls().getOfflineChallenge(feed.message, new DataInputListener<OfflineChallenge>(){
 									@Override 
 									public String onData(OfflineChallenge offlineChallenge) {
-										--feedPreprocessedCount;
-										if(offlineChallenge==null){
-											if(feedPreprocessedCount<1) homeScreen.addFeedView(feeds, UiText.USER_FEED.getValue());
-											return null;
-										}
-										if(!offlineChallenge.isCompleted()){
+										if(offlineChallenge!=null && !offlineChallenge.isCompleted()){
 											offlineChallenge.setCompleted(true);
-												//show popup that user has completed and win/lost TODO
-												offlineChallenge.setChallengeData2(feed.message2);
-												quizApp.getDataBaseHelper().updateOfflineChallenge(offlineChallenge);
+											//show popup that user has completed and win/lost
+											offlineChallenge.setChallengeData2(feed.message2);
+											quizApp.getDataBaseHelper().updateOfflineChallenge(offlineChallenge);
+											quizApp.getStaticPopupDialogBoxes().showChallengeWinDialog(offlineChallenge);
 										}
-										quizApp.getStaticPopupDialogBoxes().showChallengeWinDialog(offlineChallenge);
-										if(feedPreprocessedCount<1) 		homeScreen.addFeedView(feeds, UiText.USER_FEED.getValue());
+										feedItemProcessed(feeds , feed);
 										return null;
 									}
 								}, true); 
@@ -225,9 +220,9 @@ public class UserMainPageController  extends AppController{
 						case FEED_USER_ADDED_FRIEND:
 						case FEED_USER_TOOK_PART:
 						case FEED_USER_WON:
+							break;
 						case FEED_USER_WON_BADGES:
-							--feedPreprocessedCount;
-							if(feedPreprocessedCount<1) homeScreen.addFeedView(feeds, UiText.USER_FEED.getValue());
+							feedItemProcessed(feeds , feed);
 							break;
 						}
 					} 
@@ -238,6 +233,13 @@ public class UserMainPageController  extends AppController{
 		}
 
 	}
+
+	protected void feedItemProcessed(List<Feed> feeds, Feed feed) {
+		--feedPreprocessedCount;
+		if(feedPreprocessedCount<1)
+			homeScreen.addFeedView(feeds, UiText.USER_FEED.getValue());
+	}
+	
 
 	public void doGplusLogin(){
     	GoogleLoginHelper gPlusHelper = new GoogleLoginHelper(quizApp);
