@@ -584,7 +584,7 @@ public class UiUtils {
 	
 	public DecimalFormat getDecimalFormatter(){
 		DecimalFormat df = new DecimalFormat();
-		df.setMaximumFractionDigits(1);
+		df.setMaximumFractionDigits(0);
 		df.setMinimumFractionDigits(0);
 		return df; 
 	}
