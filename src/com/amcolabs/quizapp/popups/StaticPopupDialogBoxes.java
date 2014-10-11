@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Locale;
 
-import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -13,6 +12,8 @@ import android.graphics.Color;
 import android.view.Gravity;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
@@ -30,6 +31,7 @@ import com.amcolabs.quizapp.gameutils.GameUtils;
 import com.amcolabs.quizapp.uiutils.UiUtils;
 import com.amcolabs.quizapp.uiutils.UiUtils.UiText;
 import com.amcolabs.quizapp.widgets.CircularImageView;
+import com.amcolabs.quizapp.widgets.GothamButtonView;
 import com.amcolabs.quizapp.widgets.GothamTextView;
 import com.amcolabs.quizapp.widgets.QuizAppMenuItem;
 
@@ -183,6 +185,7 @@ public class StaticPopupDialogBoxes {
 			});
 			quizMenuDialog.setContentView(dialogLayout);
 			LinearLayout menuContainer = (LinearLayout)dialogLayout.findViewById(R.id.menu_items_container);
+
 			OnClickListener listener = new OnClickListener() {
 				
 				@Override
@@ -201,6 +204,7 @@ public class StaticPopupDialogBoxes {
 		else if(quizMenuDialog.isShowing()){
 			return;
 		}
+		((GothamTextView)quizMenuDialog.findViewById(R.id.descText)).setText(quiz.name); 
 		quizApp.getUiUtils().loadImageIntoView(quizApp.getContext(), (ImageView) quizMenuDialog.findViewById(R.id.quiz_icon) , quiz.assetPath , true);
 		quizMenuDialog.show();
 	}
@@ -225,6 +229,7 @@ public class StaticPopupDialogBoxes {
 		};
 		menuContainer.addView(getMenuItem(UiText.VIEW_PROFILE.getValue(), 1, listener , Gravity.CENTER));
 		menuContainer.addView(getMenuItem(UiText.START_CONVERSATION.getValue(""), 2, listener , Gravity.CENTER));
+		menuContainer.addView(getMenuItem(UiText.CHALLENGE.getValue(), 3, listener , Gravity.CENTER));
 		((GothamTextView)dialogLayout.findViewById(R.id.descText)).setText(user.name); 
 		quizApp.getUiUtils().loadImageIntoView(quizApp.getContext(), (ImageView) userMenu.findViewById(R.id.quiz_icon) , user.pictureUrl , true);
 		userMenu.show();
@@ -352,7 +357,7 @@ public class StaticPopupDialogBoxes {
 	public void showMenu(final HashMap<Integer, UiText> map) {
 		if(menuDialog==null){
 			menuDialog = new Dialog(quizApp.getContext(),R.style.CustomDialogTheme); 
-			ScrollView dialogLayout = (ScrollView)quizApp.getActivity().getLayoutInflater().inflate(R.layout.menu_items, null);
+			LinearLayout dialogLayout = (LinearLayout)quizApp.getActivity().getLayoutInflater().inflate(R.layout.menu_items, null);
 			OnClickListener listener = new OnClickListener() {
 				@Override
 				public void onClick(View v) {
@@ -390,4 +395,37 @@ public class StaticPopupDialogBoxes {
 		t.setOnClickListener(listener);
 		return t;
 	}
+
+	public void promptInput(String title, int charLimit, String prevStatus, final DataInputListener<String> dataInputListener) {
+		final Dialog prompt = new Dialog(quizApp.getContext(),R.style.CustomDialogTheme3); 
+		 ImageView closeButton;
+		 GothamTextView titleView;
+		 final EditText messageContent;
+		 GothamButtonView okButton;
+		 LinearLayout baseLayout = (LinearLayout)quizApp.getActivity().getLayoutInflater().inflate(R.layout.input_prompt, null);
+		 
+		closeButton = (ImageView) baseLayout.findViewById(R.id.close_button);
+		titleView = (GothamTextView) baseLayout.findViewById(R.id.title);
+		titleView.setText(title);
+		messageContent = (EditText) baseLayout.findViewById(R.id.messageContent);
+		messageContent.setText(prevStatus);
+		okButton = (GothamButtonView) baseLayout.findViewById(R.id.ok_button);
+
+		closeButton.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				prompt.dismiss();
+			}
+		});
+		okButton.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				dataInputListener.onData(messageContent.getText().toString());
+				prompt.dismiss();
+			}
+		});		
+		prompt.setContentView(baseLayout);
+		prompt.show();
+	}
 }
+

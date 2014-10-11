@@ -23,6 +23,12 @@ public class Quiz {
 	@DatabaseField
 	public double modifiedTimestamp;
 	
+	public final static int WON = 1;
+	public final static int LOOSE = -1;
+	public final static int TIE = 0;
+	public final static int SERVER_ERR = -2;
+
+	
 	Quiz(){
 		// needed by ormlite
 	}

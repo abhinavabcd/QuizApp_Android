@@ -390,5 +390,18 @@ public class UserMainPageController  extends AppController{
 		homeScreen.addOfflineChallengesView(quizApp.getDataBaseHelper().getPendingRecentOfflineChallenges(-1), false, UiText.OFFLINE_CHALLENGES.getValue(), false);
 		insertScreen(homeScreen);
 	}
+
+	public void updateUserStatus(final String status) {
+		quizApp.getServerCalls().updateUserStatus(status , new DataInputListener<Boolean>(){
+			@Override
+			public String onData(Boolean s) {
+				if(s){
+					quizApp.getUser().setStatus(status);
+				}
+				return super.onData(s);
+			}
+		});
+	}
+
 	
 }

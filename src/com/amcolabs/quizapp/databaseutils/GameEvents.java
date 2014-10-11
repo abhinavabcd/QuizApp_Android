@@ -7,15 +7,18 @@ public class GameEvents {
 	
 
 	@DatabaseField
-	public double timestamp;
+	double timestamp;
 	@DatabaseField
-	public int eventType;
+	int eventType;
 	@DatabaseField
-	public String message;
+	private
+	String message;
 	@DatabaseField
-	public String message2;
+	private
+	String message2;
 	@DatabaseField
-	public String message3;
+	private
+	String message3;
 	
 	public GameEvents() {
 	}
@@ -51,8 +54,32 @@ public class GameEvents {
 	
 	public GameEvents(EventType evtType, String message,	String message2 , String message3){
 		eventType = evtType.getValue();
-		this.message = message;
+		this.setMessage(message);
+		this.setMessage2(message2);
+		this.setMessage3(message3);
+	}
+
+	public String getMessage2() {
+		return message2;
+	}
+
+	public void setMessage2(String message2) {
 		this.message2 = message2;
+	}
+
+	public String getMessage() {
+		return message;
+	}
+
+	public void setMessage(String message) {
+		this.message = message;
+	}
+
+	public String getMessage3(String def) {
+		return message3==null?def : message3;
+	}
+
+	public void setMessage3(String message3) {
 		this.message3 = message3;
 	}
 }

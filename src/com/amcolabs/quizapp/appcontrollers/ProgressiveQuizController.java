@@ -11,6 +11,7 @@ import java.util.Set;
 
 import android.media.MediaPlayer;
 import android.os.Handler;
+import android.view.View;
 
 import com.amcolabs.quizapp.AppController;
 import com.amcolabs.quizapp.QuizApp;
@@ -235,6 +236,7 @@ public class ProgressiveQuizController extends AppController{
 	private int playType = RANDOM_USER_TYPE;
 	private DataInputListener2<ServerWebSocketConnection, Quiz, Void, Void> socketConnectedListener = null;
 	private YesNoDialog rematchDialog = null;
+	protected double userLevel;
 	
 	private void setQuizMode(QuizMode mode){
 		quizMode = mode;
@@ -393,9 +395,9 @@ public class ProgressiveQuizController extends AppController{
 			public void run() {
 					for(User user:currentUsers){ // check for any bots and schedule
 						if(!user.isBotUser()) continue;
-						
-						int elapsedTime = rand.nextInt((int) (5*Math.max(0, (100-quizApp.getUser().getLevel(quizApp,quiz.quizId))/100))); 
-						boolean isRightAnswer = rand.nextInt(2)==1? false:true;
+						userLevel = quizApp.getUser().getLevel(quizApp,quiz.quizId);
+						int elapsedTime = rand.nextInt((int) (5*Math.max(0, (100-userLevel)/100))); 
+						boolean isRightAnswer = rand.nextInt(100) < (50+Math.sqrt(25*userLevel))? true:false;
 						if(isRightAnswer){
 							botScore+=Math.ceil((currentQuestion.getTime() - elapsedTime)*currentQuestion.xp/currentQuestion.getTime())*quizApp.getConfig().multiplyFactor(currentQuestions.size());
 						}
@@ -439,7 +441,7 @@ public class ProgressiveQuizController extends AppController{
 		else{
 			quizApp.getDataBaseHelper().addGameEvents(new GameEvents(EventType.SERVER_ERROR_QUIZ, quiz.quizId , getOtherUser().uid , null));
 			quizResultScreen = new WinOrLoseScreen(this,currentUsers);
-			quizResultScreen.showResult(userAnswersStack,SERVER_ERR, false , quizMode);
+			quizResultScreen.showResult(userAnswersStack,Quiz.SERVER_ERR, false , quizMode);
 			insertScreen(quizResultScreen);
 		}
 //		WinOrLoseScreen resultScreen = new WinOrLoseScreen(this,currentUsers);
@@ -681,10 +683,6 @@ public class ProgressiveQuizController extends AppController{
 	 * @param currentUsers Current list of users who played quiz
 	 * @param userAnswersStack Current user's answers in hashmap mapped with uid's
 	 */
-	final int WON = 1;
-	final int LOOSE = -1;
-	final int TIE = 0;
-	final int SERVER_ERR = -2;
 	private ChallengeData challengeData;
 	private List<UserAnswer> userChallengeAnswers;
 	private MediaPlayer possitiveButtonSounds;
@@ -693,7 +691,7 @@ public class ProgressiveQuizController extends AppController{
 	public void loadResultScreen(Quiz quiz, ArrayList<User> currentUsers, HashMap<String, List<UserAnswer>> userAnswersStack) {
 		// TODO Auto-generated method stub
 		ArrayList<String> winnersList = whoWon(userAnswersStack);
-		int quizResult = TIE;
+		int quizResult = Quiz.TIE;
 
 		User curUser;
 		double oldPoints;
@@ -702,30 +700,30 @@ public class ProgressiveQuizController extends AppController{
 		
 		// All user updates
 		if(!isChallengeMode()){
-			for(int i=0,qResult = TIE;i<currentUsers.size();i++){
+			for(int i=0,qResult = Quiz.TIE;i<currentUsers.size();i++){
 				curUser = currentUsers.get(i);
 				if(winnersList.contains(curUser.uid)){
 					if(winnersList.size()==1){
-						qResult = WON;
+						qResult = Quiz.WON;
 					}
 					else{
-						qResult = TIE;
+						qResult = Quiz.TIE;
 					}
 				}
 				else{
-					qResult = LOOSE;
+					qResult = Quiz.LOOSE;
 				}
 				oldPoints = curUser.getPoints(quiz.quizId);
 				uAns = userAnswersStack.get(curUser.uid);
 				newPoints = oldPoints+uAns.get(uAns.size()-1).whatUserGot+(qResult>0?Config.QUIZ_WIN_BONUS:0);
 				
-				if(qResult!=-2){
+				if(qResult>=Quiz.LOOSE){
 					curUser.setPoints(quiz.quizId, (int) newPoints);
 					
 					Integer[] winsLossesQuiz = curUser.getWinsLosses(quiz.quizId);
-					winsLossesQuiz[0]+= (qResult==WON?1:0);
-					winsLossesQuiz[1]+= (qResult==LOOSE?1:0);
-					winsLossesQuiz[2]+= (qResult==TIE?1:0); 
+					winsLossesQuiz[0]+= (qResult==Quiz.WON?1:0);
+					winsLossesQuiz[1]+= (qResult==Quiz.LOOSE?1:0);
+					winsLossesQuiz[2]+= (qResult==Quiz.TIE?1:0); 
 				}
 			}
 		}
@@ -733,14 +731,14 @@ public class ProgressiveQuizController extends AppController{
 		//  Host User updates
 		if(winnersList.contains(quizApp.getUser().uid)){
 			if(winnersList.size()==1){
-				quizResult = WON;
+				quizResult = Quiz.WON;
 			}
 			else{
-				quizResult = TIE;
+				quizResult = Quiz.TIE;
 			}
 		}
 		else{
-			quizResult = LOOSE;
+			quizResult = Quiz.LOOSE;
 		}
 //		cPoints = quizApp.getUser().getPoints(quiz);
 //		uAns = userAnswersStack.get(quizApp.getUser().uid);
@@ -767,16 +765,16 @@ public class ProgressiveQuizController extends AppController{
 			});//server call  
 		}
 
-		else if(quizResult>=LOOSE){
+		else if(quizResult>=Quiz.LOOSE){
 			//Upates quiz history 
 			
 			String userAnswers1Json =quizApp.getConfig().getGson().toJson(userAnswersStack.get(quizApp.getUser().uid));
 			String userAnswers2Json =quizApp.getConfig().getGson().toJson(userAnswersStack.get(getOtherUser().uid));
 			LocalQuizHistory quizHistory = new LocalQuizHistory(quiz.quizId , quizResult , newPoints, getOtherUser().uid , userAnswers1Json , userAnswers2Json);
 			quizApp.getDataBaseHelper().addToQuizHistory(quizHistory);
-			quizApp.getDataBaseHelper().addGameEvents(new GameEvents(quizResult==TIE? EventType.TIE_QUIZ : (quizResult==LOOSE? EventType.LOST_QUIZ : EventType.WON_QUIZ),
+			quizApp.getDataBaseHelper().addGameEvents(new GameEvents(quizResult==Quiz.TIE? EventType.TIE_QUIZ : (quizResult==Quiz.LOOSE? EventType.LOST_QUIZ : EventType.WON_QUIZ),
 													quiz.quizId , getOtherUser().uid , 
-													null));
+													(int)Math.abs(newPoints-oldPoints)+""));
 
 			if(!isChallengedMode()){
 				if(shouldUserSendAllUserAnswers()){ // this is a funny mechanism we choose  , where one user with higher preference sends the all the game details to the server , we keep this check on the server too
@@ -811,9 +809,7 @@ public class ProgressiveQuizController extends AppController{
 				// TODO: update game event 
 			}
 			
-			
-			
-			final boolean hasWon = quizResult==WON;
+			final boolean hasWon = quizResult==Quiz.WON;
 			
 			if(isChallengedMode()){
 				quizApp.getServerCalls().completeOfflineChallenge( quizMode.getId() , new ChallengeData(quiz.quizId, userAnswersStack.get(quizApp.getUser().uid)),  new DataInputListener<Boolean>(){
@@ -1036,6 +1032,9 @@ public class ProgressiveQuizController extends AppController{
 			public String onData(Boolean s) {
 				if(s){
 					quizApp.getUser().getSubscribedTo().add(user.uid);
+					quizApp.getStaticPopupDialogBoxes().yesOrNo(UiText.ADDED_USER.getValue(user.name), null, UiText.CLOSE.getValue(), null);
+					quizApp.getUser().getSubscribedTo().add(user.uid);
+					user.isFriend = true;
 				}
 				return super.onData(s);
 			}

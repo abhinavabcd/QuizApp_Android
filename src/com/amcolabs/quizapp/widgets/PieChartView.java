@@ -63,12 +63,14 @@ public class PieChartView extends PieChart{
     @Override
     protected void onAttachedToWindow() {
         Legend l = this.getLegend();
-        l.setTextSize(6f);
-
-        l.setStackSpace(1f);
-        l.setPosition(LegendPosition.RIGHT_OF_CHART);
-        l.setXEntrySpace(1f);
-        l.setYEntrySpace(5f);
+        if(l!=null){
+	        l.setTextSize(6f);
+	
+	        l.setStackSpace(1f);
+	        l.setPosition(LegendPosition.RIGHT_OF_CHART);
+	        l.setXEntrySpace(1f);
+	        l.setYEntrySpace(5f);
+        }
     	super.onAttachedToWindow();
     }
     

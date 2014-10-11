@@ -8,7 +8,7 @@
         android:id="@+id/info_card_wrapper"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#55000000"
+        android:background="@color/translucent_black"
         android:gravity="center_vertical"
         android:orientation="vertical"
         android:padding="15dp" >
@@ -26,7 +26,7 @@
                 android:layout_marginRight="12dp"
                 android:layout_weight="1" >
 
-                <ImageView
+                <com.amcolabs.quizapp.widgets.CircularImageView
                     android:id="@+id/user_card_small_pic"
                     android:layout_width="60dp"
                     android:layout_height="60dp"

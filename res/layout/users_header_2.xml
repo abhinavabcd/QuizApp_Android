@@ -3,7 +3,7 @@
     android:id="@+id/userImagesBar"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/translucent_black"
+    android:background="@color/black"
     android:orientation="horizontal"
     android:paddingTop="5dp" >
 

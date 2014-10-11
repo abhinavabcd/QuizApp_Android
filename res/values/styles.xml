@@ -24,4 +24,16 @@
 		<item name="android:windowIsFloating">false</item>
 		<item name="android:windowNoTitle">true</item>
 	</style>
+	
+	<style name="CustomDialogTheme2" parent="@android:style/Theme.Dialog">
+		<item name="android:windowBackground">@color/translucent_white</item>
+		<item name="android:windowIsFloating">false</item>
+		<item name="android:windowNoTitle">true</item>
+	</style>
+	<style name="CustomDialogTheme3" parent="@android:style/Theme.Dialog">
+		<item name="android:windowBackground">@color/zero</item>
+		<item name="android:windowIsFloating">false</item>
+		<item name="android:windowNoTitle">true</item>
+	</style>
+		
 </resources>
