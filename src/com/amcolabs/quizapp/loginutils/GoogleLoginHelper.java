@@ -147,6 +147,9 @@ public class GoogleLoginHelper {
                 } 
                 catch (UserRecoverableAuthException e) {
               	     // Recover
+                	if(e==null){
+                		return null;
+                	}
                 	quizApp.getMainActivity().setActivityResultListener(new DataInputListener2<Integer, Integer, Intent, Void>(){
                 		public void onData(Integer requestCode, Integer responseCode, Intent intent) {
                 			onActivityResult(requestCode, responseCode, intent);
@@ -197,7 +200,7 @@ public class GoogleLoginHelper {
                         try {
                         	String birthday= person.getBirthday();
                         	if(birthday!=null)
-                        		user.birthday = (new SimpleDateFormat("YYYY-MM-DD", Locale.ENGLISH).parse(birthday).getTime())/1000;
+                        		user.birthday = (new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH).parse(birthday).getTime())/1000;
 						} catch (ParseException e) {
 							e.printStackTrace();
 						}
@@ -238,7 +241,7 @@ public class GoogleLoginHelper {
 	}
 	
 	public void getAllFriendsList(String token , final User user){
-		quizApp.addUiBlock("Checking for friends");
+		quizApp.addUiBlock(UiText.CHECKING_FOR_FRIENDS.getValue());
         Plus.PeopleApi.loadVisible(mGoogleApiClient, token).setResultCallback(new ResultCallback<People.LoadPeopleResult>() {
             @Override
             public void onResult(final People.LoadPeopleResult loadPeopleResult) {

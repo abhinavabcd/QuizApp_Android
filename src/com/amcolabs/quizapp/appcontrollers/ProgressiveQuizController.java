@@ -1033,7 +1033,6 @@ public class ProgressiveQuizController extends AppController{
 				if(s){
 					quizApp.getUser().getSubscribedTo().add(user.uid);
 					quizApp.getStaticPopupDialogBoxes().yesOrNo(UiText.ADDED_USER.getValue(user.name), null, UiText.CLOSE.getValue(), null);
-					quizApp.getUser().getSubscribedTo().add(user.uid);
 					user.isFriend = true;
 				}
 				return super.onData(s);

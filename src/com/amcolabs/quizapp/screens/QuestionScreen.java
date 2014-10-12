@@ -112,10 +112,12 @@ public class QuestionScreen extends Screen implements View.OnClickListener, Anim
 	
 	public void showUserInfo(ArrayList<User> uNames,int maxScore) {
 		int index = 0;
-		User cUser = getApp().getUser();
-		if (uNames.get(0)!=cUser){
-			uNames.remove(cUser);
-			uNames.add(0,cUser);
+		for(User user : uNames){
+				if(user.uid.equalsIgnoreCase(getApp().getUser().uid)){
+					uNames.remove(user);
+					uNames.add(0,user);
+					break;
+				}
 		}
 		for(RelativeLayout userView : Arrays.asList((RelativeLayout) headerViewWrapper.findViewById(R.id.user1), (RelativeLayout) headerViewWrapper.findViewById(R.id.user2))){
 			User user = uNames.get(index++);

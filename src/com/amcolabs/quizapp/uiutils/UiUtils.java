@@ -157,7 +157,7 @@ public class UiUtils {
 		INVITE_YOUR_FRIENDS("Invite your <a href='googlePlusInvite/friends'>Google Friends</a>"),
 		CONENCT_WITH_FACEBOOK("Connect with Facebook"),
 		INVITE_YOUR_FB_FRIENDS("Invite Your <a href='facebookInvite/friends'>Facebook Friends</a>"),
-		CONNECTING("Connectin to Google"),
+		CONNECTING("Connecting to Google"),
 		USER_WANTS_A_GAME("%s want to have a game with you"), 
 		NO_FEED_AVAILABLE("No Recent Feed"),
 		FRIENDS("Friends"), NO_FRIENDS_SEARCH_AND_SUBSCRIBE("You have no Friends , Search and Subscribe"),
@@ -183,7 +183,10 @@ public class UiUtils {
 		SET_STATUS("Update your status"),
 		YOU_VS_USER("You vs %s"),
 		LOCAL_QUIZ_HISTORY("Local Quiz History"),
-		SELECT_TO_CHALLENGE_USER("Select Quiz to Challenge %s");	
+		SELECT_TO_CHALLENGE_USER("Select Quiz to Challenge %s"),
+		GPLUS_ERRROR("Error connecting to gplus"),
+		FEATURE_COMMING_SOON("Feature Not available at the moment. Will be rolled out in future releases."),
+		CHECKING_FOR_FRIENDS("Checking for Friends");	
 		
 		String value = null;
 		UiText(String value){
@@ -224,8 +227,10 @@ public class UiUtils {
 			preloader = ProgressDialog.show(quizApp.getContext(), "", text, true);
 		}
 		else{
-			preloaderText = preloaderText+ ("\n"+text);
-			preloader.setMessage(preloaderText);
+			if(!preloaderText.toString().endsWith(text)){
+				preloaderText = preloaderText+ ("\n"+text);
+				preloader.setMessage(preloaderText);
+			}
 		}
 		uiBlockCount++;
 	}

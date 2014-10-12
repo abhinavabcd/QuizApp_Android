@@ -145,7 +145,8 @@ public class HomeScreen extends Screen {
 				}
 			}
 		}
-		totalXp.setText(getApp().getUser().getTotalPoints()+"xp");
+		if(totalXp!=null) // prolly screen is used for other purposes
+			totalXp.setText(getApp().getUser().getTotalPoints()+"xp");
 		
 		for(int i=0;i<listViewsAdaptors.size();i++){
 			listViewsAdaptors.get(i).notifyDataSetChanged();;

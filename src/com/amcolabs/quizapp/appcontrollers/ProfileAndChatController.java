@@ -182,7 +182,7 @@ public class ProfileAndChatController extends AppController {
 	
 	public void showFriendsList(){
 		clearScreen();
-		quizApp.getDataBaseHelper().getAllUsersByUid(quizApp.getUser().getSubscribedTo(), new DataInputListener<Boolean>(){
+		quizApp.getDataBaseHelper().getAllUsersByUid(new ArrayList<String>(quizApp.getUser().getSubscribedTo()), new DataInputListener<Boolean>(){
 			@Override
 			public String onData(Boolean s) {
 				SelectFriendsScreen friendsScreen = new SelectFriendsScreen(ProfileAndChatController.this);

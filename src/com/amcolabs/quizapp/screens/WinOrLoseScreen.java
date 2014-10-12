@@ -73,12 +73,13 @@ public class WinOrLoseScreen extends Screen{
 	
 	public WinOrLoseScreen(AppController controller,ArrayList<User> curUsers) {
 		super(controller);
-		User cUser = getApp().getUser();
-		if (curUsers.get(0)!=cUser){
-			curUsers.remove(cUser);
-			curUsers.add(0,cUser);
+		for(User user : curUsers){
+			if(user.uid.equalsIgnoreCase(getApp().getUser().uid)){
+				curUsers.remove(user);
+				curUsers.add(0,user);
+				break;
+			}
 		}
-		
 		progressviewQuizController =  (ProgressiveQuizController) controller;
 		currentUsers = curUsers;
 		quizResult = (ScrollView) LayoutInflater.from(controller.getContext()).inflate(R.layout.win_lose_screen,this, false);

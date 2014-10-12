@@ -247,6 +247,10 @@ public class UserMainPageController  extends AppController{
     	gPlusHelper.doLogin(new DataInputListener<User>(){
     		@Override
     		public String onData(User user) {
+				if(user==null){
+					quizApp.getStaticPopupDialogBoxes().yesOrNo(UiText.GPLUS_ERRROR.getValue() , null, UiText.CANCEL.getValue(), null );
+					return null;
+				}
     			quizApp.getServerCalls().doGooglePlusLogin(user, new DataInputListener<User>(){
     				@Override
     				public String onData(User user) {
@@ -355,7 +359,7 @@ public class UserMainPageController  extends AppController{
 			quizApp.getStaticPopupDialogBoxes().yesOrNo(UiText.NO_FRIENDS_TRY_ADDING.getValue(), null, UiText.OK.getValue(), null);
 		}
 		clearScreen();
-		quizApp.getDataBaseHelper().getAllUsersByUid(user.getSubscribedTo(), new DataInputListener<Boolean>(){
+		quizApp.getDataBaseHelper().getAllUsersByUid(new ArrayList<String>(user.getSubscribedTo()), new DataInputListener<Boolean>(){
 			@Override
 			public String onData(Boolean s) {
 				SelectFriendsScreen selectFriendsScreen = new SelectFriendsScreen(UserMainPageController.this);
