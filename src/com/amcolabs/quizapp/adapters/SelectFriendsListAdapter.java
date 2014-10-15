@@ -134,6 +134,12 @@ public  class SelectFriendsListAdapter extends ArrayAdapter<User>{
 									oldSearchQuery = currentSearchString.trim();
 									quizApp.getServerCalls().searchUsersByName(oldSearchQuery, new DataInputListener<List<User>>(){
 										public String onData(List<User> users) {
+											for(User user : users){
+												if(user.uid.equalsIgnoreCase(quizApp.getUser().uid)){
+													users.remove(user);
+													break;
+												}
+											}
 											addAll(users);
 											notifyDataSetChanged();
 											return null;

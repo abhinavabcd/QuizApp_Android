@@ -214,7 +214,7 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 	private void doPendingNotifications() {//only for messages in queue
 		if(peekCurrentScreen()!=null && !peekCurrentScreen().doNotDistrub()){
 			for(NotificationType type : NotificationType.values()){
-				if(pendingNotifications.containsKey(type) && pendingNotifications.get(type).size()>0){
+				if(pendingNotifications.containsKey(type) && pendingNotifications.get(type)!=null && pendingNotifications.get(type).size()>0){
 					NotificationReciever.checkAndCallListener(type, pendingNotifications.get(type).remove(0));
 					setNotificationProcessingState(NotifificationProcessingState.DEFER);
 					return; // only one notification at a time , if notification returns something , then we do stuff
