@@ -26,6 +26,7 @@ import com.amcolabs.quizapp.databaseutils.GameEvents;
 import com.amcolabs.quizapp.databaseutils.LocalQuizHistory;
 import com.amcolabs.quizapp.databaseutils.Quiz;
 import com.amcolabs.quizapp.datalisteners.DataInputListener;
+import com.amcolabs.quizapp.gameutils.GameUtils;
 import com.amcolabs.quizapp.uiutils.UiUtils;
 import com.amcolabs.quizapp.uiutils.UiUtils.UiText;
 import com.amcolabs.quizapp.widgets.BarChartViewMultiDataset;
@@ -132,16 +133,18 @@ public class UserProfileScreen extends Screen {
 		int[] winsLosses;
 		List<String> qIdList = new ArrayList<String>();
 		double userXp = 0;
+		double cuserXp = 0;
 		int myindex = 0;
 		for (int i = 0; i < sz; i++) {
-			if (i<Config.PIE_CHART_MAX_FIELDS-1){
-				userXp = user.getPoints(quizList.get(i).quizId);
+			cuserXp = user.getPoints(quizList.get(i).quizId);
+			if (i<Config.PIE_CHART_MAX_FIELDS-1 && cuserXp>1){
+				userXp = cuserXp;
 				qIdList.add(quizList.get(i).quizId);
-				xVals.add(getApp().getGameUtils().reduceString(quizList.get(i).name));
+				xVals.add(GameUtils.reduceString(quizList.get(i).name));
 				myindex = i;
 			}
 			else{
-				userXp = userXp + user.getPoints(quizList.get(i).quizId);
+				userXp = userXp + cuserXp;
 				qIdList.add(((Quiz)quizList.get(i)).quizId);
 				if(i!=sz-1)
 					continue;
@@ -278,7 +281,7 @@ public class UserProfileScreen extends Screen {
         mPieChart.setValueFormatter(getApp().getUiUtils().getDecimalFormatter());
         mPieChart.setData(data);
         mPieChart.setDescriptionTextSize(6f);
-        mPieChart.setValueTextSize(6f);
+        mPieChart.setValueTextSize(7f);
 
         // undo all highlights
         mPieChart.highlightValues(null);

@@ -23,6 +23,8 @@ public class BadgeEvaluator {
 	HashMap<String, Category> mainCategoryList;
 	HashMap<String, Quiz> mainQuizList;
 	HashMap<String, QuizPlaySummary> mainQuizHistoryList;
+	
+	HashMap<String, List<UserAnswer>> quizUserAnswersStack;
  
 	QuizApp quizApp;
 	ArrayList<ArrayList<String>> categoryList = new ArrayList<ArrayList<String>>();
@@ -54,6 +56,7 @@ public class BadgeEvaluator {
 	 * @return
 	 */
 	public void evaluateBadges(HashMap<String, List<UserAnswer>> userAnswersStack){
+		quizUserAnswersStack = userAnswersStack;
 		initialize(); // To load All quiz history, quizzes and categories
 		List<Badge> badges = quizApp.getDataBaseHelper().getAllBadges();
 		if(badges==null){
@@ -400,6 +403,25 @@ public class BadgeEvaluator {
 			}
 		}
 		else if(cond.equalsIgnoreCase("totalQuizCount")){
+			if(categoryFullChildState.get(index)<0){
+				if(quizFullChildState.get(index)<0){
+					return matchQuizListTotalQuizCount(quizList.get(index), value);
+				}
+			}
+			else if(categoryFullChildState.get(index)==0){
+				System.out.println("Not valid for TotalCount, recheck your condition");
+			}
+			else{
+				categoryCombinations=CommonFunctions.getCombinations(categoryList.get(index), categoryFullChildState.get(index), 0, new ArrayList<String>(),new ArrayList<ArrayList<String>>());
+				for(int i=0;i<categoryCombinations.size();i++){
+					state = matchQuizListTotalQuizCount(getQuizIdsOfCategories(categoryCombinations.get(i)), value);
+					if(state)
+						return true;
+				}
+			}
+		}
+		// TODO: Yet To implement
+		else if(cond.equalsIgnoreCase("QuizAnswerStack")){
 			if(categoryFullChildState.get(index)<0){
 				if(quizFullChildState.get(index)<0){
 					return matchQuizListTotalQuizCount(quizList.get(index), value);

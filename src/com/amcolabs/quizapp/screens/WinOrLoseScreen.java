@@ -22,6 +22,7 @@ import com.amcolabs.quizapp.appcontrollers.ProgressiveQuizController.QuizMode;
 import com.amcolabs.quizapp.appcontrollers.ProgressiveQuizController.UserAnswer;
 import com.amcolabs.quizapp.configuration.Config;
 import com.amcolabs.quizapp.databaseutils.Quiz;
+import com.amcolabs.quizapp.gameutils.GameUtils;
 import com.amcolabs.quizapp.uiutils.UiUtils;
 import com.amcolabs.quizapp.uiutils.UiUtils.UiText;
 import com.amcolabs.quizapp.widgets.BarChartViewMultiDataset;
@@ -307,6 +308,7 @@ public class WinOrLoseScreen extends Screen{
 //        myChart.invalidate();
 //	 }
 	
+	// very old - while uncommenting use quiz code
 //	public void drawUserActivityCategoryDistributionChart(User user,PieChartView mPieChart){
 //		List<Category> categories = getApp().getDataBaseHelper().getAllCategories();
 //		ArrayList<Entry> yVals = new ArrayList<Entry>();
@@ -350,16 +352,19 @@ public class WinOrLoseScreen extends Screen{
 		ArrayList<String> xVals = new ArrayList<String>();
 		int sz = quizList.size();
 		double userXp = 0;
+		double cuserXp = 0;
 		int myindex = 0;
 		
 		for (int i = 0; i < sz; i++) {
-			if (i<Config.PIE_CHART_MAX_FIELDS-1){
-				userXp = user.getPoints(quizList.get(i).quizId);
-				xVals.add(getApp().getGameUtils().reduceString(quizList.get(i).name));
+			cuserXp = user.getPoints(quizList.get(i).quizId);
+			if (i<Config.PIE_CHART_MAX_FIELDS-1 && cuserXp>1){
+				userXp = cuserXp;
+				xVals.add(GameUtils.reduceString(quizList.get(i).name));
 				myindex = i;
 			}
 			else{
-				userXp = userXp + user.getPoints(quizList.get(i).quizId);
+				// To sum all other types into others
+				userXp = userXp + cuserXp;
 				if(i!=sz-1)
 					continue;
 				xVals.add(UiUtils.UiText.PIE_CHART_OTHERS_TEXT.getValue());

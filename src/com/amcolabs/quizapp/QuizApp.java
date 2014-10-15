@@ -15,11 +15,12 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
+import android.os.PowerManager;
+import android.os.PowerManager.WakeLock;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -31,7 +32,6 @@ import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
 import android.widget.FrameLayout;
-import android.widget.Toast;
 
 import com.amcolabs.quizapp.appcontrollers.ProfileAndChatController;
 import com.amcolabs.quizapp.appcontrollers.UserMainPageController;
@@ -97,6 +97,8 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 
 	private BadgeEvaluator badgeEvaluator;
 
+	private PowerManager pManager;
+
 	 
 	public void setMainActivity(MainActivity mainActivity) {
 		ref = mainActivity;
@@ -121,6 +123,9 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 		reinit(false);
 		// start music 
 		startMusicService();
+		pManager = (PowerManager) getContext().getSystemService(Context.POWER_SERVICE);
+		wklock = pManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK|PowerManager.ON_AFTER_RELEASE|PowerManager.ACQUIRE_CAUSES_WAKEUP,"quizapp");
+		wklock.acquire();
 	}
 	
 	@Override
@@ -680,6 +685,8 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 
 	private boolean mIsBound;
 
+	private WakeLock wklock;
+
 
 	public void cacheUsersList(ArrayList<User> users) {
 		for(User user : users){
@@ -691,6 +698,7 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 	public void onDestroy() {
 		destroyAllScreens();
 		doUnbindMusicService();
+		wklock.release();
 		super.onDestroy();
 	}
 
