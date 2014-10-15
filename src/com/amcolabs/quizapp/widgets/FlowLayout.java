@@ -26,6 +26,12 @@ public class FlowLayout extends ViewGroup {
             this.horizontal_spacing = horizontal_spacing;
             this.vertical_spacing = vertical_spacing;
         }
+        public LayoutParams(int width , int height, int horizontal_spacing, int vertical_spacing) {
+            super(height, width);
+            this.horizontal_spacing = horizontal_spacing;
+            this.vertical_spacing = vertical_spacing;
+        }
+        
     }
  
     public FlowLayout(Context context) {
