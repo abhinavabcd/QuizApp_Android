@@ -158,7 +158,7 @@ public class FeedListItemAdaptor extends ArrayAdapter<Feed> {
 			for(String badgeId : badgeIds){
 				Badge badge = quizApp.getDataBaseHelper().getBadgeById(badgeId);
 				ImageView temp = new ImageView(quizApp.getContext());
-				temp.setLayoutParams(new FlowLayout.LayoutParams(50,50, 5, 5));
+				temp.setLayoutParams(new FlowLayout.LayoutParams(10,10, 5, 5));
 				feedHolder.imagesLayout.addView(temp);
 				quizApp.getUiUtils().loadImageIntoView(quizApp.getContext(), temp, badge.getAssetPath(), true);
 			}

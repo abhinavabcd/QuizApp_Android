@@ -97,7 +97,6 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 
 	private BadgeEvaluator badgeEvaluator;
 
-	private PowerManager pManager;
 
 	 
 	public void setMainActivity(MainActivity mainActivity) {
@@ -123,9 +122,6 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 		reinit(false);
 		// start music 
 		startMusicService();
-		pManager = (PowerManager) getContext().getSystemService(Context.POWER_SERVICE);
-		wklock = pManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK|PowerManager.ON_AFTER_RELEASE|PowerManager.ACQUIRE_CAUSES_WAKEUP,"quizapp");
-		wklock.acquire();
 	}
 	
 	@Override
@@ -685,8 +681,6 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 
 	private boolean mIsBound;
 
-	private WakeLock wklock;
-
 
 	public void cacheUsersList(ArrayList<User> users) {
 		for(User user : users){
@@ -698,7 +692,6 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 	public void onDestroy() {
 		destroyAllScreens();
 		doUnbindMusicService();
-		wklock.release();
 		super.onDestroy();
 	}
 

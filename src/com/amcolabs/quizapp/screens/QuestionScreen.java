@@ -4,9 +4,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 
+import android.content.Context;
 import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.os.Handler;
+import android.os.PowerManager;
+import android.os.PowerManager.WakeLock;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.Animation;
@@ -60,11 +63,13 @@ public class QuestionScreen extends Screen implements View.OnClickListener, Anim
 	private DataInputListener<Boolean> onQuestionTimeEnd;
 	private MediaPlayer possitiveButtonSounds;
 	private MediaPlayer negetiveButtonSounds;
+	private WakeLock wklock;
 
 	
 	
 	public QuestionScreen(AppController controller) {
 		super(controller);
+		
 		this.pQuizController = (ProgressiveQuizController)controller;
 		LayoutInflater tmp = getApp().getActivity().getLayoutInflater();
 		fullQuestionLayout = (LinearLayout) tmp.inflate(R.layout.quiz_full_question, this, false);
@@ -107,6 +112,13 @@ public class QuestionScreen extends Screen implements View.OnClickListener, Anim
         possitiveButtonSounds = MediaPlayer.create(getApp().getActivity(),R.raw.tap_correct);
         negetiveButtonSounds = MediaPlayer.create(getApp().getActivity(),R.raw.tap_wrong);
         getApp().changeMusic(R.raw.quiz_play);
+        
+        PowerManager pManager = (PowerManager) getApp().getContext().getSystemService(Context.POWER_SERVICE);
+		wklock = pManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK|PowerManager.ON_AFTER_RELEASE,"quizapp");
+		wklock.acquire();
+        
+        fullQuestionLayout.setKeepScreenOn(true);
+        
 		addView(fullQuestionLayout);
 	}
 	
@@ -308,7 +320,8 @@ public class QuestionScreen extends Screen implements View.OnClickListener, Anim
 	
 	@Override
 	public void onRemovedFromScreen() {
-		getApp().changeMusic(R.raw.app_music);			
+		getApp().changeMusic(R.raw.app_music);		
+		wklock.release();
 		super.onRemovedFromScreen();
 	}
 	
