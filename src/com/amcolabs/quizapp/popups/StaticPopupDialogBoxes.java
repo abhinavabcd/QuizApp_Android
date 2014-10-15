@@ -13,21 +13,21 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.amcolabs.quizapp.QuizApp;
 import com.amcolabs.quizapp.R;
 import com.amcolabs.quizapp.User;
+import com.amcolabs.quizapp.appcontrollers.ProgressiveQuizController;
 import com.amcolabs.quizapp.configuration.Config;
 import com.amcolabs.quizapp.databaseutils.Badge;
 import com.amcolabs.quizapp.databaseutils.OfflineChallenge;
 import com.amcolabs.quizapp.databaseutils.Quiz;
 import com.amcolabs.quizapp.datalisteners.DataInputListener;
 import com.amcolabs.quizapp.gameutils.GameUtils;
+import com.amcolabs.quizapp.notificationutils.NotificationReciever.NotificationPayload;
 import com.amcolabs.quizapp.uiutils.UiUtils;
 import com.amcolabs.quizapp.uiutils.UiUtils.UiText;
 import com.amcolabs.quizapp.widgets.CircularImageView;
@@ -318,7 +318,7 @@ public class StaticPopupDialogBoxes {
 		d.show();
 	}
 
-	public void challengeRequestedPopup(User user, Quiz quiz) {
+	public void challengeRequestedPopup(User user, Quiz quiz , final NotificationPayload payload , final DataInputListener<Boolean> listener) {
 		final Dialog d = new Dialog(quizApp.getContext(),R.style.CustomDialogTheme); 
 		 LinearLayout mainWrapper;
 		 CircularImageView titleImage;
@@ -341,12 +341,18 @@ public class StaticPopupDialogBoxes {
 		startChallenge.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				
+				if(listener!=null);
+					listener.onData(true);
+				((ProgressiveQuizController)quizApp.loadAppController(ProgressiveQuizController.class)).startChallengedLiveGame(payload.serverId, payload.quizPoolWaitId, payload.quizId);;
+				d.dismiss();
 			}
 		});
 		closeButton.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
+				if(listener!=null)
+					listener.onData(false);
+				d.dismiss();
 			}
 		});
 		d.setContentView(baseLayout);

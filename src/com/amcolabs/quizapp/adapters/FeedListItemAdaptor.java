@@ -107,7 +107,7 @@ public class FeedListItemAdaptor extends ArrayAdapter<Feed> {
 		default:
 			break;				
 		 }
-		 return null;
+		 return new View(quizApp.getContext());
 	}
 	
 	public void setDataIntoView(final Feed feed , final QuizApp quizApp ,FeedViewHolder feedHolder) {

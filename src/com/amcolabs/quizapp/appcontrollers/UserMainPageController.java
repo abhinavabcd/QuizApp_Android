@@ -4,14 +4,18 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import android.util.Log;
+
 import com.amcolabs.quizapp.AppController;
 import com.amcolabs.quizapp.QuizApp;
 import com.amcolabs.quizapp.Screen;
 import com.amcolabs.quizapp.User;
+import com.amcolabs.quizapp.UserDeviceManager;
 import com.amcolabs.quizapp.configuration.Config;
 import com.amcolabs.quizapp.databaseutils.Badge;
 import com.amcolabs.quizapp.databaseutils.Category;
 import com.amcolabs.quizapp.databaseutils.Feed;
+import com.amcolabs.quizapp.databaseutils.LocalQuizHistory;
 import com.amcolabs.quizapp.databaseutils.OfflineChallenge;
 import com.amcolabs.quizapp.databaseutils.Quiz;
 import com.amcolabs.quizapp.databaseutils.UserInboxMessage;
@@ -24,8 +28,10 @@ import com.amcolabs.quizapp.screens.HomeScreen;
 import com.amcolabs.quizapp.screens.LeaderBoardScreen;
 import com.amcolabs.quizapp.screens.SelectFriendsScreen;
 import com.amcolabs.quizapp.screens.WelcomeScreen;
+import com.amcolabs.quizapp.serverutils.ServerCalls;
 import com.amcolabs.quizapp.uiutils.UiUtils.UiText;
 import com.google.android.gcm.GCMRegistrar;
+import com.google.android.gms.gcm.GoogleCloudMessaging;
 /**
  * 
  * @author abhinav2
@@ -117,16 +123,53 @@ public class UserMainPageController  extends AppController{
 		progressiveQuiz.initlializeQuiz(quiz);
 	}
 	
+	
+	
+	
+	
 	HomeScreen homeScreen = null;
 	private DataInputListener<User> loginListener;
 	private void showUserHomeScreen(final List<Feed> feeds) {
 		GCMRegistrar.checkDevice(quizApp.getActivity());
         //TODO: uncomment this after testing
-        //GCMRegistrar.checkManifest(quizApp.getActivity());
+        GCMRegistrar.checkManifest(quizApp.getActivity().getApplicationContext());
+		
+        if (quizApp.checkPlayServices()) {
+            GoogleCloudMessaging gcm = GoogleCloudMessaging.getInstance(quizApp.getActivity());
+            String regid = quizApp.getRegistrationId(quizApp.getContext());
+
+            if (regid.isEmpty()) {
+                quizApp.registerInBackground(gcm , new DataInputListener<String>(){
+                	@Override 
+                	public String onData(final String registrationId) {
+                		if(registrationId!=null){
+                	        ServerCalls.setUserGCMKey(quizApp.getContext(), registrationId, new DataInputListener<Boolean>(){
+                	        	public String onData(Boolean b){
+                	        		if(b){
+                 	        			UserDeviceManager.setPreference(quizApp.getContext() , Config.PREF_GCM_REG_ID, registrationId);
+                	        		}
+                	        		return null;
+                	        	}
+                	        });
+                		}
+                		else{
+                			Log.d("GCM:REG_ID","error");
+                		}
+                		return super.onData(registrationId);
+                	}
+                });
+            }
+        } else {
+            Log.i("GCM:REG_ID", "No valid Google Play Services APK found.");
+        }
+
+		
+		
         final String regId = GCMRegistrar.getRegistrationId(quizApp.getActivity().getApplicationContext());
         if (regId.equals("")) {
             // Automatically registers application on startup.
             GCMRegistrar.register(quizApp.getActivity(), Config.GCM_APP_ID);//
+            GCMRegistrar.setRegisteredOnServer(quizApp.getActivity(), false);
         }
 
 		
@@ -414,5 +457,9 @@ public class UserMainPageController  extends AppController{
 		});
 	}
 
+	public void showQuizHistory(Quiz quiz) {
+		List<LocalQuizHistory> history  = quizApp.getDataBaseHelper().getQuizHistoryByQuizId(quiz.quizId);
+		((ProfileAndChatController)quizApp.loadAppController(ProfileAndChatController.class)).showQuizLocalHistory(history);
+	}
 	
 }

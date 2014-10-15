@@ -108,6 +108,16 @@ public class ProgressiveQuizController extends AppController{
 		quizApp.getServerCalls().startProgressiveQuiz(this, quiz, RANDOM_USER_TYPE, null);
 	}	
 	
+	public void showWaitingScreenForLiveChallenge(Quiz quiz , String serverId){
+		clearScreen();
+		clashingScreen = new ClashScreen(this);
+		clashingScreen.setClashCount(2); 
+		clashingScreen.updateClashScreen(quizApp.getUser()/*quizApp.getUser()*/,quiz, 0);//TODO: change to quizApp.getUser()
+		insertScreen(clashingScreen);
+		quizApp.getServerCalls().startProgressiveQuiz(this, quiz, RANDOM_USER_TYPE, null , serverId);
+	}	
+
+	
 	public int getMaxScore(){
 		if(currentQuestions==null || currentQuestions.size()==0)
 			return 0;
@@ -569,6 +579,13 @@ public class ProgressiveQuizController extends AppController{
 		currentQuestions = quizApp.getConfig().getGson().fromJson(response.payload2, new TypeToken<List<Question>>(){}.getType());
 		try{
 			currentUsers = quizApp.getConfig().getGson().fromJson(response.payload1, new TypeToken<List<User>>(){}.getType());
+			for(User user : currentUsers){//remove current user and add the current user obj locally  more better
+				if(quizApp.getUser().uid.equalsIgnoreCase(user.uid)){
+					currentUsers.remove(user);
+					currentUsers.add(quizApp.getUser());
+					break;
+				}
+			}
 		}
 		catch(JsonSyntaxException ex){//single user in payload
 			currentUsers.clear();
@@ -770,7 +787,7 @@ public class ProgressiveQuizController extends AppController{
 			
 			String userAnswers1Json =quizApp.getConfig().getGson().toJson(userAnswersStack.get(quizApp.getUser().uid));
 			String userAnswers2Json =quizApp.getConfig().getGson().toJson(userAnswersStack.get(getOtherUser().uid));
-			LocalQuizHistory quizHistory = new LocalQuizHistory(quiz.quizId , quizResult , newPoints, getOtherUser().uid , userAnswers1Json , userAnswers2Json);
+			LocalQuizHistory quizHistory = new LocalQuizHistory(quiz.quizId , quizResult , newPoints-oldPoints, getOtherUser().uid , userAnswers1Json , userAnswers2Json);
 			quizApp.getDataBaseHelper().addToQuizHistory(quizHistory);
 			quizApp.getDataBaseHelper().addGameEvents(new GameEvents(quizResult==Quiz.TIE? EventType.TIE_QUIZ : (quizResult==Quiz.LOOSE? EventType.LOST_QUIZ : EventType.WON_QUIZ),
 													quiz.quizId , getOtherUser().uid , 
@@ -929,7 +946,10 @@ public class ProgressiveQuizController extends AppController{
 		quizApp.getServerCalls().startProgressiveQuiz(this, quiz, CHALLENGE_QUIZ_TYPE ,temp);
 	}
 	
-	
+	public void startChallengedLiveGame(String serverId , String poolId, String quizId ){
+		quiz = quizApp.getDataBaseHelper().getQuizById(quizId);
+		showWaitingScreenForLiveChallenge(quiz, serverId);
+	}
 	
 	public void startChallengedGame(final OfflineChallenge offlineChallenge ){
 		if(offlineChallenge.isCompleted()){

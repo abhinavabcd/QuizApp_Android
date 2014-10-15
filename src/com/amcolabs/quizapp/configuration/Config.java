@@ -1,30 +1,22 @@
 package com.amcolabs.quizapp.configuration;
 
-import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import android.content.Context;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
-import android.os.Environment;
 import android.widget.ImageButton;
 
 import com.amcolabs.quizapp.QuizApp;
-import com.amcolabs.quizapp.UserDeviceManager;
 import com.amcolabs.quizapp.databaseutils.UserPreferences;
 import com.google.gson.Gson;
 
@@ -58,7 +50,7 @@ public class Config{
 	public static final String PREF_ENCODED_KEY = "encodedKey";
 	public static final String PREF_NOT_ACTIVATED = "isNotActivated";
 	public static final String PREF_LAST_CATEGORIES_FETCH_TIME = "categoriesFetchTimeStamp";
-	public static final String NOTIFICATION_KEY_MESSAGE_TYPE = "notificationType";
+	public static final String NOTIFICATION_KEY_MESSAGE_TYPE = "messageType";
 	public static final String NOTIFICATION_KEY_TEXT_MESSAGE = "message";
 	public static final String GOOGLE_PLUS_SERVER_CLIENT_ID = "591807556804-qltit1nk5rga581b5a2j6tuoogum0s79.apps.googleusercontent.com";
 	public static final long CLASH_SCREEN_DELAY = 3000;
@@ -67,6 +59,9 @@ public class Config{
 	public static final long QUESTION_END_DELAY_TIME = 3000;
 	public static final String KEY_GCM_FROM_USER = "fromUser";
 	public static final String KEY_GCM_TEXT_MESSAGE = "textMessage";
+    public static final String PREF_GCM_REG_ID = "registration_id";
+    public static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
+
 	public static int[] themeColors = new int []{
 											Color.rgb(149, 181,76),
 								    		Color.rgb(242, 103,22),
@@ -88,6 +83,7 @@ public class Config{
 	public static final int MAX_CATEGORIES_ON_HOME_SCREEN = 6;
 	public static final int MAX_QUIZZES_ON_HOME_SCREEN = 6;
 	public static final String MUSIC_ID = "music_id";
+	public static final String APP_VERSION = "app_version";
 	
 	private QuizApp quizApp;
 	
@@ -200,4 +196,15 @@ public class Config{
 		};
 		return 1;
 	}
+	
+    public static int getAppVersion(Context context) {
+        try {
+            PackageInfo packageInfo = context.getPackageManager()
+                    .getPackageInfo(context.getPackageName(), 0);
+            return packageInfo.versionCode;
+        } catch (NameNotFoundException e) {
+            // should never happen
+            throw new RuntimeException("Could not get package name: " + e);
+        }
+    }
 }

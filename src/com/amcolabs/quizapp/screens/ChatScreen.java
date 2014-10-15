@@ -44,7 +44,7 @@ public class ChatScreen extends Screen {
 	private ImageView user2Image;
 	private ProfileAndChatController pController;
 	private Button sendButton;
-	private User otherUser;
+	public User otherUser;
 
 	private GothamTextView debugTextView;
 	static Random rand = new Random();	
@@ -66,6 +66,7 @@ public class ChatScreen extends Screen {
 			public void onClick(View v) {
  				pController.sendMessage(otherUser, text.getText().toString());
  				addMessage(true, -1 , text.getText().toString());
+ 				text.setText("");
 			}
 		});
 		
@@ -90,7 +91,7 @@ public class ChatScreen extends Screen {
 		chatView.setEmptyView(chatLayout.findViewById(R.id.empty));
 //		setListAdapter(adapter);
 		addView(chatLayout);
-		showUsers(user2, getApp().getUser());
+		showUsers(getApp().getUser(),user2);
 		
 	}
 	

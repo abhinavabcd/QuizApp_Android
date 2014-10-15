@@ -309,4 +309,10 @@ public class QuestionScreen extends Screen implements View.OnClickListener, Anim
 		getApp().changeMusic(R.raw.app_music);			
 		super.onRemovedFromScreen();
 	}
+	
+	@Override
+	public boolean doNotDistrub() {
+		// TODO Auto-generated method stub
+		return true;
+	}
 }

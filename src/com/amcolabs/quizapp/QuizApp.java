@@ -1,12 +1,12 @@
 package com.amcolabs.quizapp;
 
+import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.EmptyStackException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Stack;
 
@@ -15,6 +15,8 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -29,6 +31,7 @@ import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
 import android.widget.FrameLayout;
+import android.widget.Toast;
 
 import com.amcolabs.quizapp.appcontrollers.ProfileAndChatController;
 import com.amcolabs.quizapp.appcontrollers.UserMainPageController;
@@ -40,12 +43,15 @@ import com.amcolabs.quizapp.gameutils.GameUtils;
 import com.amcolabs.quizapp.notificationutils.NotificationReciever;
 import com.amcolabs.quizapp.notificationutils.NotificationReciever.NotificationPayload;
 import com.amcolabs.quizapp.notificationutils.NotificationReciever.NotificationType;
+import com.amcolabs.quizapp.notificationutils.NotifificationProcessingState;
 import com.amcolabs.quizapp.popups.StaticPopupDialogBoxes;
 import com.amcolabs.quizapp.screens.BadgeScreenController;
 import com.amcolabs.quizapp.serverutils.ServerCalls;
 import com.amcolabs.quizapp.uiutils.UiUtils;
 import com.amcolabs.quizapp.uiutils.UiUtils.UiText;
-import com.amcolabs.quizapp.widgets.QuizAppMenuItem;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.google.android.gms.gcm.GoogleCloudMessaging;
 /**
  * 
  * @author abhinav2
@@ -147,9 +153,11 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 			disposeScreens = new ArrayList<Screen>();
 //			addMenuItems();
 		}
+		setNotificationProcessingState(NotifificationProcessingState.CONTINUE);
 	}
 
-
+	public static HashMap<NotificationType , ArrayList<NotificationPayload>> pendingNotifications = new HashMap<NotificationReciever.NotificationType, ArrayList<NotificationPayload>>();
+	
 	private void removeAllNotificationListeners() {
 		NotificationReciever.destroyAllListeners();
 	}
@@ -157,17 +165,61 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 	private void addNotificationListeners() {
 		NotificationReciever.setListener(NotificationType.NOTIFICATION_GCM_CHALLENGE_NOTIFICATION, new DataInputListener<NotificationPayload>(){
 			@Override
-			public String onData(final NotificationPayload payload) {
+			public String onData(final NotificationPayload payload) { 
 				getDataBaseHelper().getAllUsersByUid(Arrays.asList(payload.fromUser), new DataInputListener<Boolean>(){
 					@Override
 					public String onData(Boolean s) {
-						getStaticPopupDialogBoxes().challengeRequestedPopup(cachedUsers.get(payload.fromUser) , getDataBaseHelper().getQuizById(payload.quizId));
-						return super.onData(s); 
+						getStaticPopupDialogBoxes().challengeRequestedPopup(cachedUsers.get(payload.fromUser) , getDataBaseHelper().getQuizById(payload.quizId), payload, new DataInputListener<Boolean>(){
+							@Override
+							public String onData(Boolean s) {
+								if(!s)// all notifications will be pending until user returns back 
+									setNotificationProcessingState(NotifificationProcessingState.CONTINUE);
+								return super.onData(s);
+							}
+						});
+						return null; 
 					}
 				});
 				return null;
 			}
 		});
+		//new gcm message from server
+		NotificationReciever.setListener(NotificationType.NOTIFICATION_GCM_INBOX_MESSAGE, new DataInputListener<NotificationPayload>(){
+			public String onData(final NotificationPayload payload) {
+				getStaticPopupDialogBoxes().yesOrNo(UiText.USER_SAYS.getValue(payload.fromUserName, payload.textMessage), UiText.START_CONVERSATION.getValue(""), UiText.OK.getValue(), new DataInputListener<Boolean>(){//opens popup
+					@Override
+					public String onData(Boolean s) {
+						if(s){
+							getDataBaseHelper().getAllUsersByUid(Arrays.asList(payload.fromUser), new DataInputListener<Boolean>(){ // get user obj
+									@Override
+									public String onData(Boolean s) {
+										((ProfileAndChatController)loadAppController(ProfileAndChatController.class)).loadChatScreen(cachedUsers.get(payload.fromUser), -1); //load chat screen
+										return super.onData(s);
+									}
+							});
+						}
+						setNotificationProcessingState(NotifificationProcessingState.CONTINUE);
+						return super.onData(s);
+					}
+				});
+				return null;
+			}
+		});
+
+	}
+
+	
+	
+	private void doPendingNotifications() {//only for messages in queue
+		if(peekCurrentScreen()!=null && !peekCurrentScreen().doNotDistrub()){
+			for(NotificationType type : NotificationType.values()){
+				if(pendingNotifications.containsKey(type) && pendingNotifications.get(type).size()>0){
+					NotificationReciever.checkAndCallListener(type, pendingNotifications.get(type).remove(0));
+					setNotificationProcessingState(NotifificationProcessingState.DEFER);
+					return; // only one notification at a time , if notification returns something , then we do stuff
+				} 
+			}
+		}
 	}
 
 	public GameUtils getGameUtils() {
@@ -185,6 +237,9 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 			this.menu.setVisibility(View.VISIBLE);
 		}
 		else{
+			if(this.menu ==null) {
+				setMenu(((MainActivity) getActivity()).getMenu());
+			}
 			this.menu.setVisibility(View.GONE);
 		}
 		screen.controller.setActive(true);
@@ -342,6 +397,8 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 					}
 					animateScreenIn(oldScreen, FROM_LEFT);
 					oldScreen.refresh();
+					if(screen.doNotDistrub() && !oldScreen.doNotDistrub())
+						setNotificationProcessingState(NotifificationProcessingState.CONTINUE);
 				}
 			}
 			catch(EmptyStackException e) {
@@ -582,8 +639,8 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 				getStaticPopupDialogBoxes().showMenu(getMenuItems());	
 			}
 		});
-		this.menu.setVisibility(View.GONE);
-	} 
+		this.menu.setVisibility((peekCurrentScreen()==null|| !peekCurrentScreen().showMenu())?View.GONE:View.VISIBLE);
+	}
 
 	protected HashMap<Integer, UiText> getMenuItems() {
 		if(menuItems==null){
@@ -633,8 +690,8 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 	@Override
 	public void onDestroy() {
 		destroyAllScreens();
-		super.onDestroy();
 		doUnbindMusicService();
+		super.onDestroy();
 	}
 
 	
@@ -675,4 +732,77 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 		}
 		mServ.playAnother(musicId);
 	}
+	
+	public static NotifificationProcessingState nState = NotifificationProcessingState.CONTINUE;
+	
+	public void setNotificationProcessingState(
+		NotifificationProcessingState notifificationProcessingState) {
+		if(notifificationProcessingState == NotifificationProcessingState.CONTINUE){
+			doPendingNotifications();
+		}
+		nState = notifificationProcessingState;
+	}
+	
+    public boolean checkPlayServices() {
+        int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this.getActivity());
+        if (resultCode != ConnectionResult.SUCCESS) {
+            if (GooglePlayServicesUtil.isUserRecoverableError(resultCode)) {
+                GooglePlayServicesUtil.getErrorDialog(resultCode, this.getActivity(),
+                        Config.PLAY_SERVICES_RESOLUTION_REQUEST).show();
+            } else {
+            	getActivity().finish();
+            }
+            return false;
+        }
+        return true;
+    }
+
+    public String getRegistrationId(Context context) {
+        String registrationId = userDeviceManager.getPreference(Config.PREF_GCM_REG_ID, "");
+        if (registrationId.isEmpty()) { 
+            return "";
+        }
+        // Check if app was updated; if so, it must clear the registration ID
+        // since the existing regID is not guaranteed to work with the new
+        // app version.
+        int registeredVersion = userDeviceManager.getPreference(Config.APP_VERSION, Integer.MIN_VALUE);
+        int currentVersion = Config.getAppVersion(context); 
+        if (registeredVersion != currentVersion) {
+            Log.i("GCM:REG_KEY", "App version changed.");
+            return "";
+        }
+        return registrationId;
+    }
+
+    public void registerInBackground(final GoogleCloudMessaging gcm , final DataInputListener<String> gcmRegIdListener){
+        new AsyncTask<Void, Void, String>() {
+            @Override
+            protected String doInBackground(Void... params) {
+                String msg = "";
+                try {
+                    String regid = gcm.register(Config.GCM_APP_ID);
+                    msg = "Device registered, registration ID=" + regid;
+
+                    // You should send the registration ID to your server over HTTP, so it
+                    // can use GCM/HTTP or CCS to send messages to your app.
+
+                    // For this demo: we don't need to send it because the device will send
+                    // upstream messages to a server that echo back the message using the
+                    // 'from' address in the message.
+
+                    // Persist the regID - no need to register again.
+                } catch (IOException ex) {
+                    msg = null;//"Error :" + ex.getMessage();
+                }
+                return msg;
+            }
+
+            @Override
+            protected void onPostExecute(String msg) {
+            	gcmRegIdListener.onData(msg);
+                Toast.makeText(getContext(), msg + "\n", Toast.LENGTH_LONG).show();
+            }
+        }.execute(null, null, null);
+    }
+
 }

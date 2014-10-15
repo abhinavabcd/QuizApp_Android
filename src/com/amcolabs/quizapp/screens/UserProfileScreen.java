@@ -55,6 +55,10 @@ public class UserProfileScreen extends Screen {
 	public UserProfileScreen(AppController cont) {
 		super(cont);
 		controller = cont;
+	}
+	
+	public void showUser(User user){
+		
 		userProfile = (ScrollView) LayoutInflater.from(controller.getContext()).inflate(R.layout.user_profile, this, false);
 		userProfileWrapper = (LinearLayout) userProfile.findViewById(R.id.profile_data_wrapper);
 		userProfile.findViewById(R.id.user_info_card).setBackgroundColor(getResources().getColor(R.color.black));		
@@ -70,9 +74,7 @@ public class UserProfileScreen extends Screen {
  //       setSampleData(controller.getContext());
 
 		addView(userProfile);
-	}
-	
-	public void showUser(User user){
+
 		userName.setText(user.name);
 		getApp().getUiUtils().loadImageIntoView(getApp().getContext(), userImage, user.pictureUrl, false);
 		userStatusMessage.setText(user.getStatus());
@@ -115,7 +117,7 @@ public class UserProfileScreen extends Screen {
 		}
 	}
 
-	public void drawUserQuizChartsAndUpdateStats(User user){
+	private void drawUserQuizChartsAndUpdateStats(User user){
 		int win_count = 0;
 		int lose_count = 0;
 		int tie_count = 0;
@@ -242,7 +244,7 @@ public class UserProfileScreen extends Screen {
 //			drawCategoryWiseLevelsChart(xVals,yValsWins,yValsLosses,yValsTies);
 //	}
 	
-	public void drawWinLoseTieChart(ArrayList<String> xVals,ArrayList<BarEntry> yValsWins,ArrayList<BarEntry> yValsLosses,ArrayList<BarEntry> yValsTies){
+	private void drawWinLoseTieChart(ArrayList<String> xVals,ArrayList<BarEntry> yValsWins,ArrayList<BarEntry> yValsLosses,ArrayList<BarEntry> yValsTies){
 	        ArrayList<BarDataSet> dataSets = new ArrayList<BarDataSet>();
 	        BarDataSet set;
 
@@ -266,7 +268,7 @@ public class UserProfileScreen extends Screen {
 	        mBarChart.invalidate();
 	}
 	
-	public void drawUserActivityDistributionChart(ArrayList<String> xVals,ArrayList<Entry> yVals){
+	private void drawUserActivityDistributionChart(ArrayList<String> xVals,ArrayList<Entry> yVals){
 	
 		PieDataSet set = new PieDataSet(yVals, "Quiz Stats");
 		set.setSliceSpace(3f);
@@ -403,6 +405,14 @@ public class UserProfileScreen extends Screen {
 		}
 		else{
 			addView(lView);
+			FrameLayout viewMore = (FrameLayout) lView.findViewById(R.id.view_all_wrapper);
+			viewMore.setVisibility(View.GONE);
+
 		}
 	}	
+	@Override
+	public boolean showMenu() {
+		// TODO Auto-generated method stub
+		return true;
+	}
 }

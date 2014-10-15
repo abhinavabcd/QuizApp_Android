@@ -852,5 +852,13 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 		}
 		return null;
 	}
-}
 
+	public List<LocalQuizHistory> getQuizHistoryByQuizId(String quizId) {
+		try {
+			return getQuizHistoryDao().queryBuilder().where().eq("quizId", quizId).query();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return new ArrayList<LocalQuizHistory>();
+	}
+}

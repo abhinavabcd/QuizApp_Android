@@ -14,6 +14,7 @@ import android.util.Log;
 
 import com.amcolabs.quizapp.QuizApp;
 import com.amcolabs.quizapp.User;
+import com.amcolabs.quizapp.configuration.Config;
 import com.amcolabs.quizapp.datalisteners.DataInputListener;
 import com.amcolabs.quizapp.datalisteners.DataInputListener2;
 import com.amcolabs.quizapp.uiutils.UiUtils.UiText;
@@ -46,8 +47,9 @@ public class GoogleLoginHelper {
 	private ConnectionResult mConnectionResult;
 	protected boolean mSignInClicked;
 	private DataInputListener<User> listener;
-	private static final int RC_GOOLE_SIGN_IN = UUID.randomUUID().hashCode() & 0xFFFF;
+	public static final int RC_GOOLE_SIGN_IN = UUID.randomUUID().hashCode() & 0xFFFF;
 	private static final int RESULT_OK = 0;
+	protected static final String ACTIVITIES_LOGIN = "http://schemas.google.com/AddActivity";
 
 	public GoogleLoginHelper(QuizApp quizApp) {
 		this.quizApp = quizApp;
@@ -57,7 +59,7 @@ public class GoogleLoginHelper {
 	public void doLogin(DataInputListener<User> loginListener){
 		this.listener = loginListener;
 		mSignInClicked = true;
-		mGoogleApiClient = new GoogleApiClient.Builder(quizApp.getContext())
+		mGoogleApiClient = new GoogleApiClient.Builder(quizApp.getContext().getApplicationContext())
 		.addConnectionCallbacks(new ConnectionCallbacks() {
 			
 			@Override
@@ -68,7 +70,7 @@ public class GoogleLoginHelper {
 			@Override
 			public void onConnected(Bundle arg0) {
 				// get token and profile information
-				getTokenAndUser();
+				getUserProfileInformation();
 			}
 		})
 		.addOnConnectionFailedListener(new OnConnectionFailedListener() {
@@ -106,6 +108,13 @@ public class GoogleLoginHelper {
 		if (mConnectionResult.hasResolution()) {
 			try {
 				mIntentInProgress = true;
+		    	quizApp.getMainActivity().setActivityResultListener(new DataInputListener2<Integer, Integer, Intent, Void>(){
+		    		public void onData(Integer requestCode, Integer responseCode, Intent intent) {
+		    			onActivityResult(requestCode, responseCode, intent);
+		    			quizApp.getMainActivity().setActivityResultListener(null);//remove it 
+		    		};
+		    	});
+
 				mConnectionResult.startResolutionForResult(quizApp.getActivity(), RC_GOOLE_SIGN_IN);
 			} catch (SendIntentException e) {
 				mIntentInProgress = false;
@@ -129,66 +138,9 @@ public class GoogleLoginHelper {
 		}
 	}
 
-	public void getTokenAndUser(){
-		quizApp.addUiBlock(UiText.CONNECTING.getValue());
-        AsyncTask<Void, Void, String> task = new AsyncTask<Void, Void, String>() {
-            @Override
-            protected String doInBackground(Void... params) {
-                String token;
-                try {
-                	
-                	token = GoogleAuthUtil
-							.getToken(
-									quizApp.getContext(),
-		                            Plus.AccountApi.getAccountName(mGoogleApiClient),
-									"oauth2:"
-											+ Scopes.PLUS_LOGIN
-											+ " "+Scopes.PROFILE+" "+Scopes.PLUS_ME);
-                } 
-                catch (UserRecoverableAuthException e) {
-              	     // Recover
-                	if(e==null){
-                		return null;
-                	}
-                	quizApp.getMainActivity().setActivityResultListener(new DataInputListener2<Integer, Integer, Intent, Void>(){
-                		public void onData(Integer requestCode, Integer responseCode, Intent intent) {
-                			onActivityResult(requestCode, responseCode, intent);
-                			quizApp.getMainActivity().setActivityResultListener(null);//remove it 
-                		};
-                	});
-                	quizApp.startActivityForResult(e.getIntent(), RC_GOOLE_SIGN_IN);
-                    e.printStackTrace();
-                    token= null;
-             	} catch (GoogleAuthException authEx) {
-             		authEx.printStackTrace();
-              	     authEx.getMessage();
-              	     token = null;
-              	} catch (IOException e) {
-					e.printStackTrace();
-					token=null;
-				} 
-                finally{
-                }
-                return token;
-            }
-
-            @Override
-            protected void onPostExecute(String token) {
-                quizApp.removeUiBlock();
-                if(token != null) {
-                	User user = new User();
-                	user.googlePlus = token;
-                	getUserProfileInformation(user);
-                } 
-                else {
-                	listener.onData(null);
-                }
-            }
-        };
-        task.execute();
-	}
-	private void getUserProfileInformation(final User user){
+	private void getUserProfileInformation(){
 		quizApp.addUiBlock("Fetching Profile.");
+    	final User user = new User();
         Plus.PeopleApi.load(mGoogleApiClient, "me").setResultCallback(new ResultCallback<People.LoadPeopleResult>() {
             @Override
             public void onResult(final People.LoadPeopleResult loadPeopleResult) {
@@ -256,7 +208,7 @@ public class GoogleLoginHelper {
                         } else {
                         	//read all friends list 
                         	user.gPlusFriends = quizApp.getConfig().getGson().toJson(user.gPlusFriends);
-                        	listener.onData(user);
+                        	quizApp.getMainActivity().getTokenAndUser(user , listener);
                         }
                     } finally {
                         personBuffer.close();
