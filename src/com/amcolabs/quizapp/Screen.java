@@ -29,6 +29,8 @@ public class Screen extends LinearLayout {
 			scrollView = new LinearLayout(getApp().getContext());
 //			scrollView.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.MATCH_PARENT,1));
 			scrollView.setOrientation(LinearLayout.VERTICAL);
+			scrollView.setVerticalScrollBarEnabled(false);
+			scrollView.setHorizontalScrollBarEnabled(false);
 			//TODO: remove scroll bars visibility
 			scrollViewMain.addView(scrollView);
 		}

@@ -90,7 +90,7 @@ public class FeedListItemAdaptor extends ArrayAdapter<Feed> {
 				return baseLayout;
 		case FEED_GENERAL:
 			break;
-		case FEED_USER_ADDED_FRIEND:
+		case FEED_USER_ADDED_FRIEND:	
 			break;
 		case FEED_USER_TOOK_PART:
 			break;
@@ -103,7 +103,7 @@ public class FeedListItemAdaptor extends ArrayAdapter<Feed> {
 			feedHolder.textContent1 = (GothamTextView) baseLayout.findViewById(R.id.text_content_1);
 			feedHolder.imagesLayout = (FlowLayout) baseLayout.findViewById(R.id.userbadges);
 			baseLayout.setTag(feedHolder);
-			break;
+			return baseLayout; 
 		default:
 			break;				
 		 }
@@ -154,10 +154,11 @@ public class FeedListItemAdaptor extends ArrayAdapter<Feed> {
 			quizApp.getUiUtils().loadImageIntoView(quizApp.getContext(), feedHolder.titleImage, user.pictureUrl, false);
 			feedHolder.titleName.setText(user.name);
 			ArrayList<String>badgeIds = quizApp.getConfig().getGson().fromJson(feed.message, new TypeToken<ArrayList<String>>(){}.getType());
+			feedHolder.imagesLayout.removeAllViews();
 			for(String badgeId : badgeIds){
 				Badge badge = quizApp.getDataBaseHelper().getBadgeById(badgeId);
 				ImageView temp = new ImageView(quizApp.getContext());
-				temp.setLayoutParams(new LayoutParams(50,50,0));
+				((View)temp).setLayoutParams(new FlowLayout.LayoutParams(50,50));
 				feedHolder.imagesLayout.addView(temp);
 				quizApp.getUiUtils().loadImageIntoView(quizApp.getContext(), temp, badge.getAssetPath(), true);
 			}
