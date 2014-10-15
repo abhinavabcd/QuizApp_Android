@@ -781,7 +781,7 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
                 String msg = "";
                 try {
                     String regid = gcm.register(Config.GCM_APP_ID);
-                    msg = "Device registered, registration ID=" + regid;
+                    msg = regid;
 
                     // You should send the registration ID to your server over HTTP, so it
                     // can use GCM/HTTP or CCS to send messages to your app.
@@ -800,7 +800,7 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
             @Override
             protected void onPostExecute(String msg) {
             	gcmRegIdListener.onData(msg);
-                Toast.makeText(getContext(), msg + "\n", Toast.LENGTH_LONG).show();
+//                Toast.makeText(getContext(), msg==null?"null":msg + "\n", Toast.LENGTH_LONG).show();
             }
         }.execute(null, null, null);
     }

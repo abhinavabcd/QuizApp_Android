@@ -132,7 +132,7 @@ public class UserMainPageController  extends AppController{
 	private void showUserHomeScreen(final List<Feed> feeds) {
 		GCMRegistrar.checkDevice(quizApp.getActivity());
         //TODO: uncomment this after testing
-        GCMRegistrar.checkManifest(quizApp.getActivity().getApplicationContext());
+//        GCMRegistrar.checkManifest(quizApp.getActivity().getApplicationContext());
 		
         if (quizApp.checkPlayServices()) {
             GoogleCloudMessaging gcm = GoogleCloudMessaging.getInstance(quizApp.getActivity());
@@ -146,7 +146,7 @@ public class UserMainPageController  extends AppController{
                 	        ServerCalls.setUserGCMKey(quizApp.getContext(), registrationId, new DataInputListener<Boolean>(){
                 	        	public String onData(Boolean b){
                 	        		if(b){
-                 	        			UserDeviceManager.setPreference(quizApp.getContext() , Config.PREF_GCM_REG_ID, registrationId);
+                 	        			quizApp.getUserDeviceManager().setPreference(Config.PREF_GCM_REG_ID, registrationId);
                 	        		}
                 	        		return null;
                 	        	}
@@ -165,13 +165,6 @@ public class UserMainPageController  extends AppController{
 
 		
 		
-        final String regId = GCMRegistrar.getRegistrationId(quizApp.getActivity().getApplicationContext());
-        if (regId.equals("")) {
-            // Automatically registers application on startup.
-            GCMRegistrar.register(quizApp.getActivity(), Config.GCM_APP_ID);//
-            GCMRegistrar.setRegisteredOnServer(quizApp.getActivity(), false);
-        }
-
 		
 		clearScreen();
 		homeScreen= new HomeScreen(this);
