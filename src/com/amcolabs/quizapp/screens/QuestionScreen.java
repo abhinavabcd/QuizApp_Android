@@ -112,6 +112,7 @@ public class QuestionScreen extends Screen implements View.OnClickListener, Anim
 	
 	public void showUserInfo(ArrayList<User> uNames,int maxScore) {
 		int index = 0;
+
 		for(User user : uNames){
 				if(user.uid.equalsIgnoreCase(getApp().getUser().uid)){
 					uNames.remove(user);
@@ -119,6 +120,7 @@ public class QuestionScreen extends Screen implements View.OnClickListener, Anim
 					break;
 				}
 		}
+		
 		for(RelativeLayout userView : Arrays.asList((RelativeLayout) headerViewWrapper.findViewById(R.id.user1), (RelativeLayout) headerViewWrapper.findViewById(R.id.user2))){
 			User user = uNames.get(index++);
 			UserProgressViewHolder userProgressView = new UserProgressViewHolder();
