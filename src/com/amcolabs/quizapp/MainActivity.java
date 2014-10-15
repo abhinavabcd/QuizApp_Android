@@ -1,19 +1,26 @@
 package com.amcolabs.quizapp;
 
+import java.io.IOException;
+
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import android.os.Handler;
 import android.support.v7.app.ActionBarActivity;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.Window;
-import android.widget.HorizontalScrollView;
-import android.widget.LinearLayout;
 
 import com.amcolabs.quizapp.UserDeviceManager.AppRunningState;
-import com.amcolabs.quizapp.appcontrollers.UserMainPageController;
+import com.amcolabs.quizapp.datalisteners.DataInputListener;
 import com.amcolabs.quizapp.datalisteners.DataInputListener2;
+import com.amcolabs.quizapp.loginutils.GoogleLoginHelper;
 import com.amcolabs.quizapp.uiutils.UiUtils.UiText;
-import com.amcolabs.quizapp.widgets.QuizAppMenuItem;
+import com.google.android.gms.auth.GoogleAuthException;
+import com.google.android.gms.auth.GoogleAuthUtil;
+import com.google.android.gms.auth.UserRecoverableAuthException;
+import com.google.android.gms.common.Scopes;
+import com.google.android.gms.plus.Plus;
 
 
 
@@ -25,10 +32,7 @@ public class MainActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_main);
-        if(quizApp==null) quizApp = new QuizApp();
-        quizApp.setMainActivity(this);
-
-        
+        initQuizApp(savedInstanceState);
 //        SatelliteMenu menu = (SatelliteMenu) findViewById(R.id.menu);
 //        
 ////		  Set from XML, possible to programmatically set        
@@ -57,22 +61,29 @@ public class MainActivity extends ActionBarActivity {
 //		});
 //        
 //        quizApp.setMenu(menu);
+    }
+    
+    public void initQuizApp(Bundle savedInstanceState){
+        if(quizApp==null) quizApp = new QuizApp();
+        quizApp.setMainActivity(this);
    	
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.container, quizApp)
                     .commit();
-            quizApp.setMenu(findViewById(R.id.menu_button));             
         }
+        quizApp.setMenu(getMenu());             
 
         if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         } 
         
-        
-        
+
     }
  
+    public View getMenu(){
+    	return findViewById(R.id.menu_button);
+    }
     @Override
     public void onBackPressed() {
         quizApp.onBackPressed();
@@ -100,11 +111,15 @@ public class MainActivity extends ActionBarActivity {
 
 	@Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
         
+        if(resultCode==GoogleLoginHelper.RC_GOOLE_SIGN_IN){
+        	
+        }
         if(activityResultListener!=null){
         	activityResultListener.onData(requestCode, resultCode, data);
         }
+        super.onActivityResult(requestCode, resultCode, data);
+        
     }
     
 	@Override
@@ -115,6 +130,8 @@ public class MainActivity extends ActionBarActivity {
 	
 	@Override
 	protected void onResume() {
+		quizApp.setMainActivity(this);
+		quizApp.setMenu(getMenu());
 		UserDeviceManager.setAppRunningState(AppRunningState.IS_RUNNING);
 		super.onResume();
 	}
@@ -124,5 +141,63 @@ public class MainActivity extends ActionBarActivity {
 		quizApp.onDestroy();
 		UserDeviceManager.setAppRunningState(AppRunningState.IS_DESTROYED);
 		super.onDestroy();
+	}
+	
+	public void getTokenAndUser(final User user , final DataInputListener<User> listener){
+		new Handler().postDelayed(new Runnable() {
+			
+			@Override
+			public void run() {
+				quizApp.addUiBlock(UiText.CONNECTING.getValue());
+		        AsyncTask<Void, Void, String> task = new AsyncTask<Void, Void, String>() {
+		            @Override
+		            protected String doInBackground(Void... params) {
+		                String token;
+		                try {
+		                	
+		                	token = GoogleAuthUtil
+									.getToken(
+											quizApp.getContext().getApplicationContext(),
+											user.emailId,
+											"oauth2:"//+"server"
+													//+":client_id:" + Config.GOOGLE_PLUS_SERVER_CLIENT_ID 
+						                            //+":api_scope:"
+													+ Scopes.PLUS_LOGIN
+													+ " "+Scopes.PROFILE+" "+Scopes.PLUS_ME);
+		                } 
+		                catch (UserRecoverableAuthException e) {
+		              	     // Recover
+		                	
+		                	startActivityForResult(e.getIntent(), GoogleLoginHelper.RC_GOOLE_SIGN_IN);
+		                    e.printStackTrace();
+		                    token= null;
+		             	} catch (GoogleAuthException authEx) {
+		             		authEx.printStackTrace();
+		              	     authEx.getMessage();
+		              	     token = null;
+		              	} catch (IOException e) {
+							e.printStackTrace();
+							token=null;
+						} 
+		                finally{
+		                }
+		                return token;
+		            }
+
+		            @Override
+		            protected void onPostExecute(String token) {
+		                quizApp.removeUiBlock();
+		                if(token != null) {
+		                	user.googlePlus = token;
+		                	listener.onData(user);
+		                } 
+		                else {
+		                	listener.onData(null);
+		                }
+		            }
+		        };
+		        task.execute();				
+			}
+		}, 0);
 	}
  }

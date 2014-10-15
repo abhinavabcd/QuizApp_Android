@@ -70,4 +70,8 @@ public class Screen extends LinearLayout {
 
 	public void onRemovedFromScreen() { // called each time this is disposed from screen view
 	}
+	
+	public boolean  doNotDistrub(){
+		return false;
+	}
 }

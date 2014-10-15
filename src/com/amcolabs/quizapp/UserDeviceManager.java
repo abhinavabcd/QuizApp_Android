@@ -102,6 +102,11 @@ public class UserDeviceManager {
         return preferences.getString(key, defaultValue);
     }
     
+	public int getPreference(String key, int defValue) {
+		return Integer.parseInt(preferences.getString(key, defValue+""));
+	}	
+
+    
 	public void clearUserPreferences(){
 		preferences.edit().clear().commit();
 	}
@@ -200,6 +205,7 @@ public class UserDeviceManager {
 			return null;
 		}
 
-	}	
+	}
+
 	
 }

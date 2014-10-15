@@ -1,5 +1,6 @@
 package com.amcolabs.quizapp.notificationutils;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Set;
 
@@ -11,16 +12,20 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
+import com.amcolabs.quizapp.QuizApp;
 import com.amcolabs.quizapp.UserDeviceManager;
 import com.amcolabs.quizapp.configuration.Config;
 import com.amcolabs.quizapp.datalisteners.DataInputListener;
+import com.amcolabs.quizapp.notificationutils.NotificationReciever.NotificationType;
 import com.amcolabs.quizapp.uiutils.UiUtils;
+import com.amcolabs.quizapp.uiutils.UiUtils.UiText;
 import com.google.gson.Gson;
 
 
 public class NotificationReciever extends BroadcastReceiver{
 				
 			public static class NotificationPayload{
+				public int messageType = -1;
 				public String fromUser;
 				public String fromUserName;
 				public String quizPoolWaitId;   
@@ -48,7 +53,7 @@ public class NotificationReciever extends BroadcastReceiver{
 					this.value = val;
 				}
 			}
-			public NotificationPayload getNotificationPayload(Bundle bundle){
+			public static NotificationPayload getNotificationPayload(Bundle bundle){
 					JSONObject json = new JSONObject();
 					Set<String> keys = bundle.keySet();
 					for (String key : keys) {
@@ -84,24 +89,64 @@ public class NotificationReciever extends BroadcastReceiver{
 				}
 				NotificationType type = getNotificationTypeFromInt(Math.max(temp,extras.getInt(Config.NOTIFICATION_KEY_MESSAGE_TYPE, -1)));
 				
-				String messageToDisplay = extras.getString(Config.NOTIFICATION_KEY_TEXT_MESSAGE);
+				String titleText = null;
+				String messageToDisplay = UiText.NEW_TEXT_AVAILABLE.getValue();
 				boolean abortThisRequest = false;
 				boolean generateNotification = true;
+				NotificationPayload payload = null;
 				if(extras!=null){
+					if(!QuizApp.pendingNotifications.containsKey(type)){
+						ArrayList<NotificationPayload> temp2 = new ArrayList<NotificationPayload>();
+						QuizApp.pendingNotifications.put(type, temp2);
+					}
+					if(!UserDeviceManager.isRunning() || QuizApp.nState==NotifificationProcessingState.CONTINUE){
+						QuizApp.pendingNotifications.get(type).add(payload);
+					}
 					switch(type){
 						case NOTIFICATION_GCM_INBOX_MESSAGE:
 							//type.setPayload(extras);
-							checkAndCallListener(type , getNotificationPayload(extras));
+							payload = getNotificationPayload(extras);
+							if(checkAndCallListener(type , payload)){
+								generateNotification = false;
+							}
+							else{
+								messageToDisplay = payload.textMessage;
+							}
 							break;
 						case DONT_KNOW:
 							break;
 						case NOTIFICATION_GCM_CHALLENGE_NOTIFICATION:
-							checkAndCallListener(type , getNotificationPayload(extras));
+							payload = getNotificationPayload(extras);
+							if(checkAndCallListener(type , payload)){
+								// generateNotification = false;
+								generateNotification = false; // listener says ok
+							}
+							else{
+								// not running or not handled 
+//                                "fromUserName":self.user.name,
+//                                "quizPoolWaitId":self.quizPoolWaitId,   
+//                                "serverId":SERVER_ID,
+//                                "quizId": quiz.quizId,
+//                                "quizName":quiz.name,
+//                                "messageType":NOTIFICATION_GCM_CHALLENGE_NOTIFICATION,  
+//                                "timeStamp":HelperFunctions.toUtcTimestamp(datetime.datetime.now())
+								titleText = UiText.LIVE_CHALLENGE.getValue();
+								messageToDisplay = UiText.USER_WAITING_FOR_CHALLENGE.getValue(payload.fromUserName , payload.quizName);
+							}
 							break;
 						case NOTIFICATION_GCM_GENERAL_FROM_SERVER:
+							payload = getNotificationPayload(extras);
+							messageToDisplay = payload.textMessage;	
 							break;
 						case NOTIFICATION_GCM_OFFLINE_CHALLENGE_NOTIFICATION:
-							checkAndCallListener(type , getNotificationPayload(extras));
+							payload = getNotificationPayload(extras);
+							if(checkAndCallListener(type , getNotificationPayload(extras))){
+								generateNotification = false;
+							}
+							else{
+								messageToDisplay = UiText.NEW_OFFLINE_CHALLENGE.getValue(payload.quizName);	
+								titleText = UiText.OFFLINE_CHALLENGE_FROM.getValue(payload.fromUserName);
+							}
 							break;
 						case NOTIFICATION_NEW_BADGE:
 							break;
@@ -117,22 +162,14 @@ public class NotificationReciever extends BroadcastReceiver{
 				}
 				if(abortThisRequest)
 					abortBroadcast();
-				if(generateNotification)
-					UiUtils.generateNotification(context,messageToDisplay,extras);
+				if(generateNotification && !UserDeviceManager.isRunning()) // inside app all notifications should be handled without notifications
+					UiUtils.generateNotification(context,messageToDisplay, titleText , extras);
 		 	}
 			
-			private void checkAndCallListener(NotificationType type , NotificationPayload notificationPayload) {
-				if(UserDeviceManager.isRunning()){
-					if(listeners.containsKey(NotificationType.NOTIFICATION_GCM_INBOX_MESSAGE)){
-						listeners.get(NotificationType.NOTIFICATION_GCM_INBOX_MESSAGE).onData(notificationPayload);
-					}
-				}
-			}
-
 			static HashMap<NotificationType, DataInputListener<NotificationPayload>> listeners = new HashMap<NotificationReciever.NotificationType, DataInputListener<NotificationPayload>>();
 			
-			public static void setListener(NotificationType type , DataInputListener<NotificationPayload> gcmListener){
-				listeners.put(type, gcmListener);
+			public static void setListener(NotificationType type , DataInputListener<NotificationPayload> listener){
+				listeners.put(type, listener);
 			}
 			
 			public static void destroyAllListeners(){
@@ -144,6 +181,24 @@ public class NotificationReciever extends BroadcastReceiver{
 					NotificationType notificationGcmInboxMessage,
 					DataInputListener<NotificationPayload> gcmListener) {
 				listeners.remove(notificationGcmInboxMessage);
-								
+			}
+			
+			public static boolean checkAndCallListener(NotificationType type, NotificationPayload notificationPayload){
+				if(UserDeviceManager.isRunning() && QuizApp.nState==NotifificationProcessingState.CONTINUE){
+					if(listeners.containsKey(NotificationType.NOTIFICATION_GCM_INBOX_MESSAGE)){
+							listeners.get(NotificationType.NOTIFICATION_GCM_INBOX_MESSAGE).onData(notificationPayload);
+							return true;
+					}
+				}
+				return false; // we wont call listener until state is continue , setting to continue is very important 
+			}
+			
+			public static DataInputListener<NotificationPayload> getListener( NotificationType notificationGcmInboxMessage) {
+				if(UserDeviceManager.isRunning()){
+					if(listeners.containsKey(NotificationType.NOTIFICATION_GCM_INBOX_MESSAGE)){
+							return listeners.get(NotificationType.NOTIFICATION_GCM_INBOX_MESSAGE);
+					}
+				}
+				return null;
 			}
 	}

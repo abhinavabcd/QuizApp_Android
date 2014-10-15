@@ -151,16 +151,17 @@ public class User {
 		return winsLosses.get(quizId);
 	}
 
-	public List<String> getSubscribers() {
+	public Set<String> getSubscribers() {
 		if(subscribers==null)
 			subscribers = new HashSet<String>();
-		return new ArrayList<String>(subscribers);
+		return subscribers;
 	}
 
-	public List<String> getSubscribedTo() {
+	
+	public Set<String> getSubscribedTo() {
 		if(subscribedTo==null)
 			subscribedTo = new HashSet<String>();
-		return new ArrayList<String>(subscribedTo);
+		return subscribedTo;
 	}
 
 	public String getStatus(double level) {

@@ -46,24 +46,25 @@ public class LeaderBoardScreen extends Screen {
 	
 		if(uidRankMap.size()==0){ 
 			debugMessage.setText(UiText.NO_RANKINGS_AVAILABLE.getValue());
-			return;
-		}
-		for(String uid: uidRankMap.keySet()){
-			users.add(getApp().cachedUsers.get(uid));
-		}
-		Collections.sort(users, new Comparator<User>() {
-			@Override
-			public int compare(User lhs, User rhs) {
-				return uidRankMap.get(lhs.uid)[0]-uidRankMap.get(rhs.uid)[0] ;
+			debugMessage.setVisibility(View.VISIBLE);
+		}else{
+			for(String uid: uidRankMap.keySet()){
+				users.add(getApp().cachedUsers.get(uid));
 			}
-		});
-		LeaderboardItemListAdapter leaderBoardAdaptor = new LeaderboardItemListAdapter(getApp(),0, users, uidRankMap ,new DataInputListener<User>(){
-			@Override
-			public String onData(User s) {
-				return null;
-			}
-		});
+			Collections.sort(users, new Comparator<User>() {
+				@Override
+				public int compare(User lhs, User rhs) {
+					return uidRankMap.get(lhs.uid)[0]-uidRankMap.get(rhs.uid)[0] ;
+				}
+			});
+			LeaderboardItemListAdapter leaderBoardAdaptor = new LeaderboardItemListAdapter(getApp(),0, users, uidRankMap ,new DataInputListener<User>(){
+				@Override
+				public String onData(User s) {
+					return null;
+				}
+			});
 			listView.setAdapter(leaderBoardAdaptor);
+		}
 		addToScrollView(lView);
 		UiUtils.setListViewHeightBasedOnChildren(listView);
 	}

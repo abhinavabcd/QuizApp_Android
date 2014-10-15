@@ -4,14 +4,18 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import android.util.Log;
+
 import com.amcolabs.quizapp.AppController;
 import com.amcolabs.quizapp.QuizApp;
 import com.amcolabs.quizapp.Screen;
 import com.amcolabs.quizapp.User;
+import com.amcolabs.quizapp.UserDeviceManager;
 import com.amcolabs.quizapp.configuration.Config;
 import com.amcolabs.quizapp.databaseutils.Badge;
 import com.amcolabs.quizapp.databaseutils.Category;
 import com.amcolabs.quizapp.databaseutils.Feed;
+import com.amcolabs.quizapp.databaseutils.LocalQuizHistory;
 import com.amcolabs.quizapp.databaseutils.OfflineChallenge;
 import com.amcolabs.quizapp.databaseutils.Quiz;
 import com.amcolabs.quizapp.databaseutils.UserInboxMessage;
@@ -24,8 +28,10 @@ import com.amcolabs.quizapp.screens.HomeScreen;
 import com.amcolabs.quizapp.screens.LeaderBoardScreen;
 import com.amcolabs.quizapp.screens.SelectFriendsScreen;
 import com.amcolabs.quizapp.screens.WelcomeScreen;
+import com.amcolabs.quizapp.serverutils.ServerCalls;
 import com.amcolabs.quizapp.uiutils.UiUtils.UiText;
 import com.google.android.gcm.GCMRegistrar;
+import com.google.android.gms.gcm.GoogleCloudMessaging;
 /**
  * 
  * @author abhinav2
@@ -117,16 +123,53 @@ public class UserMainPageController  extends AppController{
 		progressiveQuiz.initlializeQuiz(quiz);
 	}
 	
+	
+	
+	
+	
 	HomeScreen homeScreen = null;
 	private DataInputListener<User> loginListener;
 	private void showUserHomeScreen(final List<Feed> feeds) {
 		GCMRegistrar.checkDevice(quizApp.getActivity());
         //TODO: uncomment this after testing
-        //GCMRegistrar.checkManifest(quizApp.getActivity());
+        GCMRegistrar.checkManifest(quizApp.getActivity().getApplicationContext());
+		
+        if (quizApp.checkPlayServices()) {
+            GoogleCloudMessaging gcm = GoogleCloudMessaging.getInstance(quizApp.getActivity());
+            String regid = quizApp.getRegistrationId(quizApp.getContext());
+
+            if (regid.isEmpty()) {
+                quizApp.registerInBackground(gcm , new DataInputListener<String>(){
+                	@Override 
+                	public String onData(final String registrationId) {
+                		if(registrationId!=null){
+                	        ServerCalls.setUserGCMKey(quizApp.getContext(), registrationId, new DataInputListener<Boolean>(){
+                	        	public String onData(Boolean b){
+                	        		if(b){
+                 	        			UserDeviceManager.setPreference(quizApp.getContext() , Config.PREF_GCM_REG_ID, registrationId);
+                	        		}
+                	        		return null;
+                	        	}
+                	        });
+                		}
+                		else{
+                			Log.d("GCM:REG_ID","error");
+                		}
+                		return super.onData(registrationId);
+                	}
+                });
+            }
+        } else {
+            Log.i("GCM:REG_ID", "No valid Google Play Services APK found.");
+        }
+
+		
+		
         final String regId = GCMRegistrar.getRegistrationId(quizApp.getActivity().getApplicationContext());
         if (regId.equals("")) {
             // Automatically registers application on startup.
             GCMRegistrar.register(quizApp.getActivity(), Config.GCM_APP_ID);//
+            GCMRegistrar.setRegisteredOnServer(quizApp.getActivity(), false);
         }
 
 		
@@ -203,19 +246,14 @@ public class UserMainPageController  extends AppController{
 								quizApp.getServerCalls().getOfflineChallenge(feed.message, new DataInputListener<OfflineChallenge>(){
 									@Override 
 									public String onData(OfflineChallenge offlineChallenge) {
-										--feedPreprocessedCount;
-										if(offlineChallenge==null){
-											if(feedPreprocessedCount<1) homeScreen.addFeedView(feeds, UiText.USER_FEED.getValue());
-											return null;
-										}
-										if(!offlineChallenge.isCompleted()){
+										if(offlineChallenge!=null && !offlineChallenge.isCompleted()){
 											offlineChallenge.setCompleted(true);
-												//show popup that user has completed and win/lost TODO
-												offlineChallenge.setChallengeData2(feed.message2);
-												quizApp.getDataBaseHelper().updateOfflineChallenge(offlineChallenge);
+											//show popup that user has completed and win/lost
+											offlineChallenge.setChallengeData2(feed.message2);
+											quizApp.getDataBaseHelper().updateOfflineChallenge(offlineChallenge);
+											quizApp.getStaticPopupDialogBoxes().showChallengeWinDialog(offlineChallenge);
 										}
-										quizApp.getStaticPopupDialogBoxes().showChallengeWinDialog(offlineChallenge);
-										if(feedPreprocessedCount<1) 		homeScreen.addFeedView(feeds, UiText.USER_FEED.getValue());
+										feedItemProcessed(feeds , feed);
 										return null;
 									}
 								}, true); 
@@ -225,9 +263,9 @@ public class UserMainPageController  extends AppController{
 						case FEED_USER_ADDED_FRIEND:
 						case FEED_USER_TOOK_PART:
 						case FEED_USER_WON:
+							break;
 						case FEED_USER_WON_BADGES:
-							--feedPreprocessedCount;
-							if(feedPreprocessedCount<1) homeScreen.addFeedView(feeds, UiText.USER_FEED.getValue());
+							feedItemProcessed(feeds , feed);
 							break;
 						}
 					} 
@@ -239,12 +277,23 @@ public class UserMainPageController  extends AppController{
 
 	}
 
+	protected void feedItemProcessed(List<Feed> feeds, Feed feed) {
+		--feedPreprocessedCount;
+		if(feedPreprocessedCount<1)
+			homeScreen.addFeedView(feeds, UiText.USER_FEED.getValue());
+	}
+	
+
 	public void doGplusLogin(){
     	GoogleLoginHelper gPlusHelper = new GoogleLoginHelper(quizApp);
     	
     	gPlusHelper.doLogin(new DataInputListener<User>(){
     		@Override
     		public String onData(User user) {
+				if(user==null){
+					quizApp.getStaticPopupDialogBoxes().yesOrNo(UiText.GPLUS_ERRROR.getValue() , null, UiText.CANCEL.getValue(), null );
+					return null;
+				}
     			quizApp.getServerCalls().doGooglePlusLogin(user, new DataInputListener<User>(){
     				@Override
     				public String onData(User user) {
@@ -313,11 +362,16 @@ public class UserMainPageController  extends AppController{
 		insertScreen(allCategoriesScreen);
 	}
 
+	
 	public void showAllUserQuizzes() {
+		showAllUserQuizzes(UiText.USER_FAVOURITES.getValue());
+	}
+
+	public void showAllUserQuizzes(String titleText) {
 		clearScreen();
 		HomeScreen allQuizzesScreen = new HomeScreen(this);
 		List<Quiz> quizzes = quizApp.getDataBaseHelper().getAllQuizzesOrderedByXP();
-		allQuizzesScreen.addUserQuizzesView(quizzes ,false , UiText.USER_FAVOURITES.getValue());
+		allQuizzesScreen.addUserQuizzesView(quizzes ,false , titleText);
 		insertScreen(allQuizzesScreen);
 	}
 	
@@ -348,7 +402,7 @@ public class UserMainPageController  extends AppController{
 			quizApp.getStaticPopupDialogBoxes().yesOrNo(UiText.NO_FRIENDS_TRY_ADDING.getValue(), null, UiText.OK.getValue(), null);
 		}
 		clearScreen();
-		quizApp.getDataBaseHelper().getAllUsersByUid(user.getSubscribedTo(), new DataInputListener<Boolean>(){
+		quizApp.getDataBaseHelper().getAllUsersByUid(new ArrayList<String>(user.getSubscribedTo()), new DataInputListener<Boolean>(){
 			@Override
 			public String onData(Boolean s) {
 				SelectFriendsScreen selectFriendsScreen = new SelectFriendsScreen(UserMainPageController.this);
@@ -403,5 +457,9 @@ public class UserMainPageController  extends AppController{
 		});
 	}
 
+	public void showQuizHistory(Quiz quiz) {
+		List<LocalQuizHistory> history  = quizApp.getDataBaseHelper().getQuizHistoryByQuizId(quiz.quizId);
+		((ProfileAndChatController)quizApp.loadAppController(ProfileAndChatController.class)).showQuizLocalHistory(history);
+	}
 	
 }

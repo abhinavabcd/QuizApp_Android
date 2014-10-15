@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import android.content.Context;
 import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,7 +21,6 @@ import com.amcolabs.quizapp.appcontrollers.ProgressiveQuizController;
 import com.amcolabs.quizapp.appcontrollers.ProgressiveQuizController.QuizMode;
 import com.amcolabs.quizapp.appcontrollers.ProgressiveQuizController.UserAnswer;
 import com.amcolabs.quizapp.configuration.Config;
-import com.amcolabs.quizapp.databaseutils.Category;
 import com.amcolabs.quizapp.databaseutils.Quiz;
 import com.amcolabs.quizapp.uiutils.UiUtils;
 import com.amcolabs.quizapp.uiutils.UiUtils.UiText;
@@ -37,7 +35,6 @@ import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
-import com.github.mikephil.charting.utils.ColorTemplate;
 
 public class WinOrLoseScreen extends Screen{
 	
@@ -81,7 +78,6 @@ public class WinOrLoseScreen extends Screen{
 				break;
 			}
 		}
-		
 		progressviewQuizController =  (ProgressiveQuizController) controller;
 		currentUsers = curUsers;
 		quizResult = (ScrollView) LayoutInflater.from(controller.getContext()).inflate(R.layout.win_lose_screen,this, false);

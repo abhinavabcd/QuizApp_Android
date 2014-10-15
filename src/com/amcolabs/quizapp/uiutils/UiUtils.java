@@ -157,7 +157,7 @@ public class UiUtils {
 		INVITE_YOUR_FRIENDS("Invite your <a href='googlePlusInvite/friends'>Google Friends</a>"),
 		CONENCT_WITH_FACEBOOK("Connect with Facebook"),
 		INVITE_YOUR_FB_FRIENDS("Invite Your <a href='facebookInvite/friends'>Facebook Friends</a>"),
-		CONNECTING("Connectin to Google"),
+		CONNECTING("Connecting to Google"),
 		USER_WANTS_A_GAME("%s want to have a game with you"), 
 		NO_FEED_AVAILABLE("No Recent Feed"),
 		FRIENDS("Friends"), NO_FRIENDS_SEARCH_AND_SUBSCRIBE("You have no Friends , Search and Subscribe"),
@@ -182,7 +182,15 @@ public class UiUtils {
 		GPLUS("G+"),
 		SET_STATUS("Update your status"),
 		YOU_VS_USER("You vs %s"),
-		LOCAL_QUIZ_HISTORY("Local Quiz History");	
+		LOCAL_QUIZ_HISTORY("Local Quiz History"),
+		SELECT_TO_CHALLENGE_USER("Select Quiz to Challenge %s"),
+		GPLUS_ERRROR("Error connecting to gplus"),
+		FEATURE_COMMING_SOON("Feature Not available at the moment. Will be rolled out in future releases."),
+		CHECKING_FOR_FRIENDS("Checking for Friends"),
+		NEW_MESSAGE("New message: %s"), NEW_OFFLINE_CHALLENGE("New Offline Challenge in %s"),
+		OFFLINE_CHALLENGE_FROM("%s challenge"),
+		NEW_TEXT_AVAILABLE("Open to Check for Updates"), USER_WAITING_FOR_CHALLENGE("%s wants a challenge with you in %s "),
+		LIVE_CHALLENGE("Live Challenge"), USER_SAYS("%s says:\n %s");	
 		
 		String value = null;
 		UiText(String value){
@@ -223,8 +231,10 @@ public class UiUtils {
 			preloader = ProgressDialog.show(quizApp.getContext(), "", text, true);
 		}
 		else{
-			preloaderText = preloaderText+ ("\n"+text);
-			preloader.setMessage(preloaderText);
+			if(!preloaderText.toString().endsWith(text)){
+				preloaderText = preloaderText+ ("\n"+text);
+				preloader.setMessage(preloaderText);
+			}
 		}
 		uiBlockCount++;
 	}
@@ -281,14 +291,38 @@ public class UiUtils {
 		}, 0, millis);
 		return timer;
 	}
-	public static void generateNotification(Context pContext, String message,Bundle b) {
+	public static void generateNotification(Context pContext, String titleText, String message,Bundle b) {
 		int notificationId = Config.NOTIFICATION_ID;
     	int type = b!=null ? b.getInt(Config.NOTIFICATION_KEY_MESSAGE_TYPE, -1):-1;
+    	if(titleText==null){
+    		titleText = pContext.getResources().getString(R.string.app_name);
+    	}
     	switch(NotificationReciever.getNotificationTypeFromInt(type)){
-    		//TODO
+		case DONT_KNOW:
+			break;
+		case NOTIFICATION_GCM_CHALLENGE_NOTIFICATION:
+			break;
+		case NOTIFICATION_GCM_GENERAL_FROM_SERVER:
+			break;
+		case NOTIFICATION_GCM_INBOX_MESSAGE:
+			titleText = UiText.NEW_MESSAGE.getValue();
+			break;
+		case NOTIFICATION_GCM_OFFLINE_CHALLENGE_NOTIFICATION:
+			break;
+		case NOTIFICATION_NEW_BADGE:
+			break;
+		case NOTIFICATION_SERVER_COMMAND:
+			break;
+		case NOTIFICATION_SERVER_MESSAGE:
+			break;
+		case NOTIFICATION_USER_CHALLENGE:
+			break;
+		default:
+			break;
+    		
     	}
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(pContext)
-        		.setSmallIcon(R.drawable.ic_launcher).setContentTitle(pContext.getResources().getString(R.string.app_name))
+        		.setSmallIcon(R.drawable.ic_launcher).setContentTitle(titleText)
                         .setContentText(message);
         notificationBuilder.setWhen(System.currentTimeMillis()).setAutoCancel(true);
         notificationBuilder.setDefaults(Notification.DEFAULT_SOUND);
@@ -311,7 +345,7 @@ public class UiUtils {
         mNotificationManager.notify(notificationId, notificationBuilder.build()); //will show a notification and when clicked will open the app.	    
 	}
 	public static void generateNotification(Context pContext, String message) {
-		generateNotification(pContext, message,null);
+		generateNotification(pContext, message, null , null);
 	}
     
     public static void sendSMS(Context context , String phoneNumber , String text) {  

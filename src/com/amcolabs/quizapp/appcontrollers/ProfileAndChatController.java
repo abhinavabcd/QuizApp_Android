@@ -23,6 +23,7 @@ import com.amcolabs.quizapp.databaseutils.UserInboxMessage;
 import com.amcolabs.quizapp.datalisteners.DataInputListener;
 import com.amcolabs.quizapp.datalisteners.DataInputListener2;
 import com.amcolabs.quizapp.notificationutils.NotificationReciever;
+import com.amcolabs.quizapp.notificationutils.NotifificationProcessingState;
 import com.amcolabs.quizapp.notificationutils.NotificationReciever.NotificationPayload;
 import com.amcolabs.quizapp.notificationutils.NotificationReciever.NotificationType;
 import com.amcolabs.quizapp.screens.ChatScreen;
@@ -36,10 +37,10 @@ import com.amcolabs.quizapp.uiutils.UiUtils.UiText;
  */
 public class ProfileAndChatController extends AppController {
 
-	private ChatScreen chatScreen;
 	private UserProfileScreen profileScreen;
 	private DataInputListener<NotificationPayload> gcmListener;
 	private List<ChatList> chatList;
+	protected DataInputListener<NotificationPayload> oldMessageListener;
 
 	public ProfileAndChatController(QuizApp quizApp) {
 		super(quizApp);
@@ -57,9 +58,7 @@ public class ProfileAndChatController extends AppController {
 	
 	public void showProfileScreen(final User user){
 		clearScreen();
-		if(profileScreen==null){
-			profileScreen = new UserProfileScreen(this);
-		}
+		profileScreen = new UserProfileScreen(this);
 		profileScreen.showUser(user);
 		if(user.uid.equalsIgnoreCase(quizApp.getUser().uid)){
 			
@@ -80,40 +79,64 @@ public class ProfileAndChatController extends AppController {
 		insertScreen(profileScreen);
 	}
 	
-	public void loadChatScreen(final User user2 , int toIndex , boolean isNewLoad){
+	public void showQuizLocalHistory(final List<LocalQuizHistory> history){
+		clearScreen();
+		List<String> uidList = new ArrayList<String>();
+		for(LocalQuizHistory h : history){
+			uidList.add(h.getWithUid());
+		}
+		quizApp.getDataBaseHelper().getAllUsersByUid(uidList, new DataInputListener<Boolean>(){
+			@Override
+			public String onData(Boolean s) {
+				UserProfileScreen profileScreen = new UserProfileScreen(ProfileAndChatController.this);
+				profileScreen.showHistory(history, false);
+				insertScreen(profileScreen);
+				return super.onData(s);
+			}
+		});
+	}
+	
+	public void addPrevMessagesToChatScreen(final ChatScreen chatScreen , int toIndex){
+		quizApp.getServerCalls().getMessages(chatScreen.otherUser , toIndex , new DataInputListener<List<UserInboxMessage>>(){
+			public String onData(List<UserInboxMessage> userMessages) {
+				for(UserInboxMessage message : userMessages)
+					chatScreen.addMessage(quizApp.getUser().uid.equalsIgnoreCase(message.fromUid), message.timestamp , message.message);
+				return null;
+			}
+		});
+	}
+	
+	public void loadChatScreen(final User user2 , int toIndex){
 		if(toIndex==0){
 			return;
 		}
-		if(isNewLoad){
-			clearScreen();
-		}
+		clearScreen();
 		quizApp.getServerCalls().getMessages(user2 , toIndex , new DataInputListener<List<UserInboxMessage>>(){
 			public String onData(List<UserInboxMessage> userMessages) {
-				if(chatScreen==null){
-					chatScreen = new ChatScreen(ProfileAndChatController.this, user2);
-					gcmListener = new DataInputListener<NotificationPayload>(){
-						public String onData(NotificationPayload payload) {
-							if(payload.fromUser.equalsIgnoreCase(user2.uid)){
-								 String messageText = payload.textMessage;
-								chatScreen.addMessage(false, -1 ,messageText);
-								try {
-									quizApp.getDataBaseHelper().getChatListDao().createOrUpdate(new ChatList(user2.uid,messageText , Config.getCurrentTimeStamp(), ChatList.UNSEEN));
-								} catch (SQLException e) {
-									// TODO Auto-generated catch block
-									e.printStackTrace();
-								} 
+				final ChatScreen chatScreen = new ChatScreen(ProfileAndChatController.this, user2);
+				oldMessageListener = NotificationReciever.getListener(NotificationType.NOTIFICATION_GCM_INBOX_MESSAGE);
+				gcmListener = new DataInputListener<NotificationPayload>(){
+					public String onData(NotificationPayload payload) {
+						if(payload.fromUser.equalsIgnoreCase(user2.uid)){
+							 String messageText = payload.textMessage;
+							chatScreen.addMessage(false, -1 ,messageText);
+							try {
+								quizApp.getDataBaseHelper().getChatListDao().createOrUpdate(new ChatList(user2.uid,messageText , Config.getCurrentTimeStamp(), ChatList.UNSEEN));
+							} catch (SQLException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
 							}
-							return null;
 						}
-					};
-					NotificationReciever.setListener(NotificationType.NOTIFICATION_GCM_INBOX_MESSAGE, gcmListener);
-					insertScreen(chatScreen);
-				}
+						return null;
+					}
+				};//new gcm message from server
+				NotificationReciever.setListener(NotificationType.NOTIFICATION_GCM_INBOX_MESSAGE, gcmListener);
 				if(userMessages.size()==0){
 					chatScreen.setDebugMessage(UiText.NO_RECENT_MESSAGES.getValue());
 				}
 				for(UserInboxMessage message : userMessages)
 					chatScreen.addMessage(quizApp.getUser().uid.equalsIgnoreCase(message.fromUid), message.timestamp , message.message);
+				insertScreen(chatScreen);
 				return null;
 			};
 		});
@@ -141,6 +164,9 @@ public class ProfileAndChatController extends AppController {
 			NotificationReciever.removeListener(NotificationType.NOTIFICATION_GCM_INBOX_MESSAGE , gcmListener);
 			gcmListener = null;
 		}
+		if(oldMessageListener!=null){
+			NotificationReciever.setListener(NotificationType.NOTIFICATION_GCM_INBOX_MESSAGE , oldMessageListener);
+		}
 	}
 	
 
@@ -167,7 +193,7 @@ public class ProfileAndChatController extends AppController {
 					new DataInputListener2<ChatList, User , Void, Void>(){
 						@Override
 						public void onData(ChatList s , User u , Void v1 , Void v2) {
-							ProfileAndChatController.this.loadChatScreen(u, -1, true);
+							ProfileAndChatController.this.loadChatScreen(u, -1);
 							return;
 						}
 					});
@@ -184,7 +210,7 @@ public class ProfileAndChatController extends AppController {
 	
 	public void showFriendsList(){
 		clearScreen();
-		quizApp.getDataBaseHelper().getAllUsersByUid(quizApp.getUser().getSubscribedTo(), new DataInputListener<Boolean>(){
+		quizApp.getDataBaseHelper().getAllUsersByUid(new ArrayList<String>(quizApp.getUser().getSubscribedTo()), new DataInputListener<Boolean>(){
 			@Override
 			public String onData(Boolean s) {
 				SelectFriendsScreen friendsScreen = new SelectFriendsScreen(ProfileAndChatController.this);
@@ -209,10 +235,10 @@ public class ProfileAndChatController extends AppController {
 									});
 									break;
 								case 2:
-									loadChatScreen(user, -1, true);
+									loadChatScreen(user, -1);
 									break;
 								case 3:
-									((UserMainPageController)quizApp.loadAppController(UserMainPageController.class)).showAllUserQuizzes();
+									((UserMainPageController)quizApp.loadAppController(UserMainPageController.class)).showAllUserQuizzes(UiText.SELECT_TO_CHALLENGE_USER.getValue(user.name));
 									break;
 								}
 								return null;

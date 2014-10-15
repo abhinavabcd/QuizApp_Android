@@ -66,22 +66,18 @@
 
         </LinearLayout>
 
-        <FrameLayout
-            android:id="@+id/additional_container"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_gravity="right|center_vertical"
-             >
-
-            <com.amcolabs.quizapp.widgets.GothamTextView
-                android:id="@+id/additional_text"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:padding="5dp"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:textStyle="bold" />
-        </FrameLayout>
     </LinearLayout>
 
+        <LinearLayout
+            android:id="@+id/badges_wrapper"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" >
+            
+            <com.amcolabs.quizapp.widgets.FlowLayout
+            android:id="@+id/userbadges"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        </LinearLayout>
 </LinearLayout>

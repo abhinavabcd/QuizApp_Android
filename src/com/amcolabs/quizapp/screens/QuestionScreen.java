@@ -112,13 +112,13 @@ public class QuestionScreen extends Screen implements View.OnClickListener, Anim
 	
 	public void showUserInfo(ArrayList<User> uNames,int maxScore) {
 		int index = 0;
-		
+
 		for(User user : uNames){
-			if(user.uid.equalsIgnoreCase(getApp().getUser().uid)){
-				uNames.remove(user);
-				uNames.add(0,user);
-				break;
-			}
+				if(user.uid.equalsIgnoreCase(getApp().getUser().uid)){
+					uNames.remove(user);
+					uNames.add(0,user);
+					break;
+				}
 		}
 		
 		for(RelativeLayout userView : Arrays.asList((RelativeLayout) headerViewWrapper.findViewById(R.id.user1), (RelativeLayout) headerViewWrapper.findViewById(R.id.user2))){
@@ -310,5 +310,11 @@ public class QuestionScreen extends Screen implements View.OnClickListener, Anim
 	public void onRemovedFromScreen() {
 		getApp().changeMusic(R.raw.app_music);			
 		super.onRemovedFromScreen();
+	}
+	
+	@Override
+	public boolean doNotDistrub() {
+		// TODO Auto-generated method stub
+		return true;
 	}
 }

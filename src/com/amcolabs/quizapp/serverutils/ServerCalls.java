@@ -82,14 +82,12 @@ class RandomSelector <T>{
 }
 
 public class ServerCalls {
-	
-	public static String IP="192.168.1.107";
-	
+
 //	public static final String SERVER_ADDR = Config.IS_TEST_BUILD? "http://54.187.73.133:8085":"http://quizapp-main.amcolabs.com";
 //	public static final String CDN_IMAGES_PATH = "http://appsandlabs.com/quizApp/images/";
 	
-	public static final String SERVER_ADDR = Config.IS_TEST_BUILD? "http://"+IP+":8085":"http://quizapp-main.amcolabs.com";
-	public static final String CDN_IMAGES_PATH = "http://"+IP+":8081/images/";
+	public static final String SERVER_ADDR = Config.IS_TEST_BUILD? "http://192.168.0.10:8085":"http://quizapp-main.amcolabs.com";
+	public static final String CDN_IMAGES_PATH = "http://192.168.0.10:8081/images/";
 
 //	public static final String SERVER_URL = Config.IS_TEST_BUILD? "http://192.168.0.10:8084/func":"http://quizapp-main.amcolabs.com/func";
 //	private static final String GET_ENCODEDKEY_URL = SERVER_URL+"?task=getEncodedKey";
@@ -377,7 +375,8 @@ public class ServerCalls {
 		
 	}
 
-	public void unsetUserGCMKey(Context context, String registrationId) {
+	public static void unsetUserGCMKey(Context context, String registrationId) {
+		
 	}
  
 	public void getUserInfo(final DataInputListener<String> dataInputListener) {
@@ -659,8 +658,21 @@ public class ServerCalls {
 		  }
 		  return sb.toString();
 	}
+
+	
 	
 	 ServerWebSocketConnection mConnection = null;
+	 
+	 public void startProgressiveQuiz(final ProgressiveQuizController pController, final Quiz quiz, int quizType ,final HashMap<String,String> additionalParams , String serverId) {//p reselected server id
+		 URI uri;
+			try {
+				uri = new URI(serverMap.get(serverId));
+				startProgressiveQuiz("ws://"+uri.getHost()+":"+uri.getPort() , pController, quiz , serverId, additionalParams);
+			} catch (URISyntaxException e) {
+				e.printStackTrace();
+			}
+	 }
+	 
 	 public void startProgressiveQuiz(final ProgressiveQuizController pController, final Quiz quiz, int quizType ,final HashMap<String,String> additionalParams) {
 		 String url = getMasterServerAddr()+"/func?task=getServer";
 		 url+="&quizId="+quiz.quizId+"&quizType="+quizType;
@@ -679,13 +691,13 @@ public class ServerCalls {
 							serverMap.put(sid, addr);
 							setSeverMap(serverMap);
 						}
-					URI uri;
-					try {
-						uri = new URI(response.payload2);
-						startProgressiveQuiz("ws://"+uri.getHost()+":"+uri.getPort() , pController, quiz , sid, additionalParams);
-					} catch (URISyntaxException e) {
-						e.printStackTrace();
-					}
+						URI uri;
+						try {
+							uri = new URI(response.payload2);
+							startProgressiveQuiz("ws://"+uri.getHost()+":"+uri.getPort() , pController, quiz , sid, additionalParams);
+						} catch (URISyntaxException e) {
+							e.printStackTrace();
+						}
 					break;
 					default:
 						pController.ohNoDammit();

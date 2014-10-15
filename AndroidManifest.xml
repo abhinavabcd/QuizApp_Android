@@ -57,17 +57,20 @@
                 <!-- Receives the actual messages. -->
                 <action android:name="com.google.android.c2dm.intent.RECEIVE" />
                 <!-- Receives the registration id. -->
-                <action android:name="com.google.android.c2dm.intent.REGISTRATION" />
+                <action android:name="com.google.android.c2dm.intent.REGISTER" />
 
                 <category android:name="com.amcolabs.quizapp" />
             </intent-filter>
         </receiver>
 
         <service android:name="com.amcolabs.quizapp.GCMIntentService" />
-		<service android:name="MusicService" android:enabled="true"></service> 
+		<service android:name="MusicService" android:enabled="true"></service> 	
         <receiver
-            android:name="om.amcolabs.quizapp.notificationutils.NotificationReciever"
+            android:name="com.amcolabs.quizapp.notificationutils.NotificationReciever"
             android:enabled="true" >
+            <intent-filter android:priority="1">
+                <action android:name="com.amcolabs.quizapp.gcmnotification"/>
+            </intent-filter>
         </receiver>
     </application>
 

@@ -1,24 +1,28 @@
 package com.amcolabs.quizapp.adapters;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.LinearLayout.LayoutParams;
 
 import com.amcolabs.quizapp.QuizApp;
 import com.amcolabs.quizapp.R;
 import com.amcolabs.quizapp.User;
+import com.amcolabs.quizapp.databaseutils.Badge;
 import com.amcolabs.quizapp.databaseutils.Feed;
-import com.amcolabs.quizapp.databaseutils.OfflineChallenge;
 import com.amcolabs.quizapp.databaseutils.Feed.FeedType;
+import com.amcolabs.quizapp.databaseutils.OfflineChallenge;
 import com.amcolabs.quizapp.datalisteners.DataInputListener;
 import com.amcolabs.quizapp.gameutils.GameUtils;
 import com.amcolabs.quizapp.uiutils.UiUtils.UiText;
+import com.amcolabs.quizapp.widgets.FlowLayout;
 import com.amcolabs.quizapp.widgets.GothamTextView;
+import com.google.gson.reflect.TypeToken;
 
 public class FeedListItemAdaptor extends ArrayAdapter<Feed> {
 
@@ -27,6 +31,7 @@ public class FeedListItemAdaptor extends ArrayAdapter<Feed> {
 		public GothamTextView textContent1;
 		public GothamTextView textContent2;
 		public ImageView titleImage;
+		public FlowLayout imagesLayout;
 	}
 	
 	private QuizApp quizApp;
@@ -83,9 +88,26 @@ public class FeedListItemAdaptor extends ArrayAdapter<Feed> {
 				feedHolder.textContent2 = (GothamTextView) baseLayout.findViewById(R.id.text_content_2);
 				baseLayout.setTag(feedHolder);
 				return baseLayout;
-				
+		case FEED_GENERAL:
+			break;
+		case FEED_USER_ADDED_FRIEND:
+			break;
+		case FEED_USER_TOOK_PART:
+			break;
+		case FEED_USER_WON:
+			break;
+		case FEED_USER_WON_BADGES:
+	 		baseLayout = (LinearLayout) quizApp.getActivity().getLayoutInflater().inflate(R.layout.feed_generic_view, null);
+			feedHolder.titleImage = (ImageView) baseLayout.findViewById(R.id.title_image);
+			feedHolder.titleName = (GothamTextView) baseLayout.findViewById(R.id.title_name);
+			feedHolder.textContent1 = (GothamTextView) baseLayout.findViewById(R.id.text_content_1);
+			feedHolder.imagesLayout = (FlowLayout) baseLayout.findViewById(R.id.userbadges);
+			baseLayout.setTag(feedHolder);
+			break;
+		default:
+			break;				
 		 }
-		 return null;
+		 return new View(quizApp.getContext());
 	}
 	
 	public void setDataIntoView(final Feed feed , final QuizApp quizApp ,FeedViewHolder feedHolder) {
@@ -119,7 +141,29 @@ public class FeedListItemAdaptor extends ArrayAdapter<Feed> {
 					}
 				});
 				break;
-				
+		case FEED_GENERAL:
+			break;
+		case FEED_USER_ADDED_FRIEND:
+			break;
+		case FEED_USER_TOOK_PART:
+			break;
+		case FEED_USER_WON:
+			break;
+		case FEED_USER_WON_BADGES:
+			user = quizApp.cachedUsers.get(feed.fromUid);
+			quizApp.getUiUtils().loadImageIntoView(quizApp.getContext(), feedHolder.titleImage, user.pictureUrl, false);
+			feedHolder.titleName.setText(user.name);
+			ArrayList<String>badgeIds = quizApp.getConfig().getGson().fromJson(feed.message, new TypeToken<ArrayList<String>>(){}.getType());
+			for(String badgeId : badgeIds){
+				Badge badge = quizApp.getDataBaseHelper().getBadgeById(badgeId);
+				ImageView temp = new ImageView(quizApp.getContext());
+				temp.setLayoutParams(new LayoutParams(50,50,0));
+				feedHolder.imagesLayout.addView(temp);
+				quizApp.getUiUtils().loadImageIntoView(quizApp.getContext(), temp, badge.getAssetPath(), true);
+			}
+			break;
+		default:
+			break;
 		 }
 	}
 
