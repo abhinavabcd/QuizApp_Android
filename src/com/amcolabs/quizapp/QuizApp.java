@@ -768,7 +768,7 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
         int registeredVersion = userDeviceManager.getPreference(Config.APP_VERSION, Integer.MIN_VALUE);
         int currentVersion = Config.getAppVersion(context); 
         if (registeredVersion != currentVersion) {
-        	userDeviceManager.setPreference(Config.APP_VERSION, registeredVersion+"");
+        	userDeviceManager.setPreference(Config.APP_VERSION, currentVersion+"");
             Log.i("GCM:REG_KEY", "App version changed.");
             return "";
         }
