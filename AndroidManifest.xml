@@ -50,7 +50,7 @@
             android:value="@integer/google_play_services_version" />
 
         <receiver
-            android:name="com.google.android.gcm.GCMBroadcastReceiver"
+            android:name="com.amcolabs.quizapp.GCMBroadcastReceiver"
             android:permission="com.google.android.c2dm.permission.SEND" >
             <intent-filter>
 
