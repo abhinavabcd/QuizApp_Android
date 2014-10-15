@@ -12,7 +12,6 @@ import com.amcolabs.quizapp.QuizApp;
 import com.amcolabs.quizapp.User;
 import com.amcolabs.quizapp.adapters.ChatListAdapter;
 import com.amcolabs.quizapp.adapters.GameEventsListItemAdaptor;
-import com.amcolabs.quizapp.adapters.QuizHistoryListAdapter;
 import com.amcolabs.quizapp.adapters.UserChatListScreen;
 import com.amcolabs.quizapp.configuration.Config;
 import com.amcolabs.quizapp.databaseutils.ChatList;
@@ -23,7 +22,6 @@ import com.amcolabs.quizapp.databaseutils.UserInboxMessage;
 import com.amcolabs.quizapp.datalisteners.DataInputListener;
 import com.amcolabs.quizapp.datalisteners.DataInputListener2;
 import com.amcolabs.quizapp.notificationutils.NotificationReciever;
-import com.amcolabs.quizapp.notificationutils.NotifificationProcessingState;
 import com.amcolabs.quizapp.notificationutils.NotificationReciever.NotificationPayload;
 import com.amcolabs.quizapp.notificationutils.NotificationReciever.NotificationType;
 import com.amcolabs.quizapp.screens.ChatScreen;
@@ -238,7 +236,12 @@ public class ProfileAndChatController extends AppController {
 									loadChatScreen(user, -1);
 									break;
 								case 3:
-									((UserMainPageController)quizApp.loadAppController(UserMainPageController.class)).showAllUserQuizzes(UiText.SELECT_TO_CHALLENGE_USER.getValue(user.name));
+									((UserMainPageController)quizApp.loadAppController(UserMainPageController.class)).showAllUserQuizzes(UiText.SELECT_TO_CHALLENGE_USER.getValue(user.name), new DataInputListener<Quiz>(){
+										public String onData(Quiz quiz) {
+											((ProgressiveQuizController)quizApp.loadAppController(ProgressiveQuizController.class)).startNewChallenge(user, quiz);
+											return null;
+										};
+									});
 									break;
 								}
 								return null;

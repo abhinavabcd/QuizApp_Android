@@ -734,25 +734,37 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 		}
 		return null;
 	}
-
-	public List<OfflineChallenge> getPendingRecentOfflineChallenges(long limit) {
+	
+	public List<OfflineChallenge> getChallengesByUser(long limit){
 		try {
 			if(limit>0)
-				return getOfflineChallengesDao().queryBuilder().limit(limit).where().eq("isCompleted", false).query();
+				return getOfflineChallengesDao().queryBuilder().limit(limit).where().like("fromUid_userChallengeIndex",quizApp.getUser().uid+"_%").query();
 			else
-				return getOfflineChallengesDao().queryBuilder().where().eq("isCompleted", false).query();
+				return getOfflineChallengesDao().queryBuilder().where().like("fromUid_userChallengeIndex",quizApp.getUser().uid+"_%").query();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 		return null;
 	}
 	
-	public List<OfflineChallenge> getCompleteRecentOfflineChallenges(long limit) {
+	public List<OfflineChallenge> getPendingRecentOfflineChallenges(long limit) {
 		try {
 			if(limit>0)
-				return getOfflineChallengesDao().queryBuilder().limit(limit).where().eq("isCompleted", true).query();
+				return getOfflineChallengesDao().queryBuilder().limit(limit).where().eq("isCompleted", false).and().not().like("fromUid_userChallengeIndex",quizApp.getUser().uid+"_%").query();
 			else
-				return getOfflineChallengesDao().queryBuilder().where().eq("isCompleted", true).query();
+				return getOfflineChallengesDao().queryBuilder().where().eq("isCompleted", false).and().not().like("fromUid_userChallengeIndex",quizApp.getUser().uid+"_%").query();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	public List<OfflineChallenge> getCompletedRecentOfflineChallenges(long limit) {
+		try {
+			if(limit>0)
+				return getOfflineChallengesDao().queryBuilder().limit(limit).where().eq("isCompleted", true).and().not().like("fromUid_userChallengeIndex",quizApp.getUser().uid+"_%").query();
+			else
+				return getOfflineChallengesDao().queryBuilder().where().eq("isCompleted", true).and().not().like("fromUid_userChallengeIndex",quizApp.getUser().uid+"_%").query();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

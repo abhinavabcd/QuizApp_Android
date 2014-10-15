@@ -572,6 +572,7 @@ public class ProgressiveQuizController extends AppController{
 
 	private void loadOfflineChallenge() {
 		// fetch data from server and start quiz
+		//TODO: check if an offline challenge available in line
 	}
 
 

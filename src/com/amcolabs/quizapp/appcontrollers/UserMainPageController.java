@@ -359,13 +359,18 @@ public class UserMainPageController  extends AppController{
 	public void showAllUserQuizzes() {
 		showAllUserQuizzes(UiText.USER_FAVOURITES.getValue());
 	}
-
-	public void showAllUserQuizzes(String titleText) {
+	public void showAllUserQuizzes(String titleText , DataInputListener<Quiz> onQuizClick) {
 		clearScreen();
 		HomeScreen allQuizzesScreen = new HomeScreen(this);
 		List<Quiz> quizzes = quizApp.getDataBaseHelper().getAllQuizzesOrderedByXP();
+		if(onQuizClick!=null)
+			allQuizzesScreen.setQuizClickListener(onQuizClick);
 		allQuizzesScreen.addUserQuizzesView(quizzes ,false , titleText);
 		insertScreen(allQuizzesScreen);
+	}
+
+	public void showAllUserQuizzes(String titleText) {
+		showAllUserQuizzes(titleText, null);
 	}
 	
 	public void showLeaderBoards(String  quizId){
