@@ -27,11 +27,11 @@ import android.support.v4.content.WakefulBroadcastReceiver;
  * partial wake lock for your app. It passes off the work of processing the GCM
  * message to an {@code IntentService}, while ensuring that the device does not
  * go back to sleep in the transition. The {@code IntentService} calls
- * {@code GcmBroadcastReceiver.completeWakefulIntent()} when it is ready to
+ * {@code GCMBroadcastReceiver.completeWakefulIntent()} when it is ready to
  * release the wake lock.
  */
 
-public class GcmBroadcastReceiver extends WakefulBroadcastReceiver {
+public class GCMBroadcastReceiver extends WakefulBroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
