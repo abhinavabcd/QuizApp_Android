@@ -19,8 +19,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
-import android.os.PowerManager;
-import android.os.PowerManager.WakeLock;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -215,7 +213,9 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 		if(peekCurrentScreen()!=null && !peekCurrentScreen().doNotDistrub()){
 			for(NotificationType type : NotificationType.values()){
 				if(pendingNotifications.containsKey(type) && pendingNotifications.get(type)!=null && pendingNotifications.get(type).size()>0){
-					NotificationReciever.checkAndCallListener(type, pendingNotifications.get(type).remove(0));
+					NotificationPayload p=null;
+					while((p=pendingNotifications.get(type).remove(0))!=null)
+						NotificationReciever.checkAndCallListener(type, p);
 					setNotificationProcessingState(NotifificationProcessingState.DEFER);
 					return; // only one notification at a time , if notification returns something , then we do stuff
 				} 
