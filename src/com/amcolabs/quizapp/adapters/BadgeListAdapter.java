@@ -52,7 +52,7 @@ public class BadgeListAdapter extends ArrayAdapter<Badge>{
     		holder.badgeImage.setAlpha(1.0f);
     	}
     	else{
-    		holder.badgeImage.setAlpha(0.8f);
+    		holder.badgeImage.setAlpha(0.6f);
     	}
     	holder.badgeName.setText(currentBadge.getName());
     	holder.badgeName.setTextColor(quizApp.getConfig().getUniqueThemeColor(currentBadge.getName()));

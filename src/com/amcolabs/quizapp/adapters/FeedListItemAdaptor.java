@@ -4,12 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
-import android.widget.ImageView.ScaleType;
 import android.widget.LinearLayout;
-import android.widget.LinearLayout.LayoutParams;
 
 import com.amcolabs.quizapp.QuizApp;
 import com.amcolabs.quizapp.R;
@@ -102,7 +101,7 @@ public class FeedListItemAdaptor extends ArrayAdapter<Feed> {
 			feedHolder.titleImage = (ImageView) baseLayout.findViewById(R.id.title_image);
 			feedHolder.titleName = (GothamTextView) baseLayout.findViewById(R.id.title_name);
 			feedHolder.textContent1 = (GothamTextView) baseLayout.findViewById(R.id.text_content_1);
-			feedHolder.textContent1.setLines(1);
+			feedHolder.textContent2 = (GothamTextView) baseLayout.findViewById(R.id.text_content_2);
 			(baseLayout.findViewById(R.id.badges_wrapper)).setVisibility(View.VISIBLE);
 			feedHolder.imagesLayout = (FlowLayout) baseLayout.findViewById(R.id.userbadges);
 			baseLayout.setTag(feedHolder);
@@ -119,7 +118,7 @@ public class FeedListItemAdaptor extends ArrayAdapter<Feed> {
 			 case FEED_CHALLENGE:
 				user = quizApp.cachedUsers.get(feed.fromUid);
 				quizApp.getUiUtils().loadImageIntoView(quizApp.getContext(), feedHolder.titleImage, user.pictureUrl, false);
-				feedHolder.titleName.setText(user.name);
+				feedHolder.titleName.setText(user.getName());
 				OfflineChallenge offlineChallenge = quizApp.getDataBaseHelper().getOfflineChallengeByChallengeId(feed.message);
 				int user1Points = GameUtils.getLastElement(offlineChallenge.getChallengeData(quizApp).userAnswers).whatUserGot;
 				int user2Points = GameUtils.getLastElement(offlineChallenge.getChallengeData2(quizApp).userAnswers).whatUserGot;
@@ -135,8 +134,8 @@ public class FeedListItemAdaptor extends ArrayAdapter<Feed> {
 			 case FEED_USED_JOINED:
 				user = quizApp.cachedUsers.get(feed.fromUid);
 				quizApp.getUiUtils().loadImageIntoView(quizApp.getContext(), feedHolder.titleImage, user.pictureUrl, false);
-				feedHolder.titleName.setText(user.name);
-				quizApp.getUiUtils().setTextViewHTML(feedHolder.textContent1, UiText.FRIEND_USER_STARTED_QUIZAPP.getValue(user.name , user.uid), new DataInputListener<String>(){
+				feedHolder.titleName.setText(user.getName());
+				quizApp.getUiUtils().setTextViewHTML(feedHolder.textContent1, UiText.FRIEND_USER_STARTED_QUIZAPP.getValue(user.getName() , user.uid), new DataInputListener<String>(){
 					@Override
 					public String onData(String s) {
 						feed.onFeedElemClick(quizApp , s);
@@ -155,15 +154,18 @@ public class FeedListItemAdaptor extends ArrayAdapter<Feed> {
 		case FEED_USER_WON_BADGES:
 			user = quizApp.cachedUsers.get(feed.fromUid);
 			quizApp.getUiUtils().loadImageIntoView(quizApp.getContext(), feedHolder.titleImage, user.pictureUrl, false);
-			feedHolder.titleName.setText(user.name);
-			feedHolder.textContent1.setText(UiText.HAS_UNLOCKED_A_BADGE.getValue());
+			feedHolder.titleName.setText(user.getName());
+			feedHolder.textContent1.setVisibility(View.GONE);
+			feedHolder.textContent2.setText(UiText.HAS_UNLOCKED_A_BADGE.getValue());
 			ArrayList<String>badgeIds = quizApp.getConfig().getGson().fromJson(feed.message, new TypeToken<ArrayList<String>>(){}.getType());
 			feedHolder.imagesLayout.removeAllViews();
 			for(String badgeId : badgeIds){
 				Badge badge = quizApp.getDataBaseHelper().getBadgeById(badgeId);
 				ImageView temp = new ImageView(quizApp.getContext());
+				temp.setOnClickListener(getOnClickListener(badgeId));
 				feedHolder.imagesLayout.addView(temp);
-				quizApp.getUiUtils().loadImageIntoView(quizApp.getContext(), temp, badge.getAssetPath(), true , quizApp.getUiUtils().dp2px(50),quizApp.getUiUtils().dp2px(50), null);
+				quizApp.getUiUtils().loadImageIntoView(quizApp.getContext(), temp, badge.getAssetPath(), true , quizApp.getUiUtils().dp2px(25),quizApp.getUiUtils().dp2px(25), null);
+				
 			}
 			break;
 		default:
@@ -171,4 +173,17 @@ public class FeedListItemAdaptor extends ArrayAdapter<Feed> {
 		 }
 	}
 
+
+	private OnClickListener getOnClickListener(final String badgeId) {
+		// TODO Auto-generated method stub
+		return new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				quizApp.getStaticPopupDialogBoxes().showUnlockedBadge(badgeId, true);
+			}
+		};
+	}
+
+	
 }

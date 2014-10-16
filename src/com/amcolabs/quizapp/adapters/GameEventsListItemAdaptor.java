@@ -81,7 +81,7 @@ public class GameEventsListItemAdaptor extends ArrayAdapter<GameEvents> {
 			quiz = quizApp.getDataBaseHelper().getQuizById(evt.getMessage());
 			quizApp.getUiUtils().setTextViewHTML(viewHolder.data,UiText.YOU_LOST_TO_USER.getValue(
 							user.uid,
-							user.name,
+							user.getName(),
 							quiz.quizId,
 							quiz.name,
 							evt.getMessage3("0")
@@ -92,7 +92,7 @@ public class GameEventsListItemAdaptor extends ArrayAdapter<GameEvents> {
 			quiz = quizApp.getDataBaseHelper().getQuizById(evt.getMessage());
 			quizApp.getUiUtils().setTextViewHTML(viewHolder.data, UiText.THERE_WAS_SERVER_ERROR.getValue(
 							user.uid,
-							user.name,
+							user.getName(),
 							quiz.quizId,
 							quiz.name
 					),null);
@@ -123,7 +123,7 @@ public class GameEventsListItemAdaptor extends ArrayAdapter<GameEvents> {
 			quiz = quizApp.getDataBaseHelper().getQuizById(evt.getMessage());
 			quizApp.getUiUtils().setTextViewHTML(viewHolder.data,UiText.YOU_DEFEATED_USER.getValue(
 							user.uid,
-							user.name,
+							user.getName(),
 							quiz.quizId,
 							quiz.name,
 							evt.getMessage3("0")

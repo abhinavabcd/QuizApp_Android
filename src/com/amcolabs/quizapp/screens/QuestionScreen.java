@@ -145,7 +145,7 @@ public class QuestionScreen extends Screen implements View.OnClickListener, Anim
 			userProgressView.userScoreView = (TextView)userView.findViewById(R.id.userPointsEarned);
 			userViews.put(user.uid, userProgressView);
 			
-			userProgressView.userNameView.setText(user.name);
+			userProgressView.userNameView.setText(user.getName());
 			getApp().getUiUtils().loadImageIntoView(getApp().getContext(), userProgressView.userImageView, user.pictureUrl, false);
 
 			userProgressView.userProgressView.setProgress(0);

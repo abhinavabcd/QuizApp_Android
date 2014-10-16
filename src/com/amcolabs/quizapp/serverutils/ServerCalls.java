@@ -126,7 +126,7 @@ public class ServerCalls {
 	
 	
 	public  HashMap<String,String> decodeConfigVariables(ServerResponse response){
-		HashMap<String,String> map = decodeConfigVariables(response.payload1);
+		HashMap<String,String> map = decodeConfigVariables(response.payload10);
 		if(map.containsKey(Config.PREF_SERVER_TIME)){
 			quizApp.getConfig().setServerTime(Double.parseDouble(map.get(Config.PREF_SERVER_TIME)) , response.getResponseTime());
 		}
@@ -459,7 +459,7 @@ public class ServerCalls {
 		String url = getAServerAddr()+"/func?task=getAllUpdates";
 		url+="&encodedKey="+quizApp.getUserDeviceManager().getEncodedKey();
 		final boolean isLogin;
-		if(quizApp.getConfig().getCurrentTimeStamp() - lastLoginTime  >3600){
+		if(quizApp.getConfig().getCurrentTimeStamp() - lastLoginTime  >3600){// is login true
 			isLogin = true;
 			lastLoginTime = quizApp.getConfig().getCurrentTimeStamp();
 			url+="&isLogin=true";
@@ -469,6 +469,7 @@ public class ServerCalls {
 			url+="&maxQuizTimestamp="+Double.toString(quizApp.getDataBaseHelper().getMaxTimeStampQuiz());
 			url+="&maxBadgesTimestamp="+Double.toString(quizApp.getDataBaseHelper().getMaxTimeStampBadges());
 			url+="&lastOfflineChallengeIndex="+quizApp.getDataBaseHelper().getLastChallengeIndex();
+			url+="&lastSeenTimestamp="+Double.toString(quizApp.getUserDeviceManager().lastActiveTime);
 		}
 		else{
 			isLogin = false;
@@ -535,6 +536,8 @@ public class ServerCalls {
 							}
 							
 						}
+						if(quizApp.getUserDeviceManager().getPreference(Config.PREF_IS_FIRST_TIME_LOAD,null)==null)
+							quizApp.getUserDeviceManager().setPreference(Config.PREF_IS_FIRST_TIME_LOAD, "false");
 						onFinishListener.onData(userFeeds, inboxMessages, offlineChallenges, true);
 						break;
 					default:
@@ -542,7 +545,7 @@ public class ServerCalls {
 						break;
 				}
 			}
-		},true);
+		},false);
 	}
 
 
@@ -902,7 +905,7 @@ public class ServerCalls {
 					break;
 				}
 			}
-		},true);//sync 
+		},false);//sync 
 	}
 
 	private HashMap<String, Boolean> subScribingRequests = new HashMap<String, Boolean>();

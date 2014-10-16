@@ -189,7 +189,7 @@ public class WinOrLoseScreen extends Screen{
 			cUser = currentUsers.get(i);
 			imgView = tmp.userImageView;
 			getApp().getUiUtils().loadImageIntoView(getApp().getContext(), imgView, cUser.pictureUrl, false);
-			tmp.userNameView.setText(cUser.name);
+			tmp.userNameView.setText(cUser.getName());
 			tmp.userStatusMessageView.setText(cUser.getStatus());
 			//tmp.userMoreInfoView.setText(cUser.country);
 			imgView.setTag(cUser);
@@ -422,7 +422,7 @@ public class WinOrLoseScreen extends Screen{
 				}
 				nonZeroFlag = getApp().getUiUtils().hasNonZeroValues(yVals);
 
-				set = new BarDataSet(yVals, currentUsers.get(i).name);
+				set = new BarDataSet(yVals, currentUsers.get(i).getName());
 				set.setColor(this.getApp().getConfig().getAThemeColor());
 				dataSets.add(set);
 			}

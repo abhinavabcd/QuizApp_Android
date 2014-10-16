@@ -260,7 +260,7 @@ public class HomeScreen extends Screen {
 		totalXp = (GothamTextView) baseLayout.findViewById(R.id.totalXp);
 		viewProfileButton = (ImageButton) baseLayout.findViewById(R.id.view_profile_button);
 		
-		userName.setText(getApp().getUser().name);
+		userName.setText(getApp().getUser().getName());
 		totalXp.setText(getApp().getUser().getTotalPoints()+"xp");
 		userStatus.setText(getApp().getUser().getStatus());
 		OnClickListener statusMessageClick = new OnClickListener() {

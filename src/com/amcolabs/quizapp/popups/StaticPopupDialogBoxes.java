@@ -123,7 +123,7 @@ public class StaticPopupDialogBoxes {
 		points2QuizTotalPoints = (GothamTextView) points2.findViewById(R.id.quizTotalPoints);
 		(points2QuizTotalPointsText = (GothamTextView) points2.findViewById(R.id.quizTotalPointsText)).setTextColor(Color.WHITE);;
 
-		challengeWithUser.setText(offlineChallenge.getFromUser(quizApp).name);
+		challengeWithUser.setText(offlineChallenge.getFromUser(quizApp).getName());
 		challengeWithUser.setTextColor(quizApp.getConfig().getUniqueThemeColor(challengeWithUser.getText().toString()));
 		
 		quizDesc.setText(quizApp.getDataBaseHelper().getQuizById(offlineChallenge.getChallengeData(quizApp).quizId).name);
@@ -230,7 +230,7 @@ public class StaticPopupDialogBoxes {
 		menuContainer.addView(getMenuItem(UiText.VIEW_PROFILE.getValue(), 1, listener , Gravity.CENTER));
 		menuContainer.addView(getMenuItem(UiText.START_CONVERSATION.getValue(""), 2, listener , Gravity.CENTER));
 		menuContainer.addView(getMenuItem(UiText.CHALLENGE.getValue(), 3, listener , Gravity.CENTER));
-		((GothamTextView)dialogLayout.findViewById(R.id.descText)).setText(user.name); 
+		((GothamTextView)dialogLayout.findViewById(R.id.descText)).setText(user.getName()); 
 		quizApp.getUiUtils().loadImageIntoView(quizApp.getContext(), (ImageView) userMenu.findViewById(R.id.quiz_icon) , user.pictureUrl , true);
 		userMenu.show();
 	}
@@ -288,6 +288,10 @@ public class StaticPopupDialogBoxes {
 		return yesNoPopup;
 	}
 
+	
+	public void showUnlockedBadge(String badgeId, boolean addDetail){
+		showUnlockedBadge(quizApp.getDataBaseHelper().getBadgeById(badgeId), addDetail);
+	}
 	public void showUnlockedBadge(Badge badge, boolean addDetail){
 		showUnlockedBadge(badge, addDetail, null);
 	}
@@ -337,7 +341,7 @@ public class StaticPopupDialogBoxes {
 		
 		quizApp.getUiUtils().loadImageIntoView(quizApp.getContext(), titleImage, user.pictureUrl, false);
 		quizName.setText(quiz.name);
-		userWantsChalengeText.setText(UiText.USER_WANTS_A_GAME.getValue(user.name));
+		userWantsChalengeText.setText(UiText.USER_WANTS_A_GAME.getValue(user.getName()));
 		startChallenge.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {

@@ -179,8 +179,10 @@ public class ProfileAndChatController extends AppController {
 					new DataInputListener2<ChatList, User , Void, Void>(){
 						@Override
 						public void onData(ChatList s , User u , Void v1 , Void v2) {
+							ProfileAndChatController.this.loadChatScreen(u, -1);
 							s.unseenMessagesFlag = 0;
 							quizApp.getDataBaseHelper().updateChatList(s);//remove unseen messages as you are viewing now
+							return;
 						}
 					});
 					UserChatListScreen chatListScreen = new UserChatListScreen(ProfileAndChatController.this);
@@ -224,7 +226,7 @@ public class ProfileAndChatController extends AppController {
 									loadChatScreen(user, -1);
 									break;
 								case 3:
-									((UserMainPageController)quizApp.loadAppController(UserMainPageController.class)).showAllUserQuizzes(UiText.SELECT_TO_CHALLENGE_USER.getValue(user.name), new DataInputListener<Quiz>(){
+									((UserMainPageController)quizApp.loadAppController(UserMainPageController.class)).showAllUserQuizzes(UiText.SELECT_TO_CHALLENGE_USER.getValue(user.getName()), new DataInputListener<Quiz>(){
 										public String onData(Quiz quiz) {
 											((ProgressiveQuizController)quizApp.loadAppController(ProgressiveQuizController.class)).startNewChallenge(user, quiz);
 											return null;

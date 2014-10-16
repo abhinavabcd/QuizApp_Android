@@ -14,7 +14,7 @@ public class User {
 	@DatabaseField(id=true, index=true, unique=true)
     public String uid;
 	@DatabaseField
-	public String name;
+	private String name;
 	public String deviceId;
 	public String emailId;
 	@DatabaseField
@@ -195,7 +195,15 @@ public class User {
 		}
 		return t;
 	}
+
+	private String cachedName = null;
+	public String getName() {
+		return cachedName==null?(cachedName=Character.toUpperCase(name.charAt(0))+name.substring(1)):cachedName;
+	}
 	
+	public void setName(String name){
+		this.name = name;
+	}
 
 }
 

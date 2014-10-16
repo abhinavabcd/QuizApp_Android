@@ -487,7 +487,7 @@ public class ProgressiveQuizController extends AppController{
 	    	case USER_DISCONNECTED:
 	    		if(currentQuestions.size()>0){ // still there are questions ? 
 	    			gracefullyCloseSocket();
-	    			quizApp.getStaticPopupDialogBoxes().yesOrNo(UiText.USER_HAS_DISCONNECTED.getValue(getOtherUser().name), UiText.CHALLENGE.getValue() , UiText.NO.getValue() , new DataInputListener<Boolean>(){
+	    			quizApp.getStaticPopupDialogBoxes().yesOrNo(UiText.USER_HAS_DISCONNECTED.getValue(getOtherUser().getName()), UiText.CHALLENGE.getValue() , UiText.NO.getValue() , new DataInputListener<Boolean>(){
 	    				@Override
 	    				public String onData(Boolean s) {
 	    					if(s){
@@ -531,7 +531,7 @@ public class ProgressiveQuizController extends AppController{
 //	    		break; 
 	    	case REMATCH_REQUEST: 
 	    		User user = quizApp.cachedUsers.get(response.payload);
-	    		rematchDialog  = quizApp.getStaticPopupDialogBoxes().yesOrNo(UiText.USER_WANTS_REMATCH.getValue(user.name), UiText.CHALLENGE.getValue() , UiText.EXIT.getValue() , new DataInputListener<Boolean>(){
+	    		rematchDialog  = quizApp.getStaticPopupDialogBoxes().yesOrNo(UiText.USER_WANTS_REMATCH.getValue(user.getName()), UiText.CHALLENGE.getValue() , UiText.EXIT.getValue() , new DataInputListener<Boolean>(){
 	    			@Override
 	    			public String onData(Boolean s) {
 	    				if(s){
@@ -1110,7 +1110,7 @@ public class ProgressiveQuizController extends AppController{
 			public String onData(Boolean s) {
 				if(s){
 					quizApp.getUser().getSubscribedTo().add(user.uid);
-					quizApp.getStaticPopupDialogBoxes().yesOrNo(UiText.ADDED_USER.getValue(user.name), null, UiText.CLOSE.getValue(), null);
+					quizApp.getStaticPopupDialogBoxes().yesOrNo(UiText.ADDED_USER.getValue(user.getName()), null, UiText.CLOSE.getValue(), null);
 					user.isFriend = true;
 				}
 				return super.onData(s);

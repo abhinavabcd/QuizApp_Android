@@ -67,7 +67,7 @@ public  class SelectFriendsListAdapter extends ArrayAdapter<User>{
 								if(s){
 									FriendViewHolder holder = ((FriendViewHolder)v.getTag());
 									User user = holder.item;
-									quizApp.getStaticPopupDialogBoxes().yesOrNo(UiText.ADDED_USER.getValue(user.name), null, UiText.CLOSE.getValue(), null);
+									quizApp.getStaticPopupDialogBoxes().yesOrNo(UiText.ADDED_USER.getValue(user.getName()), null, UiText.CLOSE.getValue(), null);
 									quizApp.getUser().getSubscribedTo().add(user.uid);
 									holder.addFriendButton.setVisibility(View.GONE);
 									user.isFriend = true;
@@ -102,7 +102,7 @@ public  class SelectFriendsListAdapter extends ArrayAdapter<User>{
 				holder.addFriendButton.setVisibility(View.VISIBLE);
 			}
 			quizApp.getUiUtils().loadImageIntoView(quizApp.getContext(), holder.imageView, getItem(position).pictureUrl,true);
-			holder.userName.setText(user.name);
+			holder.userName.setText(user.getName());
 			holder.statusDescription.setText(user.getStatus());
 			return convertView;
 		}

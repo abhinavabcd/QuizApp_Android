@@ -48,7 +48,7 @@ public class UserInfoCard extends LinearLayout implements Target,IViewType{
 		statusMsg.setText(user.getStatus());
 		moreInfoWrapper = (LinearLayout)mainView.findViewById(R.id.level_more_info);
 		debugTextView = (GothamTextView)mainView.findViewById(R.id.user_more_info);
-		name.setText(user.name);
+		name.setText(user.getName());
 		if(user.pictureUrl!=null){
 			Picasso.with(quizApp.getContext()).load(user.pictureUrl).into(imgView);
 		}

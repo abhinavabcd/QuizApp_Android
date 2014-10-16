@@ -106,7 +106,7 @@ public class FacebookLoginHelper {
 					User user = new User();
 					user.facebook = session.getAccessToken();
 			        user.uid = fbUser.getId();
-			        user.name = fbUser.getName();
+			        user.setName(fbUser.getName());
 			        user.pictureUrl = String.format("https://graph.facebook.com/%s/picture?type=large", fbUser.getId());
 			        
 			        if(fbUser.getProperty("email") != null){

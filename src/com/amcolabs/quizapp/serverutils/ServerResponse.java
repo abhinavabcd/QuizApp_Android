@@ -19,6 +19,8 @@ public class ServerResponse {
 	public String payload6;
 	public String payload7;
 	public String payload8;
+	public String payload9;
+	public String payload10;
 	
 	
 	

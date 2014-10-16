@@ -157,6 +157,7 @@ public class UserDeviceManager {
 	};
 
 	static AppRunningState currentState = AppRunningState.IS_DESTROYED;
+	public static double lastActiveTime;
 	public static boolean isAppPaused() {
 		return AppRunningState.IS_IN_BACKGROUND == currentState;
 	}

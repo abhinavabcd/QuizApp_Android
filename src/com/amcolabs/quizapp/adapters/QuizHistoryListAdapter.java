@@ -92,16 +92,16 @@ public class QuizHistoryListAdapter extends ArrayAdapter<LocalQuizHistory> {
 		
 		switch(history.getQuizResult()){
 		case Quiz.LOOSE:
-			 text = UiText.YOU_LOST_TO_USER.getValue(user.uid, user.name, quiz.quizId, quiz.name, history.xpGain);
+			 text = UiText.YOU_LOST_TO_USER.getValue(user.uid, user.getName(), quiz.quizId, quiz.name, history.xpGain);
 			break;
 		case Quiz.SERVER_ERR:
-			 text = UiText.THERE_WAS_SERVER_ERROR.getValue(user.uid, user.name, quiz.quizId, quiz.name);
+			 text = UiText.THERE_WAS_SERVER_ERROR.getValue(user.uid, user.getName(), quiz.quizId, quiz.name);
 			break;
 		case Quiz.TIE:
-			 text = UiText.THE_QUIZ_WAS_TIE.getValue(user.uid, user.name, quiz.quizId, quiz.name, history.xpGain);
+			 text = UiText.THE_QUIZ_WAS_TIE.getValue(user.uid, user.getName(), quiz.quizId, quiz.name, history.xpGain);
 			break;
 		case Quiz.WON:
-			 text = UiText.YOU_DEFEATED_USER.getValue(user.uid, user.name, quiz.quizId, quiz.name, history.xpGain);
+			 text = UiText.YOU_DEFEATED_USER.getValue(user.uid, user.getName(), quiz.quizId, quiz.name, history.xpGain);
 			break;
 		}
 		quizApp.getUiUtils().setTextViewHTML(viewHolder.data,text,null);

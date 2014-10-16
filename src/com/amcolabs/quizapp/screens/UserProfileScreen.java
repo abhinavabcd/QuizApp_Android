@@ -79,7 +79,7 @@ public class UserProfileScreen extends Screen {
 
 		addView(userProfile);
 		FlowLayout badgesLayout = (FlowLayout) userProfile.findViewById(R.id.userbadges);
-		userName.setText(user.name);
+		userName.setText(user.getName());
 		getApp().getUiUtils().loadImageIntoView(getApp().getContext(), userImage, user.pictureUrl, false);
 		userStatusMessage.setText(user.getStatus());
 		userMoreInfo.setText(user.place);
@@ -89,7 +89,7 @@ public class UserProfileScreen extends Screen {
 			Badge badge = getApp().getDataBaseHelper().getBadgeById(badgeId);
 			ImageView temp = new ImageView(getApp().getContext());
 			badgesLayout.addView(temp);
-			getApp().getUiUtils().loadImageIntoView(getApp().getContext(), temp, badge.getAssetPath(), true , getApp().getUiUtils().dp2px(30),getApp().getUiUtils().dp2px(30), null);
+			getApp().getUiUtils().loadImageIntoView(getApp().getContext(), temp, badge.getAssetPath(), true , getApp().getUiUtils().dp2px(20),getApp().getUiUtils().dp2px(20), null);
 		}
 
 		
@@ -362,7 +362,7 @@ public class UserProfileScreen extends Screen {
 		}
 		LinearLayout winLoseStrip = (LinearLayout) getApp().getActivity().getLayoutInflater().inflate(R.layout.quiz_wins_lose_strip, null);
 		winLoseStrip.setBackgroundColor(getApp().getConfig().getAThemeColor());
-		((GothamTextView) winLoseStrip.findViewById(R.id.title_text_view)).setText(UiText.YOU_VS_USER.getValue(user.name));
+		((GothamTextView) winLoseStrip.findViewById(R.id.title_text_view)).setText(UiText.YOU_VS_USER.getValue(user.getName()));
 		GothamTextView debugMessage = (GothamTextView) winLoseStrip.findViewById(R.id.debugMessage);
 		debugMessage.setTextSize(25);
 		debugMessage.setText(wins+"-"+lose);

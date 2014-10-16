@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.Window;
 
 import com.amcolabs.quizapp.UserDeviceManager.AppRunningState;
+import com.amcolabs.quizapp.configuration.Config;
 import com.amcolabs.quizapp.datalisteners.DataInputListener;
 import com.amcolabs.quizapp.datalisteners.DataInputListener2;
 import com.amcolabs.quizapp.loginutils.GoogleLoginHelper;
@@ -125,6 +126,7 @@ public class MainActivity extends ActionBarActivity {
 	@Override
 	protected void onPause() {
 		UserDeviceManager.setAppRunningState(AppRunningState.IS_IN_BACKGROUND);
+		UserDeviceManager.lastActiveTime = Config.getCurrentServerTimeStamp();
 		super.onPause();
 	}
 	
@@ -139,6 +141,7 @@ public class MainActivity extends ActionBarActivity {
 	@Override
 	protected void onDestroy() {
 		quizApp.onDestroy();
+		UserDeviceManager.lastActiveTime = Config.getCurrentServerTimeStamp();
 		UserDeviceManager.setAppRunningState(AppRunningState.IS_DESTROYED);
 		super.onDestroy();
 	}

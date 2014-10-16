@@ -168,7 +168,7 @@ public class GoogleLoginHelper {
                         }
                         
                         user.uid = person.getId();
-                        user.name = person.getDisplayName();
+                        user.setName(person.getDisplayName());
                         if ((person.hasImage()) && (person.getImage().hasUrl())) {
                             user.pictureUrl = person.getImage().getUrl().replace("?sz=50", "?sz=200");
                         }

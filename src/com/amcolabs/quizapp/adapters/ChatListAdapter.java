@@ -68,7 +68,7 @@ public class ChatListAdapter  extends ArrayAdapter<ChatList>{
 		holder.chatListItem = chatListItem;
 		User user = quizApp.cachedUsers.containsKey(chatListItem.uid)?quizApp.cachedUsers.get(chatListItem.uid):null;
 		quizApp.getUiUtils().loadImageIntoView(quizApp.getContext(), holder.imageView, user.pictureUrl,true);
-		holder.userName.setText(user==null?"Loading..":user.name);
+		holder.userName.setText(user==null?"Loading..":user.getName());
 		holder.lastMessageText.setText(chatListItem.recentMessage);
 		if(chatListItem.unseenMessagesFlag>0){
 			holder.additionalText.setVisibility(View.VISIBLE);
