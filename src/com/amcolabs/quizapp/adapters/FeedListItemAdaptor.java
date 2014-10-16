@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.ImageView.ScaleType;
 import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
 
@@ -101,6 +102,8 @@ public class FeedListItemAdaptor extends ArrayAdapter<Feed> {
 			feedHolder.titleImage = (ImageView) baseLayout.findViewById(R.id.title_image);
 			feedHolder.titleName = (GothamTextView) baseLayout.findViewById(R.id.title_name);
 			feedHolder.textContent1 = (GothamTextView) baseLayout.findViewById(R.id.text_content_1);
+			feedHolder.textContent1.setLines(1);
+			(baseLayout.findViewById(R.id.badges_wrapper)).setVisibility(View.VISIBLE);
 			feedHolder.imagesLayout = (FlowLayout) baseLayout.findViewById(R.id.userbadges);
 			baseLayout.setTag(feedHolder);
 			return baseLayout; 
@@ -153,14 +156,14 @@ public class FeedListItemAdaptor extends ArrayAdapter<Feed> {
 			user = quizApp.cachedUsers.get(feed.fromUid);
 			quizApp.getUiUtils().loadImageIntoView(quizApp.getContext(), feedHolder.titleImage, user.pictureUrl, false);
 			feedHolder.titleName.setText(user.name);
+			feedHolder.textContent1.setText(UiText.HAS_UNLOCKED_A_BADGE.getValue());
 			ArrayList<String>badgeIds = quizApp.getConfig().getGson().fromJson(feed.message, new TypeToken<ArrayList<String>>(){}.getType());
 			feedHolder.imagesLayout.removeAllViews();
 			for(String badgeId : badgeIds){
 				Badge badge = quizApp.getDataBaseHelper().getBadgeById(badgeId);
 				ImageView temp = new ImageView(quizApp.getContext());
-				temp.setLayoutParams(new FlowLayout.LayoutParams(10,10, 5, 5));
 				feedHolder.imagesLayout.addView(temp);
-				quizApp.getUiUtils().loadImageIntoView(quizApp.getContext(), temp, badge.getAssetPath(), true);
+				quizApp.getUiUtils().loadImageIntoView(quizApp.getContext(), temp, badge.getAssetPath(), true , quizApp.getUiUtils().dp2px(40),quizApp.getUiUtils().dp2px(40));
 			}
 			break;
 		default:

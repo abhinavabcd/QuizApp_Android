@@ -32,6 +32,8 @@ import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.text.style.URLSpan;
 import android.util.TypedValue;
+import android.view.Display;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AlphaAnimation;
@@ -39,6 +41,8 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LinearInterpolator;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.LinearLayout.LayoutParams;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -50,7 +54,6 @@ import com.amcolabs.quizapp.datalisteners.DataInputListener;
 import com.amcolabs.quizapp.notificationutils.NotificationReciever;
 import com.amcolabs.quizapp.serverutils.ServerCalls;
 import com.github.mikephil.charting.data.BarEntry;
-import com.github.mikephil.charting.data.Entry;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
@@ -190,7 +193,8 @@ public class UiUtils {
 		NEW_MESSAGE("New message: %s"), NEW_OFFLINE_CHALLENGE("New Offline Challenge in %s"),
 		OFFLINE_CHALLENGE_FROM("%s challenge"),
 		NEW_TEXT_AVAILABLE("Open to Check for Updates"), USER_WAITING_FOR_CHALLENGE("%s wants a challenge with you in %s "),
-		LIVE_CHALLENGE("Live Challenge"), USER_SAYS("%s says:\n %s");	
+		LIVE_CHALLENGE("Live Challenge"), USER_SAYS("%s says:\n %s"),
+		HAS_UNLOCKED_A_BADGE("Has Unlocked a Badge");	
 		
 		String value = null;
 		UiText(String value){
@@ -430,34 +434,42 @@ public class UiUtils {
 		return animationSlideInRight;
 	}        
 	
-	
-	
-	
 	public boolean loadImageIntoView(Context ctx , final ImageView imgView, final String assetPath , final boolean downloadToAssets){
+			return loadImageIntoView(ctx , imgView,  assetPath , downloadToAssets , -1 , -1);
+	}
+	
+	public boolean loadImageIntoView(Context ctx , final ImageView imgView, final String assetPath , final boolean downloadToAssets ,int width , int height ){
 		if(assetPath==null || assetPath.isEmpty())
 			return false;
 		try{
 			if(assetPath.startsWith("http://") || assetPath.startsWith("https://")){
-				Picasso.with(ctx).load(assetPath).into(imgView);
+				if(width> 0 && height>0)
+					Picasso.with(ctx).load(assetPath).resize(width , height).into(imgView);
+				else
+					Picasso.with(ctx).load(assetPath).into(imgView);
 			    return true;
 			}
 			
-		    InputStream ims = ctx.getAssets().open("images/"+assetPath);
-		    Picasso.with(ctx).load("file:///android_asset/images/"+assetPath).into(imgView);
-		    return true;
+		    InputStream ims = ctx.getAssets().open("images/"+assetPath); //assets folder 
+			if(width>0 && height>0)
+				Picasso.with(ctx).load("file:///android_asset/images/"+assetPath).resize(width, height).into(imgView);
+			else
+				Picasso.with(ctx).load("file:///android_asset/images/"+assetPath).into(imgView);
+			return true;
 		}
-		catch(IOException ex) {
+		catch(IOException ex) {//files in SD card
 			File file = new File(ctx.getFilesDir().getParentFile().getPath()+"/images/"+assetPath);
 			if(file.exists()){
-				Picasso.with(ctx).load(file).into(imgView);
+				Picasso.with(ctx).load(file).fit().centerCrop().into(imgView);
 			}
 			else{
-				if(downloadToAssets){
+				if(downloadToAssets){//from cdn
 					imgView.setTag(new LoadAndSave(imgView, file, assetPath, downloadToAssets));
-					Picasso.with(ctx).load(ServerCalls.CDN_IMAGES_PATH+assetPath).into((LoadAndSave)imgView.getTag());
+					if(width>0 && height>0)
+						Picasso.with(ctx).load(ServerCalls.CDN_IMAGES_PATH+assetPath).error(R.drawable.error_image).resize(width , height).into((LoadAndSave)imgView.getTag());
 				}
 				else{
-					Picasso.with(ctx).load(ServerCalls.CDN_IMAGES_PATH+assetPath).into(imgView);//directly
+					Picasso.with(ctx).load(ServerCalls.CDN_IMAGES_PATH+assetPath).error(R.drawable.error_image).into(imgView);//directly
 				}
 			}
 		}		 
@@ -631,4 +643,57 @@ public class UiUtils {
 		}
 		return false;
 	}
+	
+	public void populateViews(LinearLayout linearLayout, View[] views, Context context, View extraView){
+	    extraView.measure(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+
+	    // kv : May need to replace 'getSherlockActivity()' with 'this' or 'getActivity()'
+	    Display display = quizApp.getActivity().getWindowManager().getDefaultDisplay();
+	    linearLayout.removeAllViews();
+	    int maxWidth = display.getWidth() - extraView.getMeasuredWidth() - 20;
+
+	    linearLayout.setOrientation(LinearLayout.VERTICAL);
+
+	    LinearLayout.LayoutParams params;
+	    LinearLayout newLL = new LinearLayout(context);
+	    newLL.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
+	    newLL.setGravity(Gravity.LEFT);
+	    newLL.setOrientation(LinearLayout.HORIZONTAL);
+
+	    int widthSoFar = 0;
+
+	    for (int i = 0; i < views.length; i++)
+	    {
+	        LinearLayout LL = new LinearLayout(context);
+	        LL.setOrientation(LinearLayout.HORIZONTAL);
+	        LL.setGravity(Gravity.CENTER_HORIZONTAL | Gravity.BOTTOM);
+	        LL.setLayoutParams(new ListView.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+
+	        views[i].measure(0, 0);
+	        params = new LinearLayout.LayoutParams(views[i].getMeasuredWidth(), LayoutParams.WRAP_CONTENT);
+	        params.setMargins(5, 0, 5, 0);
+
+	        LL.addView(views[i], params);
+	        LL.measure(0, 0);
+	        widthSoFar += views[i].getMeasuredWidth();
+	        if (widthSoFar >= maxWidth)
+	        {
+	            linearLayout.addView(newLL);
+
+	            newLL = new LinearLayout(context);
+	            newLL.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
+	            newLL.setOrientation(LinearLayout.HORIZONTAL);
+	            newLL.setGravity(Gravity.LEFT);
+	            params = new LinearLayout.LayoutParams(LL.getMeasuredWidth(), LL.getMeasuredHeight());
+	            newLL.addView(LL, params);
+	            widthSoFar = LL.getMeasuredWidth();
+	        }
+	        else
+	        {
+	            newLL.addView(LL);
+	        }
+	    }
+	    linearLayout.addView(newLL);
+	}
+	
 }

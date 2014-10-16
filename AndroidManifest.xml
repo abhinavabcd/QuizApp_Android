@@ -57,9 +57,8 @@
 
                 <!-- Receives the actual messages. -->
                 <action android:name="com.google.android.c2dm.intent.RECEIVE" />
-                <!-- Receives the registration id. -->
-                <!-- <action android:name="com.google.android.c2dm.intent.REGISTER" />-->
-
+				<action android:name="com.google.android.c2dm.intent.REGISTRATION" />
+                
                 <category android:name="com.amcolabs.quizapp" />
             </intent-filter>
         </receiver>

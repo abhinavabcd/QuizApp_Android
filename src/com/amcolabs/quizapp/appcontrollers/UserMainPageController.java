@@ -132,7 +132,7 @@ public class UserMainPageController  extends AppController{
 	private void showUserHomeScreen(final List<Feed> feeds) {
 		GCMRegistrar.checkDevice(quizApp.getActivity());
         //TODO: uncomment this after testing
-//        GCMRegistrar.checkManifest(quizApp.getActivity().getApplicationContext());
+        GCMRegistrar.checkManifest(quizApp.getActivity().getApplicationContext());
 		
         if (quizApp.checkPlayServices()) {
             GoogleCloudMessaging gcm = GoogleCloudMessaging.getInstance(quizApp.getActivity());

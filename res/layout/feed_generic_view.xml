@@ -3,12 +3,12 @@
     android:id="@+id/item_wrapper"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:descendantFocusability="blocksDescendants"
     android:orientation="vertical"
-	android:descendantFocusability="blocksDescendants"
     android:paddingTop="5dp" >
 
     <LinearLayout
-	    android:id="@+id/item_wrapper_2"
+        android:id="@+id/item_wrapper_2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="left"
@@ -28,56 +28,64 @@
             android:src="@drawable/abc_ab_bottom_solid_dark_holo" />
 
         <LinearLayout
-            android:id="@+id/item_details"
+            android:id="@+id/content_and_badges"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_weight="0.8"
-            android:gravity="center_vertical"
             android:orientation="vertical" >
 
-            <com.amcolabs.quizapp.widgets.GothamTextView
-                android:id="@+id/title_name"
+            <LinearLayout
+                android:id="@+id/item_details"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Large Text"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:textSize="16sp"
-                android:textStyle="bold" />
+                android:layout_marginLeft="10dp"
+                android:layout_weight="0.8"
+                android:gravity="center_vertical"
+                android:orientation="vertical" >
 
-            <com.amcolabs.quizapp.widgets.GothamTextView
-                android:id="@+id/text_content_1"
+                <com.amcolabs.quizapp.widgets.GothamTextView
+                    android:id="@+id/title_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Large Text"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <com.amcolabs.quizapp.widgets.GothamTextView
+                    android:id="@+id/text_content_1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clickable="true"
+                    android:focusable="false"
+                    android:longClickable="false"
+                    android:maxLines="3"
+                    android:text=""
+                    android:textSize="18sp" />
+
+                <com.amcolabs.quizapp.widgets.GothamTextView
+                    android:id="@+id/text_content_2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.0"
+                    android:text=""
+                    android:textSize="12sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/badges_wrapper"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:clickable="true"
-                android:focusable="false"
-                android:longClickable="false"
-                android:maxLines="3"
-                android:text=""
-                android:textSize="18sp" />
+                android:layout_height="50dp"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:visibility="gone" >
 
-            <com.amcolabs.quizapp.widgets.GothamTextView
-                android:id="@+id/text_content_2"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.0"
-                android:text=""
-                android:textSize="12sp" />
-
+                <com.amcolabs.quizapp.widgets.FlowLayout
+                    android:id="@+id/userbadges"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" >
+                </com.amcolabs.quizapp.widgets.FlowLayout>
+            </LinearLayout>
         </LinearLayout>
-
     </LinearLayout>
 
-        <LinearLayout
-            android:id="@+id/badges_wrapper"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal" >
-            
-            <com.amcolabs.quizapp.widgets.FlowLayout
-            android:id="@+id/userbadges"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
-        </LinearLayout>
 </LinearLayout>
