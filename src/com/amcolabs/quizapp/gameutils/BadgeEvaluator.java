@@ -120,6 +120,9 @@ public class BadgeEvaluator {
 			}
 		}
 		
+		// TODO: Yet To implement custom badges
+		// Add to unlockedBadges as needed
+		
 		if(unlockedBadges.size()>0){
 			newBadgeUnlocked(unlockedBadges);
 		}
@@ -403,25 +406,6 @@ public class BadgeEvaluator {
 			}
 		}
 		else if(cond.equalsIgnoreCase("totalQuizCount")){
-			if(categoryFullChildState.get(index)<0){
-				if(quizFullChildState.get(index)<0){
-					return matchQuizListTotalQuizCount(quizList.get(index), value);
-				}
-			}
-			else if(categoryFullChildState.get(index)==0){
-				System.out.println("Not valid for TotalCount, recheck your condition");
-			}
-			else{
-				categoryCombinations=CommonFunctions.getCombinations(categoryList.get(index), categoryFullChildState.get(index), 0, new ArrayList<String>(),new ArrayList<ArrayList<String>>());
-				for(int i=0;i<categoryCombinations.size();i++){
-					state = matchQuizListTotalQuizCount(getQuizIdsOfCategories(categoryCombinations.get(i)), value);
-					if(state)
-						return true;
-				}
-			}
-		}
-		// TODO: Yet To implement
-		else if(cond.equalsIgnoreCase("QuizAnswerStack")){
 			if(categoryFullChildState.get(index)<0){
 				if(quizFullChildState.get(index)<0){
 					return matchQuizListTotalQuizCount(quizList.get(index), value);

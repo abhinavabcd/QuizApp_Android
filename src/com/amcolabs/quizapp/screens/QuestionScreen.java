@@ -216,6 +216,9 @@ public class QuestionScreen extends Screen implements View.OnClickListener, Anim
 		String[] mcqOptions = ques.getMCQOptions();
 		for(int i=0;i<questionOptionsViews.size();i++){
 			GothamButtonView opt = questionOptionsViews.get(i);
+			// TODO : get below hard coded values from config
+			if (mcqOptions[i].length()>30)
+				opt.setTextSize(7);
 			opt.setText(mcqOptions[i]);
 			opt.setTag(mcqOptions[i]);
 			opt.setTextColor(Color.BLACK);
