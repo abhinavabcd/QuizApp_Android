@@ -353,11 +353,15 @@ public class WinOrLoseScreen extends Screen{
 		int sz = quizList.size();
 		double userXp = 0;
 		double cuserXp = 0;
+		double maxuserXP = 0;
 		int myindex = 0;
 		
 		for (int i = 0; i < sz; i++) {
 			cuserXp = user.getPoints(quizList.get(i).quizId);
-			if (i<Config.PIE_CHART_MAX_FIELDS-1 && cuserXp>1){
+			if (maxuserXP < cuserXp)
+				maxuserXP = cuserXp;
+			// count is less than limit and values are moderately deviating 
+			if (i<Config.PIE_CHART_MAX_FIELDS-1 && cuserXp/maxuserXP>0.01){
 				userXp = cuserXp;
 				xVals.add(GameUtils.reduceString(quizList.get(i).name));
 				myindex = i;

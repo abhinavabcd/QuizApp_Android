@@ -163,7 +163,7 @@ public class FeedListItemAdaptor extends ArrayAdapter<Feed> {
 				Badge badge = quizApp.getDataBaseHelper().getBadgeById(badgeId);
 				ImageView temp = new ImageView(quizApp.getContext());
 				feedHolder.imagesLayout.addView(temp);
-				quizApp.getUiUtils().loadImageIntoView(quizApp.getContext(), temp, badge.getAssetPath(), true , quizApp.getUiUtils().dp2px(50),quizApp.getUiUtils().dp2px(50));
+				quizApp.getUiUtils().loadImageIntoView(quizApp.getContext(), temp, badge.getAssetPath(), true , quizApp.getUiUtils().dp2px(50),quizApp.getUiUtils().dp2px(50),null);
 			}
 			break;
 		default:

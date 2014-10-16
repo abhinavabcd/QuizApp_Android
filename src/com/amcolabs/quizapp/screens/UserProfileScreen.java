@@ -134,10 +134,13 @@ public class UserProfileScreen extends Screen {
 		List<String> qIdList = new ArrayList<String>();
 		double userXp = 0;
 		double cuserXp = 0;
+		double maxuserXP = 0;
 		int myindex = 0;
 		for (int i = 0; i < sz; i++) {
 			cuserXp = user.getPoints(quizList.get(i).quizId);
-			if (i<Config.PIE_CHART_MAX_FIELDS-1 && cuserXp>1){
+			if (maxuserXP < cuserXp)
+				maxuserXP = cuserXp;
+			if (i<Config.PIE_CHART_MAX_FIELDS-1 && cuserXp/maxuserXP>0.01){
 				userXp = cuserXp;
 				qIdList.add(quizList.get(i).quizId);
 				xVals.add(GameUtils.reduceString(quizList.get(i).name));
