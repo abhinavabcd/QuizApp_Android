@@ -1,6 +1,8 @@
 package com.amcolabs.quizapp.widgets;
 
 
+import java.util.ArrayList;
+
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
@@ -12,6 +14,7 @@ import android.widget.LinearLayout;
 import com.amcolabs.quizapp.QuizApp;
 import com.amcolabs.quizapp.R;
 import com.amcolabs.quizapp.User;
+import com.amcolabs.quizapp.databaseutils.Badge;
 import com.amcolabs.quizapp.uiutils.UiUtils;
 import com.amcolabs.quizapp.uiutils.UiUtils.UiText;
 import com.squareup.picasso.Picasso;
@@ -49,6 +52,17 @@ public class UserInfoCard extends LinearLayout implements Target,IViewType{
 		if(user.pictureUrl!=null){
 			Picasso.with(quizApp.getContext()).load(user.pictureUrl).into(imgView);
 		}
+		
+		FlowLayout badgesLayout = (FlowLayout)mainView.findViewById(R.id.userbadges);
+		
+		ArrayList<String>badgeIds = user.badges;
+		for(String badgeId : badgeIds){
+			Badge badge = quizApp.getDataBaseHelper().getBadgeById(badgeId);
+			ImageView temp = new ImageView(quizApp.getContext());
+			badgesLayout.addView(temp);
+			quizApp.getUiUtils().loadImageIntoView(quizApp.getContext(), temp, badge.getAssetPath(), true , quizApp.getUiUtils().dp2px(30),quizApp.getUiUtils().dp2px(30), null);
+		}
+
 		
 		addView(mainView);
 	}

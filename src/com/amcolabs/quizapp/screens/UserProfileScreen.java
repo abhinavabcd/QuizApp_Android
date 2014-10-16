@@ -22,6 +22,7 @@ import com.amcolabs.quizapp.User;
 import com.amcolabs.quizapp.adapters.GameEventsListItemAdaptor;
 import com.amcolabs.quizapp.adapters.QuizHistoryListAdapter;
 import com.amcolabs.quizapp.configuration.Config;
+import com.amcolabs.quizapp.databaseutils.Badge;
 import com.amcolabs.quizapp.databaseutils.GameEvents;
 import com.amcolabs.quizapp.databaseutils.LocalQuizHistory;
 import com.amcolabs.quizapp.databaseutils.Quiz;
@@ -30,6 +31,7 @@ import com.amcolabs.quizapp.gameutils.GameUtils;
 import com.amcolabs.quizapp.uiutils.UiUtils;
 import com.amcolabs.quizapp.uiutils.UiUtils.UiText;
 import com.amcolabs.quizapp.widgets.BarChartViewMultiDataset;
+import com.amcolabs.quizapp.widgets.FlowLayout;
 import com.amcolabs.quizapp.widgets.GothamTextView;
 import com.amcolabs.quizapp.widgets.PieChartView;
 import com.github.mikephil.charting.data.BarData;
@@ -38,6 +40,7 @@ import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
+import com.google.gson.reflect.TypeToken;
 
 public class UserProfileScreen extends Screen {
 	public GothamTextView wonTextView;
@@ -75,11 +78,20 @@ public class UserProfileScreen extends Screen {
  //       setSampleData(controller.getContext());
 
 		addView(userProfile);
-
+		FlowLayout badgesLayout = (FlowLayout) userProfile.findViewById(R.id.userbadges);
 		userName.setText(user.name);
 		getApp().getUiUtils().loadImageIntoView(getApp().getContext(), userImage, user.pictureUrl, false);
 		userStatusMessage.setText(user.getStatus());
 		userMoreInfo.setText(user.place);
+		
+		ArrayList<String>badgeIds = user.badges;
+		for(String badgeId : badgeIds){
+			Badge badge = getApp().getDataBaseHelper().getBadgeById(badgeId);
+			ImageView temp = new ImageView(getApp().getContext());
+			badgesLayout.addView(temp);
+			getApp().getUiUtils().loadImageIntoView(getApp().getContext(), temp, badge.getAssetPath(), true , getApp().getUiUtils().dp2px(30),getApp().getUiUtils().dp2px(30), null);
+		}
+
 		
 		drawUserQuizChartsAndUpdateStats(user);
 	}

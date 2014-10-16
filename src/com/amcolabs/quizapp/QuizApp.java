@@ -35,6 +35,7 @@ import com.amcolabs.quizapp.appcontrollers.BadgeScreenController;
 import com.amcolabs.quizapp.appcontrollers.ProfileAndChatController;
 import com.amcolabs.quizapp.appcontrollers.UserMainPageController;
 import com.amcolabs.quizapp.configuration.Config;
+import com.amcolabs.quizapp.databaseutils.ChatList;
 import com.amcolabs.quizapp.databaseutils.DatabaseHelper;
 import com.amcolabs.quizapp.datalisteners.DataInputListener;
 import com.amcolabs.quizapp.gameutils.BadgeEvaluator;
@@ -188,7 +189,13 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 				getStaticPopupDialogBoxes().yesOrNo(UiText.USER_SAYS.getValue(payload.fromUserName, payload.textMessage), UiText.START_CONVERSATION.getValue(""), UiText.OK.getValue(), new DataInputListener<Boolean>(){//opens popup
 					@Override
 					public String onData(Boolean s) {
-						if(s){
+						ChatList chatListItem = getDataBaseHelper().getChatListByUid(payload.fromUser);
+						if(chatListItem==null){
+							chatListItem = new ChatList(payload.fromUser, payload.textMessage, getConfig().getCurrentTimeStamp(), 0);
+						}
+
+						if(s){//load chat screen
+							chatListItem.unseenMessagesFlag=0;
 							getDataBaseHelper().getAllUsersByUid(Arrays.asList(payload.fromUser), new DataInputListener<Boolean>(){ // get user obj
 									@Override
 									public String onData(Boolean s) {
@@ -197,6 +204,10 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 									}
 							});
 						}
+						else{// add to pending messages
+							chatListItem.unseenMessagesFlag++;
+						}
+						getDataBaseHelper().updateChatList(chatListItem);// update in db
 						setNotificationProcessingState(NotifificationProcessingState.CONTINUE);
 						return super.onData(s);
 					}
@@ -234,7 +245,7 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 			((ViewGroup) tmp).removeView(screen);
 		}
 		mainFrame.addView(screen);
-		if(screen.showMenu()){
+		if(screen.showMenu() && menu!=null){
 			this.menu.setVisibility(View.VISIBLE);
 		}
 		else{
@@ -555,11 +566,16 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 		
 		switch(id){
 			case MENU_HOME:
-				if(screenStack.size()==2){ //remove all screens including the home screen
-					animateScreenRemove(screenStack.peek() , TO_RIGHT,null);//currenly appearing screen
-					animateScreenIn(screenStack.get(0),TO_RIGHT);
+				if(screenStack.size()==2 ){ //remove all screens including the home screen
+					if(screenStack.get(0).showOnBackPressed()){// not on first login welcomeScreen dirty fix
+						animateScreenRemove(screenStack.peek() , TO_RIGHT,null);//currenly appearing screen
+						animateScreenIn(screenStack.get(0),TO_RIGHT);
+						screenStack.get(0).refresh();
+					}
+					else{
+						screenStack.get(1).refresh();
+					}
 				}
-				screenStack.get(0).refresh();
 				currentActiveMenu = MENU_HOME;
 				break;
 			case MENU_MESSAGES:

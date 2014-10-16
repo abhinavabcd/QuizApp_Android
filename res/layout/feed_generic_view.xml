@@ -60,7 +60,7 @@
                     android:longClickable="false"
                     android:maxLines="3"
                     android:text=""
-                    android:textSize="18sp" />
+                    android:textSize="15sp" />
 
                 <com.amcolabs.quizapp.widgets.GothamTextView
                     android:id="@+id/text_content_2"

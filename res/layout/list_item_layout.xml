@@ -74,6 +74,7 @@
                 android:layout_height="match_parent"
                 android:gravity="center"
                 android:padding="5dp"
+                android:background="@color/green"
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:textStyle="bold" />
         </FrameLayout>

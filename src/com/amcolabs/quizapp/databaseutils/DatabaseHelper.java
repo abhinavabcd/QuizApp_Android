@@ -631,9 +631,9 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 		return tmp!=null?true:false;
     }
     
-    public void setRecentChat(String uid, String message , boolean unseen){
+    public void setRecentChat(String uid, String message , int unseen){
     	try {
-			getChatListDao().createOrUpdate(new ChatList(uid, message,Config.getCurrentTimeStamp() , unseen?ChatList.UNSEEN:ChatList.SEEN)); 
+			getChatListDao().createOrUpdate(new ChatList(uid, message,Config.getCurrentTimeStamp() , unseen)); 
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -641,7 +641,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
     }
     public List<ChatList> getUnseenChatList(String uid, String message , boolean unseen){
     	try {
-			return getChatListDao().queryBuilder().where().eq("unseenMessagesFlag", 1).query();
+			return getChatListDao().queryBuilder().where().ge("unseenMessagesFlag", 1).query();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -872,5 +872,24 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 			e.printStackTrace();
 		}
 		return new ArrayList<LocalQuizHistory>();
+	}
+
+	public void updateChatList(ChatList s) {
+		try {
+			getChatListDao().createOrUpdate(s);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	public ChatList getChatListByUid(String fromUser) {
+    	try {
+			return getChatListDao().queryBuilder().where().eq("uid", fromUser).queryForFirst();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    	return null;
 	}
 }

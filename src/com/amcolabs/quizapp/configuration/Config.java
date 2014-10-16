@@ -53,7 +53,7 @@ public class Config{
 	public static final String NOTIFICATION_KEY_MESSAGE_TYPE = "messageType";
 	public static final String NOTIFICATION_KEY_TEXT_MESSAGE = "message";
 	public static final String GOOGLE_PLUS_SERVER_CLIENT_ID = "591807556804-qltit1nk5rga581b5a2j6tuoogum0s79.apps.googleusercontent.com";
-	public static final long CLASH_SCREEN_DELAY = 3000;
+	public static final long CLASH_SCREEN_DELAY = 6000;
 	public static final long PREQUESTION_FADE_OUT_ANIMATION_TIME = 2000;
 	public static final long BOT_INTIALIZE_AFTER_NO_USER_TIME = 15000;
 	public static final long QUESTION_END_DELAY_TIME = 3000;

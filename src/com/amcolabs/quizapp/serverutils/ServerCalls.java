@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Random;
 
 import org.apache.http.Header;
@@ -520,9 +521,19 @@ public class ServerCalls {
 						if(response.payload8!=null){
 							// this is users list of conversed people
 							List<String> uids = quizApp.getConfig().getGson().fromJson(response.payload8, new TypeToken<List<String>>(){}.getType());
-							for(String uid : uids){
-								quizApp.getDataBaseHelper().setRecentChat(uid, null, false);//just 
+							HashMap<String , Integer> uidUnseenMessages = new HashMap<String, Integer>();
+							for(String uid : uids){ 
+								if(uidUnseenMessages.containsKey(uid)){
+									uidUnseenMessages.put(uid, uidUnseenMessages.get(uid)+1);
+								}
+								else{
+									uidUnseenMessages.put(uid, 1);
+								}
 							}
+							for(Entry<String, Integer> uid: uidUnseenMessages.entrySet()){
+								quizApp.getDataBaseHelper().setRecentChat(uid.getKey(), null, uid.getValue());//just 
+							}
+							
 						}
 						onFinishListener.onData(userFeeds, inboxMessages, offlineChallenges, true);
 						break;
@@ -780,7 +791,7 @@ public class ServerCalls {
 						return;
 				}
 			}
-		}, true);
+		}, false);
 	}
 
 

@@ -104,6 +104,7 @@ public class QuestionScreen extends Screen implements View.OnClickListener, Anim
 		preQuestionText3 = (TextView) preQuestionView.findViewById(R.id.textView3);
 		onQuestionTimeEnd = new DataInputListener<Boolean>(){
 			public String onData(Boolean s) {
+				isOptionSelected = true;
 				return pQuizController.onNoAnswer(currentQuestion);
 			};
 		};
