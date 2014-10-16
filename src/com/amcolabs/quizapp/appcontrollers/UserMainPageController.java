@@ -127,7 +127,6 @@ public class UserMainPageController  extends AppController{
 	
 	
 	
-	HomeScreen homeScreen = null;
 	private DataInputListener<User> loginListener;
 	private void showUserHomeScreen(final List<Feed> feeds) {
 		GCMRegistrar.checkDevice(quizApp.getActivity());
@@ -167,7 +166,7 @@ public class UserMainPageController  extends AppController{
 		
 		
 		clearScreen();
-		homeScreen= new HomeScreen(this);
+		final HomeScreen homeScreen = new HomeScreen(this);
 //		ArrayList<Category> categories = new ArrayList<Category>();
 //		for(int i=0;i<10;i++){
 //			categories.add(Category.createDummy());
@@ -197,12 +196,12 @@ public class UserMainPageController  extends AppController{
 				@Override
 				public String onData(Boolean s) {
 					homeScreen.addOfflineChallengesView(offlineChallenges, offlineChallenges.size()>6, UiText.OFFLINE_CHALLENGES.getValue() , true);
-					preProcessAndAddFeeds(feeds);
+					preProcessAndAddFeeds(homeScreen , feeds);
 					return null;
 				}
 			});
 		}else{
-			preProcessAndAddFeeds(feeds);
+			preProcessAndAddFeeds(homeScreen , feeds);
 		}
 		
 		
@@ -220,7 +219,7 @@ public class UserMainPageController  extends AppController{
 	}
 
 
-    private void preProcessAndAddFeeds(final List<Feed> feeds) {
+    private void preProcessAndAddFeeds(final HomeScreen homeScreen , final List<Feed> feeds) {
 		if(feeds!=null){
 			feedPreprocessedCount = feeds.size();
 			List<String> uidsList = new ArrayList<String>();
@@ -246,7 +245,7 @@ public class UserMainPageController  extends AppController{
 											quizApp.getDataBaseHelper().updateOfflineChallenge(offlineChallenge);
 											quizApp.getStaticPopupDialogBoxes().showChallengeWinDialog(offlineChallenge);
 										}
-										feedItemProcessed(feeds , feed);
+										feedItemProcessed(homeScreen , feeds , feed);
 										return null;
 									}
 								}, true); 
@@ -258,7 +257,7 @@ public class UserMainPageController  extends AppController{
 						case FEED_USER_WON:
 							break;
 						case FEED_USER_WON_BADGES:
-							feedItemProcessed(feeds , feed);
+							feedItemProcessed(homeScreen , feeds , feed);
 							break;
 						}
 					} 
@@ -270,7 +269,7 @@ public class UserMainPageController  extends AppController{
 
 	}
 
-	protected void feedItemProcessed(List<Feed> feeds, Feed feed) {
+	protected void feedItemProcessed(HomeScreen homeScreen , List<Feed> feeds, Feed feed) {
 		--feedPreprocessedCount;
 		if(feedPreprocessedCount<1)
 			homeScreen.addFeedView(feeds, UiText.USER_FEED.getValue());

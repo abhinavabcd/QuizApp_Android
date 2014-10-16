@@ -1,4 +1,4 @@
-package com.amcolabs.quizapp.adapters;
+package com.amcolabs.quizapp.screens;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,6 +15,7 @@ import com.amcolabs.quizapp.AppController;
 import com.amcolabs.quizapp.R;
 import com.amcolabs.quizapp.Screen;
 import com.amcolabs.quizapp.User;
+import com.amcolabs.quizapp.adapters.ChatListAdapter;
 import com.amcolabs.quizapp.appcontrollers.ProfileAndChatController;
 import com.amcolabs.quizapp.databaseutils.ChatList;
 import com.amcolabs.quizapp.datalisteners.DataInputListener;

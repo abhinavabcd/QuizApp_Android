@@ -12,7 +12,6 @@ import com.amcolabs.quizapp.QuizApp;
 import com.amcolabs.quizapp.User;
 import com.amcolabs.quizapp.adapters.ChatListAdapter;
 import com.amcolabs.quizapp.adapters.GameEventsListItemAdaptor;
-import com.amcolabs.quizapp.adapters.UserChatListScreen;
 import com.amcolabs.quizapp.configuration.Config;
 import com.amcolabs.quizapp.databaseutils.ChatList;
 import com.amcolabs.quizapp.databaseutils.GameEvents;
@@ -26,6 +25,7 @@ import com.amcolabs.quizapp.notificationutils.NotificationReciever.NotificationP
 import com.amcolabs.quizapp.notificationutils.NotificationReciever.NotificationType;
 import com.amcolabs.quizapp.screens.ChatScreen;
 import com.amcolabs.quizapp.screens.SelectFriendsScreen;
+import com.amcolabs.quizapp.screens.UserChatListScreen;
 import com.amcolabs.quizapp.screens.UserProfileScreen;
 import com.amcolabs.quizapp.uiutils.UiUtils.UiText;
 /**
@@ -35,7 +35,6 @@ import com.amcolabs.quizapp.uiutils.UiUtils.UiText;
  */
 public class ProfileAndChatController extends AppController {
 
-	private UserProfileScreen profileScreen;
 	private DataInputListener<NotificationPayload> gcmListener;
 	private List<ChatList> chatList;
 	protected DataInputListener<NotificationPayload> oldMessageListener;
@@ -56,7 +55,7 @@ public class ProfileAndChatController extends AppController {
 	
 	public void showProfileScreen(final User user){
 		clearScreen();
-		profileScreen = new UserProfileScreen(this);
+		final UserProfileScreen profileScreen = new UserProfileScreen(this);
 		profileScreen.showUser(user);
 		if(user.uid.equalsIgnoreCase(quizApp.getUser().uid)){
 			

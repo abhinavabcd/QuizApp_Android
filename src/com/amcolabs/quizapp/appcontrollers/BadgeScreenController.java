@@ -1,13 +1,11 @@
-package com.amcolabs.quizapp.screens;
+package com.amcolabs.quizapp.appcontrollers;
 
 import com.amcolabs.quizapp.AppController;
 import com.amcolabs.quizapp.QuizApp;
 import com.amcolabs.quizapp.databaseutils.Badge;
+import com.amcolabs.quizapp.screens.BadgeScreen;
 
 public class BadgeScreenController extends AppController{
-
-	BadgeScreen badgeScreen;
-	
 	public BadgeScreenController(QuizApp quizApp) {
 		super(quizApp);
 		
@@ -25,7 +23,7 @@ public class BadgeScreenController extends AppController{
 
 	public void showBadgeScreen() {
 		clearScreen();
-		badgeScreen = new BadgeScreen(this);
+		BadgeScreen badgeScreen = new BadgeScreen(this);
 		insertScreen(badgeScreen);
 	}
 }

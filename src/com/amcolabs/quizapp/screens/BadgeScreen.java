@@ -12,6 +12,7 @@ import android.widget.GridView;
 import com.amcolabs.quizapp.R;
 import com.amcolabs.quizapp.Screen;
 import com.amcolabs.quizapp.adapters.BadgeListAdapter;
+import com.amcolabs.quizapp.appcontrollers.BadgeScreenController;
 import com.amcolabs.quizapp.databaseutils.Badge;
 
 public class BadgeScreen extends Screen implements OnItemClickListener{
