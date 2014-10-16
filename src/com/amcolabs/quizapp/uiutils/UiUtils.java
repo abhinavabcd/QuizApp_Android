@@ -194,7 +194,11 @@ public class UiUtils {
 		OFFLINE_CHALLENGE_FROM("%s challenge"),
 		NEW_TEXT_AVAILABLE("Open to Check for Updates"), USER_WAITING_FOR_CHALLENGE("%s wants a challenge with you in %s "),
 		LIVE_CHALLENGE("Live Challenge"), USER_SAYS("%s says:\n %s"),
-		HAS_UNLOCKED_A_BADGE("Has Unlocked a Badge");	
+		HAS_UNLOCKED_A_BADGE("Has Unlocked a Badge"), 
+		USER_DOWNLOADING_ASSETS_WAITING("Waiting for other user to download assets"),
+		DOWNLOADING_QUESTIONS_AND_ASSETS("Downloading quesitons and assets"),
+		LOADING_QUESTIONS("Loading questions and assets"),
+		CHECKING_IF_USER_IS_STILL_WAITING("Checking if user is still waiting");	
 		
 		String value = null;
 		UiText(String value){
@@ -435,10 +439,10 @@ public class UiUtils {
 	}        
 	
 	public boolean loadImageIntoView(Context ctx , final ImageView imgView, final String assetPath , final boolean downloadToAssets){
-			return loadImageIntoView(ctx , imgView,  assetPath , downloadToAssets , -1 , -1);
+			return loadImageIntoView(ctx , imgView,  assetPath , downloadToAssets , -1 , -1 , null);
 	}
 	
-	public boolean loadImageIntoView(Context ctx , final ImageView imgView, final String assetPath , final boolean downloadToAssets ,int width , int height ){
+	public boolean loadImageIntoView(Context ctx , final ImageView imgView, final String assetPath , final boolean downloadToAssets ,int width , int height , DataInputListener<Boolean> completedLoadingImage){
 		if(assetPath==null || assetPath.isEmpty())
 			return false;
 		try{
@@ -463,8 +467,8 @@ public class UiUtils {
 				Picasso.with(ctx).load(file).fit().centerCrop().into(imgView);
 			}
 			else{
-				if(downloadToAssets){//from cdn
-					imgView.setTag(new LoadAndSave(imgView, file, assetPath, downloadToAssets));
+				if(downloadToAssets){//from cdn 
+					imgView.setTag(new LoadAndSave(imgView, file, assetPath, downloadToAssets, completedLoadingImage));
 					if(width>0 && height>0)
 						Picasso.with(ctx).load(ServerCalls.CDN_IMAGES_PATH+assetPath).error(R.drawable.error_image).resize(width , height).into((LoadAndSave)imgView.getTag());
 				}

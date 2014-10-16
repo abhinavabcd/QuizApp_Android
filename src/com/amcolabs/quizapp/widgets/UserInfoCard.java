@@ -20,9 +20,12 @@ import com.squareup.picasso.Target;
 
 public class UserInfoCard extends LinearLayout implements Target,IViewType{
 	private LinearLayout moreInfoWrapper;
+	private User user;
+	private GothamTextView debugTextView;
 
 	public UserInfoCard(final QuizApp quizApp, String bgAssetPath, User user) {
 		this(quizApp, bgAssetPath, user, false, false, Gravity.CENTER);
+		this.setUser(user);
 	}
 
 	public UserInfoCard(final QuizApp quizApp, String bgAssetPath, User user, boolean left,boolean smaller , int gravity) {
@@ -41,7 +44,7 @@ public class UserInfoCard extends LinearLayout implements Target,IViewType{
 		GothamTextView statusMsg = (GothamTextView)mainView.findViewById(R.id.user_status_msg);
 		statusMsg.setText(user.getStatus());
 		moreInfoWrapper = (LinearLayout)mainView.findViewById(R.id.level_more_info);
-		
+		debugTextView = (GothamTextView)mainView.findViewById(R.id.user_more_info);
 		name.setText(user.name);
 		if(user.pictureUrl!=null){
 			Picasso.with(quizApp.getContext()).load(user.pictureUrl).into(imgView);
@@ -79,5 +82,17 @@ public class UserInfoCard extends LinearLayout implements Target,IViewType{
 	public ViewType getViewType() {
 		// TODO Auto-generated method stub
 		return ViewType.USER_INFO_CARD;
+	}
+
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
+	}
+
+	public void setDebugText(String text) {
+		debugTextView.setText(text);
 	}
 }

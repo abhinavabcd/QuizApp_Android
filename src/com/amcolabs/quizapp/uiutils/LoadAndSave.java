@@ -8,6 +8,7 @@ import android.graphics.Bitmap.CompressFormat;
 import android.graphics.drawable.Drawable;
 import android.widget.ImageView;
 
+import com.amcolabs.quizapp.datalisteners.DataInputListener;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Picasso.LoadedFrom;
 import com.squareup.picasso.Target;
@@ -18,18 +19,20 @@ public class LoadAndSave implements Target {
 	private boolean downloadToAssets;
 	private File saveImageFile;
 	private String assetPath;
+	private DataInputListener<Boolean> completedLoadingImage;
 
-	public LoadAndSave(ImageView imgView, File file,  String assetPath , boolean downloadToAssets) {
+	public LoadAndSave(ImageView imgView, File file,  String assetPath , boolean downloadToAssets, DataInputListener<Boolean> completedLoadingImage) {
 		this.imgView =imgView;
 		this.downloadToAssets = downloadToAssets;
 		this.saveImageFile = file;
 		this.assetPath = assetPath;
+		this.completedLoadingImage = completedLoadingImage;
 	}
 
 	@Override
 	public void onBitmapFailed(Drawable arg0) {
-		// TODO Auto-generated method stub
-
+		if(completedLoadingImage!=null)
+			completedLoadingImage.onData(false);
 	}
 
 	@Override
@@ -54,6 +57,8 @@ public class LoadAndSave implements Target {
 			            }).start();
 	            }
 	            imgView.setImageBitmap(bitmap);
+	            if(completedLoadingImage!=null)
+	            	completedLoadingImage.onData(true);
 	}
 
 	@Override

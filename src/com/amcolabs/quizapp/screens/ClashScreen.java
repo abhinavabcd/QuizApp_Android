@@ -10,6 +10,7 @@ import com.amcolabs.quizapp.User;
 import com.amcolabs.quizapp.appcontrollers.ProgressiveQuizController;
 import com.amcolabs.quizapp.databaseutils.Quiz;
 import com.amcolabs.quizapp.widgets.ChallengeView;
+import com.amcolabs.quizapp.widgets.GothamTextView;
 import com.amcolabs.quizapp.widgets.UserInfoCard;
 import com.amcolabs.quizapp.widgets.WaitingForUserView;
 
@@ -27,6 +28,7 @@ public class ClashScreen extends Screen {
 	}
 	
 	ArrayList<View> userInfoViews = new ArrayList<View>();
+	private UserInfoCard currentUserInfoView;
 	
 	public void updateClashScreen(User user ,Quiz quiz,  int index){
 		updateClashScreen(user, quiz , index, new WaitingForUserView(getApp()));	
@@ -42,9 +44,12 @@ public class ClashScreen extends Screen {
 //			userInfoCard.addLevelIndicator(getApp(), user.getPoints(quiz.quizId)!=0?user.getPoints(quiz.quizId):100);
 			userInfoCard.addLevelIndicator(getApp(), user.getPoints(quiz.quizId));
 			userInfoViews.add(userInfoCard);
+			if(user.uid.equalsIgnoreCase(getApp().getUser().uid)){
+				currentUserInfoView = userInfoCard;
+			}
 			addView(userInfoCard, index);
 		}
-		else{
+		else{//updating the users cards
 			userInfoViews.get(index).setVisibility(View.GONE);
 			UserInfoCard userInfoCard = new UserInfoCard(getApp(), null,user);
 			userInfoViews.set(index,userInfoCard); 
@@ -55,6 +60,13 @@ public class ClashScreen extends Screen {
 		for(int i=userInfoViews.size();i<clashCount;i++){
 			userInfoViews.add(waitingView);
 			this.addView(waitingView,i);
+		}
+	}
+
+	GothamTextView debugView = null;
+	public void setCurrentUserDebugText(String text){
+		if(currentUserInfoView!=null){
+			currentUserInfoView.setDebugText(text);
 		}
 	}
 	

@@ -48,6 +48,10 @@ public class DataInputListener<T> implements IDataInputListener<T> {
 		return null;
 	}
 	@Override
+	public String onData(T s, int a) {
+		return null;
+	}
+	@Override
 	public Object onDataReturnObj(T s){
 		return null;
 	}

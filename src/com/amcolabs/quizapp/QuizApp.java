@@ -648,7 +648,7 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 			menuItems = new HashMap<Integer, UiUtils.UiText>();
 			menuItems.put(QuizApp.MENU_HOME, UiText.HOME);
 			menuItems.put(QuizApp.MENU_BADGES,UiText.BADGES);
-			menuItems.put(QuizApp.MENU_ALL_QUIZZES, UiText.SHOW_QUIZZES);
+//			menuItems.put(QuizApp.MENU_ALL_QUIZZES, UiText.SHOW_QUIZZES);
 			menuItems.put(QuizApp.MENU_CHATS,UiText.CHATS);
 			menuItems.put(QuizApp.MENU_FRIENDS, UiText.FRIENDS);
 		}

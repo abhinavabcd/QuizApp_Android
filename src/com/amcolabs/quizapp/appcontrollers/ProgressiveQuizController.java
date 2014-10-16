@@ -41,6 +41,7 @@ import com.amcolabs.quizapp.widgets.ChallengeView;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.annotations.SerializedName;
 import com.google.gson.reflect.TypeToken;
+import com.squareup.picasso.Picasso;
 
 public class ProgressiveQuizController extends AppController{
 	public static enum QuizMode{
@@ -113,10 +114,10 @@ public class ProgressiveQuizController extends AppController{
 		clashingScreen = new ClashScreen(this);
 		clashingScreen.setClashCount(2); 
 		clashingScreen.updateClashScreen(quizApp.getUser()/*quizApp.getUser()*/,quiz, 0);//TODO: change to quizApp.getUser()
+		clashingScreen.setCurrentUserDebugText(UiText.CHECKING_IF_USER_IS_STILL_WAITING.getValue());
 		insertScreen(clashingScreen);
 		quizApp.getServerCalls().startProgressiveQuiz(this, quiz, RANDOM_USER_TYPE, null , serverId);
 	}	
-
 	
 	public int getMaxScore(){
 		if(currentQuestions==null || currentQuestions.size()==0)
@@ -129,18 +130,6 @@ public class ProgressiveQuizController extends AppController{
 	}
 	
 	public void showQuestionScreen(ArrayList<User> users){
-		for(User user: currentUsers){
-			int index = 0;
-			if(!user.uid.equalsIgnoreCase(quizApp.getUser().uid)){
-				try{
-					clashingScreen.updateClashScreen(user, quiz, ++index);
-				}
-				catch(NullPointerException e){
-					e.printStackTrace();
-				}
-			}
-		}
-
 		//pre download assets if ever its possible
 		questionScreen = new QuestionScreen(this);
 		questionScreen.showUserInfo(users,getMaxScore()); //load user info
@@ -472,8 +461,25 @@ public class ProgressiveQuizController extends AppController{
 	    	case GET_NEXT_QUESTION://client trigger
 	    		break; 
 	    	case STARTING_QUESTIONS:// start questions // user finalised
+				showQuestionScreen(currentUsers); 
+				break;
+
+	    	case LOAD_QUESTIONS:
 	    		noResponseFromServer = false;
-	    		startQuestions(response);
+	    		loadQuestionsAndUsers(response , new DataInputListener<Boolean>(){
+					@Override
+					public String onData(Boolean fullLoaded , int progress) {
+						if(fullLoaded){
+							serverSocket.sendTextMessage(constructSocketMessage(MessageType.USER_READY, null,null));
+							//TODO:UPDATE CLASHING SCREEN , SAYING WAITING FOR OTHER USER
+							clashingScreen.setCurrentUserDebugText(UiText.USER_DOWNLOADING_ASSETS_WAITING.getValue());
+						}
+						else{
+							clashingScreen.setCurrentUserDebugText(UiText.DOWNLOADING_QUESTIONS_AND_ASSETS.getValue());
+						}
+						return super.onData(fullLoaded);
+					}
+				});
 	    		break;
 	    	case ANNOUNCING_WINNER:
 	    		validateAndShowWinningScreen(false);
@@ -506,11 +512,23 @@ public class ProgressiveQuizController extends AppController{
 	    		quizApp.getServerCalls().informActivatingBot(quiz, serverSocket.serverId); 
 	    		setQuizMode(QuizMode.BOT_MODE);
 	    		serverSocket.disconnect();
-	    		startQuestions(response);
-	    		break;
-	    	case START_QUESTIONS:
-	    		startQuestions(response);
+	    		loadQuestionsAndUsers(response , new DataInputListener<Boolean>(){
+					@Override
+					public String onData(Boolean fullLoaded , int progress) {
+						if(fullLoaded)
+							showQuestionScreen(currentUsers);//load questions directly
+						else{
+							//TODO:UPDATE CLASHING SCREEN , SAYING percentage of question assets loaded
+						}
+						return super.onData(fullLoaded);
+					}
+				});
+				clashingScreen.setCurrentUserDebugText(UiText.LOADING_QUESTIONS.getValue());
+
 	    		break; 
+//	    	case START_QUESTIONS:
+//	    		startQuestions(response);
+//	    		break; 
 	    	case REMATCH_REQUEST: 
 	    		User user = quizApp.cachedUsers.get(response.payload);
 	    		rematchDialog  = quizApp.getStaticPopupDialogBoxes().yesOrNo(UiText.USER_WANTS_REMATCH.getValue(user.name), UiText.CHALLENGE.getValue() , UiText.EXIT.getValue() , new DataInputListener<Boolean>(){
@@ -545,10 +563,23 @@ public class ProgressiveQuizController extends AppController{
 	    	case OK_CHALLENGE_WITHOUT_OPPONENT:
 				setQuizMode(QuizMode.CHALLENGE_MODE);
 				quizMode.setId(response.payload3);
-				startQuestions(response);
+				loadQuestionsAndUsers(response, new DataInputListener<Boolean>(){
+					@Override
+					public String onData(Boolean fullLoaded , int progress) {
+						if(fullLoaded)
+							showQuestionScreen(currentUsers);
+						else{
+							//TODO:UPDATE CLASHING SCREEN , SAYING percentage of question assets loaded
+						}
+						return super.onData(fullLoaded);
+					}
+				});
+				clashingScreen.setCurrentUserDebugText(UiText.LOADING_QUESTIONS.getValue());
 				gracefullyCloseSocket();
 				break;
-
+	    	case USER_READY:
+	    		User greenUser = quizApp.cachedUsers.get(response.payload);
+	    		break;
 			default:
 				break;
 		}
@@ -576,7 +607,7 @@ public class ProgressiveQuizController extends AppController{
 	}
 
 
-	private void startQuestions(ServerResponse response) {
+	private void loadQuestionsAndUsers(ServerResponse response, DataInputListener<Boolean> questionsLoadedListener) {
 		currentQuestions = quizApp.getConfig().getGson().fromJson(response.payload2, new TypeToken<List<Question>>(){}.getType());
 		try{
 			currentUsers = quizApp.getConfig().getGson().fromJson(response.payload1, new TypeToken<List<User>>(){}.getType());
@@ -599,10 +630,36 @@ public class ProgressiveQuizController extends AppController{
 			return;
 		}
 		quizApp.cacheUsersList(currentUsers);
-		showQuestionScreen(currentUsers);
+		
+		for(User user: currentUsers){
+			int index = 0;
+			if(!user.uid.equalsIgnoreCase(quizApp.getUser().uid)){
+				try{
+					clashingScreen.updateClashScreen(user, quiz, ++index);
+				}
+				catch(NullPointerException e){
+					e.printStackTrace();
+				}
+			}
+		}
+
+
+		preProcessQuestions(currentQuestions, questionsLoadedListener);
 	}
 	
 	
+	private void preProcessQuestions(final List<Question> currentQuestions, final DataInputListener<Boolean> questionsLoadedListener){
+		// load all assets prior to game 
+		for(int i=0;i<currentQuestions.size();i++){
+			List<String> assets = currentQuestions.get(i).getAssetPaths();
+			if(assets.size()>0){
+				Picasso.with(quizApp.getContext()).load(assets.get(0)).fetch();//warm up
+			}
+		}
+		questionsLoadedListener.onData(true, 100);// full loaded and precentage
+	}
+
+
 	private void startQuestions(List<Question> questions){
 		currentQuestions = questions;
 		if(checkAndRemoveDuplicateUsers(currentUsers)){

@@ -18,6 +18,7 @@ public interface IDataInputListener<T> extends OnClickListener,OnLongClickListen
 	public String onData3(T s1,int s2, String s3);
 	Object onDataReturnObj(T s);
 	String onDataObject(Object s);
+	String onData(T s, int a);
 
 	
 	//onclick method too

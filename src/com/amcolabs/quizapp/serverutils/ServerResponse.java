@@ -72,7 +72,7 @@ public class ServerResponse {
 				ANNOUNCING_WINNER ( 4),
 				USER_DISCONNECTED ( 5),
 				NEXT_QUESTION (6),
-				START_QUESTIONS ( 7),
+//				START_QUESTIONS ( 7),
 				STATUS_WHAT_USER_GOT (8), 
 				ACTIVATE_BOT(9),
 				REMATCH_REQUEST(10),
@@ -81,7 +81,10 @@ public class ServerResponse {
 				START_CHALLENGE_NOW (14),
 				OK_CHALLENGE_WITHOUT_OPPONENT(15),
 				OK_ACTIVATING_BOT(16),
-				USER_HAS_LEFT_POOL(17);
+				USER_HAS_LEFT_POOL(17),
+				USER_READY(18),
+				LOAD_QUESTIONS(19);
+
 		private int value;
 		
 		private MessageType(int value){

@@ -18,7 +18,7 @@ public class Question {
 	@DatabaseField
     public String questionDescription; // question description in json , contains image links
 	@DatabaseField
-    public List<String> pictures; // comma seperated paths
+    private List<String> pictures; // comma seperated paths
 	@DatabaseField
     public String options; //json
 	@DatabaseField
@@ -33,7 +33,17 @@ public class Question {
     public int xp;
 	
 	public List<String> getAssetPaths(){
-		return pictures==null?new ArrayList<String>():pictures;
+		if(pictures==null)
+			return new ArrayList<String>(); 
+		else{
+			for(int i=0;i <pictures.size();i++){
+				String url = pictures.get(i);
+				if(url==null || url.trim().isEmpty()){
+					pictures.remove(i);
+				}
+			}
+			return pictures;
+		}
 	}
 	
 	public static enum QuestionType{
