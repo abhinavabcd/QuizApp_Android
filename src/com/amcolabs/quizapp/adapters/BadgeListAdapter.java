@@ -48,12 +48,12 @@ public class BadgeListAdapter extends ArrayAdapter<Badge>{
     	}
     	Badge currentBadge = getItem(position);
     	quizApp.getUiUtils().loadImageIntoView(quizApp.getContext(), holder.badgeImage, currentBadge.getAssetPath(), true);
-//    	if(quizApp.getUser().badges!=null && quizApp.getUser().badges.contains(currentBadge.getBadgeId())){
-//    		holder.badgeImage.setAlpha(1.0f);
-//    	}
-//    	else{
-//    		holder.badgeImage.setAlpha(0.5f);
-//    	}
+    	if(quizApp.getUser().badges!=null && quizApp.getUser().badges.contains(currentBadge.getBadgeId())){
+    		holder.badgeImage.setAlpha(1.0f);
+    	}
+    	else{
+    		holder.badgeImage.setAlpha(0.8f);
+    	}
     	holder.badgeName.setText(currentBadge.getName());
     	holder.badgeName.setTextColor(quizApp.getConfig().getUniqueThemeColor(currentBadge.getName()));
     	holder.badgeDesc.setText(currentBadge.getDescription());

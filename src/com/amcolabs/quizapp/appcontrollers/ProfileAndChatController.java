@@ -36,7 +36,6 @@ import com.amcolabs.quizapp.uiutils.UiUtils.UiText;
 public class ProfileAndChatController extends AppController {
 
 	private DataInputListener<NotificationPayload> gcmListener;
-	private List<ChatList> chatList;
 	protected DataInputListener<NotificationPayload> oldMessageListener;
 
 	public ProfileAndChatController(QuizApp quizApp) {
@@ -117,12 +116,7 @@ public class ProfileAndChatController extends AppController {
 						if(payload.fromUser.equalsIgnoreCase(user2.uid)){
 							 String messageText = payload.textMessage;
 							chatScreen.addMessage(false, -1 ,messageText);
-							try {
-								quizApp.getDataBaseHelper().getChatListDao().createOrUpdate(new ChatList(user2.uid,messageText , Config.getCurrentTimeStamp(), ChatList.UNSEEN));
-							} catch (SQLException e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
-							}
+							quizApp.getDataBaseHelper().updateChatList(new ChatList(user2.uid,messageText , Config.getCurrentTimeStamp(), 0));
 						}
 						return null;
 					}
@@ -144,12 +138,7 @@ public class ProfileAndChatController extends AppController {
 			@Override
 			public String onData(Boolean s) {
 				if(s){
-					try {
-						quizApp.getDataBaseHelper().getChatListDao().createOrUpdate(new ChatList(user2.uid,string , Config.getCurrentTimeStamp(), ChatList.UNSEEN));
-					} catch (SQLException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
+					quizApp.getDataBaseHelper().updateChatList(new ChatList(user2.uid,string , Config.getCurrentTimeStamp(), 0));
 				}
 				return super.onData(s);
 			}
@@ -169,7 +158,7 @@ public class ProfileAndChatController extends AppController {
 
 	public void showChatScreen() {
 		clearScreen();
-		chatList = quizApp.getDataBaseHelper().getAllChatList();
+		final List<ChatList> chatList = quizApp.getDataBaseHelper().getAllChatList();
 		HashMap<String , Boolean > uidHash = new HashMap<String, Boolean>();
 		for(ChatList item : chatList){
 			uidHash.put(item.uid , true);
@@ -177,7 +166,7 @@ public class ProfileAndChatController extends AppController {
 		for(String uid : quizApp.getUser().getSubscribedTo()){
 			if(!uidHash.containsKey(uid)){
 				uidHash.put(uid, true);
-				chatList.add(new ChatList(uid, "", 0 , ChatList.SEEN));
+				chatList.add(new ChatList(uid, "", 0 , 0));
 			}
 		}
 		List<String> uidsList = new ArrayList<String>(uidHash.keySet());
@@ -190,8 +179,8 @@ public class ProfileAndChatController extends AppController {
 					new DataInputListener2<ChatList, User , Void, Void>(){
 						@Override
 						public void onData(ChatList s , User u , Void v1 , Void v2) {
-							ProfileAndChatController.this.loadChatScreen(u, -1);
-							return;
+							s.unseenMessagesFlag = 0;
+							quizApp.getDataBaseHelper().updateChatList(s);//remove unseen messages as you are viewing now
 						}
 					});
 					UserChatListScreen chatListScreen = new UserChatListScreen(ProfileAndChatController.this);

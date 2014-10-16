@@ -43,6 +43,7 @@ public  class CategoryItemListAdapter extends ArrayAdapter<Category>{
 				holder.categoryName = (GothamTextView) convertView.findViewById(R.id.category_item_name);
 				holder.shortCategoryDescription = (GothamTextView) convertView.findViewById(R.id.category_short_name);
 				holder.additionalText = (GothamTextView) convertView.findViewById(R.id.additional_text);
+				holder.additionalText.setVisibility(View.GONE);
 				convertView.setTag(holder);
 				if(clickListener!=null)
 					convertView.setOnClickListener(new OnClickListener() {

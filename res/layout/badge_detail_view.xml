@@ -40,7 +40,6 @@
         android:layout_width="80dp"
         android:layout_height="80dp"
         android:layout_margin="10dp"
-        android:background="@color/white"
         android:src="@drawable/ic_launcher" />
 
     <com.amcolabs.quizapp.widgets.GothamTextView
