@@ -84,7 +84,7 @@ public class UserProfileScreen extends Screen {
 		userStatusMessage.setText(user.getStatus());
 		userMoreInfo.setText(user.place);
 		
-		ArrayList<String>badgeIds = user.badges;
+		ArrayList<String>badgeIds = user.getBadges();
 		for(String badgeId : badgeIds){
 			Badge badge = getApp().getDataBaseHelper().getBadgeById(badgeId);
 			ImageView temp = new ImageView(getApp().getContext());

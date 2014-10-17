@@ -34,7 +34,7 @@ public class User {
 	private String status;
 	public String googlePlus;
 	public String facebook;
-	public ArrayList<String> badges;
+	private ArrayList<String> badges;
 	public HashMap<String,Integer> stats;
 	public HashMap<String, Integer[]> winsLosses;
 	private int userType = 0;
@@ -203,6 +203,14 @@ public class User {
 	
 	public void setName(String name){
 		this.name = name;
+	}
+
+	public ArrayList<String> getBadges() {
+		return badges==null? new ArrayList<String>():badges;
+	}
+
+	public void setBadges(ArrayList<String> badges) {
+		this.badges = badges;
 	}
 
 }

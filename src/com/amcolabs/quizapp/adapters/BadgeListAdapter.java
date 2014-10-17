@@ -50,7 +50,7 @@ public class BadgeListAdapter extends ArrayAdapter<Badge>{
     	}
     	Badge currentBadge = getItem(position);
     	quizApp.getUiUtils().loadImageIntoView(quizApp.getContext(), holder.badgeImage, currentBadge.getAssetPath(), true);
-    	if(quizApp.getUser().badges!=null && quizApp.getUser().badges.contains(currentBadge.getBadgeId())){
+    	if(quizApp.getUser().getBadges()!=null && quizApp.getUser().getBadges().contains(currentBadge.getBadgeId())){
     		holder.badgeImage.setAlpha(1.0f);
     		holder.isLockedText.setText("");
     	}
