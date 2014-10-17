@@ -55,7 +55,7 @@ public class UserInfoCard extends LinearLayout implements Target,IViewType{
 		
 		FlowLayout badgesLayout = (FlowLayout)mainView.findViewById(R.id.userbadges);
 		
-		ArrayList<String>badgeIds = user.badges;
+		ArrayList<String>badgeIds = user.getBadges();
 		for(String badgeId : badgeIds){
 			Badge badge = quizApp.getDataBaseHelper().getBadgeById(badgeId);
 			ImageView temp = new ImageView(quizApp.getContext());

@@ -77,6 +77,22 @@
 
         </LinearLayout>
 
+        <LinearLayout
+            android:id="@+id/user_place_ll"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+
+            <com.amcolabs.quizapp.widgets.GothamTextView
+                android:id="@+id/user_more_info"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:textSize="12sp"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="@color/white" />
+
+        </LinearLayout>
+ 
 
         <LinearLayout
             android:id="@+id/badges_wrapper"

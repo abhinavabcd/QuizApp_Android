@@ -61,7 +61,7 @@ public class BadgeEvaluator {
 		}
 		List<Badge> pendingBadges = quizApp.getDataBaseHelper().getAllPendingBadges();
 		// To remove awarded badges
-		List<String> awardedBadges = quizApp.getUser().badges;
+		List<String> awardedBadges = quizApp.getUser().getBadges();
 		ArrayList<String> allBadgeIds = new ArrayList<String>();
 		for(int i=0;i<badges.size();i++){
 			allBadgeIds.add(badges.get(i).getBadgeId());
@@ -199,11 +199,11 @@ public class BadgeEvaluator {
 			@Override
 			public String onData(Boolean s) {
 				if (s){
-					if(quizApp.getUser().badges==null){
-						quizApp.getUser().badges = new ArrayList<String>();
+					if(quizApp.getUser().getBadges()==null){
+						quizApp.getUser().setBadges(new ArrayList<String>());
 					}
 					for(int i=0;i<unlockedBadges.size();i++){
-						quizApp.getUser().badges.add(unlockedBadges.get(i).getBadgeId());
+						quizApp.getUser().getBadges().add(unlockedBadges.get(i).getBadgeId());
 						quizApp.getStaticPopupDialogBoxes().showUnlockedBadge(unlockedBadges.get(i),false, UiText.NEW_BADGE_UNLOCKED_MESSAGE.getValue());
 					}
 					if(!quizApp.getDataBaseHelper().removePendingState(unlockedBadges)){
