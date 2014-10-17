@@ -235,20 +235,12 @@ public class UserMainPageController  extends AppController{
 					for(final Feed feed: feeds){ // pre processing all the feed
 						switch(feed.getUserFeedType()){
 							case FEED_CHALLENGE://show popups
-								quizApp.getServerCalls().getOfflineChallenge(feed.message, new DataInputListener<OfflineChallenge>(){
-									@Override 
-									public String onData(OfflineChallenge offlineChallenge) {
-										if(offlineChallenge!=null && !offlineChallenge.isCompleted()){
-											offlineChallenge.setCompleted(true);
-											//show popup that user has completed and win/lost
-											offlineChallenge.setChallengeData2(feed.message2);
-											quizApp.getDataBaseHelper().updateOfflineChallenge(offlineChallenge);
-											quizApp.getStaticPopupDialogBoxes().showChallengeWinDialog(offlineChallenge);
-										}
+								quizApp.getUiUtils().fetchAndShowOfflineChallengePopup(feed.message, new DataInputListener<OfflineChallenge>(){
+									public String onData(OfflineChallenge offlineChallenge) {//fetch finished 
 										feedItemProcessed(homeScreen , feeds , feed);
 										return null;
-									}
-								}, true); 
+									}; 
+								});//already we have the user data from feed
 								break;
 						case FEED_USED_JOINED:
 						case FEED_GENERAL:

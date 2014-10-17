@@ -6,13 +6,13 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 
 import com.amcolabs.quizapp.QuizApp;
 import com.amcolabs.quizapp.R;
 import com.amcolabs.quizapp.databaseutils.Badge;
+import com.amcolabs.quizapp.uiutils.UiUtils.UiText;
 import com.amcolabs.quizapp.widgets.GothamTextView;
 
 public class BadgeListAdapter extends ArrayAdapter<Badge>{
@@ -20,6 +20,7 @@ public class BadgeListAdapter extends ArrayAdapter<Badge>{
 		ImageView badgeImage;
 		GothamTextView badgeName;
 		public GothamTextView badgeDesc;
+		public GothamTextView isLockedText;
 	}
 
 	private QuizApp quizApp;
@@ -40,6 +41,7 @@ public class BadgeListAdapter extends ArrayAdapter<Badge>{
             holder = new ViewHolder();
             holder.badgeName = (GothamTextView) convertView.findViewById(R.id.badgeName);
             holder.badgeImage = (ImageView) convertView.findViewById(R.id.badgeImage);
+            holder.isLockedText = (GothamTextView)convertView.findViewById(R.id.isLocked);
             holder.badgeDesc = (GothamTextView) convertView.findViewById(R.id.badge_desc);
             convertView.setTag(holder);
     	}
@@ -50,9 +52,11 @@ public class BadgeListAdapter extends ArrayAdapter<Badge>{
     	quizApp.getUiUtils().loadImageIntoView(quizApp.getContext(), holder.badgeImage, currentBadge.getAssetPath(), true);
     	if(quizApp.getUser().badges!=null && quizApp.getUser().badges.contains(currentBadge.getBadgeId())){
     		holder.badgeImage.setAlpha(1.0f);
+    		holder.isLockedText.setText("");
     	}
     	else{
     		holder.badgeImage.setAlpha(0.6f);
+    		holder.isLockedText.setText(UiText.IS_LOCKED.getValue());
     	}
     	holder.badgeName.setText(currentBadge.getName());
     	holder.badgeName.setTextColor(quizApp.getConfig().getUniqueThemeColor(currentBadge.getName()));

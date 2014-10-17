@@ -6,7 +6,13 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 
+
+
 public class Screen extends LinearLayout {
+	
+	public static enum ScreenType{
+		UNKNOWN;
+	}
 	protected AppController controller = null;
 	protected boolean isInViewPort = true;
 	private LinearLayout scrollView = null;
@@ -75,5 +81,9 @@ public class Screen extends LinearLayout {
 	
 	public boolean  doNotDistrub(){
 		return false;
+	}
+	
+	public ScreenType getScreenType(){
+		return ScreenType.UNKNOWN;
 	}
 }
