@@ -31,7 +31,7 @@ public class ClashScreen extends Screen {
 	}
 	
 	ArrayList<View> userInfoViews = new ArrayList<View>();
-	private GothamTextView currentUserInfoView;
+	private GothamTextView debugInfoView;
 	
 	public void updateClashScreen(User user ,Quiz quiz,  int index){
 		updateClashScreen(user, quiz , index, new WaitingForUserView(getApp()));	
@@ -68,13 +68,13 @@ public class ClashScreen extends Screen {
 
 	private void addDebugView() {
 		LinearLayout temp = (LinearLayout)getApp().getActivity().getLayoutInflater().inflate(R.layout.debug_text_view, null);
-		currentUserInfoView = (GothamTextView) temp.findViewById(R.id.debug_text_1);
+		debugInfoView = (GothamTextView) temp.findViewById(R.id.debug_text_1);
 		addView(temp);
 	}
 	GothamTextView debugView = null;
 	public void setCurrentUserDebugText(String text){
-		if(currentUserInfoView!=null){
-			currentUserInfoView.setText(text);
+		if(debugInfoView!=null){
+			debugInfoView.setText(text);
 		}
 	}
 	
