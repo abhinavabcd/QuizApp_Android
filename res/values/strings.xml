@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
  
-    <string name="app_name">quizApp</string>
+    <string name="app_name">QuizApp</string>
 	<string name="main_empty_list">Fetching Messages From server</string>
 	<string name="chat_error_message"> -- Sorry, Unable to load Chat History -- </string>
 	<string name="facebook_app_id" >1458788254375575</string>

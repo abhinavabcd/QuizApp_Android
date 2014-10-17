@@ -28,6 +28,14 @@
         android:typeface="normal" />
 
     <com.amcolabs.quizapp.widgets.GothamTextView
+        android:id="@+id/isLocked"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:textSize="7sp"
+        android:textAppearance="?android:attr/textAppearanceSmall" />
+
+    <com.amcolabs.quizapp.widgets.GothamTextView
         android:id="@+id/badge_desc"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

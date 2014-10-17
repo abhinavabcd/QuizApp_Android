@@ -2,9 +2,12 @@ package com.amcolabs.quizapp.screens;
 
 import java.util.ArrayList;
 
+import android.view.Gravity;
 import android.view.View;
+import android.widget.LinearLayout;
 
 import com.amcolabs.quizapp.AppController;
+import com.amcolabs.quizapp.R;
 import com.amcolabs.quizapp.Screen;
 import com.amcolabs.quizapp.User;
 import com.amcolabs.quizapp.appcontrollers.ProgressiveQuizController;
@@ -28,7 +31,7 @@ public class ClashScreen extends Screen {
 	}
 	
 	ArrayList<View> userInfoViews = new ArrayList<View>();
-	private UserInfoCard currentUserInfoView;
+	private GothamTextView currentUserInfoView;
 	
 	public void updateClashScreen(User user ,Quiz quiz,  int index){
 		updateClashScreen(user, quiz , index, new WaitingForUserView(getApp()));	
@@ -44,10 +47,10 @@ public class ClashScreen extends Screen {
 //			userInfoCard.addLevelIndicator(getApp(), user.getPoints(quiz.quizId)!=0?user.getPoints(quiz.quizId):100);
 			userInfoCard.addLevelIndicator(getApp(), user.getPoints(quiz.quizId));
 			userInfoViews.add(userInfoCard);
-			if(user.uid.equalsIgnoreCase(getApp().getUser().uid)){
-				currentUserInfoView = userInfoCard;
-			}
 			addView(userInfoCard, index);
+			if(user.uid.equalsIgnoreCase(getApp().getUser().uid)){
+				addDebugView();
+			}
 		}
 		else{//updating the users cards
 			userInfoViews.get(index).setVisibility(View.GONE);
@@ -63,10 +66,15 @@ public class ClashScreen extends Screen {
 		}
 	}
 
+	private void addDebugView() {
+		LinearLayout temp = (LinearLayout)getApp().getActivity().getLayoutInflater().inflate(R.layout.debug_text_view, null);
+		currentUserInfoView = (GothamTextView) temp.findViewById(R.id.debug_text_1);
+		addView(temp);
+	}
 	GothamTextView debugView = null;
 	public void setCurrentUserDebugText(String text){
 		if(currentUserInfoView!=null){
-			currentUserInfoView.setDebugText(text);
+			currentUserInfoView.setText(text);
 		}
 	}
 	
