@@ -33,6 +33,10 @@ public class NotificationReciever extends BroadcastReceiver{
 				public String quizId;
 				public String quizName;
 				public String textMessage;
+				public String payload1;
+				public String payload2;
+				public String payload3;
+				public String payload4;
 			}
 	
 			public static enum NotificationType{

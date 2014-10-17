@@ -37,6 +37,8 @@ import com.amcolabs.quizapp.appcontrollers.UserMainPageController;
 import com.amcolabs.quizapp.configuration.Config;
 import com.amcolabs.quizapp.databaseutils.ChatList;
 import com.amcolabs.quizapp.databaseutils.DatabaseHelper;
+import com.amcolabs.quizapp.databaseutils.OfflineChallenge;
+import com.amcolabs.quizapp.databaseutils.Quiz;
 import com.amcolabs.quizapp.datalisteners.DataInputListener;
 import com.amcolabs.quizapp.gameutils.BadgeEvaluator;
 import com.amcolabs.quizapp.gameutils.GameUtils;
@@ -183,6 +185,16 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 				return null;
 			}
 		});
+		//notify user that he has a new offline challenge
+		NotificationReciever.setListener(NotificationType.NOTIFICATION_GCM_OFFLINE_CHALLENGE_NOTIFICATION, new DataInputListener<NotificationPayload>(){
+			@Override
+			public String onData(final NotificationPayload payload) { 
+				Quiz quiz = getDataBaseHelper().getQuizById(payload.quizId);
+				getStaticPopupDialogBoxes().yesOrNo(UiText.NEW_OFFLINE_CHALLENGE_IN.getValue(payload.fromUserName , UiText.IN.getValue(quiz.name)), null, UiText.OK.getValue(), null);
+				return null;
+			}
+		});
+		
 		//new gcm message from server
 		NotificationReciever.setListener(NotificationType.NOTIFICATION_GCM_INBOX_MESSAGE, new DataInputListener<NotificationPayload>(){
 			public String onData(final NotificationPayload payload) {

@@ -875,18 +875,11 @@ public class ServerCalls {
 		},true, true);//sync 
 	}
 	
-	public void getOfflineChallenge(String offlineChallengeId, final DataInputListener<OfflineChallenge> dataInputListener , boolean doCheck) {
+	public void getOfflineChallenge(String offlineChallengeId, final DataInputListener<OfflineChallenge> dataInputListener) {
 		// TODO Auto-generated method stub
 		String url = getAServerAddr()+"/func?task=getOfflineChallengeById";
 		url+="&encodedKey="+quizApp.getUserDeviceManager().getEncodedKey();
 		url+="&offlineChallengeId="+offlineChallengeId;
-		if(doCheck){
-			OfflineChallenge offlineChallenge = quizApp.getDataBaseHelper().getOfflineChallengeByChallengeId(offlineChallengeId);
-			if(offlineChallenge!=null){
-				dataInputListener.onData(offlineChallenge);
-				return;
-			}
-		}
 		makeServerCall(url,new ServerNotifier() {			
 		@Override
 		public void onServerResponse(MessageType messageType, ServerResponse response) {

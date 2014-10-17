@@ -50,6 +50,7 @@ import android.widget.TextView;
 import com.amcolabs.quizapp.QuizApp;
 import com.amcolabs.quizapp.R;
 import com.amcolabs.quizapp.configuration.Config;
+import com.amcolabs.quizapp.databaseutils.OfflineChallenge;
 import com.amcolabs.quizapp.datalisteners.DataInputListener;
 import com.amcolabs.quizapp.notificationutils.NotificationReciever;
 import com.amcolabs.quizapp.serverutils.ServerCalls;
@@ -198,7 +199,10 @@ public class UiUtils {
 		USER_DOWNLOADING_ASSETS_WAITING("Waiting for other user to intialize"),
 		DOWNLOADING_QUESTIONS_AND_ASSETS("Downloading quesitons and assets"),
 		LOADING_QUESTIONS("Loading questions and assets"),
-		CHECKING_IF_USER_IS_STILL_WAITING("Checking if user is still waiting");	
+		CHECKING_IF_USER_IS_STILL_WAITING("Checking if user is still waiting"),
+		IS_LOCKED("locked"), 
+		NEW_OFFLINE_CHALLENGE_IN("You have a new OfflineChallenge from %s %s"),
+		IN("in %s");	
 		
 		String value = null;
 		UiText(String value){
@@ -698,6 +702,31 @@ public class UiUtils {
 	        }
 	    }
 	    linearLayout.addView(newLL);
+	}
+
+	public void fetchAndShowOfflineChallengePopup(String offlineChallengeId,
+			final DataInputListener<OfflineChallenge> dataInputListener) {	
+		 
+		OfflineChallenge offlineChallenge = quizApp.getDataBaseHelper().getOfflineChallengeByChallengeId(offlineChallengeId);
+		if(offlineChallenge!=null && offlineChallenge.isCompleted()){//already fetched , no server call again , no automatic popup
+			dataInputListener.onData(offlineChallenge);
+			return;
+		}
+
+		quizApp.getServerCalls().getOfflineChallenge(offlineChallengeId, new DataInputListener<OfflineChallenge>(){
+			@Override 
+			public String onData(OfflineChallenge offlineChallenge) {
+				if(offlineChallenge!=null){
+					offlineChallenge.setCompleted(true);
+					//show popup that user has completed and win/lost
+					quizApp.getDataBaseHelper().updateOfflineChallenge(offlineChallenge);
+					quizApp.getStaticPopupDialogBoxes().showChallengeWinDialog(offlineChallenge);
+				}
+				dataInputListener.onData(offlineChallenge);
+				return null;
+			}
+		}); 
+
 	}
 	
 }
