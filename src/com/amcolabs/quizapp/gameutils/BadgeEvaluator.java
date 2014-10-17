@@ -23,8 +23,6 @@ public class BadgeEvaluator {
 	HashMap<String, Category> mainCategoryList;
 	HashMap<String, Quiz> mainQuizList;
 	HashMap<String, QuizPlaySummary> mainQuizHistoryList;
-	
-	HashMap<String, List<UserAnswer>> quizUserAnswersStack;
  
 	QuizApp quizApp;
 	ArrayList<ArrayList<String>> categoryList = new ArrayList<ArrayList<String>>();
@@ -55,8 +53,7 @@ public class BadgeEvaluator {
 	 * @param value
 	 * @return
 	 */
-	public void evaluateBadges(HashMap<String, List<UserAnswer>> userAnswersStack){
-		quizUserAnswersStack = userAnswersStack;
+	public void evaluateBadges(HashMap<String, List<UserAnswer>> userAnswersStack, int whoWon){
 		initialize(); // To load All quiz history, quizzes and categories
 		List<Badge> badges = quizApp.getDataBaseHelper().getAllBadges();
 		if(badges==null){
@@ -121,12 +118,38 @@ public class BadgeEvaluator {
 		}
 		
 		// TODO: Yet To implement custom badges
-		// Add to unlockedBadges as needed
+		ArrayList<Badge> ubadges = evaluateDirectBadges(userAnswersStack,whoWon);
+		if (ubadges!=null && ubadges.size()>0){
+			unlockedBadges.addAll(ubadges);
+		}
 		
 		if(unlockedBadges.size()>0){
 			newBadgeUnlocked(unlockedBadges);
 		}
 		clearAllData();
+	}
+	
+	private ArrayList<Badge> evaluateDirectBadges(HashMap<String, List<UserAnswer>> userAnswersStack, int whoWon){
+		ArrayList<Badge> uBadges = new ArrayList<Badge>();
+
+		// 4 Wrong Answers but Win
+		int wrongCount = 0;
+		List<UserAnswer> uAns = userAnswersStack.get(quizApp.getUser().uid);
+		for(int i=1;i<uAns.size();i++){
+			if (uAns.get(i-1).whatUserGot == uAns.get(i).whatUserGot){
+				wrongCount= wrongCount + 1;
+			}
+		}
+		if (wrongCount>3 && whoWon==Quiz.WON){
+			uBadges.add(quizApp.getDataBaseHelper().getBadgeById("d_b1"));
+		}
+		
+		
+		
+		
+		//quizApp.getDataBaseHelper().getAllQuizSummary();
+		
+		return uBadges;
 	}
 	
 	private void initialize() {
@@ -438,7 +461,7 @@ public class BadgeEvaluator {
 	private boolean matchQuizListLevel(int index,int count,String value){
 		int tmp_count = 0;
 		for(int i=0;i<quizList.get(index).size();i++){
-			if(Double.valueOf(value)<=quizApp.getGameUtils().getLevelFromXp(quizApp.getUser().getPoints(quizList.get(index).get(i))))
+			if(Double.valueOf(value)<=GameUtils.getLevelFromXp(quizApp.getUser().getPoints(quizList.get(index).get(i))))
 				tmp_count++;
 			if(tmp_count>=count){
 				return true;
@@ -449,7 +472,7 @@ public class BadgeEvaluator {
 	
 	private boolean matchQuizListLevel(ArrayList<String> quizIds,String value){
 		for(int i=0;i<quizIds.size();i++){
-			if(Double.valueOf(value)>quizApp.getGameUtils().getLevelFromXp(quizApp.getUser().getPoints(quizIds.get(i))))
+			if(Double.valueOf(value)>GameUtils.getLevelFromXp(quizApp.getUser().getPoints(quizIds.get(i))))
 				return false;
 		}
 		return true;

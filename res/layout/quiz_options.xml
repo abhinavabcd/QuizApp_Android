@@ -18,10 +18,11 @@
             android:layout_weight="1"
             android:background="@drawable/quiz_option_background"
             android:gravity="center"
+            android:paddingBottom="10dp"
             android:paddingTop="10dp"
-            android:paddingBottom="10dp"            
             android:text="Button"
-            android:textSize="20sp" />
+            android:textSize="20sp"
+            android:textStyle="normal" />
 
         <com.amcolabs.quizapp.widgets.GothamButtonView
             android:id="@+id/optionB"
@@ -32,10 +33,11 @@
             android:background="@drawable/quiz_option_background"
             android:gravity="center"
             android:padding="5dp"
+            android:paddingBottom="10dp"
             android:paddingTop="10dp"
-            android:paddingBottom="10dp"            
             android:text="Button"
-            android:textSize="20sp" />
+            android:textSize="20sp"
+            android:textStyle="normal" />
 
     </LinearLayout>
 
@@ -49,27 +51,29 @@
             android:id="@+id/optionC"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1"
             android:layout_margin="5dp"
+            android:layout_weight="1"
             android:background="@drawable/quiz_option_background"
-            android:text="Button"
+            android:gravity="center"
+            android:paddingBottom="10dp"
             android:paddingTop="10dp"
-            android:paddingBottom="10dp"            
-            android:gravity="center"             
-            android:textSize="20sp" />
+            android:text="Button"
+            android:textSize="20sp"
+            android:textStyle="normal" />
             
         <com.amcolabs.quizapp.widgets.GothamButtonView
             android:id="@+id/optionD"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1"
             android:layout_margin="5dp"
-            android:paddingTop="10dp"
-            android:paddingBottom="10dp"            
+            android:layout_weight="1"
             android:background="@drawable/quiz_option_background"
-            android:text="Button" 
-            android:gravity="center"            
-            android:textSize="20sp" />
+            android:gravity="center"
+            android:paddingBottom="10dp"
+            android:paddingTop="10dp"
+            android:text="Button"
+            android:textSize="20sp"
+            android:textStyle="normal" />
           
     </LinearLayout>
 
