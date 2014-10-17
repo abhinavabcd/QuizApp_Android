@@ -247,8 +247,10 @@ public class UserMainPageController  extends AppController{
 						case FEED_USER_ADDED_FRIEND:
 						case FEED_USER_TOOK_PART:
 						case FEED_USER_WON:
-							break;
 						case FEED_USER_WON_BADGES:
+							feedItemProcessed(homeScreen , feeds , feed);
+							break;
+						default:
 							feedItemProcessed(homeScreen , feeds , feed);
 							break;
 						}
