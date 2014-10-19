@@ -593,6 +593,9 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 			case MENU_MESSAGES:
 				break;
 			case MENU_ALL_QUIZZES:
+				UserMainPageController uController = (UserMainPageController) loadAppController(UserMainPageController.class);
+				uController.showAllUserQuizzes();
+				currentActiveMenu = MENU_ALL_QUIZZES;
 				break;
 			case MENU_BADGES:
 				BadgeScreenController badgeController = (BadgeScreenController) loadAppController(BadgeScreenController.class);
@@ -676,7 +679,7 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 			menuItems = new HashMap<Integer, UiUtils.UiText>();
 			menuItems.put(QuizApp.MENU_HOME, UiText.HOME);
 			menuItems.put(QuizApp.MENU_BADGES,UiText.BADGES);
-//			menuItems.put(QuizApp.MENU_ALL_QUIZZES, UiText.SHOW_QUIZZES);
+			menuItems.put(QuizApp.MENU_ALL_QUIZZES, UiText.SHOW_QUIZZES);
 			menuItems.put(QuizApp.MENU_CHATS,UiText.CHATS);
 			menuItems.put(QuizApp.MENU_FRIENDS, UiText.FRIENDS);
 		}

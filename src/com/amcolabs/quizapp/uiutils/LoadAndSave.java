@@ -5,28 +5,33 @@ import java.io.FileOutputStream;
 
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.view.View;
 import android.widget.ImageView;
 
 import com.amcolabs.quizapp.datalisteners.DataInputListener;
-import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Picasso.LoadedFrom;
 import com.squareup.picasso.Target;
 
 public class LoadAndSave implements Target {
 
-	private ImageView imgView;
+	private View imgView;
 	private boolean downloadToAssets;
 	private File saveImageFile;
 	private String assetPath;
 	private DataInputListener<Boolean> completedLoadingImage;
-
-	public LoadAndSave(ImageView imgView, File file,  String assetPath , boolean downloadToAssets, DataInputListener<Boolean> completedLoadingImage) {
+	private boolean setAsBg = false;
+	public LoadAndSave(View imgView, File file,  String assetPath , boolean downloadToAssets, DataInputListener<Boolean> completedLoadingImage, boolean isBg) {
 		this.imgView =imgView;
 		this.downloadToAssets = downloadToAssets;
 		this.saveImageFile = file;
 		this.assetPath = assetPath;
 		this.completedLoadingImage = completedLoadingImage;
+		this.setAsBg = isBg;
+	}
+	public LoadAndSave(View imgView, File file,  String assetPath , boolean downloadToAssets, DataInputListener<Boolean> completedLoadingImage) {
+		this(imgView , file , assetPath, downloadToAssets, completedLoadingImage, false);
 	}
 
 	@Override
@@ -56,7 +61,11 @@ public class LoadAndSave implements Target {
 			                }
 			            }).start();
 	            }
-	            imgView.setImageBitmap(bitmap);
+		        if(setAsBg){
+		        	UiUtils.setBg(imgView , new BitmapDrawable(imgView.getResources(), bitmap));
+		        }
+		        else // should be imageView only
+		        	((ImageView) imgView).setImageBitmap(bitmap);
 	            if(completedLoadingImage!=null)
 	            	completedLoadingImage.onData(true);
 	}

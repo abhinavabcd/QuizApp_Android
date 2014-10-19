@@ -18,7 +18,7 @@ import com.amcolabs.quizapp.uiutils.UiUtils.UiText;
 import com.squareup.picasso.Picasso.LoadedFrom;
 import com.squareup.picasso.Target;
 
-public class ChallengeView extends LinearLayout implements OnClickListener, Target , IViewType{
+public class ChallengeView extends LinearLayout implements OnClickListener, IViewType{
 
 	private DataInputListener<Integer> clickListener;
 	private TextView textView;
@@ -39,7 +39,7 @@ public class ChallengeView extends LinearLayout implements OnClickListener, Targ
 		if(bgAssetPath==null){
 			bgAssetPath = (otherUser.coverUrl!=null && !otherUser.coverUrl.trim().equalsIgnoreCase(""))?otherUser.coverUrl:quizApp.getConfig().getRandomImageBg();
 		}
-		quizApp.getUiUtils().loadImageAsBg(quizApp.getContext(), this, bgAssetPath);
+		quizApp.getUiUtils().loadImageAsBg(this, bgAssetPath , false);
 
 		
 		QuizAppMenuItem menu1 = (QuizAppMenuItem) mainView.findViewById(R.id.start_offline_challenge);
@@ -64,22 +64,6 @@ public class ChallengeView extends LinearLayout implements OnClickListener, Targ
 				clickListener.onData(2);
 				break;
 		}
-	}
-	
-
-	@Override
-	public void onBitmapFailed(Drawable arg0) {
-		
-	}
-
-	@Override
-	public void onBitmapLoaded(Bitmap bitmap, LoadedFrom arg1) {
-		this.setBackgroundDrawable(new BitmapDrawable(bitmap));	
-	}
-
-	@Override
-	public void onPrepareLoad(Drawable arg0) {
-		
 	}
 
 	@Override

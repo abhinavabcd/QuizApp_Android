@@ -28,6 +28,7 @@ import com.amcolabs.quizapp.appcontrollers.ProgressiveQuizController;
 import com.amcolabs.quizapp.configuration.Config;
 import com.amcolabs.quizapp.databaseutils.Question;
 import com.amcolabs.quizapp.datalisteners.DataInputListener;
+import com.amcolabs.quizapp.gameutils.GameUtils;
 import com.amcolabs.quizapp.widgets.CircularCounter;
 import com.amcolabs.quizapp.widgets.CustomProgressBar;
 import com.amcolabs.quizapp.widgets.GothamButtonView;
@@ -198,7 +199,7 @@ public class QuestionScreen extends Screen implements View.OnClickListener, Anim
 		questionTextView.setText(ques.questionDescription);
 		
 		// TODO: should use longoptionflag to change layout
-		if (ques.getAssetPaths().size()==0){ //longOptionFlag ||
+		if (ques.getPictures().size()==0){ //longOptionFlag ||
 			questionImageView.setVisibility(View.GONE);
 			optionsViewWrapper.setOrientation(LinearLayout.VERTICAL);
 			optionsViewWrapper.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, 0,1.6f));			
@@ -207,7 +208,7 @@ public class QuestionScreen extends Screen implements View.OnClickListener, Anim
 			questionImageView.setVisibility(View.VISIBLE);
 			optionsViewWrapper.setOrientation(LinearLayout.HORIZONTAL);
 			optionsViewWrapper.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, 0,0.4f));			
-			isImageAvailable = getApp().getUiUtils().loadImageIntoView(getApp().getContext(), questionImageView, ques.getAssetPaths().get(0), false);
+			isImageAvailable = getApp().getUiUtils().loadImageIntoView(getApp().getContext(), questionImageView, ques.getPictures().get(0), false);
 			if(!isImageAvailable){
 				// TODO: Show could not load image or quit quiz
 			}
@@ -221,7 +222,12 @@ public class QuestionScreen extends Screen implements View.OnClickListener, Anim
 				opt.setTextSize(13);
 			else
 				opt.setTextSize(15);
-			opt.setText(mcqOptions[i]);
+			if(GameUtils.isUrl(mcqOptions[i])){
+				getApp().getUiUtils().loadImageAsBg(opt , mcqOptions[i],false);
+			}
+			else{
+				getApp().getUiUtils().setTextViewHTML(opt, mcqOptions[i], null);//lets see
+			}
 			opt.setTag(mcqOptions[i]);
 			opt.setTextColor(Color.BLACK);
 		}

@@ -171,16 +171,22 @@ public class UserMainPageController  extends AppController{
 //		for(int i=0;i<10;i++){
 //			categories.add(Category.createDummy());
 //		}
+		//categories
 		List<Category> categories = quizApp.getDataBaseHelper().getCategories(Config.MAX_CATEGORIES_ON_HOME_SCREEN);
-		if(categories.size()==Config.MAX_CATEGORIES_ON_HOME_SCREEN)
+		boolean showMore = false;
+		if(categories.size()==Config.MAX_CATEGORIES_ON_HOME_SCREEN){
 			categories.remove(categories.size()-1);
-		homeScreen.addCategoriesView(categories, categories.size()>Config.MAX_CATEGORIES_ON_HOME_SCREEN-1);
-		 
-		
+			showMore = true;
+		}
+		homeScreen.addCategoriesView(categories, showMore);
+		 //quizzes
+		showMore = false;
 		List<Quiz> quizzes = quizApp.getDataBaseHelper().getAllQuizzesOrderedByXP(Config.MAX_QUIZZES_ON_HOME_SCREEN);
-		if(quizzes.size()==Config.MAX_QUIZZES_ON_HOME_SCREEN)
+		if(quizzes.size()==Config.MAX_QUIZZES_ON_HOME_SCREEN){
 			quizzes.remove(quizzes.size()-1);
-		homeScreen.addUserQuizzesView(quizzes ,quizzes.size()>Config.MAX_QUIZZES_ON_HOME_SCREEN , UiText.USER_FAVOURITES.getValue());
+			showMore = true;
+		}
+		homeScreen.addUserQuizzesView(quizzes ,showMore , UiText.USER_FAVOURITES.getValue());
 		
 		List<Quiz> recentQuizzes = quizApp.getDataBaseHelper().getAllQuizzes(10, currentQuizMaxTimeStamp-10*24*60*60);
 		if(recentQuizzes!=null && recentQuizzes.size()>0)

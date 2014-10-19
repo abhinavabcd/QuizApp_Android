@@ -21,7 +21,7 @@ import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Picasso.LoadedFrom;
 import com.squareup.picasso.Target;
 
-public class UserInfoCard extends LinearLayout implements Target,IViewType{
+public class UserInfoCard extends LinearLayout implements IViewType{
 	private LinearLayout moreInfoWrapper;
 	private User user;
 	private GothamTextView debugTextView;
@@ -40,7 +40,7 @@ public class UserInfoCard extends LinearLayout implements Target,IViewType{
 		if(bgAssetPath==null){
 			bgAssetPath = (user.coverUrl!=null && !user.coverUrl.trim().equalsIgnoreCase(""))?user.coverUrl:quizApp.getConfig().getRandomImageBg();
 		}
-		quizApp.getUiUtils().loadImageAsBg(quizApp.getContext(), this, bgAssetPath);
+		quizApp.getUiUtils().loadImageAsBg(this, bgAssetPath, false);
 		
 		GothamTextView name = (GothamTextView)mainView.findViewById(R.id.user_card_name);
 		ImageView imgView = (ImageView) mainView.findViewById(R.id.user_card_small_pic);
@@ -75,21 +75,6 @@ public class UserInfoCard extends LinearLayout implements Target,IViewType{
 		levelIndicator.setValues(currentLevelProgress - (int)currentLevelProgress, 1, 0);
 		levelIndicator.setCurrentValue((int)currentLevelProgress);		
 		moreInfoWrapper.addView(levelIndicator);
-	}
-
-	@Override
-	public void onBitmapFailed(Drawable arg0) {
-		
-	}
-
-	@Override
-	public void onBitmapLoaded(Bitmap bitmap, LoadedFrom arg1) {
-		this.setBackgroundDrawable(new BitmapDrawable(bitmap));	
-	}
-
-	@Override
-	public void onPrepareLoad(Drawable arg0) {
-		
 	}
 
 	@Override

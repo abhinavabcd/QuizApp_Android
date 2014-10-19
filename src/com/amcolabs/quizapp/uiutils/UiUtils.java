@@ -275,7 +275,7 @@ public class UiUtils {
 
 	}
 	@SuppressLint("NewApi")
-	public void setBg(View view , Drawable drawable){
+	public static void setBg(View view , Drawable drawable){
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
 	    	view.setBackground(drawable);
 	    } else {
@@ -472,54 +472,28 @@ public class UiUtils {
 	}
 	
 	
-	public void loadImageAsBg(Context ctx , final Target target , final String assetPath){
+	public void loadImageAsBg(View view , final String assetPath , boolean downloadToAssets){
 		if(assetPath==null || assetPath.isEmpty())
 			return;
+		LoadAndSave loadAndSave = null;
+		//to prevent gc
+	    view.setTag(loadAndSave = new LoadAndSave(view, null , null, downloadToAssets, null,true));
+
 		try{
-		    InputStream ims = ctx.getAssets().open("images/"+assetPath);
-		    Picasso.with(ctx).load("file:///android_asset/images/"+assetPath).into(target);
+		    InputStream ims = quizApp.getActivity().getAssets().open("images/"+assetPath);
+		    Picasso.with(quizApp.getContext()).load("file:///android_asset/images/"+assetPath).into((LoadAndSave)view.getTag());
 		    return;
 		}
 		catch(IOException ex) {
-			final File file = new File(ctx.getFilesDir().getParentFile().getPath()+"/images/"+assetPath);
+			//try from external dir
+			final File file = new File(quizApp.getContext().getFilesDir().getParentFile().getPath()+"/images/"+assetPath);
 			if(file.exists()){
-				Picasso.with(ctx).load(file).into(target);
+				Picasso.with(quizApp.getContext()).load(file).into((LoadAndSave)view.getTag());
 			}
 			else{
-				Picasso.with(ctx).load(ServerCalls.CDN_IMAGES_PATH+assetPath).into(new Target() {
-			        @Override
-			        public void onBitmapLoaded(final Bitmap bitmap, Picasso.LoadedFrom from) {
-			            new Thread(new Runnable() {
-			                @Override
-			                public void run() {               
-			                    try
-			                    {
-			                        file.createNewFile();
-			                        FileOutputStream ostream = new FileOutputStream(file);
-			                        bitmap.compress(assetPath.endsWith(".png")?CompressFormat.PNG:CompressFormat.JPEG, 75, ostream);
-			                        ostream.close();
-			                    }
-			                    catch (Exception e)
-			                    {
-			                        e.printStackTrace();
-			                    }
-			 
-			                }
-			            }).start();
-			           target.onBitmapLoaded(bitmap, from);
-			        }
-
-					@Override
-					public void onBitmapFailed(Drawable arg0) {
-						// TODO Auto-generated method stub
-					}
-					@Override
-					public void onPrepareLoad(Drawable arg0) {
-						// TODO Auto-generated method stub
-					}
-			    });
+				Picasso.with(quizApp.getContext()).load(ServerCalls.CDN_IMAGES_PATH+assetPath).into((LoadAndSave)view.getTag());
 			}
-		}		 
+ 		}		 
 	}
 	
 //	public double getLevelFromPoints(double points){

@@ -1,9 +1,11 @@
 package com.amcolabs.quizapp.gameutils;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import com.amcolabs.quizapp.QuizApp;
-import com.amcolabs.quizapp.appcontrollers.ProgressiveQuizController.UserAnswer;
 import com.amcolabs.quizapp.databaseutils.OfflineChallenge;
 
 /**
@@ -55,4 +57,9 @@ public class GameUtils {
 		}
 		return name;
 	}
+
+    public static boolean isUrl(String input) {
+    	
+        return input.startsWith("http://") || input.startsWith("https://");
+    }
 }

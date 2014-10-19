@@ -5,6 +5,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
+import com.amcolabs.quizapp.gameutils.GameUtils;
+import com.google.gson.Gson;
+import com.google.gson.JsonParseException;
+import com.google.gson.reflect.TypeToken;
 import com.j256.ormlite.field.DatabaseField;
 
 
@@ -20,7 +24,7 @@ public class Question {
 	@DatabaseField
     private List<String> pictures; // comma seperated paths
 	@DatabaseField
-    public String options; //json
+    private String options; //json
 	@DatabaseField
     public String answer;
 	@DatabaseField
@@ -33,18 +37,24 @@ public class Question {
     public int xp;
 	
 	public List<String> getAssetPaths(){
-		if(pictures==null)
+		if(getPictures()==null)
 			return new ArrayList<String>(); 
 		else{
-			for(int i=0;i <pictures.size();i++){
-				String url = pictures.get(i);
+			for(int i=0;i <getPictures().size();i++){
+				String url = getPictures().get(i);
 				if(url==null || url.trim().isEmpty()){
-					pictures.remove(i);
+					getPictures().remove(i);
 				}
 			}
-			return pictures;
+			for(String option : getMCQOptions()){
+				if(GameUtils.isUrl(option)){
+					getPictures().add(options);
+				}
+			}
+			return getPictures();
 		}
 	}
+	
 	
 	public static enum QuestionType{
 		MCQ(0),
@@ -83,7 +93,13 @@ public class Question {
 		return questionTypeMap.containsKey(value) ? questionTypeMap.get(value):null;
 	}
 	public String[] getMCQOptions(){
-		return this.options.split(",");
+			if(!options.startsWith("['"))
+				return this.options.split(",");
+			else
+				return new Gson().fromJson(options, new TypeToken<String[]>(){}.getType());
+//		catch(JsonParseException ex){
+//			return new String[]{};
+//		}
 	}
 	public boolean isCorrectAnwer(String answer){
 		if(getQuestionType()==QuestionType.MCQ){
@@ -114,5 +130,11 @@ public class Question {
 			}
 		}
 		return null;
+	}
+	public List<String> getPictures() {
+		return pictures;
+	}
+	public void setPictures(List<String> pictures) {
+		this.pictures = pictures;
 	}
 }
