@@ -12,7 +12,8 @@
     <color name="black">#FF000000</color>
     <color name="zero">#00000000</color>
     <color name="white">#FFFFFFFF</color>
-	<color name="translucent_black">#55000000</color>    
+	<color name="translucent_black">#AA000000</color>
+	<color name="translucent_black_light">#55000000</color>    
 	<color name="translucent_white">#aaffffff</color>    
 		<color name="textColor">#FFF</color>
 	<color name="textFieldColor">#000</color>
