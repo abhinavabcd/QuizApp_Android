@@ -218,9 +218,9 @@ public class QuestionScreen extends Screen implements View.OnClickListener, Anim
 			GothamButtonView opt = questionOptionsViews.get(i);
 			// TODO : get below hard coded values from config
 			if (mcqOptions[i].length()>40)
-				opt.setTextSize(10);
+				opt.setTextSize(13);
 			else
-				opt.setTextSize(12);
+				opt.setTextSize(15);
 			opt.setText(mcqOptions[i]);
 			opt.setTag(mcqOptions[i]);
 			opt.setTextColor(Color.BLACK);
