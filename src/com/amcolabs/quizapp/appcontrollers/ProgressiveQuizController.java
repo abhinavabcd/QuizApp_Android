@@ -909,7 +909,7 @@ public class ProgressiveQuizController extends AppController{
 			quizApp.getDataBaseHelper().createOrUpdateQuizSummary(qPlaySummary);
 			
 			BadgeEvaluator badgeEvaluator = quizApp.getBadgeEvaluator();
-			badgeEvaluator.evaluateBadges(userAnswersStack);
+			badgeEvaluator.evaluateBadges(userAnswersStack,quizResult);
 		}
 		if (quizResultScreen==null){
 			quizResultScreen = new WinOrLoseScreen(this,currentUsers);
