@@ -3,6 +3,7 @@ package com.amcolabs.quizapp.adapters;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.text.format.DateUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -12,6 +13,7 @@ import android.widget.LinearLayout;
 import com.amcolabs.quizapp.QuizApp;
 import com.amcolabs.quizapp.R;
 import com.amcolabs.quizapp.User;
+import com.amcolabs.quizapp.configuration.Config;
 import com.amcolabs.quizapp.databaseutils.Badge;
 import com.amcolabs.quizapp.databaseutils.Feed.FeedType;
 import com.amcolabs.quizapp.databaseutils.GameEvents;
@@ -26,6 +28,7 @@ public class GameEventsListItemAdaptor extends ArrayAdapter<GameEvents> {
 	public static class GameEventViewHolder{
 		public ImageView titleImage;
 		public GothamTextView data;
+		public GothamTextView timestampText;
 	}
 	
 	private QuizApp quizApp;
@@ -75,6 +78,7 @@ public class GameEventsListItemAdaptor extends ArrayAdapter<GameEvents> {
 		switch(evt.getEventType()){
 		case LEVEL_UP:
 			quizApp.getUiUtils().setTextViewHTML(viewHolder.data, UiText.YOU_LEVELED_UP.getValue(quizApp.getDataBaseHelper().getQuizById(evt.getMessage()).name),null);
+			viewHolder.timestampText.setText(DateUtils.getRelativeTimeSpanString((long)evt.timestamp, (long)Config.getCurrentTimeStamp(), DateUtils.FORMAT_ABBREV_RELATIVE));
 			break;
 		case LOST_QUIZ:
 			user = quizApp.cachedUsers.get(evt.getMessage2());
@@ -86,6 +90,7 @@ public class GameEventsListItemAdaptor extends ArrayAdapter<GameEvents> {
 							quiz.name,
 							evt.getMessage3("0")
 					),null);
+			viewHolder.timestampText.setText(DateUtils.getRelativeTimeSpanString((long)evt.timestamp, (long)Config.getCurrentTimeStamp(), DateUtils.FORMAT_ABBREV_RELATIVE));
 			break;
 		case SERVER_ERROR_QUIZ:
 			user = quizApp.cachedUsers.get(evt.getMessage2());
@@ -96,6 +101,7 @@ public class GameEventsListItemAdaptor extends ArrayAdapter<GameEvents> {
 							quiz.quizId,
 							quiz.name
 					),null);
+			viewHolder.timestampText.setText(DateUtils.getRelativeTimeSpanString((long)evt.timestamp, (long)Config.getCurrentTimeStamp(), DateUtils.FORMAT_ABBREV_RELATIVE));
 			break;
 		case SHARED_WITH_FB:
 			break;
@@ -115,6 +121,7 @@ public class GameEventsListItemAdaptor extends ArrayAdapter<GameEvents> {
 							badge.getName()
 					),null);
 
+			viewHolder.timestampText.setText(DateUtils.getRelativeTimeSpanString((long)evt.timestamp, (long)Config.getCurrentTimeStamp(), DateUtils.FORMAT_ABBREV_RELATIVE));
 			break;
 		case USER_JOINED:
 			break;
@@ -128,6 +135,7 @@ public class GameEventsListItemAdaptor extends ArrayAdapter<GameEvents> {
 							quiz.name,
 							evt.getMessage3("0")
 				),null);
+			viewHolder.timestampText.setText(DateUtils.getRelativeTimeSpanString((long)evt.timestamp, (long)Config.getCurrentTimeStamp(), DateUtils.FORMAT_ABBREV_RELATIVE));
 			break;
 		default:
 			break;
@@ -142,14 +150,17 @@ public class GameEventsListItemAdaptor extends ArrayAdapter<GameEvents> {
 			case LEVEL_UP:
 				genericTextView = (LinearLayout)quizApp.getActivity().getLayoutInflater().inflate(R.layout.generic_event_view, null); 
 				viewHolder.data = textView = (GothamTextView)genericTextView.findViewById(R.id.data);
+				viewHolder.timestampText = (GothamTextView)genericTextView.findViewById(R.id.time_text);
 				return genericTextView;
 			case LOST_QUIZ:
 				genericTextView = (LinearLayout)quizApp.getActivity().getLayoutInflater().inflate(R.layout.generic_event_view, null); 
 				viewHolder.data = textView = (GothamTextView)genericTextView.findViewById(R.id.data); 
+				viewHolder.timestampText = (GothamTextView)genericTextView.findViewById(R.id.time_text);
 				return genericTextView;
 			case SERVER_ERROR_QUIZ:
 				genericTextView = (LinearLayout)quizApp.getActivity().getLayoutInflater().inflate(R.layout.generic_event_view, null); 
 				viewHolder.data = textView = (GothamTextView)genericTextView.findViewById(R.id.data); 
+				viewHolder.timestampText = (GothamTextView)genericTextView.findViewById(R.id.time_text);
 				return genericTextView;
 			case SHARED_WITH_FB:
 				break;
@@ -163,12 +174,14 @@ public class GameEventsListItemAdaptor extends ArrayAdapter<GameEvents> {
 				genericTextView = (LinearLayout)quizApp.getActivity().getLayoutInflater().inflate(R.layout.generic_event_view, null); 
 				viewHolder.data = textView = (GothamTextView)genericTextView.findViewById(R.id.data); 
 				ImageView img = viewHolder.titleImage = (ImageView)genericTextView.findViewById(R.id.image);
+				viewHolder.timestampText = (GothamTextView)genericTextView.findViewById(R.id.time_text);
 				return genericTextView;
 			case USER_JOINED:
 				break;
 			case WON_QUIZ:
 				genericTextView = (LinearLayout)quizApp.getActivity().getLayoutInflater().inflate(R.layout.generic_event_view, null); 
 				viewHolder.data = textView = (GothamTextView)genericTextView.findViewById(R.id.data); 
+				viewHolder.timestampText = (GothamTextView)genericTextView.findViewById(R.id.time_text);
 				return genericTextView;
 			default:
 				break;

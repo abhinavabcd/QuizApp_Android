@@ -37,6 +37,10 @@ public class LocalQuizHistory {
 	private
 	String userAnswers2;//json of user answers
 	
+
+	@DatabaseField
+	public
+	double timestamp;//json of user answers
 	
 	public List<UserAnswer> getUserAnswers1(QuizApp quizApp) {
 		return cachedUserAnswer1==null ? (cachedUserAnswer1 = quizApp.getConfig().getGson().fromJson(userAnswers1, new TypeToken<List<UserAnswer>>(){}.getType())):cachedUserAnswer1;
@@ -57,9 +61,6 @@ public class LocalQuizHistory {
 	public void setUserAnswers2(String userAnswers2) {
 		this.userAnswers2 = userAnswers2;
 	}
-
-	@DatabaseField
-	double timestamp;//json of user answers
 	
 	
 	

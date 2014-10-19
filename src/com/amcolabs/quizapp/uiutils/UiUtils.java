@@ -104,7 +104,7 @@ public class UiUtils {
 		FOR_YOUR_FIRST_QUESTION("For your first Question"), 
 		QUESTION("Question %s"), 
 		LEVEL("Level"), 
-		RECENT_QUIZZES("Recent Quizzes"),
+		RECENT_QUIZZES("Recently Updated Quizzes"),
 		BADGES("Badges"), 
 		SHOW_QUIZZES("Quizzes"), 
 		SHOW_MESSAGES("Messages"), 
@@ -202,7 +202,7 @@ public class UiUtils {
 		CHECKING_IF_USER_IS_STILL_WAITING("Checking if user is still waiting"),
 		IS_LOCKED("locked"), 
 		NEW_OFFLINE_CHALLENGE_IN("You have a new OfflineChallenge from %s %s"),
-		IN("in %s");	
+		IN("in %s"), NO_QUIZ_DATA_AVAILABLE_PLAY_TO_SEE("No Quiz data available, play quizzes to see your stats.");	
 		
 		String value = null;
 		UiText(String value){
@@ -407,25 +407,6 @@ public class UiUtils {
 		return 	ret;
 	}
 	
-	public static String formatChatTime(double timestamp){
-		String ret = "";
-		Calendar today = Calendar.getInstance();
-		Calendar dt = Calendar.getInstance();
-		dt.setTimeInMillis((long) timestamp);
-		if (dt.get(Calendar.DAY_OF_MONTH)==today.get(Calendar.DAY_OF_MONTH)){
-			ret = String.valueOf(today.get(Calendar.HOUR_OF_DAY))+":"+String.valueOf(today.get(Calendar.MINUTE))+" "+String.valueOf((today.get(Calendar.AM_PM)==Calendar.AM)?"AM":"PM");
-		}
-		else if(dt.get(Calendar.DAY_OF_MONTH)==today.get(Calendar.DAY_OF_MONTH)){
-			ret = "Yesterday ";
-			ret = ret + String.valueOf(today.get(Calendar.HOUR_OF_DAY))+":"+String.valueOf(today.get(Calendar.MINUTE))+" "+String.valueOf(today.get(Calendar.AM_PM));
-		}
-		else{
-			SimpleDateFormat dtformat = new SimpleDateFormat("yyyy-MM-dd");
-			ret = dtformat.format(dt.getTime());
-		}
-//		System.currentTimeMillis()-timestamp<
-		return ret;
-	}
 
 	public Animation getAnimationSlideOutRight() {
 		return animationSlideOutRight;
@@ -475,6 +456,9 @@ public class UiUtils {
 					imgView.setTag(new LoadAndSave(imgView, file, assetPath, downloadToAssets, completedLoadingImage));
 					if(width>0 && height>0)
 						Picasso.with(ctx).load(ServerCalls.CDN_IMAGES_PATH+assetPath).error(R.drawable.error_image).resize(width , height).into((LoadAndSave)imgView.getTag());
+					else{
+						Picasso.with(ctx).load(ServerCalls.CDN_IMAGES_PATH+assetPath).error(R.drawable.error_image).into((LoadAndSave)imgView.getTag());
+					}
 				}
 				else{
 					Picasso.with(ctx).load(ServerCalls.CDN_IMAGES_PATH+assetPath).error(R.drawable.error_image).into(imgView);//directly

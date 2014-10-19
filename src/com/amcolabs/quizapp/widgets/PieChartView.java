@@ -5,6 +5,7 @@ import android.content.Context;
 import android.graphics.Typeface;
 import android.util.AttributeSet;
 
+import com.amcolabs.quizapp.uiutils.UiUtils.UiText;
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.utils.Legend;
 import com.github.mikephil.charting.utils.Legend.LegendPosition;
@@ -37,6 +38,8 @@ public class PieChartView extends PieChart{
         this.setHoleRadius(60f);
 
         this.setDescription("");
+        this.setNoDataText("");
+        this.setNoDataTextDescription(UiText.NO_QUIZ_DATA_AVAILABLE_PLAY_TO_SEE.getValue());
 
         this.setDrawYValues(true);
         this.setDrawCenterText(true);

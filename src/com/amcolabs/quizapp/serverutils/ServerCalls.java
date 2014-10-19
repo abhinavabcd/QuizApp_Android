@@ -575,6 +575,9 @@ public class ServerCalls {
 		String url = getAServerAddr()+"/func?task=registerWithGoogle";
 		Map<String,String > params = new HashMap<String, String>();
 		params.put("userJson",quizApp.getConfig().getGson().toJson(user));
+		if(quizApp.getUser()!=null){ // connect mode
+			params.put("connectUid", quizApp.getUser().uid);
+		}
 		makeServerPostCall(url, params, new ServerNotifier() {
 			@Override
 			public void onServerResponse(MessageType messageType, ServerResponse response) {
@@ -600,6 +603,9 @@ public class ServerCalls {
 		String url = getAServerAddr()+"/func?task=registerWithFacebook";
 		Map<String,String > params = new HashMap<String, String>();
 		params.put("userJson",quizApp.getConfig().getGson().toJson(user));
+		if(quizApp.getUser()!=null){ // connect mode
+			params.put("connectUid", quizApp.getUser().uid);
+		}
 		makeServerPostCall(url, params, new ServerNotifier() {
 			@Override
 			public void onServerResponse(MessageType messageType, ServerResponse response) {

@@ -21,6 +21,11 @@ public class Category {
 	@DatabaseField
 	public String assetPath;  //could be cdn or a direct url
 	@DatabaseField
+	public String bgAssetPath = null;  //could be cdn or a direct url
+	@DatabaseField
+	public String titleAssetPath=null;  //could be cdn or a direct url
+	
+	@DatabaseField
 	public int type;
 	@DatabaseField
 	public double modifiedTimestamp;

@@ -838,6 +838,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 
 	public void addToQuizHistory(LocalQuizHistory q) {
 		try {
+			q.timestamp = quizApp.getConfig().getCurrentTimeStamp();
 			getQuizHistoryDao().create(q);
 		} catch (SQLException e) {
 			e.printStackTrace();

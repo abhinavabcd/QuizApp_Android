@@ -7,6 +7,7 @@ public class GameEvents {
 	
 
 	@DatabaseField
+	public
 	double timestamp;
 	@DatabaseField
 	int eventType;

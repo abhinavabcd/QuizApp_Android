@@ -3,6 +3,7 @@ package com.amcolabs.quizapp.adapters;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.text.format.DateUtils;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -13,6 +14,7 @@ import android.widget.LinearLayout;
 import com.amcolabs.quizapp.QuizApp;
 import com.amcolabs.quizapp.R;
 import com.amcolabs.quizapp.User;
+import com.amcolabs.quizapp.configuration.Config;
 import com.amcolabs.quizapp.databaseutils.Badge;
 import com.amcolabs.quizapp.databaseutils.Feed;
 import com.amcolabs.quizapp.databaseutils.Feed.FeedType;
@@ -32,6 +34,7 @@ public class FeedListItemAdaptor extends ArrayAdapter<Feed> {
 		public GothamTextView textContent2;
 		public ImageView titleImage;
 		public FlowLayout imagesLayout;
+		public GothamTextView timestampText;
 	}
 	
 	private QuizApp quizApp;
@@ -86,6 +89,7 @@ public class FeedListItemAdaptor extends ArrayAdapter<Feed> {
 				feedHolder.titleName = (GothamTextView) baseLayout.findViewById(R.id.title_name);
 				feedHolder.textContent1 = (GothamTextView) baseLayout.findViewById(R.id.text_content_1);
 				feedHolder.textContent2 = (GothamTextView) baseLayout.findViewById(R.id.text_content_2);
+				feedHolder.timestampText = (GothamTextView)baseLayout.findViewById(R.id.time_text);
 				baseLayout.setTag(feedHolder);
 				return baseLayout;
 		case FEED_GENERAL:
@@ -103,6 +107,7 @@ public class FeedListItemAdaptor extends ArrayAdapter<Feed> {
 			feedHolder.textContent1 = (GothamTextView) baseLayout.findViewById(R.id.text_content_1);
 			feedHolder.textContent2 = (GothamTextView) baseLayout.findViewById(R.id.text_content_2);
 			(baseLayout.findViewById(R.id.badges_wrapper)).setVisibility(View.VISIBLE);
+			feedHolder.timestampText = (GothamTextView)baseLayout.findViewById(R.id.time_text);
 			feedHolder.imagesLayout = (FlowLayout) baseLayout.findViewById(R.id.userbadges);
 			baseLayout.setTag(feedHolder);
 			return baseLayout; 
@@ -171,6 +176,8 @@ public class FeedListItemAdaptor extends ArrayAdapter<Feed> {
 		default:
 			break;
 		 }
+		 
+		 feedHolder.timestampText.setText(DateUtils.getRelativeTimeSpanString((long)feed.timestamp, (long)Config.getCurrentTimeStamp(), DateUtils.FORMAT_ABBREV_RELATIVE));
 	}
 
 

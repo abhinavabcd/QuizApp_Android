@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
+import android.text.format.DateUtils;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +17,7 @@ import android.widget.TextView;
 
 import com.amcolabs.quizapp.R;
 import com.amcolabs.quizapp.appcontrollers.ProfileAndChatController;
+import com.amcolabs.quizapp.configuration.Config;
 import com.amcolabs.quizapp.uiutils.UiUtils;
 /**
  * ChatViewAdapter is a Custom class to implement custom row in ListView
@@ -66,20 +68,18 @@ public class ChatViewAdapter extends BaseAdapter{
 			holder = (ViewHolder) convertView.getTag();
 		
 		holder.message.setText(message.getMessage());
-		holder.timestamp.setText(UiUtils.formatChatTime(message.getTimestamp()<=0?System.currentTimeMillis()-(Math.random()*10000):message.getTimestamp()));
+		holder.timestamp.setText(DateUtils.getRelativeTimeSpanString((long)Config.convertToUserTimeStamp(message.getTimestamp()), (long)Config.getCurrentTimeStamp(), DateUtils.FORMAT_ABBREV_RELATIVE));	
 		
 		// TODO: Add margins to left and right respectively to differentiate views in chat
 		LayoutParams lp = (LayoutParams) holder.chatRow.getLayoutParams();
 		//check if it is a status message then remove background, and change text color.
-		if(message.isStatusMessage())
-		{
+		if(message.isStatusMessage()){
 			holder.chatRow.setBackgroundDrawable(null);
 			lp.gravity = Gravity.LEFT;
 			holder.timestamp.setVisibility(View.GONE);
 			holder.message.setTextColor(Color.GRAY);
 		}
-		else
-		{		
+		else{		
 			//Check whether message is mine to show green background and align to right
 			if(message.isMine())
 			{

@@ -182,7 +182,7 @@ public class UserMainPageController  extends AppController{
 			quizzes.remove(quizzes.size()-1);
 		homeScreen.addUserQuizzesView(quizzes ,quizzes.size()>Config.MAX_QUIZZES_ON_HOME_SCREEN , UiText.USER_FAVOURITES.getValue());
 		
-		List<Quiz> recentQuizzes = quizApp.getDataBaseHelper().getAllQuizzes(10, currentQuizMaxTimeStamp);
+		List<Quiz> recentQuizzes = quizApp.getDataBaseHelper().getAllQuizzes(10, currentQuizMaxTimeStamp-10*24*60*60);
 		if(recentQuizzes!=null && recentQuizzes.size()>0)
 			homeScreen.addUserQuizzesView(quizzes ,false , UiText.RECENT_QUIZZES.getValue());
 		
@@ -270,10 +270,13 @@ public class UserMainPageController  extends AppController{
 	}
 	
 
+	public void doGplusLogin(DataInputListener<User> onLogin){
+		GoogleLoginHelper gPlusHelper = new GoogleLoginHelper(quizApp);
+    	gPlusHelper.doLogin(onLogin);
+	}
+	
 	public void doGplusLogin(){
-    	GoogleLoginHelper gPlusHelper = new GoogleLoginHelper(quizApp);
-    	
-    	gPlusHelper.doLogin(new DataInputListener<User>(){
+    	doGplusLogin(new DataInputListener<User>(){
     		@Override
     		public String onData(User user) {
 				if(user==null){
@@ -293,9 +296,13 @@ public class UserMainPageController  extends AppController{
     	});
     }
     
-    public void doFbLogin(){
+	public void doFbLogin(DataInputListener<User> onLogin){
     	FacebookLoginHelper fbLoginHelper = new FacebookLoginHelper(quizApp);
-    	fbLoginHelper.doLogin(new DataInputListener<User>(){
+    	fbLoginHelper.doLogin(onLogin);
+	}
+	
+    public void doFbLogin(){
+    	doFbLogin(new DataInputListener<User>(){
     		@Override
     		public String onData(User user) {
     			quizApp.getServerCalls().doFacebookLogin(user, new DataInputListener<User>(){

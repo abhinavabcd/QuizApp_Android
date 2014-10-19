@@ -172,7 +172,6 @@ public class SelectFriendsScreen extends Screen {
 					userMainPageController.doFbLogin();
 				}
 			});
-			
 		}
 		else{
 			debugMessageWrapper.setVisibility(View.GONE);

@@ -5,6 +5,7 @@ import android.content.Context;
 import android.graphics.Typeface;
 import android.util.AttributeSet;
 
+import com.amcolabs.quizapp.uiutils.UiUtils.UiText;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.utils.Legend;
 import com.github.mikephil.charting.utils.Legend.LegendPosition;
@@ -32,7 +33,8 @@ public class BarChartViewMultiDataset extends BarChart{
     	
 //        this.setOnChartValueSelectedListener(this);
         this.setDescription("");
-        
+        this.setNoDataText("");
+        this.setNoDataTextDescription(UiText.NO_QUIZ_DATA_AVAILABLE_PLAY_TO_SEE.getValue());
         // disable the drawing of values
         this.setDrawYValues(false);
 

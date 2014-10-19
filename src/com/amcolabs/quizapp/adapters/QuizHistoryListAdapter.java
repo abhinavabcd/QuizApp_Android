@@ -3,6 +3,7 @@ package com.amcolabs.quizapp.adapters;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.text.format.DateUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -12,13 +13,9 @@ import android.widget.LinearLayout;
 import com.amcolabs.quizapp.QuizApp;
 import com.amcolabs.quizapp.R;
 import com.amcolabs.quizapp.User;
-import com.amcolabs.quizapp.databaseutils.Badge;
-import com.amcolabs.quizapp.databaseutils.Feed.FeedType;
-import com.amcolabs.quizapp.databaseutils.GameEvents;
+import com.amcolabs.quizapp.configuration.Config;
 import com.amcolabs.quizapp.databaseutils.LocalQuizHistory;
 import com.amcolabs.quizapp.databaseutils.Quiz;
-import com.amcolabs.quizapp.datalisteners.DataInputListener;
-import com.amcolabs.quizapp.uiutils.UiUtils;
 import com.amcolabs.quizapp.uiutils.UiUtils.UiText;
 import com.amcolabs.quizapp.widgets.GothamTextView;
 
@@ -27,6 +24,7 @@ public class QuizHistoryListAdapter extends ArrayAdapter<LocalQuizHistory> {
 	public static class QuizHistoryHolder{
 		public GothamTextView data;
 		public ImageView titleImage;
+		public GothamTextView timeText;
 	}
 	
 	private QuizApp quizApp;
@@ -105,6 +103,7 @@ public class QuizHistoryListAdapter extends ArrayAdapter<LocalQuizHistory> {
 			break;
 		}
 		quizApp.getUiUtils().setTextViewHTML(viewHolder.data,text,null);
+		viewHolder.timeText.setText(DateUtils.getRelativeTimeSpanString((long)history.timestamp, (long)Config.getCurrentTimeStamp(), DateUtils.FORMAT_ABBREV_RELATIVE));
 	}
 
 	private View createLayout(LocalQuizHistory history, QuizApp quizApp, QuizHistoryHolder viewHolder) {
@@ -116,6 +115,8 @@ public class QuizHistoryListAdapter extends ArrayAdapter<LocalQuizHistory> {
 		case Quiz.WON:
 			genericTextView = (LinearLayout)quizApp.getActivity().getLayoutInflater().inflate(R.layout.generic_event_view, null); 
 			viewHolder.data = (GothamTextView)genericTextView.findViewById(R.id.data);
+			viewHolder.titleImage = (ImageView)genericTextView.findViewById(R.id.image);
+			viewHolder.timeText = (GothamTextView)genericTextView.findViewById(R.id.time_text);
 			break;
 		}
 		return genericTextView;
