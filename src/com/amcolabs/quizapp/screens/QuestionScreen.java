@@ -226,7 +226,7 @@ public class QuestionScreen extends Screen implements View.OnClickListener, Anim
 				getApp().getUiUtils().loadImageAsBg(opt , mcqOptions[i],false);
 			}
 			else{
-				getApp().getUiUtils().setTextViewHTML(opt, mcqOptions[i], null);//lets see
+				opt.setText(mcqOptions[i]);//lets see
 			}
 			opt.setTag(mcqOptions[i]);
 			opt.setTextColor(Color.BLACK);

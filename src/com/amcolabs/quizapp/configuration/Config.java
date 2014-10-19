@@ -84,6 +84,7 @@ public class Config{
 	public static final int MAX_QUIZZES_ON_HOME_SCREEN = 6;
 	public static final String MUSIC_ID = "music_id";
 	public static final String APP_VERSION = "app_version";
+	public static final String APP_LOADING_VIEW_IMAGE = null;
 	
 	private QuizApp quizApp;
 	
