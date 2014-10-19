@@ -16,6 +16,7 @@ import android.widget.LinearLayout.LayoutParams;
 
 import com.amcolabs.quizapp.configuration.Config;
 import com.amcolabs.quizapp.notificationutils.NotificationReciever;
+import com.amcolabs.quizapp.uiutils.UiUtils;
 
 public class UserDeviceManager {
 
@@ -116,7 +117,12 @@ public class UserDeviceManager {
 		mainLayout.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.MATCH_PARENT));
 		mainLayout.setGravity(Gravity.CENTER);
 		ImageView headerImageView = new ImageView(context);
-		headerImageView.setImageDrawable(context.getResources().getDrawable(R.drawable.small_logo));
+		if(Config.APP_LOADING_VIEW_IMAGE==null || Config.APP_LOADING_VIEW_IMAGE.trim().isEmpty()){
+			context.getResources().getDrawable(R.drawable.small_logo);
+		}
+		else{
+			quizApp.getUiUtils().loadImageIntoView(context, headerImageView, Config.APP_LOADING_VIEW_IMAGE, true);
+		}
 		LayoutParams temp3 = new LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.WRAP_CONTENT);
 		headerImageView.setLayoutParams(temp3);
 	
