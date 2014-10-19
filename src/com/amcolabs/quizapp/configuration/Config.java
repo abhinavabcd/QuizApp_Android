@@ -104,7 +104,7 @@ public class Config{
 		return themeColors[(a.charAt(0)+ a.charAt(a.length()-1))%themeColors.length];
 	}
 	private int tempBgIndex = 0;
-	private List<String> userBgAssets = Arrays.asList("bg/bg_2.jpg" , "bg/bg_1.jpg");
+	private List<String> userBgAssets = Arrays.asList("bg/bg_2.jpg" , "bg/bg_1.jpg", "bg/bg_3.jpg", "bg/bg_4.jpg", "bg/bg_5.jpg", "bg/bg_6.jpg");
 	public String getRandomImageBg(){
 		return userBgAssets.get(tempBgIndex++%userBgAssets.size());
 	}
