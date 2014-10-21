@@ -50,7 +50,7 @@ public class UserInfoCard extends LinearLayout implements IViewType{
 		debugTextView = (GothamTextView)mainView.findViewById(R.id.user_more_info);
 		name.setText(user.getName());
 		if(user.pictureUrl!=null){
-			Picasso.with(quizApp.getContext()).load(user.pictureUrl).into(imgView);
+			quizApp.getUiUtils().loadImageIntoView(quizApp.getContext(), imgView, user.pictureUrl, false);
 		}
 		
 		FlowLayout badgesLayout = (FlowLayout)mainView.findViewById(R.id.userbadges);

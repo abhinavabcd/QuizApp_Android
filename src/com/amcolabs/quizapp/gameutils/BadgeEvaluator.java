@@ -191,7 +191,12 @@ public class BadgeEvaluator {
 			return;
 		ArrayList<String> badgeIds = new ArrayList<String>();
 		for(int i=0;i<unlockedBadges.size();i++){
-			String badgeId = unlockedBadges.get(i).getBadgeId();
+			Badge badge = unlockedBadges.get(i);
+			if(badge==null){
+				//TODO: fix this badge thing , whis shoiuld not be happening
+				continue;
+			}
+			String badgeId = badge.getBadgeId();
 			badgeIds.add(badgeId);
 			quizApp.getDataBaseHelper().addGameEvents(new GameEvents(EventType.UNLOCKED_BADGE, badgeId, null, null));
 		}

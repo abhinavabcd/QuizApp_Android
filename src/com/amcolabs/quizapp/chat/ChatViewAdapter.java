@@ -54,8 +54,7 @@ public class ChatViewAdapter extends BaseAdapter{
 		}
 			
 		ViewHolder holder; 
-		if(convertView == null)
-		{
+		if(convertView == null){
 			holder = new ViewHolder();
 			convertView = LayoutInflater.from(mContext).inflate(R.layout.chat_row, parent, false);
 			holder.chatRow = (LinearLayout) convertView.findViewById(R.id.chat_row_wrapper);
