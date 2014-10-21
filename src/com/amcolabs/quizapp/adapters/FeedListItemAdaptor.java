@@ -177,7 +177,7 @@ public class FeedListItemAdaptor extends ArrayAdapter<Feed> {
 			break;
 		 }
 		 
-		 feedHolder.timestampText.setText(DateUtils.getRelativeTimeSpanString((long)feed.timestamp, (long)Config.getCurrentTimeStamp(), DateUtils.FORMAT_ABBREV_RELATIVE));
+		 feedHolder.timestampText.setText(DateUtils.getRelativeTimeSpanString((long)feed.timestamp*1000, (long)Config.getCurrentTimeStamp()*1000, DateUtils.FORMAT_ABBREV_RELATIVE));
 	}
 
 

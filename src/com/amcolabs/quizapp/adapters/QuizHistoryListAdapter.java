@@ -103,7 +103,7 @@ public class QuizHistoryListAdapter extends ArrayAdapter<LocalQuizHistory> {
 			break;
 		}
 		quizApp.getUiUtils().setTextViewHTML(viewHolder.data,text,null);
-		viewHolder.timeText.setText(DateUtils.getRelativeTimeSpanString((long)history.timestamp, (long)Config.getCurrentTimeStamp(), DateUtils.FORMAT_ABBREV_RELATIVE));
+		viewHolder.timeText.setText(DateUtils.getRelativeTimeSpanString((long)history.timestamp*1000, (long)Config.getCurrentTimeStamp()*1000, DateUtils.FORMAT_ABBREV_RELATIVE));
 	}
 
 	private View createLayout(LocalQuizHistory history, QuizApp quizApp, QuizHistoryHolder viewHolder) {

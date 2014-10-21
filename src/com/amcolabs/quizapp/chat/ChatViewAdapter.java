@@ -68,7 +68,7 @@ public class ChatViewAdapter extends BaseAdapter{
 			holder = (ViewHolder) convertView.getTag();
 		
 		holder.message.setText(message.getMessage());
-		holder.timestamp.setText(DateUtils.getRelativeTimeSpanString((long)Config.convertToUserTimeStamp(message.getTimestamp()), (long)Config.getCurrentTimeStamp(), DateUtils.FORMAT_ABBREV_RELATIVE));	
+		holder.timestamp.setText(DateUtils.getRelativeTimeSpanString((long)Config.convertToUserTimeStamp(message.getTimestamp())*1000, (long)Config.getCurrentTimeStamp()*1000, DateUtils.FORMAT_ABBREV_RELATIVE));	
 		
 		// TODO: Add margins to left and right respectively to differentiate views in chat
 		LayoutParams lp = (LayoutParams) holder.chatRow.getLayoutParams();

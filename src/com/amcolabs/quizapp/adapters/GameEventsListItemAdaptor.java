@@ -78,7 +78,7 @@ public class GameEventsListItemAdaptor extends ArrayAdapter<GameEvents> {
 		switch(evt.getEventType()){
 		case LEVEL_UP:
 			quizApp.getUiUtils().setTextViewHTML(viewHolder.data, UiText.YOU_LEVELED_UP.getValue(quizApp.getDataBaseHelper().getQuizById(evt.getMessage()).name),null);
-			viewHolder.timestampText.setText(DateUtils.getRelativeTimeSpanString((long)evt.timestamp, (long)Config.getCurrentTimeStamp(), DateUtils.FORMAT_ABBREV_RELATIVE));
+			viewHolder.timestampText.setText(DateUtils.getRelativeTimeSpanString((long)evt.timestamp*1000, (long)Config.getCurrentTimeStamp()*1000, DateUtils.FORMAT_ABBREV_RELATIVE));
 			break;
 		case LOST_QUIZ:
 			user = quizApp.cachedUsers.get(evt.getMessage2());
@@ -90,7 +90,7 @@ public class GameEventsListItemAdaptor extends ArrayAdapter<GameEvents> {
 							quiz.name,
 							evt.getMessage3("0")
 					),null);
-			viewHolder.timestampText.setText(DateUtils.getRelativeTimeSpanString((long)evt.timestamp, (long)Config.getCurrentTimeStamp(), DateUtils.FORMAT_ABBREV_RELATIVE));
+			viewHolder.timestampText.setText(DateUtils.getRelativeTimeSpanString((long)evt.timestamp*1000, (long)Config.getCurrentTimeStamp()*1000, DateUtils.FORMAT_ABBREV_RELATIVE));
 			break;
 		case SERVER_ERROR_QUIZ:
 			user = quizApp.cachedUsers.get(evt.getMessage2());
@@ -101,7 +101,7 @@ public class GameEventsListItemAdaptor extends ArrayAdapter<GameEvents> {
 							quiz.quizId,
 							quiz.name
 					),null);
-			viewHolder.timestampText.setText(DateUtils.getRelativeTimeSpanString((long)evt.timestamp, (long)Config.getCurrentTimeStamp(), DateUtils.FORMAT_ABBREV_RELATIVE));
+			viewHolder.timestampText.setText(DateUtils.getRelativeTimeSpanString((long)evt.timestamp*1000, (long)Config.getCurrentTimeStamp()*1000, DateUtils.FORMAT_ABBREV_RELATIVE));
 			break;
 		case SHARED_WITH_FB:
 			break;
@@ -115,13 +115,13 @@ public class GameEventsListItemAdaptor extends ArrayAdapter<GameEvents> {
 			ImageView img = viewHolder.titleImage;
 			img.setVisibility(View.VISIBLE);
 			Badge badge = quizApp.getDataBaseHelper().getBadgeById(evt.getMessage());
-			quizApp.getUiUtils().loadImageIntoView(quizApp.getContext(), img, badge.getAssetPath(), true);
+			quizApp.getUiUtils().loadImageIntoView(quizApp.getContext(), img, badge.getAssetPath(), true , quizApp.getUiUtils().dp2px(50) , quizApp.getUiUtils().dp2px(50) , null);
 			quizApp.getUiUtils().setTextViewHTML(viewHolder.data, UiText.YOU_UNLOCKED_BADGE.getValue(
 							badge.getBadgeId(),
 							badge.getName()
 					),null);
 
-			viewHolder.timestampText.setText(DateUtils.getRelativeTimeSpanString((long)evt.timestamp, (long)Config.getCurrentTimeStamp(), DateUtils.FORMAT_ABBREV_RELATIVE));
+			viewHolder.timestampText.setText(DateUtils.getRelativeTimeSpanString((long)evt.timestamp*1000, (long)Config.getCurrentTimeStamp()*1000, DateUtils.FORMAT_ABBREV_RELATIVE));
 			break;
 		case USER_JOINED:
 			break;
@@ -135,7 +135,7 @@ public class GameEventsListItemAdaptor extends ArrayAdapter<GameEvents> {
 							quiz.name,
 							evt.getMessage3("0")
 				),null);
-			viewHolder.timestampText.setText(DateUtils.getRelativeTimeSpanString((long)evt.timestamp, (long)Config.getCurrentTimeStamp(), DateUtils.FORMAT_ABBREV_RELATIVE));
+			viewHolder.timestampText.setText(DateUtils.getRelativeTimeSpanString((long)evt.timestamp*1000, (long)Config.getCurrentTimeStamp()*1000, DateUtils.FORMAT_ABBREV_RELATIVE));
 			break;
 		default:
 			break;

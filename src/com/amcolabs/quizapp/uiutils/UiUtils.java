@@ -25,12 +25,14 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.NotificationCompat;
 import android.text.Html;
 import android.text.SpannableStringBuilder;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.text.style.URLSpan;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Display;
 import android.view.Gravity;
@@ -292,13 +294,19 @@ public class UiUtils {
 					@Override
 					public void run() {
 						// TODO: NullPointerException after when pressing back button to exit quiz
-					      (quizApp.getActivity()).runOnUiThread(new Runnable(){
-	
-					       @Override
-					       public void run() {
-					    	   listener.onData(++count);
-					       }}
-					       );
+							FragmentActivity activity = quizApp.getActivity();
+							if(activity!=null)
+						      (activity).runOnUiThread(new Runnable(){
+		
+						       @Override
+						       public void run() {
+						    	   listener.onData(++count);
+						       }}
+						       );
+							else{
+								Log.d("ERR","changes");
+								this.cancel();
+							}
 					}
 		}, 0, millis);
 		return timer;
