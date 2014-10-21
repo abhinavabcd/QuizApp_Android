@@ -11,11 +11,18 @@ import android.widget.ScrollView;
 public class Screen extends LinearLayout {
 	
 	public static enum ScreenType{
-		UNKNOWN;
+		UNKNOWN,
+		QUIZZES_SCREEN,
+		QUESTIONS_SCREEN,
+		CLASH_SCREEN, 
+		HOME_SCREEN, WELCOME_SCREEN;
 	}
 	protected AppController controller = null;
 	protected boolean isInViewPort = true;
 	private LinearLayout scrollView = null;
+	protected ScreenType screenType = ScreenType.UNKNOWN;
+	
+	
 	public Screen(AppController controller) {
 		super(controller.getContext());
 		this.controller = controller;
@@ -84,6 +91,6 @@ public class Screen extends LinearLayout {
 	}
 	
 	public ScreenType getScreenType(){
-		return ScreenType.UNKNOWN;
+		return screenType;
 	}
 }

@@ -31,6 +31,7 @@ import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
 import android.widget.FrameLayout;
 
+import com.amcolabs.quizapp.Screen.ScreenType;
 import com.amcolabs.quizapp.appcontrollers.BadgeScreenController;
 import com.amcolabs.quizapp.appcontrollers.ProfileAndChatController;
 import com.amcolabs.quizapp.appcontrollers.UserMainPageController;
@@ -579,7 +580,7 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 		switch(id){
 			case MENU_HOME:
 				if(screenStack.size()==2 ){ //remove all screens including the home screen
-					if(screenStack.get(0).showOnBackPressed()){// not on first login welcomeScreen dirty fix
+					if(screenStack.get(0).getScreenType()!=ScreenType.WELCOME_SCREEN){// not on first login welcomeScreen dirty fix
 						animateScreenRemove(screenStack.peek() , TO_RIGHT,null);//currenly appearing screen
 						animateScreenIn(screenStack.get(0),TO_RIGHT);
 						screenStack.get(0).refresh();

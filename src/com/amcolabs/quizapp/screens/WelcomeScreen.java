@@ -54,9 +54,11 @@ public class WelcomeScreen extends Screen {
 		return false;
 	}
 	
+	
+	
 	@Override
-	public boolean shouldAddtoScreenStack() {
+	public ScreenType getScreenType() {
 		// TODO Auto-generated method stub
-		return false;
+		return ScreenType.WELCOME_SCREEN;
 	}
 }
