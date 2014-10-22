@@ -97,8 +97,13 @@ public class Question {
 	private String[] cachedOptions = null;
 	public String[] getMCQOptions(){
 		if(cachedOptions!=null) return cachedOptions;
+		options = options.trim();
 			if(!options.startsWith("['")){
-				return (cachedOptions = this.options.split(",|\n"));
+				cachedOptions = this.options.split("\n");
+				if(cachedOptions.length>1){
+					return cachedOptions;
+				}
+				return (cachedOptions = this.options.split(","));
 			}
 			else
 				return (cachedOptions = new Gson().fromJson(options, new TypeToken<String[]>(){}.getType()));
@@ -113,7 +118,7 @@ public class Question {
 	public boolean isCorrectAnwer(String ans , int index){
 		if(getQuestionType()==QuestionType.MCQ){
 			Matcher m = answerPattern.matcher(this.answer);
-			if((m.find() && index ==Integer.parseInt(m.group(1)))){
+			if((m.find() && index ==Integer.parseInt(m.group(1))-1)){
 				return true;
 			}
 			if(answer.trim().equalsIgnoreCase(ans.trim())){
@@ -156,7 +161,7 @@ public class Question {
 	public String getAnswer() {
 		Matcher m = answerPattern.matcher(this.answer);
 		if((m.find())){
-			return getMCQOptions()[Integer.parseInt(m.group(1))];
+			return getMCQOptions()[Integer.parseInt(m.group(1))-1];
 		}
 		return answer;
 	}
@@ -166,7 +171,7 @@ public class Question {
 	public int getAnswerIndex() {
 		Matcher m = answerPattern.matcher(this.answer);
 		if((m.find())){
-			return Integer.parseInt(m.group(1));
+			return Integer.parseInt(m.group(1))-1;
 		}
 		String[] options = getMCQOptions();
 		for(int i=0; i<options.length;i++){
