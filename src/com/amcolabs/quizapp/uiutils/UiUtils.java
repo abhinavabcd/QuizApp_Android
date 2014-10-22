@@ -102,8 +102,9 @@ public class UiUtils {
 		COULD_NOT_CONNECT("Could not fetch Updates"),
 		CATEGORIES("categories"),
 		USER_FAVOURITES("Quick Play"), NOT_AUTHORIZED("Invalid Login"), SEARCHING_FOR_OPPONENT("Searching for a matching opponent"),
-		GET_READY("Get Ready"), 
+		GET_READY("Get Ready"),
 		FOR_YOUR_FIRST_QUESTION("For your first Question"), 
+		QUESTIONS_BONUS("%dx Bonus"),
 		QUESTION("Question %s"), 
 		LEVEL("Level"), 
 		RECENT_QUIZZES("Recently Updated Quizzes"),
@@ -204,7 +205,10 @@ public class UiUtils {
 		CHECKING_IF_USER_IS_STILL_WAITING("Checking if user is still waiting"),
 		IS_LOCKED("locked"), 
 		NEW_OFFLINE_CHALLENGE_IN("You have a new OfflineChallenge from %s %s"),
-		IN("in %s"), NO_QUIZ_DATA_AVAILABLE_PLAY_TO_SEE("No Quiz data available, play quizzes to see your stats.");	
+		IN("in %s"), NO_QUIZ_DATA_AVAILABLE_PLAY_TO_SEE("No Quiz data available, play quizzes to see your stats."),
+		UNSUBSCRIBE("Unsubscribe"),
+		REMOVED_USER("Removed User"),
+		SUBSCRIBE("Subscribe");	
 		
 		String value = null;
 		UiText(String value){

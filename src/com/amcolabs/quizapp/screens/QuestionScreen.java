@@ -233,14 +233,18 @@ public class QuestionScreen extends Screen implements View.OnClickListener, Anim
 		}
 		getTimerView().resetTimer();//reset timer
 	}
-	
-	public void animateQuestionChange(String titleInfo1, String titleInfo2, Question ques){
+
+	public void animateQuestionChange(String titleInfo1, String titleInfo2, Question ques) {
+		animateQuestionChange(titleInfo1, titleInfo2, null, ques);
+	}
+
+	public void animateQuestionChange(String titleInfo1, String titleInfo2, String info3 ,Question ques){
 		currentQuestion = ques;
 		questionAndOptionsViewWrapper.setVisibility(View.INVISIBLE);
 		getTimerView().resetValues();
 		preQuestionText1.setText(titleInfo1);
 		preQuestionText2.setText(titleInfo2);
-		preQuestionText3.setText(null);
+		preQuestionText3.setText(info3);
 		animFadeOut.reset();
 		preQuestionView.startAnimation(animFadeOut);
 	}

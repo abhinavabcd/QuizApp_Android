@@ -62,4 +62,15 @@ public class GameUtils {
     	
         return input.startsWith("http://") || input.startsWith("https://");
     }
+	/**
+	 * This method will be our bonus question points calculator to be used by all methods
+	 * @return scale factor
+	 */
+	public int multiplyFactor(int questionNumber){
+		if(questionNumber%4==0){ //currentQuestions.size()%4==0 && currentQuestions.size()<quiz.nQuestions
+			return 2;
+		};
+		return 1;
+	}
+
 }

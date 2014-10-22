@@ -187,16 +187,6 @@ public class Config{
 		return gson;
 	}
 	
-	/**
-	 * This method will be our bonus question points calculator to be used by all methods
-	 * @return scale factor
-	 */
-	public int multiplyFactor(int questionNumber){
-		if(questionNumber%4==0){ //currentQuestions.size()%4==0 && currentQuestions.size()<quiz.nQuestions
-			return 2;
-		};
-		return 1;
-	}
 	
     public static int getAppVersion(Context context) {
         try {

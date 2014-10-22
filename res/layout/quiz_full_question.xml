@@ -43,32 +43,37 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceSmall" />
-
         </LinearLayout>
 
-        <LinearLayout
-            android:id="@+id/question_options_wrapper"
+        <ScrollView
+            android:id="@+id/question_data_scroller"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical" >
+            android:fillViewport="true" >
 
-            <include
-                android:id="@+id/quizQuestion"
+            <LinearLayout
+                android:id="@+id/question_options_wrapper"
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_gravity="top"
-                android:layout_weight="0.6"
-                layout="@layout/quiz_question" />
+                android:layout_height="match_parent"
+                android:orientation="vertical" >
 
-            <include
-                android:id="@+id/quizOptions"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_gravity="bottom"
-                android:layout_weight="0.4"
-                layout="@layout/quiz_options" />
+                <include
+                    android:id="@+id/quizQuestion"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_gravity="top"
+                    android:layout_weight="0.6"
+                    layout="@layout/quiz_question" />
 
-        </LinearLayout>
+                <include
+                    android:id="@+id/quizOptions"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_gravity="bottom"
+                    android:layout_weight="0.4"
+                    layout="@layout/quiz_options" />
+            </LinearLayout>
+        </ScrollView>
     </FrameLayout>
 
 </LinearLayout>

@@ -124,6 +124,8 @@ public class WinOrLoseScreen extends Screen{
         quizLevelupPoints = (GothamTextView)quizResult.findViewById(R.id.quizLevelupPoints);
         quizTotalPoints = (GothamTextView)quizResult.findViewById(R.id.quizTotalPoints);
         
+        final User user2 = getOtherUser(curUsers); 
+        
         rematchButton = (GothamButtonView)quizResult.findViewById(R.id.rematchButton);
         rematchButton.setOnClickListener(new OnClickListener() {
 			@Override
@@ -140,33 +142,53 @@ public class WinOrLoseScreen extends Screen{
 		});
         
         addFriendButton = (GothamButtonView)quizResult.findViewById(R.id.addFriendButton);
-        addFriendButton.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				for(User user : currentUsers){
-					if(!user.uid.equalsIgnoreCase(getApp().getUser().uid)){
-						progressviewQuizController.addFriend(user);
-						break;
-					}
-				}
+		for(String uid : getApp().getUser().getSubscribedTo()){
+			if(uid.equalsIgnoreCase(getApp().getUser().uid)){
+					addFriendButton.setText(UiText.UNSUBSCRIBE.getValue());
+					addFriendButton.setOnClickListener(new OnClickListener() {
+						@Override
+						public void onClick(View v) {
+							progressviewQuizController.removeFriend(user2);
+							addFriendButton.setText(UiText.SUBSCRIBE.getValue());
+						}
+					});
+					break;
 			}
-		});
-
+			else{
+		        addFriendButton.setOnClickListener(new OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						progressviewQuizController.addFriend(user2);
+					}
+				});
+			}
+		}
+			
         viewProfileButton = (GothamButtonView)quizResult.findViewById(R.id.viewProfileButton);
         viewProfileButton.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				for(User user : currentUsers){
-					if(!user.uid.equalsIgnoreCase(getApp().getUser().uid)){
-						progressviewQuizController.showProfileScreen(user);
-						break;
-					}
-				}
+				progressviewQuizController.showProfileScreen(user2);
 			}
 		});
         addView(quizResult);
 	}
 	
+	private User getOtherUser(ArrayList<User> currentUsers) {
+		User user2 = null;
+		for(User user : currentUsers){
+			if(!user.uid.equalsIgnoreCase(getApp().getUser().uid)){
+				user2 = user;
+				break;
+			}
+			else {
+				user2 = null;
+				break;
+			}
+		}
+		return user2;
+	}
+
 	/**
 	 * This is the main function to be invoked to display result of a quiz, right after init method
 	 * @param currentUsers List of Users participated in the quiz

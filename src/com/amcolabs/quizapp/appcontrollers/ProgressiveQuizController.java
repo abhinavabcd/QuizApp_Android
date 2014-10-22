@@ -124,7 +124,7 @@ public class ProgressiveQuizController extends AppController{
 			return 0;
 		int mscore = 0;
 		for(int i=0;i<currentQuestions.size();i++){
-			mscore += currentQuestions.get(i).xp*quizApp.getConfig().multiplyFactor(i+1);
+			mscore += currentQuestions.get(i).xp*quizApp.getGameUtils().multiplyFactor(i+1);
 		}
 		return mscore;
 	}
@@ -347,7 +347,13 @@ public class ProgressiveQuizController extends AppController{
 				public void run() {
 					if(currentQuestions.size()>0){ // more questions
 						Question currentQuestion = currentQuestions.remove(0);
-						questionScreen.animateQuestionChange(UiText.QUESTION.getValue(quiz.nQuestions - currentQuestions.size()), UiText.GET_READY.getValue(), currentQuestion);
+						int bonusFactor = quizApp.getGameUtils().multiplyFactor(currentQuestions.size());
+						if(bonusFactor<2){
+							questionScreen.animateQuestionChange(UiText.QUESTION.getValue(quiz.nQuestions - currentQuestions.size()), UiText.GET_READY.getValue(), currentQuestion);
+						}	
+						else{
+							questionScreen.animateQuestionChange(UiText.QUESTION.getValue(quiz.nQuestions - currentQuestions.size()), UiText.GET_READY.getValue(), UiText.QUESTIONS_BONUS.getValue(bonusFactor), currentQuestion);
+						} 
 						if(isBotMode())
 							scheduleBotAnswer(currentQuestion);
 						if(isChallengedMode()){
@@ -398,7 +404,7 @@ public class ProgressiveQuizController extends AppController{
 						int elapsedTime = rand.nextInt((int) (5*Math.max(0, (100-userLevel)/100))); 
 						boolean isRightAnswer = rand.nextInt(100) < (50+Math.sqrt(25*userLevel))? true:false;
 						if(isRightAnswer){
-							botScore+=Math.ceil((currentQuestion.getTime() - elapsedTime)*currentQuestion.xp/currentQuestion.getTime())*quizApp.getConfig().multiplyFactor(currentQuestions.size());
+							botScore+=Math.ceil((currentQuestion.getTime() - elapsedTime)*currentQuestion.xp/currentQuestion.getTime())*quizApp.getGameUtils().multiplyFactor(currentQuestions.size());
 						}
 						final UserAnswer botAnswer = new UserAnswer(currentQuestion.questionId, user.uid, isRightAnswer?currentQuestion.getCorrectAnswer():currentQuestion.getWrongRandomAnswer(rand),
 								 	elapsedTime, botScore);
@@ -722,7 +728,7 @@ public class ProgressiveQuizController extends AppController{
 		UserAnswer payload =null; 
 		double timeElapsed = questionScreen.getTimerView().stopPressed(1);
 		if(isAnwer){
-			currentScore += ( Math.ceil(currentQuestion.getTime()-timeElapsed)*quizApp.getConfig().multiplyFactor(currentQuestions.size()));
+			currentScore += ( Math.ceil(currentQuestion.getTime()-timeElapsed)*quizApp.getGameUtils().multiplyFactor(currentQuestions.size()));
 		}
 		payload = new UserAnswer(currentQuestion.questionId, quizApp.getUser().uid, answer, (int)timeElapsed, currentScore);
 		if(isNormalMode())
@@ -1112,6 +1118,26 @@ public class ProgressiveQuizController extends AppController{
 					quizApp.getUser().getSubscribedTo().add(user.uid);
 					quizApp.getStaticPopupDialogBoxes().yesOrNo(UiText.ADDED_USER.getValue(user.getName()), null, UiText.CLOSE.getValue(), null);
 					user.isFriend = true;
+				}
+				return super.onData(s);
+			}
+		});
+	}
+
+
+	public void removeFriend(final User user) {
+		quizApp.getServerCalls().unSubscribeTo(user, new DataInputListener<Boolean>(){
+			@Override
+			public String onData(Boolean s) {
+				if(s){
+					for(String uid : quizApp.getUser().getSubscribedTo()){
+						if(user.uid.equalsIgnoreCase(uid)){
+							quizApp.getUser().getSubscribedTo().remove(user);
+							break;
+						}
+					}
+					quizApp.getStaticPopupDialogBoxes().yesOrNo(UiText.REMOVED_USER.getValue(user.getName()), null, UiText.CLOSE.getValue(), null);
+					user.isFriend = false;
 				}
 				return super.onData(s);
 			}

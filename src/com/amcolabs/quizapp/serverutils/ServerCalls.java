@@ -936,6 +936,28 @@ public class ServerCalls {
 		}, true);
 	}
 	
+	public void unSubscribeTo(final User user2 ,final DataInputListener<Boolean> listener) {
+		String url = getAServerAddr()+"/func?task=unSubscribeTo";
+		url+="&encodedKey="+quizApp.getUserDeviceManager().getEncodedKey();
+		url+="&uid2="+user2.uid;
+		makeServerCall(url, new ServerNotifier() {
+		@Override
+		public void onServerResponse(MessageType messageType,ServerResponse response) {
+			switch(messageType){
+				case OK:
+					if(listener!=null){
+						listener.onData(true);
+					}
+					break;
+				default:
+					if(listener!=null){
+						listener.onData(false);
+					}
+					break;
+			}
+		}
+		}, true);
+	}
 
 	public void addBadges(List<String> badgeIds, final DataInputListener<Boolean> listener) {
 		String url = getAServerAddr()+"/func?task=addBadges";
@@ -1073,5 +1095,6 @@ public class ServerCalls {
 		}
 		});
 	}
+
 }
 
