@@ -179,6 +179,7 @@ public class QuestionScreen extends Screen implements View.OnClickListener, Anim
 	
 	private boolean isOptionSelected = true;
 	protected Question currentQuestion;
+	private int currentQuestionIndex;
 	
 	private void showQuestion(final Question ques){
 		preQuestionView.setVisibility(View.INVISIBLE);
@@ -217,10 +218,10 @@ public class QuestionScreen extends Screen implements View.OnClickListener, Anim
 		questionAndOptionsViewWrapper.invalidate();
 		String[] mcqOptions = ques.getMCQOptions();
 		List<String> mcqOptionsList = Arrays.asList(mcqOptions);
-		int tmpIndex = mcqOptionsList.indexOf(ques.answer);
+		int tmpIndex = mcqOptionsList.indexOf(ques.getAnswer());
 		if (tmpIndex>3){
 			tmpIndex = (int)Math.random()*4;
-			mcqOptionsList.set(tmpIndex, ques.answer);
+			mcqOptionsList.set(tmpIndex, ques.getAnswer());
 			mcqOptions = (String[]) mcqOptionsList.toArray();
 		}
 		for(int i=0;i<questionOptionsViews.size();i++){
@@ -243,11 +244,11 @@ public class QuestionScreen extends Screen implements View.OnClickListener, Anim
 		getTimerView().resetTimer();//reset timer
 	}
 
-	public void animateQuestionChange(String titleInfo1, String titleInfo2, Question ques) {
-		animateQuestionChange(titleInfo1, titleInfo2, null, ques);
+	public void animateQuestionChange(String titleInfo1, String titleInfo2, Question ques , int questionIndex) {
+		animateQuestionChange(titleInfo1, titleInfo2, null, ques , questionIndex);
 	}
 
-	public void animateQuestionChange(String titleInfo1, String titleInfo2, String info3 ,Question ques){
+	public void animateQuestionChange(String titleInfo1, String titleInfo2, String info3 ,Question ques, int questionIndex){
 		currentQuestion = ques;
 		questionAndOptionsViewWrapper.setVisibility(View.INVISIBLE);
 		getTimerView().resetValues();
@@ -256,6 +257,7 @@ public class QuestionScreen extends Screen implements View.OnClickListener, Anim
 		preQuestionText3.setText(info3);
 		animFadeOut.reset();
 		preQuestionView.startAnimation(animFadeOut);
+		currentQuestionIndex = questionIndex;
 	}
 
 	public void highlightCorrectAnswer(){

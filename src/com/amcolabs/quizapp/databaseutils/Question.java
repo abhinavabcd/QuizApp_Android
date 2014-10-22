@@ -27,7 +27,7 @@ public class Question {
 	@DatabaseField
     private String options; //json
 	@DatabaseField
-    public String answer;
+    private String answer;
 	@DatabaseField
     public String hint;
 	@DatabaseField
@@ -132,7 +132,7 @@ public class Question {
 	}
 	public String getCorrectAnswer() {
 		// TODO Auto-generated method stub
-		return answer;
+		return getAnswer();
 	}
 	public String getWrongRandomAnswer(Random rand) {
 		if(getQuestionType()==QuestionType.MCQ){
@@ -152,5 +152,15 @@ public class Question {
 	}
 	public void setPictures(List<String> pictures) {
 		this.pictures = pictures;
+	}
+	public String getAnswer() {
+		Matcher m = answerPattern.matcher(this.answer);
+		if((m.find())){
+			return getMCQOptions()[Integer.parseInt(m.group(1))];
+		}
+		return answer;
+	}
+	public void setAnswer(String answer) {
+		this.answer = answer;
 	}
 }
