@@ -3,6 +3,7 @@ package com.amcolabs.quizapp.screens;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -215,6 +216,13 @@ public class QuestionScreen extends Screen implements View.OnClickListener, Anim
 		}
 		questionAndOptionsViewWrapper.invalidate();
 		String[] mcqOptions = ques.getMCQOptions();
+		List<String> mcqOptionsList = Arrays.asList(mcqOptions);
+		int tmpIndex = mcqOptionsList.indexOf(ques.answer);
+		if (tmpIndex>3){
+			tmpIndex = (int)Math.random()*4;
+			mcqOptionsList.set(tmpIndex, ques.answer);
+			mcqOptions = (String[]) mcqOptionsList.toArray();
+		}
 		for(int i=0;i<questionOptionsViews.size();i++){
 			GothamButtonView opt = questionOptionsViews.get(i);
 			// TODO : get below hard coded values from config

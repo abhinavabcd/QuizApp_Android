@@ -118,10 +118,10 @@ public class BadgeEvaluator {
 		}
 		
 		// TODO: Yet To implement custom badges
-		ArrayList<Badge> ubadges = evaluateDirectBadges(userAnswersStack,whoWon);
-		if (ubadges!=null && ubadges.size()>0){
-			unlockedBadges.addAll(ubadges);
-		}
+//		ArrayList<Badge> ubadges = evaluateDirectBadges(userAnswersStack,whoWon);
+//		if (ubadges!=null && ubadges.size()>0){
+//			unlockedBadges.addAll(ubadges);
+//		}
 		
 		if(unlockedBadges.size()>0){
 			newBadgeUnlocked(unlockedBadges);
@@ -208,7 +208,7 @@ public class BadgeEvaluator {
 						quizApp.getUser().setBadges(new ArrayList<String>());
 					}
 					for(int i=0;i<unlockedBadges.size();i++){
-						quizApp.getUser().getBadges().add(unlockedBadges.get(i).getBadgeId());
+						quizApp.getUser().getBadges().add(unlockedBadges.get(i).getBadgeId()); // TODO: Check for crash here
 						quizApp.getStaticPopupDialogBoxes().showUnlockedBadge(unlockedBadges.get(i),false, UiText.NEW_BADGE_UNLOCKED_MESSAGE.getValue());
 					}
 					if(!quizApp.getDataBaseHelper().removePendingState(unlockedBadges)){
