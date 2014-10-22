@@ -217,13 +217,12 @@ public class QuestionScreen extends Screen implements View.OnClickListener, Anim
 		}
 		questionAndOptionsViewWrapper.invalidate();
 		String[] mcqOptions = ques.getMCQOptions();
-		List<String> mcqOptionsList = Arrays.asList(mcqOptions);
-		int tmpIndex = mcqOptionsList.indexOf(ques.getAnswer());
+		int tmpIndex = ques.getAnswerIndex();
 		if (tmpIndex>3){
 			tmpIndex = (int)currentQuestionIndex%4;
-			mcqOptionsList.set(tmpIndex, ques.getAnswer());
-			mcqOptions = (String[]) mcqOptionsList.toArray();
+			mcqOptions[tmpIndex] = ques.getAnswer();
 		}
+		
 		for(int i=0;i<questionOptionsViews.size();i++){
 			GothamButtonView opt = questionOptionsViews.get(i);
 			// TODO : get below hard coded values from config
