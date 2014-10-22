@@ -220,7 +220,7 @@ public class QuestionScreen extends Screen implements View.OnClickListener, Anim
 		List<String> mcqOptionsList = Arrays.asList(mcqOptions);
 		int tmpIndex = mcqOptionsList.indexOf(ques.getAnswer());
 		if (tmpIndex>3){
-			tmpIndex = (int)Math.random()*4;
+			tmpIndex = (int)currentQuestionIndex%4;
 			mcqOptionsList.set(tmpIndex, ques.getAnswer());
 			mcqOptions = (String[]) mcqOptionsList.toArray();
 		}
