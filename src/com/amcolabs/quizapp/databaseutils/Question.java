@@ -4,10 +4,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import com.amcolabs.quizapp.gameutils.GameUtils;
 import com.google.gson.Gson;
-import com.google.gson.JsonParseException;
 import com.google.gson.reflect.TypeToken;
 import com.j256.ormlite.field.DatabaseField;
 
@@ -101,14 +102,24 @@ public class Question {
 //			return new String[]{};
 //		}
 	}
-	public boolean isCorrectAnwer(String answer){
+	
+	
+	//[[3]] => 3RD OPTION IS THE RIGHT ANSWER
+	final static Pattern answerPattern  = Pattern.compile("^\\[\\[(\\d*)\\]\\]"); 
+	public boolean isCorrectAnwer(String ans , int index){
 		if(getQuestionType()==QuestionType.MCQ){
-			if(this.answer.trim().equalsIgnoreCase(answer.trim())){
+			Matcher m = answerPattern.matcher(this.answer);
+			if((m.find() && index ==Integer.parseInt(m.group(1)))){
 				return true;
 			}
+			if(answer.trim().equalsIgnoreCase(ans.trim())){
+				return true;
+			}
+
 		}
 		return false;
 	}
+
 	public int getTime() {
 		if(getQuestionType()==QuestionType.MCQ){
 				return (int) (time==0?10d:time);
@@ -123,8 +134,9 @@ public class Question {
 		if(getQuestionType()==QuestionType.MCQ){
 			String[] mcqOptions = getMCQOptions();
 			while(true){
-				String a = mcqOptions[rand.nextInt(mcqOptions.length)];
-				if(!isCorrectAnwer(a)){
+				int index = rand.nextInt(mcqOptions.length);
+				String a = mcqOptions[index];
+				if(!isCorrectAnwer(a, index)){
 					return a;
 				}
 			}

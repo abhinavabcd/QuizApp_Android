@@ -229,6 +229,7 @@ public class QuestionScreen extends Screen implements View.OnClickListener, Anim
 				opt.setText(mcqOptions[i]);//lets see
 			}
 			opt.setTag(mcqOptions[i]);
+			opt.setTag2(i);
 			opt.setTextColor(Color.BLACK);
 		}
 		getTimerView().resetTimer();//reset timer
@@ -251,14 +252,14 @@ public class QuestionScreen extends Screen implements View.OnClickListener, Anim
 
 	public void highlightCorrectAnswer(){
 		for(GothamButtonView b:questionOptionsViews){
-			if(currentQuestion.isCorrectAnwer((String)b.getTag()))
-				b.setTextColor(Color.GREEN);
+			if(currentQuestion.isCorrectAnwer((String)b.getTag(), (Integer)b.getTag2()) )
+				b.setTextColor(Color.GREEN); 
 		}
 	}
 	public void highlightOtherUsersOption(String uid , String option){
 		for(GothamButtonView b:questionOptionsViews){
-			if(((String)b.getTag()).equalsIgnoreCase(option)){
-				if(!currentQuestion.isCorrectAnwer((String)b.getTag()))
+			if(((String)b.getTag()).equalsIgnoreCase(option)){ 
+				if(!currentQuestion.isCorrectAnwer((String)b.getTag(), (Integer)b.getTag2()))
 					b.setTextColor(Color.RED);					
 			}
 		}
@@ -269,7 +270,7 @@ public class QuestionScreen extends Screen implements View.OnClickListener, Anim
 		if(isOptionSelected) return;
 		isOptionSelected = true;
 		GothamButtonView b = (GothamButtonView)optionView;
-		Boolean isAnwer = currentQuestion.isCorrectAnwer((String)b.getTag());
+		Boolean isAnwer = currentQuestion.isCorrectAnwer((String)b.getTag(), (Integer)b.getTag2());
 		if(!isAnwer){
 			b.setTextColor(Color.RED);
 			negetiveButtonSounds.start();
