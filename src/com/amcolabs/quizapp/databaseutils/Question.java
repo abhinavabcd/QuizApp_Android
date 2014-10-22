@@ -93,9 +93,13 @@ public class Question {
 		}
 		return questionTypeMap.containsKey(value) ? questionTypeMap.get(value):null;
 	}
+	
+	private String[] cachedOptions = null;
 	public String[] getMCQOptions(){
-			if(!options.startsWith("['"))
-				return this.options.split(",");
+			if(!options.startsWith("['")){
+				return this.options.split(",|\n");
+				
+			}
 			else
 				return new Gson().fromJson(options, new TypeToken<String[]>(){}.getType());
 //		catch(JsonParseException ex){
