@@ -152,7 +152,7 @@ public class ProgressiveQuizController extends AppController{
 		        userAnswersStack.clear();
 		        currentScore = 0;
 				Question currentQuestion = currentQuestions.remove(0);
-				questionScreen.animateQuestionChange( UiText.GET_READY.getValue(), UiText.FOR_YOUR_FIRST_QUESTION.getValue() ,currentQuestion);
+				questionScreen.animateQuestionChange( UiText.GET_READY.getValue(), UiText.FOR_YOUR_FIRST_QUESTION.getValue() ,currentQuestion, 0);
 				if(isBotMode())
 					scheduleBotAnswer(currentQuestion);
 				if(isChallengedMode()){
@@ -348,11 +348,12 @@ public class ProgressiveQuizController extends AppController{
 					if(currentQuestions.size()>0){ // more questions
 						Question currentQuestion = currentQuestions.remove(0);
 						int bonusFactor = quizApp.getGameUtils().multiplyFactor(currentQuestions.size());
+						int questionNum = quiz.nQuestions - currentQuestions.size();
 						if(bonusFactor<2){
-							questionScreen.animateQuestionChange(UiText.QUESTION.getValue(quiz.nQuestions - currentQuestions.size()), UiText.GET_READY.getValue(), currentQuestion);
+							questionScreen.animateQuestionChange(UiText.QUESTION.getValue(questionNum), UiText.GET_READY.getValue(), currentQuestion , questionNum-1);
 						}	
 						else{
-							questionScreen.animateQuestionChange(UiText.QUESTION.getValue(quiz.nQuestions - currentQuestions.size()), UiText.GET_READY.getValue(), UiText.QUESTIONS_BONUS.getValue(bonusFactor), currentQuestion);
+							questionScreen.animateQuestionChange(UiText.QUESTION.getValue(questionNum), UiText.GET_READY.getValue(), UiText.QUESTIONS_BONUS.getValue(bonusFactor), currentQuestion , questionNum-1);
 						} 
 						if(isBotMode())
 							scheduleBotAnswer(currentQuestion);
