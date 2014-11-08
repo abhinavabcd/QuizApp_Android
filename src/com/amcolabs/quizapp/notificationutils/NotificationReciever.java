@@ -114,6 +114,7 @@ public class NotificationReciever extends BroadcastReceiver{
 								generateNotification = false;
 							}
 							else{
+								titleText = UiText.USER_SENT_YOU_MESSAGE.getValue(payload.fromUserName);
 								messageToDisplay = payload.textMessage;
 							}
 							break;
@@ -167,7 +168,7 @@ public class NotificationReciever extends BroadcastReceiver{
 				if(abortThisRequest)
 					abortBroadcast();
 				if(generateNotification && !UserDeviceManager.isRunning()) // inside app all notifications should be handled without notifications
-					UiUtils.generateNotification(context,messageToDisplay, titleText , extras);
+					UiUtils.generateNotification(context, titleText , messageToDisplay, extras);
 		 	}
 			
 			static HashMap<NotificationType, DataInputListener<NotificationPayload>> listeners = new HashMap<NotificationReciever.NotificationType, DataInputListener<NotificationPayload>>();
@@ -189,18 +190,18 @@ public class NotificationReciever extends BroadcastReceiver{
 			
 			public static boolean checkAndCallListener(NotificationType type, NotificationPayload notificationPayload){
 				if(UserDeviceManager.isRunning() && QuizApp.nState==NotifificationProcessingState.CONTINUE){
-					if(listeners.containsKey(NotificationType.NOTIFICATION_GCM_INBOX_MESSAGE)){
-							listeners.get(NotificationType.NOTIFICATION_GCM_INBOX_MESSAGE).onData(notificationPayload);
+					if(listeners.containsKey(type)){
+							listeners.get(type).onData(notificationPayload);
 							return true;
 					}
 				}
 				return false; // we wont call listener until state is continue , setting to continue is very important 
 			}
 			
-			public static DataInputListener<NotificationPayload> getListener( NotificationType notificationGcmInboxMessage) {
+			public static DataInputListener<NotificationPayload> getListener( NotificationType type) {
 				if(UserDeviceManager.isRunning()){
-					if(listeners.containsKey(NotificationType.NOTIFICATION_GCM_INBOX_MESSAGE)){
-							return listeners.get(NotificationType.NOTIFICATION_GCM_INBOX_MESSAGE);
+					if(listeners.containsKey(type)){
+							return listeners.get(type);
 					}
 				}
 				return null;

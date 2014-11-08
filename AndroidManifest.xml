@@ -11,9 +11,11 @@
         android:targetSdkVersion="19" /> <!-- use 9  as min -->
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+ 	<uses-permission android:name="android.permission.WAKE_LOCK" />
+ 	<uses-permission android:name="android.permission.READ_LOGS"/>
+    <uses-permission android:name="android.permission.GET_TASKS"/>
     <uses-permission android:name="android.permission.USE_CREDENTIALS" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
     <permission
         android:name="com.amcolabs.quizapp.permission.C2D_MESSAGE"
@@ -68,7 +70,7 @@
         <receiver
             android:name="com.amcolabs.quizapp.notificationutils.NotificationReciever"
             android:enabled="true" >
-            <intent-filter android:priority="1">
+            <intent-filter android:priority="99">
                 <action android:name="com.amcolabs.quizapp.gcmnotification"/>
             </intent-filter>
         </receiver>

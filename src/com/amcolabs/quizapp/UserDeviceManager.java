@@ -118,12 +118,13 @@ public class UserDeviceManager {
 		mainLayout.setGravity(Gravity.CENTER);
 		ImageView headerImageView = new ImageView(context);
 		if(Config.APP_LOADING_VIEW_IMAGE==null || Config.APP_LOADING_VIEW_IMAGE.trim().isEmpty()){
-			context.getResources().getDrawable(R.drawable.small_logo);
+			quizApp.getUiUtils().setBg(headerImageView , context.getResources().getDrawable(R.drawable.ic_launcher));
 		}
 		else{
 			quizApp.getUiUtils().loadImageIntoView(context, headerImageView, Config.APP_LOADING_VIEW_IMAGE, true);
 		}
-		LayoutParams temp3 = new LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.WRAP_CONTENT);
+		LayoutParams temp3 = new LayoutParams(LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT);
+		temp3.gravity= Gravity.CENTER;
 		headerImageView.setLayoutParams(temp3);
 	
 		mainLayout.addView(headerImageView);

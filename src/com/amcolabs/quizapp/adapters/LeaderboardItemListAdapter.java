@@ -68,6 +68,8 @@ public class LeaderboardItemListAdapter extends ArrayAdapter<User> {
 			holder.userStatus = (GothamTextView) convertView.findViewById(R.id.category_short_name);
 			holder.additionalContainer = (FrameLayout)convertView.findViewById(R.id.additional_container);
 			holder.additionalText = (GothamTextView) holder.additionalContainer.findViewById(R.id.additional_text);
+			holder.additionalText.setBackgroundColor(0);
+			holder.additionalText.setTextSize(10);
 			UiUtils uiUtils = quizApp.getUiUtils();
 //			holder.levelIndicator = new CircularCounter(quizApp.getContext(), uiUtils.getInSp(10), Color.parseColor("#000000"), uiUtils.getInSp(7), UiText.LEVEL.getValue(), 
 //														 uiUtils.getInDp(5), 1, uiUtils.getInDp(3), uiUtils.getInDp(3), 0, 0, 0, 0, uiUtils.getInDp(40),0);

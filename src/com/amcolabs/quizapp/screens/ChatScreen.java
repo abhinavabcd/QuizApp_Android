@@ -20,6 +20,7 @@ import com.amcolabs.quizapp.appcontrollers.ProfileAndChatController;
 import com.amcolabs.quizapp.appcontrollers.ProgressiveQuizController;
 import com.amcolabs.quizapp.chat.ChatViewAdapter;
 import com.amcolabs.quizapp.chat.Message;
+import com.amcolabs.quizapp.configuration.Config;
 import com.amcolabs.quizapp.widgets.GothamTextView;
 import com.squareup.picasso.Picasso;
 
@@ -33,8 +34,8 @@ import com.squareup.picasso.Picasso;
 public class ChatScreen extends Screen {
 
 	ArrayList<Message> messages;
-	ChatViewAdapter adapter;
-	ListView chatView;
+	ChatViewAdapter chatListAdapter;
+	ListView chatList;
 	EditText text;
 	private GothamTextView user1Name;
 	private GothamTextView user1Status;
@@ -64,8 +65,11 @@ public class ChatScreen extends Screen {
 		sendButton.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
- 				pController.sendMessage(otherUser, text.getText().toString());
- 				addMessage(true, -1 , text.getText().toString());
+				if(!text.getText().toString().trim().equalsIgnoreCase("")){
+	 				pController.sendMessage(otherUser, text.getText().toString());
+	 				addMessage(true, Config.getCurrentTimeStamp() , text.getText().toString());
+ 					scrollToBottom();
+				}
  				text.setText("");
 			}
 		});
@@ -85,11 +89,11 @@ public class ChatScreen extends Screen {
 		messages = new ArrayList<Message>();
 
   
-		adapter = new ChatViewAdapter(controller.getContext(), messages, pController);
-		chatView = (ListView) chatLayout.findViewById(R.id.chat_list_view);
-		chatView.setAdapter(adapter);
-		chatView.setEmptyView(chatLayout.findViewById(R.id.empty));
-//		setListAdapter(adapter);
+		chatListAdapter = new ChatViewAdapter(controller.getContext(), messages, pController);
+		chatList = (ListView) chatLayout.findViewById(R.id.chat_list_view);
+		chatList.setAdapter(chatListAdapter);
+		chatList.setEmptyView(chatLayout.findViewById(R.id.empty));
+//		setListAdapter(chatListAdapter);
 		addView(chatLayout);
 		showUsers(getApp().getUser(),user2);
 		
@@ -120,7 +124,7 @@ public class ChatScreen extends Screen {
 		
 	void addNewMessage(Message m){
 		messages.add(m);
-		adapter.notifyDataSetChanged();
+		chatListAdapter.notifyDataSetChanged();
 	}
 
 	public void setDebugMessage(String value) {
@@ -134,6 +138,11 @@ public class ChatScreen extends Screen {
 	
 	@Override
 	public void refresh() {
-		if(adapter!=null) adapter.notifyDataSetChanged();
+		if(chatListAdapter!=null) chatListAdapter.notifyDataSetChanged();
+	}
+
+	public void scrollToBottom() {
+		if(chatList!=null && chatListAdapter!=null)
+			chatList.setSelection(chatListAdapter.getCount() - 1);
 	}
 }

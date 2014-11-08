@@ -208,7 +208,7 @@ public class UiUtils {
 		IN("in %s"), NO_QUIZ_DATA_AVAILABLE_PLAY_TO_SEE("No Quiz data available, play quizzes to see your stats."),
 		UNSUBSCRIBE("Unsubscribe"),
 		REMOVED_USER("Removed User"),
-		SUBSCRIBE("Subscribe");	
+		SUBSCRIBE("Subscribe"), USER_SENT_YOU_MESSAGE("%s sent you a message");	
 		
 		String value = null;
 		UiText(String value){
@@ -322,28 +322,26 @@ public class UiUtils {
     		titleText = pContext.getResources().getString(R.string.app_name);
     	}
     	switch(NotificationReciever.getNotificationTypeFromInt(type)){
-		case DONT_KNOW:
-			break;
-		case NOTIFICATION_GCM_CHALLENGE_NOTIFICATION:
-			break;
-		case NOTIFICATION_GCM_GENERAL_FROM_SERVER:
-			break;
-		case NOTIFICATION_GCM_INBOX_MESSAGE:
-			titleText = UiText.NEW_MESSAGE.getValue();
-			break;
-		case NOTIFICATION_GCM_OFFLINE_CHALLENGE_NOTIFICATION:
-			break;
-		case NOTIFICATION_NEW_BADGE:
-			break;
-		case NOTIFICATION_SERVER_COMMAND:
-			break;
-		case NOTIFICATION_SERVER_MESSAGE:
-			break;
-		case NOTIFICATION_USER_CHALLENGE:
-			break;
-		default:
-			break;
-    		
+				case DONT_KNOW:
+					break;
+				case NOTIFICATION_GCM_CHALLENGE_NOTIFICATION:
+					break;
+				case NOTIFICATION_GCM_GENERAL_FROM_SERVER:
+					break;
+				case NOTIFICATION_GCM_INBOX_MESSAGE:
+					break;
+				case NOTIFICATION_GCM_OFFLINE_CHALLENGE_NOTIFICATION:
+					break;
+				case NOTIFICATION_NEW_BADGE:
+					break;
+				case NOTIFICATION_SERVER_COMMAND:
+					break;
+				case NOTIFICATION_SERVER_MESSAGE:
+					break;
+				case NOTIFICATION_USER_CHALLENGE:
+					break;
+				default:
+					break;
     	}
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(pContext)
         		.setSmallIcon(R.drawable.ic_launcher).setContentTitle(titleText)
@@ -369,7 +367,7 @@ public class UiUtils {
         mNotificationManager.notify(notificationId, notificationBuilder.build()); //will show a notification and when clicked will open the app.	    
 	}
 	public static void generateNotification(Context pContext, String message) {
-		generateNotification(pContext, message, null , null);
+		generateNotification(pContext, null ,  message, null);
 	}
     
     public static void sendSMS(Context context , String phoneNumber , String text) {  
@@ -557,7 +555,7 @@ public class UiUtils {
 	            listItem.measure(0, 0);
 	            totalHeight += listItem.getMeasuredHeight();
 	        }
-	      //setting listview item in adapter
+	      //setting listview item in chatListAdapter
 	        ViewGroup.LayoutParams params = myListView.getLayoutParams();
 	        params.height = totalHeight + (myListView.getDividerHeight() * (myListAdapter.getCount() - 1));
 	        myListView.setLayoutParams(params);

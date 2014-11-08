@@ -84,8 +84,8 @@ class RandomSelector <T>{
 
 public class ServerCalls {
 
-	public static final String SERVER_ADDR = Config.IS_TEST_BUILD? "http://54.187.73.133:8085":"http://quizapp-main.amcolabs.com";
-	public static final String CDN_IMAGES_PATH = "http://appsandlabs.com/quizApp/images/";
+	public static final String SERVER_ADDR = Config.IS_TEST_BUILD? "http://192.168.0.10:8085":"http://quizapp-main.amcolabs.com";
+	public static final String CDN_IMAGES_PATH = Config.IS_TEST_BUILD?"http://192.168.0.10:8081/images":"http://appsandlabs.com/quizApp/images/";
 	
 //	public static final String SERVER_ADDR = Config.IS_TEST_BUILD? "http://192.168.0.10:8085":"http://quizapp-main.amcolabs.com";
 //	public static final String CDN_IMAGES_PATH = "http://192.168.0.10:8081/images/";
@@ -125,21 +125,22 @@ public class ServerCalls {
 	}
 	
 	
-	public  HashMap<String,String> decodeConfigVariables(ServerResponse response){
-		HashMap<String,String> map = decodeConfigVariables(response.payload10);
-		if(map.containsKey(Config.PREF_SERVER_TIME)){
-			quizApp.getConfig().setServerTime(Double.parseDouble(map.get(Config.PREF_SERVER_TIME)) , response.getResponseTime());
+	public  HashMap<String,Object> decodeConfigVariables(ServerResponse response){
+		if(response == null ) return null;
+		HashMap<String,Object> map = decodeConfigVariables(response.payload10);
+		if(map!=null && map.containsKey(Config.PREF_SERVER_TIME)){
+			quizApp.getConfig().setServerTime((Double)map.get(Config.PREF_SERVER_TIME) , response.getResponseTime());
 		}
 		return map;
 	}
 
 	
-	public HashMap<String, String> decodeConfigVariables(String fromRawJson){
-		HashMap<String,String> map = null;
+	public HashMap<String, Object> decodeConfigVariables(String fromRawJson){
+		HashMap<String,Object> map = null;
 		if(fromRawJson==null || fromRawJson.equalsIgnoreCase(""))
 			return null;
 		try{ 
-			map = quizApp.getConfig().getGson().fromJson(fromRawJson , new TypeToken<HashMap<String,String>>(){}.getType());
+			map = quizApp.getConfig().getGson().fromJson(fromRawJson , new TypeToken<HashMap<String,Object>>(){}.getType());
 		}
 		catch(IllegalStateException e){
 			e.printStackTrace();
@@ -150,7 +151,7 @@ public class ServerCalls {
 				Context context = quizApp.getContext();
 				PackageInfo pInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
 				int versionCode = pInfo.versionCode;
-				if(versionCode < Integer.parseInt(map.get(Config.FORCE_APP_VERSION))){
+				if(versionCode < (Integer)map.get(Config.FORCE_APP_VERSION)){
 					quizApp.addUiBlock("Please Upgrade immutable");
 				}
 			}
@@ -168,6 +169,7 @@ public class ServerCalls {
 		if(code==null){
 			return;
 		}
+		decodeConfigVariables(response);
 		switch(code){
 			case FAILED:
 				if(serverErrorMsgShownCount++%2==0)

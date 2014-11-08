@@ -311,6 +311,11 @@ public class UserMainPageController  extends AppController{
     	doFbLogin(new DataInputListener<User>(){
     		@Override
     		public String onData(User user) {
+				if(user==null){
+					quizApp.getStaticPopupDialogBoxes().yesOrNo(UiText.GPLUS_ERRROR.getValue() , null, UiText.CANCEL.getValue(), null );
+					return null;
+				}
+
     			quizApp.getServerCalls().doFacebookLogin(user, new DataInputListener<User>(){
     				@Override
     				public String onData(User user) {
@@ -337,6 +342,11 @@ public class UserMainPageController  extends AppController{
   
 	public void afterUserLoggedIn(User user){
 		quizApp.setUser(user);
+		if(loginListener!=null){
+			loginListener.onData(user);
+			loginListener=null;
+			return;
+		}
 		checkAndShowCategories();
 	}
 
@@ -418,6 +428,9 @@ public class UserMainPageController  extends AppController{
 				selectFriendsScreen.showFriendsList(UiText.SELECT_FRIENDS_TO_CHALLENGE_IN.getValue(quiz.name), users,new DataInputListener<User>(){
 					@Override
 					public String onData(User s) {
+						if(quizApp.isRapidReClick(s.uid)){
+							return null;
+						}
 						ProgressiveQuizController progressiveQuiz = (ProgressiveQuizController) quizApp.loadAppController(ProgressiveQuizController.class);
 						progressiveQuiz.startNewChallenge(s, quiz);
 						return super.onData(s);

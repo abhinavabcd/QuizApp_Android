@@ -6,10 +6,12 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.ActionBarActivity;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
+import android.view.WindowManager;
 
 import com.amcolabs.quizapp.UserDeviceManager.AppRunningState;
 import com.amcolabs.quizapp.configuration.Config;
@@ -17,21 +19,24 @@ import com.amcolabs.quizapp.datalisteners.DataInputListener;
 import com.amcolabs.quizapp.datalisteners.DataInputListener2;
 import com.amcolabs.quizapp.loginutils.GoogleLoginHelper;
 import com.amcolabs.quizapp.uiutils.UiUtils.UiText;
+import com.crittercism.app.Crittercism;
 import com.google.android.gms.auth.GoogleAuthException;
 import com.google.android.gms.auth.GoogleAuthUtil;
 import com.google.android.gms.auth.UserRecoverableAuthException;
 import com.google.android.gms.common.Scopes;
-import com.google.android.gms.plus.Plus;
 
 
 
-public class MainActivity extends ActionBarActivity {
+public class MainActivity extends FragmentActivity {
 
 	QuizApp quizApp;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Crittercism.initialize(getApplicationContext(), "545e493f0729df126e000001");
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
+		getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+
         setContentView(R.layout.activity_main);
         initQuizApp(savedInstanceState);
 //        SatelliteMenu menu = (SatelliteMenu) findViewById(R.id.menu);
@@ -74,11 +79,6 @@ public class MainActivity extends ActionBarActivity {
                     .commit();
         }
         quizApp.setMenu(getMenu());             
-
-        if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        } 
-        
 
     }
  

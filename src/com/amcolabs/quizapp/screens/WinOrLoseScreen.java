@@ -175,18 +175,12 @@ public class WinOrLoseScreen extends Screen{
 	}
 	
 	private User getOtherUser(ArrayList<User> currentUsers) {
-		User user2 = null;
 		for(User user : currentUsers){
 			if(!user.uid.equalsIgnoreCase(getApp().getUser().uid)){
-				user2 = user;
-				break;
-			}
-			else {
-				user2 = null;
-				break;
+				return user;
 			}
 		}
-		return user2;
+		return null;
 	}
 
 	/**

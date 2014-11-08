@@ -65,7 +65,7 @@ public class QuestionScreen extends Screen implements View.OnClickListener, Anim
 	private DataInputListener<Boolean> onQuestionTimeEnd;
 	private MediaPlayer possitiveButtonSounds;
 	private MediaPlayer negetiveButtonSounds;
-	private WakeLock wklock;
+//	private WakeLock wklock;
 
 	
 	
@@ -116,10 +116,10 @@ public class QuestionScreen extends Screen implements View.OnClickListener, Anim
         negetiveButtonSounds = MediaPlayer.create(getApp().getActivity(),R.raw.tap_wrong);
         getApp().changeMusic(R.raw.quiz_play);
         
-        PowerManager pManager = (PowerManager) getApp().getContext().getSystemService(Context.POWER_SERVICE);
-		wklock = pManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK|PowerManager.ON_AFTER_RELEASE,"quizapp");
-		wklock.acquire();
-        
+//        PowerManager pManager = (PowerManager) getApp().getContext().getSystemService(Context.POWER_SERVICE);
+//		wklock = pManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK|PowerManager.ON_AFTER_RELEASE,"quizapp");
+//		wklock.acquire();
+//        
         fullQuestionLayout.setKeepScreenOn(true);
         
 		addView(fullQuestionLayout);
@@ -198,8 +198,8 @@ public class QuestionScreen extends Screen implements View.OnClickListener, Anim
 		boolean isImageAvailable = false;
 //		preQuestionView.setVisibility(View.INVISIBLE);
 //		questionAndOptionsViewWrapper.setVisibility(View.VISIBLE);
-		questionTextView.setText(ques.questionDescription);
-		
+//		questionTextView.setText(ques.questionDescription);
+		getApp().getUiUtils().setTextViewHTML(questionTextView, ques.questionDescription, null);
 		// TODO: should use longoptionflag to change layout
 		if (ques.getPictures().size()==0){ //longOptionFlag ||
 			questionImageView.setVisibility(View.GONE);
@@ -346,7 +346,7 @@ public class QuestionScreen extends Screen implements View.OnClickListener, Anim
 	@Override
 	public void onRemovedFromScreen() {
 		getApp().changeMusic(R.raw.app_music);		
-		wklock.release();
+//		wklock.release();
 		super.onRemovedFromScreen();
 	}
 	

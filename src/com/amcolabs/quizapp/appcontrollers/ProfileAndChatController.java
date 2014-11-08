@@ -1,7 +1,8 @@
 package com.amcolabs.quizapp.appcontrollers;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 
@@ -115,9 +116,10 @@ public class ProfileAndChatController extends AppController {
 					public String onData(NotificationPayload payload) {
 						if(payload.fromUser.equalsIgnoreCase(user2.uid)){
 							 String messageText = payload.textMessage;
-							chatScreen.addMessage(false, -1 ,messageText);
+							chatScreen.addMessage(false, Config.getCurrentTimeStamp() ,messageText);
 							quizApp.getDataBaseHelper().updateChatList(new ChatList(user2.uid,messageText , Config.getCurrentTimeStamp(), 0));
 						}
+						chatScreen.scrollToBottom();
 						return null;
 					}
 				};//new gcm message from server
@@ -125,8 +127,16 @@ public class ProfileAndChatController extends AppController {
 				if(userMessages.size()==0){
 					chatScreen.setDebugMessage(UiText.NO_RECENT_MESSAGES.getValue());
 				}
-				for(UserInboxMessage message : userMessages)
+				Collections.sort(userMessages, new Comparator<UserInboxMessage>(){
+					@Override
+					public int compare(UserInboxMessage lhs, UserInboxMessage rhs) {
+						return (int) (lhs.timestamp - rhs.timestamp);
+					}
+				});
+				for(UserInboxMessage message : userMessages){
 					chatScreen.addMessage(quizApp.getUser().uid.equalsIgnoreCase(message.fromUid), message.timestamp , message.message);
+				}
+				chatScreen.scrollToBottom();
 				insertScreen(chatScreen);
 				return null;
 			};

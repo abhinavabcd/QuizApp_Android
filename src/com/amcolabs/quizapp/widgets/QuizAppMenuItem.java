@@ -87,12 +87,17 @@ public class QuizAppMenuItem extends LinearLayout implements OnClickListener {
 	private CharSequence isDirtyText = null;
 
 	public QuizAppMenuItem(QuizApp quizApp, int id , int iconDrawable , String text) {
+		this(quizApp , id, iconDrawable, text, quizApp.getConfig().getAThemeColor());
+	}
+	
+	public QuizAppMenuItem(QuizApp quizApp, int id , int iconDrawable , String text , int bgColor) {
 		super(quizApp.getContext());
 		this.quizApp = quizApp;
 		mContext =quizApp.getContext();
 		setOnClickListener(this);
-		init(id, text, quizApp.getConfig().getAThemeColor());
+		init(id, text, bgColor);
 	}
+
 	
 	public QuizAppMenuItem(Context context, int id , Integer backgroundColor , int iconDrawable , String text) {
 		super(context);

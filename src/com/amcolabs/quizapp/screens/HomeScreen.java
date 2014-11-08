@@ -288,6 +288,7 @@ public class HomeScreen extends Screen {
 		};
 		totalXp.setOnClickListener(profileClickListener);
 		viewProfileButton.setOnClickListener(profileClickListener);
+		userName.setOnClickListener(profileClickListener);
 		addToScrollView(baseLayout);
 	}
 

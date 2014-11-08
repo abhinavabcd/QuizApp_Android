@@ -79,6 +79,10 @@ public class ClashScreen extends Screen {
 	}
 	
 	public void beforeRemove(){
+	}
+	
+	@Override
+	public void onRemovedFromScreen() {
 		for(View userInfoView : userInfoViews){
 			if(userInfoView instanceof WaitingForUserView){
 				((WaitingForUserView) userInfoView).cleanUp();

@@ -70,11 +70,12 @@
 
             <com.amcolabs.quizapp.widgets.GothamTextView
                 android:id="@+id/additional_text"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
                 android:gravity="center"
-                android:padding="5dp"
-                android:background="@color/green"
+	            android:background="@color/green"
+                android:padding="10dp"
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:textStyle="bold" />
         </FrameLayout>

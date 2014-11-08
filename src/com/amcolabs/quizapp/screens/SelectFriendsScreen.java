@@ -165,7 +165,7 @@ public class SelectFriendsScreen extends Screen {
 						@Override
 						public String onData(User user) {
 							getApp().setUser(user);
-							refreshToGooglePlusFriends();
+							refreshFbFriends();
 							return null;
 						}
 					});
@@ -195,6 +195,9 @@ public class SelectFriendsScreen extends Screen {
 	
 	private List<User> getGPlusUsers(List<User> users) {
 		// TODO Auto-generated method stub
+		if(getApp().getUser().gPlusUid==null || getApp().getUser().gPlusUid.equalsIgnoreCase("")){
+			return new ArrayList<User>();
+		}
 		ArrayList<User> friendsConnectedToGoogle = new ArrayList<User>();
 		for(User user :users){
 			if(user.gPlusUid!=null){
@@ -205,6 +208,10 @@ public class SelectFriendsScreen extends Screen {
 	}
 
 	private List<User> getFbUsers(List<User> users2) {
+		if(getApp().getUser().fbUid==null || getApp().getUser().fbUid.equalsIgnoreCase("")){
+			return new ArrayList<User>();
+		}
+
 		ArrayList<User> friendsConnectedToFb = new ArrayList<User>();
 		for(User user :users){
 			if(user.fbUid!=null){

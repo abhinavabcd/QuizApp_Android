@@ -411,7 +411,8 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 					Screen oldScreen = popCurrentScreen();
 					while(oldScreen!=null && !oldScreen.showOnBackPressed()){
 						oldScreen = popCurrentScreen();
-						oldScreen.beforeRemove(); // we are already calling it in dispose view , that would be more appropriate
+						if(oldScreen!=null)
+							oldScreen.beforeRemove(); // we are already calling it in dispose view , that would be more appropriate
 					}
 					
 					if(oldScreen==null){
@@ -539,6 +540,17 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
     }
     
 	double lastClick = 0;
+	String lastClickId = null;
+	public boolean isRapidReClick(String clickId){
+		if(!clickId.equalsIgnoreCase(clickId) || Config.getCurrentNanos()-lastClick>1000000000){//1 sec
+			lastClick = Config.getCurrentNanos();
+			lastClickId = clickId;
+			return false;
+		}
+		lastClick = Config.getCurrentNanos();
+		return true;
+	}
+
 	public boolean isRapidReClick(){
 		if(Config.getCurrentNanos()-lastClick>1000000000){//1 sec
 			lastClick = Config.getCurrentNanos();

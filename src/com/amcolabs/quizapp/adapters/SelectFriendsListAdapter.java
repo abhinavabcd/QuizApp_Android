@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 
+import android.view.Gravity;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -11,11 +12,12 @@ import android.widget.ArrayAdapter;
 import android.widget.Filter;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.TabWidget;
+import android.widget.LinearLayout.LayoutParams;
 
 import com.amcolabs.quizapp.QuizApp;
 import com.amcolabs.quizapp.R;
 import com.amcolabs.quizapp.User;
+import com.amcolabs.quizapp.configuration.Config;
 import com.amcolabs.quizapp.datalisteners.DataInputListener;
 import com.amcolabs.quizapp.uiutils.UiUtils.UiText;
 import com.amcolabs.quizapp.widgets.GothamTextView;
@@ -54,9 +56,9 @@ public  class SelectFriendsListAdapter extends ArrayAdapter<User>{
 				holder.userName = (GothamTextView) convertView.findViewById(R.id.category_item_name);
 				holder.statusDescription = (GothamTextView) convertView.findViewById(R.id.category_short_name);
 				holder.additionalcontainer = (FrameLayout)convertView.findViewById(R.id.additional_container);
-				convertView.findViewById(R.id.additional_text).setVisibility(View.GONE);
+				holder.additionalcontainer.removeAllViews();
 
-				holder.addFriendButton = new QuizAppMenuItem(quizApp, 0, 0, UiText.ADD.getValue());
+				holder.addFriendButton = new QuizAppMenuItem(quizApp, 0, 0, UiText.ADD.getValue(), Config.themeColors[0]);
 				holder.addFriendButton.setTag(holder);
 				holder.addFriendButton.setOnClickListener(new OnClickListener() {
 					@Override
@@ -81,6 +83,11 @@ public  class SelectFriendsListAdapter extends ArrayAdapter<User>{
 						});
 					}
 				});
+				LayoutParams temp = ((LayoutParams)holder.addFriendButton.getLayoutParams());
+				temp.gravity = Gravity.CENTER;
+				temp.width = LayoutParams.MATCH_PARENT;
+				temp.height = LayoutParams.MATCH_PARENT;
+				
 				holder.additionalcontainer.addView(holder.addFriendButton);	
 				convertView.setTag(holder);
 				if(clickListener!=null)

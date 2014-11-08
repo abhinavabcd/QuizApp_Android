@@ -49,7 +49,8 @@ public class ProgressiveQuizController extends AppController{
 		NORMAL_MODE,
 		BOT_MODE,
 		CHALLENGE_MODE,
-		CHALLENGED_MODE;
+		CHALLENGED_MODE,
+		CHALLENGE_LIVE_MODE;
 		
 		private QuizMode() {
 			// TODO Auto-generated constructor stub
@@ -109,14 +110,14 @@ public class ProgressiveQuizController extends AppController{
 		quizApp.getServerCalls().startProgressiveQuiz(this, quiz, RANDOM_USER_TYPE, null);
 	}	
 	
-	public void showWaitingScreenForLiveChallenge(Quiz quiz , String serverId){
+	public void showWaitingScreenForLiveChallenge(Quiz quiz , String serverId, String poolId){
 		clearScreen();
 		clashingScreen = new ClashScreen(this);
 		clashingScreen.setClashCount(2); 
 		clashingScreen.updateClashScreen(quizApp.getUser()/*quizApp.getUser()*/,quiz, 0);//TODO: change to quizApp.getUser()
 		clashingScreen.setCurrentUserDebugText(UiText.CHECKING_IF_USER_IS_STILL_WAITING.getValue());
 		insertScreen(clashingScreen);
-		quizApp.getServerCalls().startProgressiveQuiz(this, quiz, RANDOM_USER_TYPE, null , serverId);
+		quizApp.getServerCalls().startProgressiveQuiz(this, quiz, CHALLENGED_LIVE_QUIZ_TYPE, null , serverId);
 	}	
 	
 	public int getMaxScore(){
@@ -215,7 +216,7 @@ public class ProgressiveQuizController extends AppController{
 	// type of quiz
 	private static final int CHALLENGE_QUIZ_TYPE = 2; // for layout adjustments //TODO: remove this carefully  , don't remmeber usage
 	private static final int RANDOM_USER_TYPE = 1; 
-	private static final int CHALLENGED_QUIZ_TYPE = 3;
+	private static final int CHALLENGED_LIVE_QUIZ_TYPE = 3;
 
 	double waitinStartTime = 0;
 	boolean noResponseFromServer = true;
@@ -1013,7 +1014,9 @@ public class ProgressiveQuizController extends AppController{
 	
 	public void startChallengedLiveGame(String serverId , String poolId, String quizId ){
 		quiz = quizApp.getDataBaseHelper().getQuizById(quizId);
-		showWaitingScreenForLiveChallenge(quiz, serverId);
+		playType = CHALLENGED_LIVE_QUIZ_TYPE;
+		quizMode = QuizMode.CHALLENGE_LIVE_MODE;
+		showWaitingScreenForLiveChallenge(quiz, serverId, poolId);
 	}
 	
 	public void startChallengedGame(final OfflineChallenge offlineChallenge ){
