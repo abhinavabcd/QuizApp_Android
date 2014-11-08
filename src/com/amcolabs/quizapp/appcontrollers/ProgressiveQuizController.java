@@ -110,15 +110,6 @@ public class ProgressiveQuizController extends AppController{
 		quizApp.getServerCalls().startProgressiveQuiz(this, quiz, RANDOM_USER_TYPE, null);
 	}	
 	
-	public void showWaitingScreenForLiveChallenge(Quiz quiz , String serverId, String poolId){
-		clearScreen();
-		clashingScreen = new ClashScreen(this);
-		clashingScreen.setClashCount(2); 
-		clashingScreen.updateClashScreen(quizApp.getUser()/*quizApp.getUser()*/,quiz, 0);//TODO: change to quizApp.getUser()
-		clashingScreen.setCurrentUserDebugText(UiText.CHECKING_IF_USER_IS_STILL_WAITING.getValue());
-		insertScreen(clashingScreen);
-		quizApp.getServerCalls().startProgressiveQuiz(this, quiz, CHALLENGED_LIVE_QUIZ_TYPE, null , serverId);
-	}	
 	
 	public int getMaxScore(){
 		if(currentQuestions==null || currentQuestions.size()==0)
@@ -495,7 +486,7 @@ public class ProgressiveQuizController extends AppController{
 	    	case USER_DISCONNECTED:
 	    		if(currentQuestions.size()>0){ // still there are questions ? 
 	    			gracefullyCloseSocket();
-	    			quizApp.getStaticPopupDialogBoxes().yesOrNo(UiText.USER_HAS_DISCONNECTED.getValue(getOtherUser().getName()), UiText.CHALLENGE.getValue() , UiText.NO.getValue() , new DataInputListener<Boolean>(){
+	    			quizApp.getStaticPopupDialogBoxes().yesOrNo(UiText.USER_HAS_DISCONNECTED.getValue(getOtherUser().getName()), UiText.CHALLENGE.getValue() , UiText.CLOSE.getValue() , new DataInputListener<Boolean>(){
 	    				@Override
 	    				public String onData(Boolean s) {
 	    					if(s){
@@ -979,6 +970,9 @@ public class ProgressiveQuizController extends AppController{
 		startNewChallenge(otherUser , quiz);
 	}
 	public void startNewChallenge(User otherUser , final Quiz quiz){
+		if(otherUser!=null && quizApp.isRapidReClick(otherUser.uid)){
+			return;
+		}
 		this.quiz = quiz;
 		final User withUser;
 		if(otherUser==null) {
@@ -987,7 +981,7 @@ public class ProgressiveQuizController extends AppController{
 		else{
 			withUser = otherUser;
 		}
-		setQuizMode(QuizMode.CHALLENGE_MODE);
+		setQuizMode(QuizMode.NORMAL_MODE);
 		//TODO: clear socket , 
 		// master server get sid
 		// open new socket with &isChallenge=uid2 , get offlineChallengeId , etc from server , 
@@ -1014,9 +1008,16 @@ public class ProgressiveQuizController extends AppController{
 	
 	public void startChallengedLiveGame(String serverId , String poolId, String quizId ){
 		quiz = quizApp.getDataBaseHelper().getQuizById(quizId);
-		playType = CHALLENGED_LIVE_QUIZ_TYPE;
-		quizMode = QuizMode.CHALLENGE_LIVE_MODE;
-		showWaitingScreenForLiveChallenge(quiz, serverId, poolId);
+		// live game mode is equal to normal mode only
+		clearScreen();
+		clashingScreen = new ClashScreen(this);
+		clashingScreen.setClashCount(2); 
+		clashingScreen.updateClashScreen(quizApp.getUser()/*quizApp.getUser()*/,quiz, 0);//TODO: change to quizApp.getUser()
+		clashingScreen.setCurrentUserDebugText(UiText.CHECKING_IF_USER_IS_STILL_WAITING.getValue());
+		insertScreen(clashingScreen);
+		HashMap<String , String> params = new HashMap<String, String>();
+		params.put(Config.URL_PARAM_IS_CHALLENGED, poolId);
+		quizApp.getServerCalls().startProgressiveQuiz(this, quiz, CHALLENGED_LIVE_QUIZ_TYPE, params , serverId);
 	}
 	
 	public void startChallengedGame(final OfflineChallenge offlineChallenge ){
@@ -1100,7 +1101,7 @@ public class ProgressiveQuizController extends AppController{
 								break;
 							}
 							else if(otherUser.isBotUser()){
-								quizApp.getStaticPopupDialogBoxes().yesOrNo(UiText.CANNOT_CHALLENGE_PRIVATE_USERS.getValue(), null, UiText.CLOSE.getValue(), null);
+								quizApp.getStaticPopupDialogBoxes().yesOrNo(UiText.CANNOT_OFFLINE_CHALLENGE_PRIVATE_USERS.getValue(), null, UiText.CLOSE.getValue(), null);
 								break;
 							}
 						case 2://exit

@@ -215,7 +215,6 @@ public class QuestionScreen extends Screen implements View.OnClickListener, Anim
 				// TODO: Show could not load image or quit quiz
 			}
 		}
-		questionAndOptionsViewWrapper.invalidate();
 		String[] mcqOptions = ques.getMCQOptions();
 		int tmpIndex = ques.getAnswerIndex();
 		if (tmpIndex>3){
@@ -239,6 +238,7 @@ public class QuestionScreen extends Screen implements View.OnClickListener, Anim
 			opt.setTag2(i);
 			opt.setTextColor(Color.BLACK);
 		}
+		questionAndOptionsViewWrapper.invalidate();
 		getTimerView().resetTimer();//reset timer
 	}
 

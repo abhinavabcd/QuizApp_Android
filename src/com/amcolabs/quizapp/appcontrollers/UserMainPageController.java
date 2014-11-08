@@ -428,9 +428,6 @@ public class UserMainPageController  extends AppController{
 				selectFriendsScreen.showFriendsList(UiText.SELECT_FRIENDS_TO_CHALLENGE_IN.getValue(quiz.name), users,new DataInputListener<User>(){
 					@Override
 					public String onData(User s) {
-						if(quizApp.isRapidReClick(s.uid)){
-							return null;
-						}
 						ProgressiveQuizController progressiveQuiz = (ProgressiveQuizController) quizApp.loadAppController(ProgressiveQuizController.class);
 						progressiveQuiz.startNewChallenge(s, quiz);
 						return super.onData(s);

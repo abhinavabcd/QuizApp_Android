@@ -103,7 +103,11 @@ public class Question {
 				if(cachedOptions.length>1){
 					return cachedOptions;
 				}
-				return (cachedOptions = this.options.split(","));
+				cachedOptions = this.options.split(",");
+				for(int i=0;i<cachedOptions.length;i++){
+					cachedOptions[i] = cachedOptions[i].trim();
+				}
+				return cachedOptions;
 			}
 			else
 				return (cachedOptions = new Gson().fromJson(options, new TypeToken<String[]>(){}.getType()));
@@ -163,23 +167,20 @@ public class Question {
 		if((m.find())){
 			return getMCQOptions()[Integer.parseInt(m.group(1))-1];
 		}
-		return answer;
+		return answer.trim();
 	}
 	public void setAnswer(String answer) {
-		this.answer = answer;
+		this.answer = answer.trim();
 	}
 	public int getAnswerIndex() {
-		Matcher m = answerPattern.matcher(this.answer);
-		if((m.find())){
-			return Integer.parseInt(m.group(1))-1;
-		}
+		String answer = getAnswer();
 		String[] options = getMCQOptions();
 		for(int i=0; i<options.length;i++){
-			if(options[i].equalsIgnoreCase(this.answer)){
+			if(options[i].equalsIgnoreCase(answer)){
 				return i;
 			}
 		}
-		this.cachedOptions[0] = this.answer;
+		this.cachedOptions[0] = answer;
 		return 0;
 	}
 }
