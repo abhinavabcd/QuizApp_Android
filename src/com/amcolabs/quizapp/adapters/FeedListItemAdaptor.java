@@ -14,6 +14,7 @@ import android.widget.LinearLayout;
 import com.amcolabs.quizapp.QuizApp;
 import com.amcolabs.quizapp.R;
 import com.amcolabs.quizapp.User;
+import com.amcolabs.quizapp.appcontrollers.ProfileAndChatController;
 import com.amcolabs.quizapp.configuration.Config;
 import com.amcolabs.quizapp.databaseutils.Badge;
 import com.amcolabs.quizapp.databaseutils.Feed;
@@ -35,6 +36,21 @@ public class FeedListItemAdaptor extends ArrayAdapter<Feed> {
 		public ImageView titleImage;
 		public FlowLayout imagesLayout;
 		public GothamTextView timestampText;
+		public User user;
+	}
+	
+	private static class ViewProfileListener implements OnClickListener{
+		
+		FeedViewHolder viewHolder = null;
+		private QuizApp quizApp;
+		public ViewProfileListener(QuizApp quizApp , FeedViewHolder holder){
+			this.viewHolder = holder;
+			this.quizApp = quizApp;
+		}
+		@Override
+		public void onClick(View v) {
+			ProfileAndChatController.showProfileScreen(quizApp, viewHolder.user);
+		}
 	}
 	
 	private QuizApp quizApp;
@@ -81,6 +97,7 @@ public class FeedListItemAdaptor extends ArrayAdapter<Feed> {
 		 GothamTextView textContent1;
 		 GothamTextView textContent2;
 		 LinearLayout baseLayout = null;
+		 ViewProfileListener showProfile= null;
 		 switch(feed.getUserFeedType()){
 		 	case FEED_CHALLENGE:
 		 	case FEED_USED_JOINED:
@@ -91,6 +108,9 @@ public class FeedListItemAdaptor extends ArrayAdapter<Feed> {
 				feedHolder.textContent2 = (GothamTextView) baseLayout.findViewById(R.id.text_content_2);
 				feedHolder.timestampText = (GothamTextView)baseLayout.findViewById(R.id.time_text);
 				baseLayout.setTag(feedHolder);
+				showProfile = new ViewProfileListener(quizApp , feedHolder);
+				feedHolder.titleName.setOnClickListener(showProfile);
+				feedHolder.titleImage.setOnClickListener(showProfile);
 				return baseLayout;
 		case FEED_GENERAL:
 			break;
@@ -110,6 +130,9 @@ public class FeedListItemAdaptor extends ArrayAdapter<Feed> {
 			feedHolder.timestampText = (GothamTextView)baseLayout.findViewById(R.id.time_text);
 			feedHolder.imagesLayout = (FlowLayout) baseLayout.findViewById(R.id.userbadges);
 			baseLayout.setTag(feedHolder);
+			showProfile = new ViewProfileListener(quizApp , feedHolder);
+			feedHolder.titleName.setOnClickListener(showProfile);
+			feedHolder.titleImage.setOnClickListener(showProfile);
 			return baseLayout; 
 		default:
 			break;				
@@ -122,6 +145,7 @@ public class FeedListItemAdaptor extends ArrayAdapter<Feed> {
 		 switch(feed.getUserFeedType()){
 			 case FEED_CHALLENGE:
 				user = quizApp.cachedUsers.get(feed.fromUid);
+				feedHolder.user = user;
 				quizApp.getUiUtils().loadImageIntoView(quizApp.getContext(), feedHolder.titleImage, user.pictureUrl, false);
 				feedHolder.titleName.setText(user.getName());
 				OfflineChallenge offlineChallenge = quizApp.getDataBaseHelper().getOfflineChallengeByChallengeId(feed.message);
@@ -138,6 +162,7 @@ public class FeedListItemAdaptor extends ArrayAdapter<Feed> {
 				break;
 			 case FEED_USED_JOINED:
 				user = quizApp.cachedUsers.get(feed.fromUid);
+				feedHolder.user = user;
 				quizApp.getUiUtils().loadImageIntoView(quizApp.getContext(), feedHolder.titleImage, user.pictureUrl, false);
 				feedHolder.titleName.setText(user.getName());
 				quizApp.getUiUtils().setTextViewHTML(feedHolder.textContent1, UiText.FRIEND_USER_STARTED_QUIZAPP.getValue(user.getName() , user.uid), new DataInputListener<String>(){
@@ -158,6 +183,7 @@ public class FeedListItemAdaptor extends ArrayAdapter<Feed> {
 			break;
 		case FEED_USER_WON_BADGES:
 			user = quizApp.cachedUsers.get(feed.fromUid);
+			feedHolder.user = user;
 			quizApp.getUiUtils().loadImageIntoView(quizApp.getContext(), feedHolder.titleImage, user.pictureUrl, false);
 			feedHolder.titleName.setText(user.getName());
 			feedHolder.textContent1.setVisibility(View.GONE);

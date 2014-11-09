@@ -53,6 +53,14 @@ public class ProfileAndChatController extends AppController {
 		return super.onBackPressed();
 	}
 	
+	public static void showProfileScreen(QuizApp quizApp , User user) {
+		if(user!=null){
+			ProfileAndChatController profileAndChat = (ProfileAndChatController) quizApp.loadAppController(ProfileAndChatController.class);
+	//		profileAndChat.loadChatScreen(user, -1, true);
+			profileAndChat.showProfileScreen(user);
+		}
+	}
+
 	public void showProfileScreen(final User user){
 		clearScreen();
 		final UserProfileScreen profileScreen = new UserProfileScreen(this);

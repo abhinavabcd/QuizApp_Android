@@ -167,7 +167,7 @@ public class UiUtils {
 		CONNECTING("Connecting to Google"),
 		USER_WANTS_A_GAME("%s want to have a game with you"), 
 		NO_FEED_AVAILABLE("No Recent Feed"),
-		FRIENDS("Friends"), NO_FRIENDS_SEARCH_AND_SUBSCRIBE("You have no Friends , Search and Subscribe"),
+		FRIENDS("Friends & Challenge"), NO_FRIENDS_SEARCH_AND_SUBSCRIBE("You have no Friends , Search and Subscribe"),
 		NO_RANKINGS_AVAILABLE("No Ranking Data Available"),
 		YOU_LEVELED_UP("You have level up'ed in %s"),
 		YOU_LOST_TO_USER("You lost to <a href='userProfile/%s'>%s</a> in <a href='quizStats/%s'>%s</a> by %s xp Points"),	

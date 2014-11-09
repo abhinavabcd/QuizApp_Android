@@ -71,13 +71,13 @@
 
             <com.amcolabs.quizapp.widgets.PieChartView
                 android:id="@+id/pie_chart"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="300dp"
               />
 
             <com.amcolabs.quizapp.widgets.BarChartViewMultiDataset
                 android:id="@+id/bar_chart"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="300dp"
             />
 
