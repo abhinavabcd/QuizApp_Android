@@ -98,7 +98,7 @@ public class Question {
 	public String[] getMCQOptions(){
 		if(cachedOptions!=null) return cachedOptions;
 		options = options.trim();
-			if(!options.startsWith("['")){
+			if(!options.startsWith("['") && !options.startsWith("[\"")){
 				cachedOptions = this.options.split("\n");
 				if(cachedOptions.length>1){
 					return cachedOptions;

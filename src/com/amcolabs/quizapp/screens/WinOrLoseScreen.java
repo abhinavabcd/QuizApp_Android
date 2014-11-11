@@ -20,6 +20,7 @@ import com.amcolabs.quizapp.User;
 import com.amcolabs.quizapp.appcontrollers.ProgressiveQuizController;
 import com.amcolabs.quizapp.appcontrollers.ProgressiveQuizController.QuizMode;
 import com.amcolabs.quizapp.appcontrollers.ProgressiveQuizController.UserAnswer;
+import com.amcolabs.quizapp.appcontrollers.UserMainPageController;
 import com.amcolabs.quizapp.configuration.Config;
 import com.amcolabs.quizapp.databaseutils.Quiz;
 import com.amcolabs.quizapp.gameutils.GameUtils;
@@ -50,14 +51,14 @@ public class WinOrLoseScreen extends Screen{
 	private GothamTextView quizTotalPoints;
 	private LinearLayout buttonsWrapper;
 	private GothamButtonView rematchButton;
-	private GothamButtonView challengeButton;
+	private GothamButtonView leaderBoardsButton;
 	private GothamButtonView addFriendButton;
 	private GothamButtonView viewProfileButton;
 	private GothamTextView quizResultMessage;
 	
 	private ArrayList<User> currentUsers;
 	private HashMap<String, List<UserAnswer>> userAnswersStack;
-	private ProgressiveQuizController progressviewQuizController;
+	private ProgressiveQuizController progressiveQuizController;
 	private QuizMode quizMode;
 	
 	public static class userViewHolder{
@@ -79,7 +80,7 @@ public class WinOrLoseScreen extends Screen{
 				break;
 			}
 		}
-		progressviewQuizController =  (ProgressiveQuizController) controller;
+		progressiveQuizController =  (ProgressiveQuizController) controller;
 		currentUsers = curUsers;
 		quizResult = (ScrollView) LayoutInflater.from(controller.getContext()).inflate(R.layout.win_lose_screen,this, false);
 		LinearLayout usersPieChartViews = (LinearLayout) quizResult.findViewById(R.id.users);
@@ -130,14 +131,20 @@ public class WinOrLoseScreen extends Screen{
         rematchButton.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				progressviewQuizController.requestRematch();
+				if(!progressiveQuizController.requestRematch()){
+					rematchButton.setText(UiText.CHALLENGE.getValue());
+				}
+				else{
+					rematchButton.setText(UiText.REQUESTED.getValue());
+				}
 			}
 		});
-        challengeButton = (GothamButtonView)quizResult.findViewById(R.id.challengeButton);
-        challengeButton.setOnClickListener(new OnClickListener() {
+        leaderBoardsButton = (GothamButtonView)quizResult.findViewById(R.id.challengeButton);
+        leaderBoardsButton.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				progressviewQuizController.startNewChallenge(null);
+				UserMainPageController uController = (UserMainPageController) getApp().loadAppController(UserMainPageController.class);
+				uController.showLeaderBoards(progressiveQuizController.getQuiz().quizId);
 			}
 		});
         
@@ -148,7 +155,7 @@ public class WinOrLoseScreen extends Screen{
 					addFriendButton.setOnClickListener(new OnClickListener() {
 						@Override
 						public void onClick(View v) {
-							progressviewQuizController.removeFriend(user2);
+							progressiveQuizController.removeFriend(user2);
 							addFriendButton.setText(UiText.SUBSCRIBE.getValue());
 						}
 					});
@@ -158,7 +165,7 @@ public class WinOrLoseScreen extends Screen{
 		        addFriendButton.setOnClickListener(new OnClickListener() {
 					@Override
 					public void onClick(View v) {
-						progressviewQuizController.addFriend(user2);
+						progressiveQuizController.addFriend(user2);
 					}
 				});
 			}
@@ -168,7 +175,7 @@ public class WinOrLoseScreen extends Screen{
         viewProfileButton.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				progressviewQuizController.showProfileScreen(user2);
+				progressiveQuizController.showProfileScreen(user2);
 			}
 		});
         addView(quizResult);

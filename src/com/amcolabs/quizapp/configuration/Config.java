@@ -86,6 +86,7 @@ public class Config{
 	public static final String APP_VERSION = "app_version";
 	public static final String APP_LOADING_VIEW_IMAGE = null;
 	public static final String URL_PARAM_IS_CHALLENGED = "isChallenged";
+	public static final boolean IS_SERVER_BUILD = false;
 	
 	private QuizApp quizApp;
 	

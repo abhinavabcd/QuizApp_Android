@@ -33,6 +33,7 @@ import com.amcolabs.quizapp.databaseutils.Quiz;
 import com.amcolabs.quizapp.datalisteners.DataInputListener;
 import com.amcolabs.quizapp.uiutils.UiUtils;
 import com.amcolabs.quizapp.uiutils.UiUtils.UiText;
+import com.amcolabs.quizapp.widgets.ExpandableHeightListView;
 import com.amcolabs.quizapp.widgets.GothamTextView;
 
 public class HomeScreen extends Screen { 
@@ -222,7 +223,9 @@ public class HomeScreen extends Screen {
 		searchText.setVisibility(View.GONE);//hide search
 		GothamTextView titleView = (GothamTextView) lView.findViewById(R.id.title_text_view);
 		titleView.setText(title);
-		ListView listView = (ListView) lView.findViewById(R.id.listView);
+		ExpandableHeightListView listView = (ExpandableHeightListView) lView.findViewById(R.id.listView);
+		listView.setExpanded(true);
+		listView.setScrollContainer(false);
 		listView.setDivider(new ColorDrawable(this.getResources().getColor(R.color.translucent_black)));
 		listView.setDividerHeight(1);
 
@@ -237,7 +240,7 @@ public class HomeScreen extends Screen {
 		
 		
 
-		UiUtils.setListViewHeightBasedOnChildren(listView);
+//		UiUtils.setListViewHeightBasedOnChildren(listView);
 		
 		FrameLayout viewMore = (FrameLayout) lView.findViewById(R.id.view_all_wrapper);
 		viewMore.setVisibility(View.GONE);

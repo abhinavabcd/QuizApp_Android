@@ -55,6 +55,9 @@ public class UserProfileScreen extends Screen {
 	private GothamTextView userMoreInfo;
 	private AppController controller;
 	private LinearLayout userProfileWrapper;
+	private int win_count = 0 ;
+	private int lose_count = 0;
+	private int tie_count = 0;
 	
 	public UserProfileScreen(AppController cont) {
 		super(cont);
@@ -131,9 +134,9 @@ public class UserProfileScreen extends Screen {
 	}
 
 	private void drawUserQuizChartsAndUpdateStats(User user){
-		int win_count = 0;
-		int lose_count = 0;
-		int tie_count = 0;
+		win_count = 0;
+		lose_count = 0;
+		tie_count = 0;
 		List<Quiz> quizList = getApp().getDataBaseHelper().getAllQuizzesOrderedByXP();
 		ArrayList<Entry> yVals1 = new ArrayList<Entry>();
 		ArrayList<BarEntry> yValsWins = new ArrayList<BarEntry>();
@@ -304,7 +307,7 @@ public class UserProfileScreen extends Screen {
         // set a text for the chart center
         mPieChart.setCenterText("Total XP: " + (int) mPieChart.getYValueSum());
         
-        mPieChart.setDescription("Total Matches Played");
+        mPieChart.setDescription(UiText.TOTAL_GAMES_PLAYED.getValue(win_count+lose_count+tie_count));
         mPieChart.invalidate();
 	}
 	

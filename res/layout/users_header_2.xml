@@ -30,15 +30,16 @@
                 android:src="@drawable/ic_launcher" />
 
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:orientation="vertical" >
 
                 <com.amcolabs.quizapp.widgets.GothamTextView
                     android:id="@+id/user_name"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:lines="1"
                     android:text="Medium Text"
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:textColor="@color/white"
@@ -73,19 +74,22 @@
             android:id="@+id/user2view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="right" >
+            android:gravity="right"
+            android:orientation="horizontal" >
 
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
+                android:layout_gravity="right|center_vertical"
                 android:gravity="right"
                 android:orientation="vertical" >
 
                 <com.amcolabs.quizapp.widgets.GothamTextView
                     android:id="@+id/user_name_2"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:gravity="right"
+                    android:lines="1"
                     android:text="Medium Text"
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:textColor="@color/white"

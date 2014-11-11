@@ -1,13 +1,10 @@
 package com.amcolabs.quizapp.uiutils;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.DecimalFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -19,8 +16,6 @@ import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.Bitmap.CompressFormat;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
@@ -49,6 +44,7 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.amcolabs.quizapp.MainActivity;
 import com.amcolabs.quizapp.QuizApp;
 import com.amcolabs.quizapp.R;
 import com.amcolabs.quizapp.configuration.Config;
@@ -58,7 +54,6 @@ import com.amcolabs.quizapp.notificationutils.NotificationReciever;
 import com.amcolabs.quizapp.serverutils.ServerCalls;
 import com.github.mikephil.charting.data.BarEntry;
 import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Target;
 
 
 public class UiUtils {
@@ -159,7 +154,7 @@ public class UiUtils {
 		CANCEL("Cancel"), COMPLETED_CHALLENGE("Challenge Completed"), 
 		YOU_WON_LOOSE_CHALLENGE_FEED("%s! , here are the <a href='offlineChallengeId/%s'>Challenge Details</a>"),
 		USER_FEED("User Feed"),
-		FRIEND_USER_STARTED_QUIZAPP("You Friend %s started using quizApp <a href='userProfile/%s'>view profile</a>"), 
+		FRIEND_USER_STARTED_QUIZAPP("Your Friend %s started using quizApp <a href='userProfile/%s'>view profile</a>"), 
 		CONENCT_WITH_GOOGLE("Connect With Google"),
 		INVITE_YOUR_FRIENDS("Invite your <a href='googlePlusInvite/friends'>Google Friends</a>"),
 		CONENCT_WITH_FACEBOOK("Connect with Facebook"),
@@ -170,7 +165,7 @@ public class UiUtils {
 		FRIENDS("Friends & Challenge"), NO_FRIENDS_SEARCH_AND_SUBSCRIBE("You have no Friends , Search and Subscribe"),
 		NO_RANKINGS_AVAILABLE("No Ranking Data Available"),
 		YOU_LEVELED_UP("You have level up'ed in %s"),
-		YOU_LOST_TO_USER("You lost to <a href='userProfile/%s'>%s</a> in <a href='quizStats/%s'>%s</a> by %s xp Points"),	
+		YOU_LOST_TO_USER("You lost to <a href='userProfile/%s'>%s</a> in <a href='quizStats/%s'>%s</a> with %s xp Points"),	
 		YOU_DEFEATED_USER("You defeated <a href='userProfile/%s'>%s</a> in <a href='quizStats/%s'>%s</a> with %s xp Points"),
 		THE_QUIZ_WAS_TIE("It was a tie with <a href='userProfile/%s'>%s</a> in <a href='quizStats/%s'>%s</a> with %s xp Points"),
 		THERE_WAS_SERVER_ERROR("There was a server error while you were playing with <a href='userProfile/%s'>%s</a> in <a href='quizStats/%s'>%s</a>"),
@@ -208,7 +203,9 @@ public class UiUtils {
 		IN("in %s"), NO_QUIZ_DATA_AVAILABLE_PLAY_TO_SEE("No Quiz data available, play quizzes to see your stats."),
 		UNSUBSCRIBE("Unsubscribe"),
 		REMOVED_USER("Removed User"),
-		SUBSCRIBE("Subscribe"), USER_SENT_YOU_MESSAGE("%s sent you a message");	
+		SUBSCRIBE("Subscribe"), USER_SENT_YOU_MESSAGE("%s sent you a message"),
+		REQUESTED("Requesting Rematch"), PROFILE("My Profile"),
+		TOTAL_GAMES_PLAYED("Total Matches Played : %d");	
 		
 		String value = null;
 		UiText(String value){
@@ -343,12 +340,13 @@ public class UiUtils {
 				default:
 					break;
     	}
+    	
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(pContext)
         		.setSmallIcon(R.drawable.ic_launcher).setContentTitle(titleText)
                         .setContentText(message);
         notificationBuilder.setWhen(System.currentTimeMillis()).setAutoCancel(true);
         notificationBuilder.setDefaults(Notification.DEFAULT_SOUND);
-        Intent resultIntent = new Intent(pContext, QuizApp.class);
+        Intent resultIntent = new Intent(pContext, MainActivity.class);
         resultIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_SINGLE_TOP);
         if(b!=null)
         	resultIntent.putExtras(b);

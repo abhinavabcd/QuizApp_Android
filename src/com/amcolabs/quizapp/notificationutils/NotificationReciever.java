@@ -104,6 +104,7 @@ public class NotificationReciever extends BroadcastReceiver{
 						QuizApp.pendingNotifications.put(type, temp2);
 					}
 					if(!UserDeviceManager.isRunning() || QuizApp.nState==NotifificationProcessingState.CONTINUE){
+						payload = getNotificationPayload(extras);
 						QuizApp.pendingNotifications.get(type).add(payload);
 					}
 					switch(type){

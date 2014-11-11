@@ -77,6 +77,7 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 	public static final int MENU_FRIENDS = 4;
 	public static final int MENU_MESSAGES=5;
 	private static final int MENU_CHATS = 6;
+	private static final int MENU_PROFILE = 7;
 
 	
 	private User currentUser;
@@ -115,6 +116,7 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 		mainFrame.addView(loadingView);
 		((UserMainPageController)loadAppController(UserMainPageController.class))
 		.checkAndShowCategories();
+		setNotificationProcessingState(NotifificationProcessingState.CONTINUE);
 		return mainFrame;
 	} 
 	
@@ -228,7 +230,7 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 				return null;
 			}
 		});
-
+		setNotificationProcessingState(NotifificationProcessingState.CONTINUE);
 	}
 
 	
@@ -238,8 +240,8 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 			for(NotificationType type : NotificationType.values()){
 				if(pendingNotifications.containsKey(type) && pendingNotifications.get(type)!=null && pendingNotifications.get(type).size()>0){
 					NotificationPayload p=null;
-					while((p=pendingNotifications.get(type).remove(0))!=null)
-						NotificationReciever.checkAndCallListener(type, p);
+					while(pendingNotifications.get(type).size()>0)
+						NotificationReciever.checkAndCallListener(type, (p = pendingNotifications.get(type).remove(0)));
 					setNotificationProcessingState(NotifificationProcessingState.DEFER);
 					return; // only one notification at a time , if notification returns something , then we do stuff
 				} 
@@ -624,7 +626,11 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 				ProfileAndChatController pcontroller = (ProfileAndChatController) loadAppController(ProfileAndChatController.class);
 				pcontroller.showChatScreen();
 				currentActiveMenu = MENU_CHATS;
-
+				break;
+			case MENU_PROFILE:
+				ProfileAndChatController c = (ProfileAndChatController) loadAppController(ProfileAndChatController.class);
+				c.showProfileScreen(getUser());
+				currentActiveMenu = MENU_PROFILE;
 				break;
 		}
 	}
@@ -691,10 +697,12 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 		if(menuItems==null){
 			menuItems = new HashMap<Integer, UiUtils.UiText>();
 			menuItems.put(QuizApp.MENU_HOME, UiText.HOME);
+			menuItems.put(QuizApp.MENU_PROFILE, UiText.PROFILE);
 			menuItems.put(QuizApp.MENU_BADGES,UiText.BADGES);
 			menuItems.put(QuizApp.MENU_ALL_QUIZZES, UiText.SHOW_QUIZZES);
 			menuItems.put(QuizApp.MENU_CHATS,UiText.CHATS);
 			menuItems.put(QuizApp.MENU_FRIENDS, UiText.FRIENDS);
+
 		}
 		return menuItems;
 	}

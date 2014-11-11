@@ -40,6 +40,8 @@ public class LeaderBoardScreen extends Screen {
 		FrameLayout viewMore = (FrameLayout) lView.findViewById(R.id.view_all_wrapper);
 		viewMore.setVisibility(View.GONE);
 		ListView listView = ((ListView) lView.findViewById(R.id.listView));
+		((LayoutParams)listView.getLayoutParams()).setMargins(5, 0, 5, 00);
+		listView.setPadding(0, 0, 0, 20);
 		ColorDrawable sage = new ColorDrawable(this.getResources().getColor(R.color.translucent_black));
 		listView.setDivider(sage);
 		listView.setDividerHeight(1);

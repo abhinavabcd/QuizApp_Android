@@ -35,7 +35,7 @@
         android:visibility="gone"/>
 
 
-    <ListView
+    <com.amcolabs.quizapp.widgets.ExpandableHeightListView
         android:id="@+id/listView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

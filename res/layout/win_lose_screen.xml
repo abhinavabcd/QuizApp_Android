@@ -115,7 +115,7 @@
                     android:layout_margin="5dp"
                     android:background="@drawable/list_item_bg"
                     android:gravity="center"
-                    android:text="Challenge" />
+                    android:text="LeaderBoards" />
 
                 <com.amcolabs.quizapp.widgets.GothamButtonView
                     android:id="@+id/viewProfileButton"

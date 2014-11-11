@@ -83,9 +83,14 @@ public class ProgressiveQuizController extends AppController{
 	private ServerWebSocketConnection serverSocket;
 	
 	private Quiz quiz;
-		
+	
 
 	
+	public Quiz getQuiz() {
+		return quiz;
+	}
+
+
 	public ProgressiveQuizController(QuizApp quizApp) {
 		super(quizApp);
 	}
@@ -276,10 +281,11 @@ public class ProgressiveQuizController extends AppController{
 			new Handler().postDelayed(new Runnable() {
 				@Override
 				public void run() {
-					if(noResponseFromServer){
+					if(noResponseFromServer && !preventBot){
 						if(serverSocket!=null)
 							serverSocket.sendTextMessage(constructSocketMessage(MessageType.ACTIVATE_BOT, null, null));
 					}
+					preventBot = false;
 				}
 			}, Config.BOT_INTIALIZE_AFTER_NO_USER_TIME);
 		}
@@ -501,6 +507,7 @@ public class ProgressiveQuizController extends AppController{
 	    		}
 	    		else if(waitingForRematch){
 	    			waitingForRematch = false;
+	    			requestRematch();
 	    		}
 	    		break; 
 	    	case NEXT_QUESTION:
@@ -554,7 +561,16 @@ public class ProgressiveQuizController extends AppController{
 	    	case LOAD_CHALLENGE_FROM_OFFLINE:
 	    	case USER_HAS_LEFT_POOL:
 	    		gracefullyCloseSocket();
-	    		quizApp.getStaticPopupDialogBoxes().yesOrNo(UiText.USER_HAS_LEFT.getValue(), null, UiText.OK.getValue(), null);
+	    		quizApp.getStaticPopupDialogBoxes().yesOrNo(UiText.USER_HAS_LEFT.getValue(), null, UiText.OK.getValue(),new DataInputListener<Boolean>(){
+	    			@Override
+	    			public String onData(Boolean s) {
+	    				if(!s){
+	    					onBackPressed();
+	    				}
+	    				return super.onData(s);
+	    			}
+	    		});
+	    		
 	    		loadOfflineChallenge();
 	    		break;
 	    		
@@ -680,10 +696,12 @@ public class ProgressiveQuizController extends AppController{
 		}
 		return otherUser;
 	}
-	public void requestRematch(){
+	public boolean requestRematch(){
 		if(serverSocket!=null && serverSocket.isConnected()){
-			serverSocket.sendTextMessage(constructSocketMessage(MessageType.REMATCH_REQUEST, null,null));
+			if(!waitingForRematch)
+				serverSocket.sendTextMessage(constructSocketMessage(MessageType.REMATCH_REQUEST, null,null));
 			waitingForRematch = true;
+			return true;
 		}
 		else{
 			quizApp.getStaticPopupDialogBoxes().yesOrNo(UiText.USER_HAS_LEFT.getValue(), UiText.CHALLENGE.getValue(), UiText.OK.getValue(), new DataInputListener<Boolean>(){
@@ -698,6 +716,7 @@ public class ProgressiveQuizController extends AppController{
 					return super.onData(s);
 				}
 			});
+			return false;
 		}
 	}
 
@@ -761,6 +780,7 @@ public class ProgressiveQuizController extends AppController{
 	private List<UserAnswer> userChallengeAnswers;
 	private MediaPlayer possitiveButtonSounds;
 	private MediaPlayer negetiveButtonSounds;
+	private boolean preventBot = false;
 	
 	public void loadResultScreen(Quiz quiz, ArrayList<User> currentUsers, HashMap<String, List<UserAnswer>> userAnswersStack) {
 		// TODO Auto-generated method stub
@@ -1015,6 +1035,7 @@ public class ProgressiveQuizController extends AppController{
 		clashingScreen.updateClashScreen(quizApp.getUser()/*quizApp.getUser()*/,quiz, 0);//TODO: change to quizApp.getUser()
 		clashingScreen.setCurrentUserDebugText(UiText.CHECKING_IF_USER_IS_STILL_WAITING.getValue());
 		insertScreen(clashingScreen);
+		preventBot = true; // to prevent bot
 		HashMap<String , String> params = new HashMap<String, String>();
 		params.put(Config.URL_PARAM_IS_CHALLENGED, poolId);
 		quizApp.getServerCalls().startProgressiveQuiz(this, quiz, CHALLENGED_LIVE_QUIZ_TYPE, params , serverId);

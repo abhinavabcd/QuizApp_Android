@@ -16,7 +16,7 @@
 
         <com.amcolabs.quizapp.widgets.GothamTextView
             android:id="@+id/quizPoints"
-            android:layout_width="wrap_content"
+            android:layout_width="60dp"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
             android:background="@drawable/list_item_bg"
@@ -47,7 +47,7 @@
 
         <com.amcolabs.quizapp.widgets.GothamTextView
             android:id="@+id/quizWinPoints"
-            android:layout_width="wrap_content"
+            android:layout_width="60dp"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
             android:background="@drawable/list_item_bg"
@@ -78,7 +78,7 @@
 
         <com.amcolabs.quizapp.widgets.GothamTextView
             android:id="@+id/quizLevelupPoints"
-            android:layout_width="wrap_content"
+            android:layout_width="60dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_margin="10dp"
@@ -110,7 +110,7 @@
 
         <com.amcolabs.quizapp.widgets.GothamTextView
             android:id="@+id/quizTotalPoints"
-            android:layout_width="wrap_content"
+            android:layout_width="60dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_margin="10dp"

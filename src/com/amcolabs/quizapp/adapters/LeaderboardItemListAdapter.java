@@ -65,7 +65,9 @@ public class LeaderboardItemListAdapter extends ArrayAdapter<User> {
 			convertView.findViewById(R.id.item_wrapper_2).setBackgroundResource(0);
 			holder.imageView = (ImageView)convertView.findViewById(R.id.imageView1);
 			holder.userName = (GothamTextView) convertView.findViewById(R.id.category_item_name);
+			holder.userName.setLines(1);
 			holder.userStatus = (GothamTextView) convertView.findViewById(R.id.category_short_name);
+			holder.userStatus.setLines(1);
 			holder.additionalContainer = (FrameLayout)convertView.findViewById(R.id.additional_container);
 			holder.additionalText = (GothamTextView) holder.additionalContainer.findViewById(R.id.additional_text);
 			holder.additionalText.setBackgroundColor(0);
