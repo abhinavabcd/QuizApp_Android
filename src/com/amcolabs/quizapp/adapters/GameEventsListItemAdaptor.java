@@ -44,7 +44,7 @@ public class GameEventsListItemAdaptor extends ArrayAdapter<GameEvents> {
 	@Override
 	public int getViewTypeCount() {
 		// TODO Auto-generated method stub
-		return FeedType.values().length;
+		return FeedType.values().length+1;
 	}
 	@Override
 	public int getItemViewType(int position) {

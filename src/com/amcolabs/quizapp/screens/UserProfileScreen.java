@@ -3,7 +3,6 @@ package com.amcolabs.quizapp.screens;
 import java.util.ArrayList;
 import java.util.List;
 
-import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,7 +12,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ScrollView;
-import android.widget.TextView;
 
 import com.amcolabs.quizapp.AppController;
 import com.amcolabs.quizapp.R;
@@ -26,11 +24,11 @@ import com.amcolabs.quizapp.databaseutils.Badge;
 import com.amcolabs.quizapp.databaseutils.GameEvents;
 import com.amcolabs.quizapp.databaseutils.LocalQuizHistory;
 import com.amcolabs.quizapp.databaseutils.Quiz;
-import com.amcolabs.quizapp.datalisteners.DataInputListener;
 import com.amcolabs.quizapp.gameutils.GameUtils;
 import com.amcolabs.quizapp.uiutils.UiUtils;
 import com.amcolabs.quizapp.uiutils.UiUtils.UiText;
 import com.amcolabs.quizapp.widgets.BarChartViewMultiDataset;
+import com.amcolabs.quizapp.widgets.ExpandableHeightListView;
 import com.amcolabs.quizapp.widgets.FlowLayout;
 import com.amcolabs.quizapp.widgets.GothamTextView;
 import com.amcolabs.quizapp.widgets.PieChartView;
@@ -40,7 +38,6 @@ import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
-import com.google.gson.reflect.TypeToken;
 
 public class UserProfileScreen extends Screen {
 	public GothamTextView wonTextView;
@@ -114,7 +111,7 @@ public class UserProfileScreen extends Screen {
 		searchText.setVisibility(View.GONE);//hide search
 		GothamTextView titleView = (GothamTextView) lView.findViewById(R.id.title_text_view);
 		titleView.setText(UiText.ACTIVITY_LOG.getValue());
-		ListView listView = (ListView) lView.findViewById(R.id.listView);
+		ExpandableHeightListView listView = (ExpandableHeightListView) lView.findViewById(R.id.listView);
 		listView.setDivider(new ColorDrawable(this.getResources().getColor(R.color.translucent_black)));
 		listView.setDividerHeight(1);
 
@@ -123,7 +120,7 @@ public class UserProfileScreen extends Screen {
 		listView.setLayoutParams(lParams);
 		listView.setAdapter(gameEventsAdapter);
 	//	addListenersToQuizListItem(listView);
-		UiUtils.setListViewHeightBasedOnChildren(listView);
+		listView.setExpanded(true);
 		if(userProfileWrapper!=null){
 			viewMore.setVisibility(View.GONE);
 			userProfileWrapper.addView(lView );
@@ -405,7 +402,7 @@ public class UserProfileScreen extends Screen {
 		searchText.setVisibility(View.GONE);//hide search
 		GothamTextView titleView = (GothamTextView) lView.findViewById(R.id.title_text_view);
 		titleView.setText(UiText.LOCAL_QUIZ_HISTORY.getValue());
-		ListView listView = (ListView) lView.findViewById(R.id.listView);
+		ExpandableHeightListView listView = (ExpandableHeightListView) lView.findViewById(R.id.listView);
 		listView.setDivider(new ColorDrawable(this.getResources().getColor(R.color.translucent_black)));
 		listView.setDividerHeight(1);
 
@@ -415,7 +412,7 @@ public class UserProfileScreen extends Screen {
 		listView.setAdapter(quizHistoryAdapter);
 	//	addListenersToQuizListItem(listView);
 		if(isAdddedToScroller){
-			UiUtils.setListViewHeightBasedOnChildren(listView);
+			listView.setExpanded(true);
 			if(userProfileWrapper!=null){
 				FrameLayout viewMore = (FrameLayout) lView.findViewById(R.id.view_all_wrapper);
 				viewMore.setVisibility(View.GONE);

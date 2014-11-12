@@ -185,7 +185,7 @@ public class HomeScreen extends Screen {
 		searchText.setVisibility(View.GONE);
 		GothamTextView titleView = (GothamTextView) lView.findViewById(R.id.title_text_view);
 		titleView.setText(text);
-		ListView listView = (ListView) lView.findViewById(R.id.listView);
+		ExpandableHeightListView listView = (ExpandableHeightListView) lView.findViewById(R.id.listView);
 		listView.setAdapter(offlineChallengeAdaptor);
 		
 		listViewsAdaptors.add(offlineChallengeAdaptor);
@@ -193,8 +193,8 @@ public class HomeScreen extends Screen {
 		
 		
 		addToScrollView(lView);
-		if(spanOnFullWidth)
-			UiUtils.setListViewHeightBasedOnChildren(listView);
+		if(spanOnFullWidth) 
+			listView.setExpanded(true);
 		
 		FrameLayout viewMore = (FrameLayout) lView.findViewById(R.id.view_all_wrapper);
 		if(!showViewMore){
@@ -340,7 +340,7 @@ public class HomeScreen extends Screen {
 		searchText.setVisibility(View.GONE);
 		GothamTextView titleView = (GothamTextView) lView.findViewById(R.id.title_text_view);
 		titleView.setText(text);
-		ListView listView = (ListView) lView.findViewById(R.id.listView);
+		ExpandableHeightListView listView = (ExpandableHeightListView) lView.findViewById(R.id.listView);
 		listView.setAdapter(quizAdaptor);
 		
 		listViewsAdaptors.add(quizAdaptor);
@@ -348,8 +348,7 @@ public class HomeScreen extends Screen {
 		
 		
 		
-
-		UiUtils.setListViewHeightBasedOnChildren(listView);
+		listView.setExpanded(true);
 		
 		FrameLayout viewMore = (FrameLayout) lView.findViewById(R.id.view_all_wrapper);
 		if(!showViewMore){

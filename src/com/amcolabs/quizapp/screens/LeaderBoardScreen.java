@@ -10,7 +10,6 @@ import android.graphics.drawable.ColorDrawable;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import com.amcolabs.quizapp.AppController;
@@ -19,8 +18,8 @@ import com.amcolabs.quizapp.Screen;
 import com.amcolabs.quizapp.User;
 import com.amcolabs.quizapp.adapters.LeaderboardItemListAdapter;
 import com.amcolabs.quizapp.datalisteners.DataInputListener;
-import com.amcolabs.quizapp.uiutils.UiUtils;
 import com.amcolabs.quizapp.uiutils.UiUtils.UiText;
+import com.amcolabs.quizapp.widgets.ExpandableHeightListView;
 import com.amcolabs.quizapp.widgets.GothamTextView;
 
 public class LeaderBoardScreen extends Screen {
@@ -39,7 +38,7 @@ public class LeaderBoardScreen extends Screen {
 		lView.findViewById(R.id.search_text).setVisibility(View.GONE);
 		FrameLayout viewMore = (FrameLayout) lView.findViewById(R.id.view_all_wrapper);
 		viewMore.setVisibility(View.GONE);
-		ListView listView = ((ListView) lView.findViewById(R.id.listView));
+		ExpandableHeightListView listView = ((ExpandableHeightListView) lView.findViewById(R.id.listView));
 		((LayoutParams)listView.getLayoutParams()).setMargins(5, 0, 5, 00);
 		listView.setPadding(0, 0, 0, 20);
 		ColorDrawable sage = new ColorDrawable(this.getResources().getColor(R.color.translucent_black));
@@ -68,7 +67,7 @@ public class LeaderBoardScreen extends Screen {
 			listView.setAdapter(leaderBoardAdaptor);
 		}
 		addToScrollView(lView);
-		UiUtils.setListViewHeightBasedOnChildren(listView);
+		listView.setExpanded(true);
 	}
 	
 	@Override

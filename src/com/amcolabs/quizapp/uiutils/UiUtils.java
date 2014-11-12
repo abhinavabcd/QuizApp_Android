@@ -540,7 +540,8 @@ public class UiUtils {
 		return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp,
 				quizApp.getResources().getDisplayMetrics());
 	}
-	public static ListView setListViewHeightBasedOnChildren(ListView myListView) {
+	
+	public static ListView setListViewHeightBasedOnChildren2(ListView myListView) {
 	      ListAdapter myListAdapter = myListView.getAdapter();
 	        if (myListAdapter == null || myListAdapter.getCount()==0) {
 	            //do nothing return null

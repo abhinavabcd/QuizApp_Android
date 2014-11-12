@@ -63,7 +63,7 @@ public class QuizHistoryListAdapter extends ArrayAdapter<LocalQuizHistory> {
 	@Override
 	public int getItemViewType(int position) {
 		// TODO Auto-generated method stub
-		return this.getItem(position).getQuizResult();
+		return this.getItem(position).getQuizResult()+2;
 	}
 	
 	@Override
