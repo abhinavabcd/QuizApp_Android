@@ -98,7 +98,7 @@ public class LeaderboardItemListAdapter extends ArrayAdapter<User> {
 			holder = (LeaderBoardItemViewHolder) convertView.getTag();
 		}
 		holder.item = user;//on every reset
-		quizApp.getUiUtils().loadImageIntoView(quizApp.getContext(), holder.imageView, user.pictureUrl,true);
+		quizApp.getUiUtils().loadImageIntoView(quizApp.getContext(), holder.imageView, user.pictureUrl,false);
 		holder.userName.setText(user.getName());
 //		if(user.status==null || user.status.trim().equalsIgnoreCase("")){
 //			holder.userStatus.setVisibility(View.GONE);
