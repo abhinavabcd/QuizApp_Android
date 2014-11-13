@@ -859,16 +859,8 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
         }.execute(null, null, null);
     }
 	public void fetchAndLoadUserProfile(String uid) {
-		
-	 	getServerCalls().getUserByUid(uid, new DataInputListener<User>(){
-	 		@Override
-	 		public String onData(User user) {
-				ProfileAndChatController profileAndChat = (ProfileAndChatController)loadAppController(ProfileAndChatController.class);
-				profileAndChat.showProfileScreen(user);
-	 			return null;
-	 		}
-	 	});
-
-	}
+			ProfileAndChatController profileAndChat = (ProfileAndChatController)loadAppController(ProfileAndChatController.class);
+			profileAndChat.fetchAndLoadProfile(uid);
+ 	}
 
 }

@@ -61,8 +61,23 @@ public class ProfileAndChatController extends AppController {
 		}
 	}
 
-	public void showProfileScreen(final User user){
+	public void fetchAndLoadProfile(String uid){
 		clearScreen();
+	 	quizApp.getServerCalls().getUserByUid(uid, new DataInputListener<User>(){
+		 		@Override
+		 		public String onData(User user) {
+		 			showProfileScreen(user, false);
+		 			return null;
+			}
+		});
+
+	}
+	public void showProfileScreen(final User user){
+			showProfileScreen(user, true);
+	}
+	public void showProfileScreen(final User user, boolean clearScreen){
+		if(clearScreen)
+			clearScreen();
 		final UserProfileScreen profileScreen = new UserProfileScreen(this);
 		profileScreen.showUser(user);
 		if(user.uid.equalsIgnoreCase(quizApp.getUser().uid)){

@@ -70,7 +70,11 @@ public class GoogleLoginHelper {
 			@Override
 			public void onConnected(Bundle arg0) {
 				// get token and profile information
-				getUserProfileInformation();
+				if(mGoogleApiClient.isConnected())
+					getUserProfileInformation();
+				else{
+					mGoogleApiClient.connect();
+				}
 			}
 		})
 		.addOnConnectionFailedListener(new OnConnectionFailedListener() {
@@ -101,6 +105,13 @@ public class GoogleLoginHelper {
 		.addScope(Plus.SCOPE_PLUS_LOGIN)
 		.addScope(Plus.SCOPE_PLUS_PROFILE)
 		.build();
+    	quizApp.getMainActivity().setActivityResultListener(new DataInputListener2<Integer, Integer, Intent, Void>(){
+    		public void onData(Integer requestCode, Integer responseCode, Intent intent) {
+    			onActivityResult(requestCode, responseCode, intent);
+    			quizApp.getMainActivity().setActivityResultListener(null);//remove it 
+    		};
+    	});
+
 		mGoogleApiClient.connect();
 
 	}
@@ -114,8 +125,7 @@ public class GoogleLoginHelper {
 		    			quizApp.getMainActivity().setActivityResultListener(null);//remove it 
 		    		};
 		    	});
-
-				mConnectionResult.startResolutionForResult(quizApp.getActivity(), RC_GOOLE_SIGN_IN);
+		    	mConnectionResult.startResolutionForResult(quizApp.getActivity(), RC_GOOLE_SIGN_IN);
 			} catch (SendIntentException e) {
 				mIntentInProgress = false;
 				mGoogleApiClient.connect();

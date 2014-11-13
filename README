@@ -1,0 +1,41 @@
+QuizApp android  , its a  clone of popular trivia app QuizUp , written totally in android, without use of any graphic libraries.
+QuizApp server runs on tornado, can scale over multiple instances by deploying more webservers.
+
+QuizApp uses websockets for the multiplayer game.
+
+
+Its a eclipse android Project . You will need QuizApp_tornado_server to launch the app you can clone it from here.
+
+Steps to get the clinet and server working.
+
+Setting up Server :
+1) Launch mongo DB
+2) Configure Config.py , change the dbServer address to point to mongoDb.
+3) Change the WebServerMap and ExternalWebServerMap to appropriate address of how your server ip address looks from the internal and external viewpoint.
+4) Give a Unique server Id in Config.py
+
+---Loading Data---
+5) Configure load_spreadsheet.py with the your spreadsheet containing your data. see this sample/clone it.
+
+
+You can additonally load sample questions from telugu movies by
+6) Load sample questions by running load_question_data.py and input as suggested in the output.
+7) Once the data is loaded , start the server by running server.py
+
+Client Configuration
+8) In ServerCalls.java change the SERVER_ADDR and CDN path variables to suit your need ,pointing to the webserver and the server which hosts your images and asset files.
+
+
+Conversations/chatting works with Google GCM notifications for now. will change to websockets at later point of time.
+
+----Scaling the webserver----
+To launch a new webserver, change Config.py and add your current server to existing 'WebserveMap' and 'ExternalWebServerMap' with your server id ,  to the existing list , this list will be propagated to other servers , so update it carefully before launching the new server. hola ! , you are good to go, it integrates seemlessly in terms of horizontal scaling, MongoDb can be deployed in a cluster to scale the db.
+
+This is a hobby project, needs many changes perticularly in ui. All contributions and modifications are copylefted.
+
+Thanks Vinay for contributions to code.
+
+
+
+
+
