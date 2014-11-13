@@ -79,14 +79,7 @@ public class Feed {
 		 }
 		 else if(s.startsWith("userProfile")){
 			 String uid = s.split("/")[1];
-			 	quizApp.getServerCalls().getUserByUid(uid, new DataInputListener<User>(){
-			 		@Override
-			 		public String onData(User user) {
-						ProfileAndChatController profileAndChat = (ProfileAndChatController) quizApp.loadAppController(ProfileAndChatController.class);
-						profileAndChat.showProfileScreen(user);
-			 			return null;
-			 		}
-			 	});
+			 quizApp.fetchAndLoadUserProfile(uid);
 		 }
 	}
 

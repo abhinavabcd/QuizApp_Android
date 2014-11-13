@@ -425,7 +425,7 @@ public class ServerCalls {
 					break;
 				}
 			}
-		},true); 
+		},false); 
 	}		
 
 	public void updateUserRating(final float rating, final DataInputListener<Boolean> dataInputListener) {

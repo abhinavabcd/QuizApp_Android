@@ -49,7 +49,7 @@ public class FeedListItemAdaptor extends ArrayAdapter<Feed> {
 		}
 		@Override
 		public void onClick(View v) {
-			ProfileAndChatController.showProfileScreen(quizApp, viewHolder.user);
+			quizApp.fetchAndLoadUserProfile(viewHolder.user.uid);
 		}
 	}
 	

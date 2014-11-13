@@ -1021,6 +1021,7 @@ public class ProgressiveQuizController extends AppController{
 			});
 		}
 		else{
+			preventBot = true;
 			showChallengeScreen(otherUser, quiz);
 		}
 		quizApp.getServerCalls().startProgressiveQuiz(this, quiz, CHALLENGE_QUIZ_TYPE ,temp);
