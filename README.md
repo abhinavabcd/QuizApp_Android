@@ -3,6 +3,23 @@ This a  clone of popular trivia app QuizUp , written totally in android, without
 The server runs on tornado, can scale over multiple instances by deploying more webservers.
 QuizApp uses websockets for the multiplayer game.
 
+
+Live Version here:
+http://appsandlabs.com/quizApp/quizApp.apk
+
+Depends on:
+	Google play services.
+	Autobahn websockets (https://github.com/tavendo/AutobahnAndroid)
+	Facebook SDK (facebook integration)
+	MPCharts Lib (https://github.com/PhilJay/MPAndroidChart)
+
+
+Most configuration in Config.java , do have a look into it.
+All in App strings in UiUtils.java
+
+
+
+
 Its a eclipse android Project . You will need QuizApp_tornado_server to launch the app you can clone it from here.
 [Github quizApp Server](https://github.com/abhinavabcd/QuizApp_server)
 
