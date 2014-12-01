@@ -1,6 +1,6 @@
 #QuizApp android  
 This a  clone of popular trivia app QuizUp , written totally in android, without use of any graphic libraries.
-The server runs on tornado, can scale over multiple instances by deploying more webservers.
+The server runs on tornado, can scale over multiple instances by deploying more servers.
 QuizApp uses websockets for the multiplayer game.
 
 
@@ -13,11 +13,9 @@ Depends on:
 	Facebook SDK (facebook integration)
 	MPCharts Lib (https://github.com/PhilJay/MPAndroidChart)
 
+I have included the jars for autobahn and mpcharts, You should load the appcompat (v7) , googleplayservices lib and facebook sdk and load it in your eclipse. Add them to this project , rightclick>properties>android>libraries , remove the existing and point the correct one from your system.
 
-Most configuration in Config.java , do have a look into it.
-All in App strings in UiUtils.java
-
-
+Most client configuration is in Config.java , do have a look into it. All the 'in game App strings' in UiUtils.java , use them to navigate though the code.
 
 
 Its a eclipse android Project . You will need QuizApp_tornado_server to launch the app you can clone it from here.
@@ -32,7 +30,7 @@ Its a eclipse android Project . You will need QuizApp_tornado_server to launch t
 4. Give a Unique server Id in Config.py
 
 ##Loading data to server
-5. Configure load_spreadsheet.py with the your spreadsheet containing your data. see this sample sheet clone it.
+5. Configure load_spreadsheet.py with the your spreadsheet containing your data. download this sample sheet and clone it in your account.
 [QuizApp server google SpreadSheet](https://docs.google.com/spreadsheets/d/1fXS6D8crBo9p-xWyFG4keqHI5P8-9qqi230IKlcw5Iw/edit?usp=sharing)
 6. 'python load_spreadsheet.py syncall'    to sync all the sheet.. else it will sync only the data marked with <b>"isDirty:1"</b> in the sheet
 
@@ -41,12 +39,12 @@ Its a eclipse android Project . You will need QuizApp_tornado_server to launch t
 8. Once the data is loaded , start the server by running server.py
 
 ##Client Configuration
-8. In ServerCalls.java change the SERVER_ADDR and CDN path variables to suit your need ,pointing to the webserver and the server which hosts your images and asset files.
+8. In ServerCalls.java change the SERVER_ADDR and CDN path variables to suit your need ,pointing to the server and the server which hosts your images and asset files respectively.
 
 Conversations/chatting works with Google GCM notifications for now. will change to websockets at later point of time.
 
-#Scaling the webserver
-To launch a new webserver, change Config.py and add your current server to existing 'WebserveMap' and 'ExternalWebServerMap' with your server id ,  to the existing list , this list will be propagated to other servers , so update it carefully before launching the new server. 
+#Scaling the server
+To launch a new server, change Config.py and add your current server to existing 'WebserverMap' and 'ExternalWebServerMap' with your server id ,  to the existing list , this list will be propagated to other servers , so update it carefully before launching the new server. 
 You should be good to go, it integrates seemlessly in terms of horizontal scaling, MongoDb can be deployed in a cluster to scale the db .
 For any issues you can open up an issue or email abhinavabcd@gmail.com or vinay.bhargav.reddy@gmail.com
 
