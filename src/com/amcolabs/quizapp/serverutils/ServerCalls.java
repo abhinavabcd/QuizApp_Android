@@ -27,7 +27,6 @@ import com.amcolabs.quizapp.configuration.Config;
 import com.amcolabs.quizapp.databaseutils.Badge;
 import com.amcolabs.quizapp.databaseutils.Category;
 import com.amcolabs.quizapp.databaseutils.Feed;
-import com.amcolabs.quizapp.databaseutils.LocalQuizHistory;
 import com.amcolabs.quizapp.databaseutils.OfflineChallenge;
 import com.amcolabs.quizapp.databaseutils.OfflineChallenge.ChallengeData;
 import com.amcolabs.quizapp.databaseutils.Question;
@@ -35,7 +34,6 @@ import com.amcolabs.quizapp.databaseutils.Quiz;
 import com.amcolabs.quizapp.databaseutils.UserInboxMessage;
 import com.amcolabs.quizapp.datalisteners.DataInputListener;
 import com.amcolabs.quizapp.datalisteners.DataInputListener2;
-import com.amcolabs.quizapp.popups.StaticPopupDialogBoxes;
 import com.amcolabs.quizapp.serverutils.ServerResponse.MessageType;
 import com.amcolabs.quizapp.uiutils.UiUtils.UiText;
 import com.google.android.gcm.GCMRegistrar;
@@ -46,8 +44,8 @@ import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.loopj.android.http.SyncHttpClient;
 
-import de.tavendo.autobahn.WebSocketConnectionHandler;
 import de.tavendo.autobahn.WebSocketException;
+import de.tavendo.autobahn.WebSocketHandler;
 
 class Item<T> {
     int reletiveProb;
@@ -643,7 +641,7 @@ public class ServerCalls {
 		  mConnection = new ServerWebSocketConnection(serverId , serverMap.get(serverId));
 			  
 	    try {
-	       mConnection.connect(wsuri, new WebSocketConnectionHandler() {
+	       mConnection.connect(wsuri, new WebSocketHandler() {
 	
 	          @Override
 	          public void onOpen() { 

@@ -316,5 +316,11 @@ public class MusicService extends Service
 
 	    mPlayer.setVolume(fVolume, fVolume);
 	}
+
+	@Override
+	public int getAudioSessionId() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 	
 }

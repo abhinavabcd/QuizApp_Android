@@ -60,7 +60,7 @@ All contributions and modifications are copylefted.
 
 Thanks Vinay for contributions to code.
 
-
-
+#--
+you may want to add the googleplay services lib by importing from sdk/extras
 
 

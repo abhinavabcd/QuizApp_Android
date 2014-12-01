@@ -53,6 +53,7 @@ import com.amcolabs.quizapp.datalisteners.DataInputListener;
 import com.amcolabs.quizapp.notificationutils.NotificationReciever;
 import com.amcolabs.quizapp.serverutils.ServerCalls;
 import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.utils.ValueFormatter;
 import com.squareup.picasso.Picasso;
 
 
@@ -603,11 +604,16 @@ public class UiUtils {
 	    text.setText(strBuilder);       
 	}
 	
-	public DecimalFormat getDecimalFormatter(){
-		DecimalFormat df = new DecimalFormat();
-		df.setMaximumFractionDigits(0);
-		df.setMinimumFractionDigits(0);
-		return df; 
+	public ValueFormatter getDecimalFormatter(){
+		return new ValueFormatter() {
+			DecimalFormat df = new DecimalFormat();
+			@Override
+			public String getFormattedValue(float value) {
+				df.setMaximumFractionDigits(0);
+				df.setMinimumFractionDigits(0);
+				return df.format(value); 
+			}
+		};
 	}
 	
 	public boolean hasNonZeroValues(ArrayList<BarEntry> yVals){
