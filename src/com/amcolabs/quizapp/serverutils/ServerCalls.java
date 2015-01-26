@@ -83,7 +83,7 @@ class RandomSelector <T>{
 public class ServerCalls {
 
 	public static final String SERVER_ADDR = Config.IS_SERVER_BUILD ?
-														(Config.IS_TEST_BUILD? "http://54.187.73.133:8085":"http://quizapp-main.amcolabs.com") 
+														(Config.IS_TEST_BUILD? "http://54.169.10.137:8085":"http://quizapp-main.amcolabs.com") 
 														: (Config.IS_TEST_BUILD? "http://192.168.0.10:8085":"http://quizapp-main.amcolabs.com");
 	public static final String CDN_IMAGES_PATH = Config.IS_SERVER_BUILD ?
 														(Config.IS_TEST_BUILD?"http://appsandlabs.com/quizApp/images/":"http://appsandlabs.com/quizApp/images/")  
