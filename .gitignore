@@ -1,4 +1,5 @@
 *.class
 bin/*
 gen/*
-
+.classpath
+project.properties
