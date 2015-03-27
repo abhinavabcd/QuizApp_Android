@@ -25,7 +25,7 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:paddingBottom="@dimen/normal_padding"
-            android:text="Welcome to the all new trivia app. This is one among the series of upcoming amazing trivia apps."
+            android:text=""
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:textSize="18dp" />
 
