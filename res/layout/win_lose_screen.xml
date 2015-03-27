@@ -9,12 +9,6 @@
         android:layout_height="wrap_content"
         android:orientation="vertical" >
 
-        <include
-            android:id="@+id/users_short_view"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            layout="@layout/users_header_2" />
-
         <com.amcolabs.quizapp.widgets.GothamTextView
             android:id="@+id/quizResultMessage"
             android:layout_width="match_parent"
@@ -31,42 +25,6 @@
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
             layout="@layout/pointswrapper" />
-
-        <LinearLayout
-            android:id="@+id/users"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:baselineAligned="true"
-            android:orientation="horizontal" >
-
-            <LinearLayout
-                android:id="@+id/userWrapper1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="vertical" >
-
-                <com.amcolabs.quizapp.widgets.PieChartView
-                    android:id="@id/pie_chart"
-                    android:layout_width="match_parent"
-                    android:layout_height="250dp"
-                    android:layout_margin="5dp" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/userWrapper2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="vertical" >
-
-                <com.amcolabs.quizapp.widgets.PieChartView
-                    android:id="@id/pie_chart"
-                    android:layout_width="match_parent"
-                    android:layout_height="250dp"
-                    android:layout_margin="5dp" />
-            </LinearLayout>
-        </LinearLayout>
 
         <LinearLayout
             android:id="@+id/buttons_wrapper"
@@ -125,6 +83,48 @@
                     android:background="@drawable/list_item_bg"
                     android:gravity="center"
                     android:text="View Profile" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <include
+            android:id="@+id/users_short_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            layout="@layout/users_header_2" />
+
+        <LinearLayout
+            android:id="@+id/users"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:baselineAligned="true"
+            android:orientation="horizontal" >
+
+            <LinearLayout
+                android:id="@+id/userWrapper1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical" >
+
+                <com.amcolabs.quizapp.widgets.PieChartView
+                    android:id="@id/pie_chart"
+                    android:layout_width="match_parent"
+                    android:layout_height="250dp"
+                    android:layout_margin="5dp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/userWrapper2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical" >
+
+                <com.amcolabs.quizapp.widgets.PieChartView
+                    android:id="@id/pie_chart"
+                    android:layout_width="match_parent"
+                    android:layout_height="250dp"
+                    android:layout_margin="5dp" />
             </LinearLayout>
         </LinearLayout>
 
