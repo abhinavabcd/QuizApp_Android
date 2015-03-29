@@ -270,7 +270,16 @@ public class WinOrLoseScreen extends Screen{
 		}
 		
 		List<UserAnswer> ans = userAnswersStack.get(getApp().getUser().uid);
-		animatePoints((int)Math.floor(ans.get(ans.size()-1).whatUserGot),(int)Math.floor( (matchResult>0&&!isChallengeMode)?Config.QUIZ_WIN_BONUS:0),(int)Math.floor(levelUp?Config.QUIZ_LEVEL_UP_BONUS:0));
+		// TODO: Assuming only two users - picking other user score as next best (blunder for multi users)
+		List<UserAnswer> opponentAns = userAnswersStack.get(((ProgressiveQuizController) controller).getOtherUser().uid);
+		int qwPoints = 0;
+		int qPoints = (int)Math.floor(ans.get(ans.size()-1).whatUserGot);
+		int opponentQPoints = (int)Math.floor(opponentAns.get(opponentAns.size()-1).whatUserGot);
+		
+		if(matchResult>0&&!isChallengeMode){
+			qwPoints = (int)Math.floor(Config.QUIZ_WIN_BONUS+ qPoints-opponentQPoints); // Adding differential score to bonus
+		}
+		animatePoints(qPoints,qwPoints,(int)Math.floor(levelUp?Config.QUIZ_LEVEL_UP_BONUS:0));
 		showResultInChart();
 	}
 

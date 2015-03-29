@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
 import android.view.animation.AnimationUtils;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -50,6 +51,10 @@ public class QuestionScreen extends Screen implements View.OnClickListener, Anim
 	private LinearLayout headerViewWrapper;
 	private LinearLayout questionViewWrapper;
 	private LinearLayout optionsViewWrapper;
+	
+	private RelativeLayout questionHintViewWrapper;
+	private TextView hintTextView;
+	private GothamButtonView hintButtonView;
 	
 	private TextView questionTextView;
 	private ImageView questionImageView;
@@ -91,6 +96,7 @@ public class QuestionScreen extends Screen implements View.OnClickListener, Anim
 		questionAndOptionsViewWrapper = (LinearLayout) fullQuestionLayout.findViewById(R.id.question_options_wrapper);
 		questionAndOptionsViewWrapper.setVisibility(View.INVISIBLE);
 		questionViewWrapper = (LinearLayout) questionAndOptionsViewWrapper.findViewById(R.id.quizQuestion);
+		questionHintViewWrapper = (RelativeLayout) questionAndOptionsViewWrapper.findViewById(R.id.hint_wrapper);
 		optionsViewWrapper = (LinearLayout) questionAndOptionsViewWrapper.findViewById(R.id.quizOptions);
 		setTimerView((CircularCounter) headerViewWrapper.findViewById(R.id.timerView));
 		
@@ -98,6 +104,16 @@ public class QuestionScreen extends Screen implements View.OnClickListener, Anim
 		questionTextView = (TextView) questionViewWrapper.findViewById(R.id.questionText);
 		questionImageView = (ImageView) questionViewWrapper.findViewById(R.id.questionImage);
 		
+		hintButtonView = (GothamButtonView) questionHintViewWrapper.findViewById(R.id.hint_button);
+		hintTextView = (TextView) questionHintViewWrapper.findViewById(R.id.hint_text_view);
+		hintButtonView.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				v.setVisibility(View.GONE); // Hide button and show hint
+				hintTextView.setVisibility(View.VISIBLE);
+			}
+		});
 
 		questionOptionsViews = new ArrayList<GothamButtonView>();
 		questionOptionsViews.add((GothamButtonView) optionsViewWrapper.findViewById(R.id.optionA));
@@ -296,6 +312,13 @@ public class QuestionScreen extends Screen implements View.OnClickListener, Anim
 				// TODO: Show could not load image or quit quiz
 			}
 		}
+		
+		hintButtonView.setVisibility(View.VISIBLE); // Hide button and show hint
+		hintTextView.setVisibility(View.GONE);
+		if (ques.hint!=null && !ques.hint.equalsIgnoreCase("")){
+			hintTextView.setText(ques.hint);
+		}
+		
 		String[] mcqOptions = ques.getMCQOptions();
 		int tmpIndex = ques.getAnswerIndex();
 		if (tmpIndex>3){

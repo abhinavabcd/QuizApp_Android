@@ -693,6 +693,9 @@ public class ProgressiveQuizController extends AppController{
 		showQuestionScreen(currentUsers);
 	}
 
+	/*
+	 * Return first opponent 
+	 */
 	public User getOtherUser(){
 		User otherUser = null;
 		for(User user:currentUsers){

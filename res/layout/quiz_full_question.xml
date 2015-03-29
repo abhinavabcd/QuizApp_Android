@@ -64,6 +64,44 @@
                     android:layout_gravity="top"
                     android:layout_weight="0.6"
                     layout="@layout/quiz_question" />
+                
+                <RelativeLayout
+                    android:id="@+id/hint_wrapper"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center">
+                    
+                    <com.amcolabs.quizapp.widgets.GothamButtonView
+                        android:id="@+id/hint_button"
+                        style="@color/grey"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:layout_centerInParent="true"
+                        android:layout_margin="10dp"
+                        android:background="@color/grey"
+                        android:gravity="center"
+                        android:paddingBottom="5dp"
+                        android:paddingLeft="10dp"
+                        android:paddingRight="10dp"
+                        android:paddingTop="5dp"
+                        android:text="Show Hint"
+                        android:textSize="15sp"
+                        android:textStyle="normal" />
+
+                    <TextView
+                        android:id="@+id/hint_text_view"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:layout_centerInParent="true"
+                        android:layout_margin="10dp"
+                        android:ellipsize="end"
+                        android:maxLines="2"
+                        android:text="No Hint Available"
+                        android:visibility="invisible" />
+                    
+                </RelativeLayout>
 
                 <include
                     android:id="@+id/quizOptions"
