@@ -16,10 +16,10 @@ public abstract class AppController {
 		return quizApp.getContext();
 	}
 
-	
 	public void insertScreen(Screen newScreen){
     	quizApp.animateScreenIn(newScreen);//do into animation
 	}
+	
 	public abstract void onDestroy();
 	
 	public boolean onBackPressed(){

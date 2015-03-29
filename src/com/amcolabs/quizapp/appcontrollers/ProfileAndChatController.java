@@ -92,7 +92,7 @@ public class ProfileAndChatController extends AppController {
 			});
 		}
 		else{
-				final List<LocalQuizHistory> history = quizApp.getDataBaseHelper().getQuizHistoryByUid(user.uid);
+				final List<LocalQuizHistory> history = quizApp.getDataBaseHelper().getQuizHistoryListByUid(user.uid);
 				profileScreen.showHistoryWithUser(user , history);
 		}
  

@@ -432,11 +432,11 @@ public class UiUtils {
 		return animationSlideInRight;
 	}        
 	
-	public boolean loadImageIntoView(Context ctx , final ImageView imgView, final String assetPath , final boolean downloadToAssets){
+	public static boolean loadImageIntoView(Context ctx , final ImageView imgView, final String assetPath , final boolean downloadToAssets){
 			return loadImageIntoView(ctx , imgView,  assetPath , downloadToAssets , -1 , -1 , null);
 	}
 	
-	public boolean loadImageIntoView(Context ctx , final ImageView imgView, final String assetPath , final boolean downloadToAssets ,int width , int height , DataInputListener<Boolean> completedLoadingImage){
+	public static boolean loadImageIntoView(Context ctx , final ImageView imgView, final String assetPath , final boolean downloadToAssets ,int width , int height , DataInputListener<Boolean> completedLoadingImage){
 		if(assetPath==null || assetPath.isEmpty())
 			return false;
 		try{

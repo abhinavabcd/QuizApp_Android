@@ -5,12 +5,11 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
-import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.os.Handler;
-import android.os.PowerManager;
-import android.os.PowerManager.WakeLock;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.Animation;
@@ -26,13 +25,16 @@ import com.amcolabs.quizapp.R;
 import com.amcolabs.quizapp.Screen;
 import com.amcolabs.quizapp.User;
 import com.amcolabs.quizapp.appcontrollers.ProgressiveQuizController;
+import com.amcolabs.quizapp.appcontrollers.ProgressiveQuizController.UserAnswer;
 import com.amcolabs.quizapp.configuration.Config;
+import com.amcolabs.quizapp.databaseutils.LocalQuizHistory;
 import com.amcolabs.quizapp.databaseutils.Question;
 import com.amcolabs.quizapp.datalisteners.DataInputListener;
 import com.amcolabs.quizapp.gameutils.GameUtils;
 import com.amcolabs.quizapp.widgets.CircularCounter;
 import com.amcolabs.quizapp.widgets.CustomProgressBar;
 import com.amcolabs.quizapp.widgets.GothamButtonView;
+import com.google.gson.reflect.TypeToken;
 
 class UserProgressViewHolder{
 
@@ -71,8 +73,17 @@ public class QuestionScreen extends Screen implements View.OnClickListener, Anim
 	
 	public QuestionScreen(AppController controller) {
 		super(controller);
-		
 		this.pQuizController = (ProgressiveQuizController)controller;
+		initUi(true);
+	}
+	
+	public QuestionScreen(AppController controller, boolean onlyForBitmapExtraction) {
+		super(controller);
+		initUi(false);
+	}
+	
+	
+	private void initUi(boolean liveGame){
 		LayoutInflater tmp = getApp().getActivity().getLayoutInflater();
 		fullQuestionLayout = (LinearLayout) tmp.inflate(R.layout.quiz_full_question, this, false);
 		headerViewWrapper = (LinearLayout) fullQuestionLayout.findViewById(R.id.quizHeader);
@@ -104,40 +115,105 @@ public class QuestionScreen extends Screen implements View.OnClickListener, Anim
 		preQuestionText1 = (TextView) preQuestionView.findViewById(R.id.textView1);
 		preQuestionText2 = (TextView) preQuestionView.findViewById(R.id.textView2);
 		preQuestionText3 = (TextView) preQuestionView.findViewById(R.id.textView3);
-		onQuestionTimeEnd = new DataInputListener<Boolean>(){
-			public String onData(Boolean s) {
-				isOptionSelected = true;
-				return pQuizController.onNoAnswer(currentQuestion);
+		if(liveGame){
+			onQuestionTimeEnd = new DataInputListener<Boolean>(){
+				public String onData(Boolean s) {
+					isOptionSelected = true;
+					return pQuizController.onNoAnswer(currentQuestion);
+				};
 			};
-		};
-		timerView.setTimerEndListener(onQuestionTimeEnd);
-		
-        possitiveButtonSounds = MediaPlayer.create(getApp().getActivity(),R.raw.tap_correct);
-        negetiveButtonSounds = MediaPlayer.create(getApp().getActivity(),R.raw.tap_wrong);
-        getApp().changeMusic(R.raw.quiz_play);
-        
+			timerView.setTimerEndListener(onQuestionTimeEnd);
+			
+	        possitiveButtonSounds = MediaPlayer.create(getApp().getActivity(),R.raw.tap_correct);
+	        negetiveButtonSounds = MediaPlayer.create(getApp().getActivity(),R.raw.tap_wrong);
+	        getApp().changeMusic(R.raw.quiz_play);
 //        PowerManager pManager = (PowerManager) getApp().getContext().getSystemService(Context.POWER_SERVICE);
 //		wklock = pManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK|PowerManager.ON_AFTER_RELEASE,"quizapp");
 //		wklock.acquire();
 //        
-        fullQuestionLayout.setKeepScreenOn(true);
-        
+	        fullQuestionLayout.setKeepScreenOn(true);
+		}
+
 		addView(fullQuestionLayout);
+
 	}
 	
-	public void showUserInfo(ArrayList<User> uNames,int maxScore) {
+	public static List<Bitmap> getBitmapOfQuestions(AppController controller ,List<Question> questions , String uid , ArrayList<User> users, int maxScore , List<UserAnswer> answers1  , List<UserAnswer> answers2){
+		// load question
+		// load the users bar , 
+		// load the timers for each question
+		// show highlights of answers 
+		// for each get the bitmaps
+		// add Ab view horozontal scroll
+		//		// on click on the bitmap , open a dialog , with little lesser height and the close button with the image on it ? 
+		List<Bitmap> ret = new ArrayList<Bitmap>();
+		int questionIndex = 0;
+		for(Question question : questions){
+			QuestionScreen questionScreen = new QuestionScreen(controller, true);
+			questionScreen.showUserInfo(users,maxScore); //load user info
+			questionScreen.loadQuestion(question, questionIndex++);
+			questionScreen.questionAndOptionsViewWrapper.setVisibility(View.VISIBLE);//show it
+			//TODO: Currently only for two users only
+			UserAnswer userAnswer1  = null;
+			for(UserAnswer a : answers1){
+				if(a.questionId.equalsIgnoreCase(question.questionId)){
+					userAnswer1 = a;
+					break;
+				}
+			}
+			
+			UserAnswer userAnswer2  = null;
+			for(UserAnswer a : answers2){
+				if(a.questionId.equalsIgnoreCase(question.questionId)){
+					userAnswer2 = a;
+					break;
+				}
+			}
+			questionScreen.getTimerView().setValues(userAnswer1.elapsedTime, userAnswer2.elapsedTime, 0);
+			
+			questionScreen.highlightCorrectAnswer();
+			questionScreen.highlightOtherUsersOption(userAnswer1.uid, userAnswer1.userAnswer);
+			questionScreen.highlightOtherUsersOption(userAnswer2.uid, userAnswer2.userAnswer);
+			
+			questionScreen.userViews.get(userAnswer1.uid).userProgressView.setProgress(userAnswer1.whatUserGot);
+			questionScreen.userViews.get(userAnswer2.uid).userProgressView.setProgress(userAnswer2.whatUserGot);
+			
+			Bitmap b = Bitmap.createBitmap(questionScreen.getWidth(), questionScreen.getHeight(), Bitmap.Config.ARGB_8888);
+			Canvas c = new Canvas(b);
+			questionScreen.draw(c);
+			ret.add(b);
+		}
+			
+		return ret;
+	}
+	
+	public static List<Bitmap> getBitmapOfQuestions(AppController controller ,LocalQuizHistory quizHistory){
+		return getBitmapOfQuestions(
+					controller,
+					quizHistory.getQUestions(),
+					controller.quizApp.getUser().uid,
+					quizHistory.getUsers(),
+					quizHistory.maxScore,
+					quizHistory.getUserAnswers1(controller.quizApp),
+					quizHistory.getUserAnswers2(controller.quizApp)
+				);
+	}
+	
+	
+	
+	public void showUserInfo(ArrayList<User> users,int maxScore) {
 		int index = 0;
 
-		for(User user : uNames){
+		for(User user : users){
 				if(user.uid.equalsIgnoreCase(getApp().getUser().uid)){
-					uNames.remove(user);
-					uNames.add(0,user);
+					users.remove(user);
+					users.add(0,user);
 					break;
 				}
 		}
 		
 		for(RelativeLayout userView : Arrays.asList((RelativeLayout) headerViewWrapper.findViewById(R.id.user1), (RelativeLayout) headerViewWrapper.findViewById(R.id.user2))){
-			User user = uNames.get(index++);
+			User user = users.get(index++);
 			UserProgressViewHolder userProgressView = new UserProgressViewHolder();
 			
 			userProgressView.userNameView = ((TextView)userView.findViewById(R.id.userName));
@@ -194,8 +270,13 @@ public class QuestionScreen extends Screen implements View.OnClickListener, Anim
 		
 	}
 	
-	private void loadQuestion(final Question ques){
+	private void loadQuestion(final Question ques, int questionIndex){
 		boolean isImageAvailable = false;
+		if(currentQuestion!=ques)// unnecessary check , but just in case , when you want to set current question differently
+			currentQuestion = ques;
+		if(questionIndex!=currentQuestionIndex)
+			currentQuestionIndex = questionIndex;
+		
 //		preQuestionView.setVisibility(View.INVISIBLE);
 //		questionAndOptionsViewWrapper.setVisibility(View.VISIBLE);
 //		questionTextView.setText(ques.questionDescription);
@@ -239,7 +320,7 @@ public class QuestionScreen extends Screen implements View.OnClickListener, Anim
 			opt.setTextColor(Color.BLACK);
 		}
 		questionAndOptionsViewWrapper.invalidate();
-		getTimerView().resetTimer();//reset timer
+		getTimerView().resetTimer((float) ques.time);//reset timer
 	}
 
 	public void animateQuestionChange(String titleInfo1, String titleInfo2, Question ques , int questionIndex) {
@@ -320,7 +401,7 @@ public class QuestionScreen extends Screen implements View.OnClickListener, Anim
 	@Override
 	public void onAnimationStart(Animation animation) {
 		if(animation==animFadeOut){
-			loadQuestion(currentQuestion);//but do not show
+			loadQuestion(currentQuestion, currentQuestionIndex);//but do not show
 		}
 	}
 

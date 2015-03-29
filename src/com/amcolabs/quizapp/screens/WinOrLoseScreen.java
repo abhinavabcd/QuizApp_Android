@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import android.graphics.Bitmap;
 import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +14,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 
+import com.amcolabs.quizapp.ABTemplating;
+import com.amcolabs.quizapp.ABTemplating.ABView;
 import com.amcolabs.quizapp.AppController;
 import com.amcolabs.quizapp.R;
 import com.amcolabs.quizapp.Screen;
@@ -37,6 +40,7 @@ import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
+import com.squareup.picasso.Picasso;
 
 public class WinOrLoseScreen extends Screen{
 	
@@ -70,7 +74,7 @@ public class WinOrLoseScreen extends Screen{
 		public FlowLayout badgesView;
 	}
 	
-	public WinOrLoseScreen(AppController controller,ArrayList<User> curUsers) {
+	public WinOrLoseScreen(AppController controller,ArrayList<User> curUsers, List<Bitmap> answerBitmaps) {
 		super(controller);
 
 		for(User user : curUsers){
@@ -178,7 +182,22 @@ public class WinOrLoseScreen extends Screen{
 				progressiveQuizController.showProfileScreen(user2);
 			}
 		});
-        addView(quizResult);
+        
+        if(answerBitmaps!=null && answerBitmaps.size()>0){
+        	ABView[] imageViews = new ABView[answerBitmaps.size()];
+	        for(int i=0;i<answerBitmaps.size();i++){
+	        	imageViews[i] = new ABView(getContext(),R.style.answer_bitmap_imageview);
+	        	ImageView temp = new ImageView(getContext());
+	        	temp.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
+	        	temp.setImageBitmap(answerBitmaps.get(i));
+	        	imageViews[i].addView(temp);
+	        }
+	        ABTemplating template = new ABTemplating(controller.getContext());
+	        quizResult.addView(
+    			template.h(ABTemplating.IS_HORIZONTAL_SCROLL,imageViews)
+			 );
+	        addView(quizResult);
+        }
 	}
 	
 	private User getOtherUser(ArrayList<User> currentUsers) {

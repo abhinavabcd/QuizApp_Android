@@ -1,8 +1,10 @@
 package com.amcolabs.quizapp.databaseutils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.amcolabs.quizapp.QuizApp;
+import com.amcolabs.quizapp.User;
 import com.amcolabs.quizapp.appcontrollers.ProgressiveQuizController.UserAnswer;
 import com.amcolabs.quizapp.configuration.Config;
 import com.amcolabs.quizapp.gameutils.GameUtils;
@@ -17,7 +19,12 @@ public class LocalQuizHistory {
 	
 	@DatabaseField(index=true)
 	private
-	String	withUid; // game with uid
+	String	withUid; // game with uid //TODO: this should be a list and searchable ? 
+	
+	@DatabaseField(index=true)
+	private
+	String	currentUid; // game with uid //TODO: this should be a list and searchable ? 
+	
 	@DatabaseField
 	private
 	int quizResult; // win loose , tie , server error
@@ -29,6 +36,20 @@ public class LocalQuizHistory {
 	int xpGain;
 	@DatabaseField
 	String questionIds;//json array list of string
+	
+	@DatabaseField
+	public
+	String questionsJson;
+	
+	@DatabaseField
+	public
+	int maxScore;
+	
+	@DatabaseField
+	public
+	String usersJson;
+	
+	
 	@DatabaseField
 	private
 	String userAnswers1;//json of user answers
@@ -77,18 +98,19 @@ public class LocalQuizHistory {
 	
 	
 	
-	public LocalQuizHistory(String quizId, int quizResult, double xpGain ,String uid, String userAnswers1Json, String userAnswers2Json) {
-		setWithUid(uid);
+	public LocalQuizHistory(String quizId, int quizResult, double xpGain ,String currentUid , String withUid, int maxScrore , String currentQuestionsJson , String usersJson, String userAnswers1Json, String userAnswers2Json) {
+		setWithUid(withUid);
+		this.currentUid = currentUid;
 		this.quizId = quizId;
+		this.maxScore = maxScore;
 		this.setQuizResult(quizResult);
 		this.xpGain = (int) xpGain;
+		this.questionsJson = currentQuestionsJson;
+		this.usersJson  = usersJson;
 		this.userAnswers1 = userAnswers1Json;
 		this.userAnswers1 = userAnswers2Json;
 	}
 	
-	public LocalQuizHistory(){
-		
-	}
 
 	public int getQuizResult() {
 		return quizResult;
@@ -108,6 +130,20 @@ public class LocalQuizHistory {
 
 	public void setWithUid(String withUid) {
 		this.withUid = withUid;
+	}
+
+
+
+	public List<Question> getQUestions() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+
+	public ArrayList<User> getUsers() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 		
 }

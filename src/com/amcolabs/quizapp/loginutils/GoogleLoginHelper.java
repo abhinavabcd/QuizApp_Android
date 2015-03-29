@@ -149,11 +149,11 @@ public class GoogleLoginHelper {
 	}
 
 	private void getUserProfileInformation(){
-		quizApp.addUiBlock("Fetching Profile.");
     	final User user = new User();
         Plus.PeopleApi.load(mGoogleApiClient, "me").setResultCallback(new ResultCallback<People.LoadPeopleResult>() {
             @Override
             public void onResult(final People.LoadPeopleResult loadPeopleResult) {
+        		quizApp.addUiBlock("Fetching Profile.");
                 if (loadPeopleResult.getStatus().getStatusCode() == CommonStatusCodes.SUCCESS) {
                     PersonBuffer personBuffer = loadPeopleResult.getPersonBuffer();
                     try {

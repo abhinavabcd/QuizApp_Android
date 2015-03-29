@@ -472,7 +472,7 @@ public class UserMainPageController  extends AppController{
 	}
 
 	public void showQuizHistory(Quiz quiz) {
-		List<LocalQuizHistory> history  = quizApp.getDataBaseHelper().getQuizHistoryByQuizId(quiz.quizId);
+		List<LocalQuizHistory> history  = quizApp.getDataBaseHelper().getQuizHistoryListByQuizId(quiz.quizId);
 		((ProfileAndChatController)quizApp.loadAppController(ProfileAndChatController.class)).showQuizLocalHistory(history);
 	}
 	

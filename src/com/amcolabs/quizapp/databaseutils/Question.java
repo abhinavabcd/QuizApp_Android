@@ -7,6 +7,7 @@ import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.amcolabs.quizapp.QuizApp;
 import com.amcolabs.quizapp.gameutils.GameUtils;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -182,5 +183,8 @@ public class Question {
 		}
 		this.cachedOptions[0] = answer;
 		return 0;
+	}
+	public String toJson(QuizApp app) {
+		return app.getConfig().getGson().toJson(this);
 	}
 }

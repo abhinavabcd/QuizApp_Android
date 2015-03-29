@@ -113,7 +113,7 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		mainFrame = (FrameLayout)getActivity().getLayoutInflater().inflate(R.layout.quizapp_layout,null);
-		mainFrame.addView(loadingView);
+		//mainFrame.addView(loadingView);
 		((UserMainPageController)loadAppController(UserMainPageController.class))
 		.checkAndShowCategories();
 		setNotificationProcessingState(NotifificationProcessingState.CONTINUE);
@@ -468,11 +468,15 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 	public void animateScreenIn(Screen newScreen, boolean fromRight){
 //		synchronized (uiSync) {
 			addView(newScreen);
-			loadingView.setVisibility(View.INVISIBLE);
-			if(fromRight)
-				newScreen.startAnimation(getUiUtils().getAnimationSlideInRight());
-			else
+			//loadingView.setVisibility(View.VISIBLE);
+			if(fromRight){
+					setAnimationListener(getUiUtils().getAnimationSlideInRight() , null);
+					newScreen.startAnimation(getUiUtils().getAnimationSlideInRight());
+			}
+			else{
+				setAnimationListener(getUiUtils().getAnimationSlideInLeft() , null);
 				newScreen.startAnimation(getUiUtils().getAnimationSlideInLeft());		
+			}
 	//	}
 	}
 	
@@ -485,14 +489,14 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 	public void animateScreenRemove(Screen currentScreen , boolean toLeft, AnimationListener endListener) {
 		//synchronized (uiSync) {
 			if(currentScreen==null) return;
-			loadingView.setVisibility(View.VISIBLE);//while removing
+			//loadingView.setVisibility(View.VISIBLE);//while removing
 			disposeScreens.add(currentScreen);
 			if(toLeft){
-					setAnimationListener(getUiUtils().getAnimationSlideOutLeft(), endListener);
-					currentScreen.startAnimation(	getUiUtils().getAnimationSlideOutLeft());
+				setAnimationListener(getUiUtils().getAnimationSlideOutRight() , null);
+				currentScreen.startAnimation(	getUiUtils().getAnimationSlideOutLeft());
 			}
 			else{
-				setAnimationListener(getUiUtils().getAnimationSlideOutRight(), endListener);
+				setAnimationListener(getUiUtils().getAnimationSlideOutRight() , null);
 				currentScreen.startAnimation(getUiUtils().getAnimationSlideOutRight());
 			}
 //		}
@@ -501,6 +505,7 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 	
 	@Override
 	public void onAnimationStart(Animation animation) {
+		uiUtils.addUiBlock("Loading...");
 		++isScreenAnimationActive;
 	}
 	@Override
@@ -516,6 +521,7 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 			e.printStackTrace();
 		}
 		--isScreenAnimationActive;
+		uiUtils.removeUiBlock();
 	}
 
 	@Override
@@ -551,6 +557,19 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 		}
 		lastClick = Config.getCurrentNanos();
 		return true;
+	}
+
+	private int reClickId = 0;
+	public boolean isRapidReClick(int id){
+		if(id==reClickId){
+			if(Config.getCurrentNanos()-lastClick>1000000000){//1 sec
+				lastClick = Config.getCurrentNanos();
+				return false;
+			}
+			lastClick = Config.getCurrentNanos();
+			return true;
+		}
+		return false;
 	}
 
 	public boolean isRapidReClick(){

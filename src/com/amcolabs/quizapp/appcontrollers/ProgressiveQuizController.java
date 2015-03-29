@@ -233,6 +233,7 @@ public class ProgressiveQuizController extends AppController{
 	private DataInputListener2<ServerWebSocketConnection, Quiz, Void, Void> socketConnectedListener = null;
 	private YesNoDialog rematchDialog = null;
 	protected double userLevel;
+	private String currentQuestionsJson;
 	
 	private void setQuizMode(QuizMode mode){
 		quizMode = mode;
@@ -444,7 +445,7 @@ public class ProgressiveQuizController extends AppController{
 		}
 		else{
 			quizApp.getDataBaseHelper().addGameEvents(new GameEvents(EventType.SERVER_ERROR_QUIZ, quiz.quizId , getOtherUser().uid , null));
-			quizResultScreen = new WinOrLoseScreen(this,currentUsers);
+			quizResultScreen = new WinOrLoseScreen(this,currentUsers, null);
 			quizResultScreen.showResult(userAnswersStack,Quiz.SERVER_ERR, false , quizMode);
 			insertScreen(quizResultScreen);
 		}
@@ -554,7 +555,7 @@ public class ProgressiveQuizController extends AppController{
 	    		if(rematchDialog!=null && rematchDialog.isShowing())
 	    			rematchDialog.dismissQuietly();
 //	    		quizApp.getStaticPopupDialogBoxes().removeRematchRequestScreen();
-	    		currentQuestions = quizApp.getConfig().getGson().fromJson(response.payload1, new TypeToken<List<Question>>(){}.getType());
+	    		setCurrentQuestions((List<Question>) quizApp.getConfig().getGson().fromJson(response.payload1, new TypeToken<List<Question>>(){}.getType()) , response.payload1);
 	    		showWaitingScreen(quiz);
 	    		showQuestionScreen(currentUsers);
 	    		break;
@@ -600,6 +601,12 @@ public class ProgressiveQuizController extends AppController{
 		}
 	}
 
+	private void setCurrentQuestions(List<Question> currentQuestions, String currentQuestionsJson) {
+		this.currentQuestions = currentQuestions;
+		this.currentQuestionsJson = currentQuestionsJson;
+	}
+
+
 	private boolean checkAndRemoveDuplicateUsers(ArrayList<User> currentUsers) {
 		HashMap<String,Boolean>  map = new HashMap<String, Boolean>();
 		boolean duplicatesFound = false;
@@ -623,7 +630,7 @@ public class ProgressiveQuizController extends AppController{
 
 
 	private void loadQuestionsAndUsers(ServerResponse response, DataInputListener<Boolean> questionsLoadedListener) {
-		currentQuestions = quizApp.getConfig().getGson().fromJson(response.payload2, new TypeToken<List<Question>>(){}.getType());
+		setCurrentQuestions((List<Question>) quizApp.getConfig().getGson().fromJson(response.payload2, new TypeToken<List<Question>>(){}.getType()), response.payload2);
 		try{
 			currentUsers = quizApp.getConfig().getGson().fromJson(response.payload1, new TypeToken<List<User>>(){}.getType());
 			for(User user : currentUsers){//remove current user and add the current user obj locally  more better
@@ -864,8 +871,9 @@ public class ProgressiveQuizController extends AppController{
 			
 			String userAnswers1Json =quizApp.getConfig().getGson().toJson(userAnswersStack.get(quizApp.getUser().uid));
 			String userAnswers2Json =quizApp.getConfig().getGson().toJson(userAnswersStack.get(getOtherUser().uid));
-			LocalQuizHistory quizHistory = new LocalQuizHistory(quiz.quizId , quizResult , newPoints-oldPoints, getOtherUser().uid , userAnswers1Json , userAnswers2Json);
-			quizApp.getDataBaseHelper().addToQuizHistory(quizHistory);
+			String usersJson = quizApp.getConfig().getGson().toJson(currentUsers);
+			LocalQuizHistory quizHistory = new LocalQuizHistory(quiz.quizId , quizResult , newPoints-oldPoints, quizApp.getUser().uid,  getOtherUser().uid , getMaxScore(), currentQuestionsJson , usersJson,  userAnswers1Json , userAnswers2Json);
+			quizApp.getDataBaseHelper().insertToQuizHistory(quizHistory);
 			quizApp.getDataBaseHelper().addGameEvents(new GameEvents(quizResult==Quiz.TIE? EventType.TIE_QUIZ : (quizResult==Quiz.LOOSE? EventType.LOST_QUIZ : EventType.WON_QUIZ),
 													quiz.quizId , getOtherUser().uid , 
 													(int)Math.abs(newPoints-oldPoints)+""));
@@ -931,8 +939,17 @@ public class ProgressiveQuizController extends AppController{
 			badgeEvaluator.evaluateBadges(userAnswersStack,quizResult);
 		}
 		if (quizResultScreen==null){
-			quizResultScreen = new WinOrLoseScreen(this,currentUsers);
+			quizResultScreen = new WinOrLoseScreen(this,currentUsers , 
+					       QuestionScreen.getBitmapOfQuestions(this,
+								(List<Question>) quizApp.getConfig().getGson().fromJson(currentQuestionsJson,new TypeToken<List<Question>>(){}.getType()),
+								quizApp.getUser().uid, 
+								currentUsers, 
+								getMaxScore(), 
+								userAnswersStack.get(quizApp.getUser().uid), 
+								userAnswersStack.get(getOtherUser().uid))
+							);
 		}
+		
 		boolean isLevelUp = GameUtils.didUserLevelUp(oldPoints,newPoints);
 		if(isLevelUp){
 			//update game event

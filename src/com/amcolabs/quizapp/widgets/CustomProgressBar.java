@@ -4,6 +4,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import com.amcolabs.quizapp.R;
+import com.amcolabs.quizapp.configuration.Config;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -58,7 +59,8 @@ public class CustomProgressBar extends ProgressBar{
 							this.cancel();
 						}
 					}
-		}, 400,100);
+		}, 100,Config.PROGRESS_BAR_POINTS_ANIMATION_STEP_TIME);		//TODO: vinay change this to config variables ? 
+
 //		Thread bg = new Thread(new Runnable() {
 //			
 //			@Override

@@ -86,7 +86,8 @@ public class Config{
 	public static final String APP_VERSION = "app_version";
 	public static final String APP_LOADING_VIEW_IMAGE = null;
 	public static final String URL_PARAM_IS_CHALLENGED = "isChallenged";
-	public static final boolean IS_SERVER_BUILD = true;
+	public static final boolean IS_SERVER_BUILD = false;
+	public static final long PROGRESS_BAR_POINTS_ANIMATION_STEP_TIME = 100;
 	
 	private QuizApp quizApp;
 	

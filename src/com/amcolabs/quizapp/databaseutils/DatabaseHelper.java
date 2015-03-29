@@ -38,7 +38,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 	// name of the database file for your application -- change to something appropriate for your app
 	private static final String DATABASE_NAME = "quizApp.db";
 	// any time you make changes to your database objects, you may have to increase the database version
-	private static final int DATABASE_VERSION = 20;
+	private static final int DATABASE_VERSION = 21;
 	private static String DATABASE_PATH = "/data/data/com.amcolabs.quizapp/databases/";
 
 	// the DAO object we use to access the Category table
@@ -836,7 +836,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 		return null;		
 	}
 
-	public void addToQuizHistory(LocalQuizHistory q) {
+	public void insertToQuizHistory(LocalQuizHistory q) {
 		try {
 			q.timestamp = quizApp.getConfig().getCurrentTimeStamp();
 			getQuizHistoryDao().create(q);
@@ -856,7 +856,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 		return null;
 	}
 
-	public List<LocalQuizHistory> getQuizHistoryByUid(String uid) {
+	public List<LocalQuizHistory> getQuizHistoryListByUid(String uid) {
 		try {
 			return getQuizHistoryDao().queryBuilder().where().eq("withUid", uid).query();
 		} catch (SQLException e) {
@@ -866,7 +866,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 		return null;
 	}
 
-	public List<LocalQuizHistory> getQuizHistoryByQuizId(String quizId) {
+	public List<LocalQuizHistory> getQuizHistoryListByQuizId(String quizId) {
 		try {
 			return getQuizHistoryDao().queryBuilder().where().eq("quizId", quizId).query();
 		} catch (SQLException e) {
