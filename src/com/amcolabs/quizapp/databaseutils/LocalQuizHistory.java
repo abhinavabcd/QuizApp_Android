@@ -97,7 +97,9 @@ public class LocalQuizHistory {
 	}
 	
 	
-	
+	public LocalQuizHistory(){
+		
+	}
 	public LocalQuizHistory(String quizId, int quizResult, double xpGain ,String currentUid , String withUid, int maxScrore , String currentQuestionsJson , String usersJson, String userAnswers1Json, String userAnswers2Json) {
 		setWithUid(withUid);
 		this.currentUid = currentUid;

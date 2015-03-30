@@ -177,15 +177,48 @@ public class QuestionScreen extends Screen implements View.OnClickListener, Anim
 			
 			questionScreen.userViews.get(userAnswer1.uid).userProgressView.setProgress(userAnswer1.whatUserGot);
 			questionScreen.userViews.get(userAnswer2.uid).userProgressView.setProgress(userAnswer2.whatUserGot);
-			
-			Bitmap b = Bitmap.createBitmap(questionScreen.getWidth(), questionScreen.getHeight(), Bitmap.Config.ARGB_8888);
-			Canvas c = new Canvas(b);
-			questionScreen.draw(c);
+
+			 questionScreen.measure(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+			Bitmap b = getViewBitmap(questionScreen);
 			ret.add(b);
 		}
 			
 		return ret;
 	}
+	
+	
+    private static Bitmap getViewBitmap(View v) {
+        v.clearFocus();
+        v.setPressed(false);
+
+        boolean willNotCache = v.willNotCacheDrawing();
+        v.setWillNotCacheDrawing(false);
+
+        // Reset the drawing cache background color to fully transparent
+        // for the duration of this operation
+        int color = v.getDrawingCacheBackgroundColor();
+        v.setDrawingCacheBackgroundColor(0);
+
+        if (color != 0) {
+            v.destroyDrawingCache();
+        }
+        v.buildDrawingCache();
+        Bitmap cacheBitmap = v.getDrawingCache();
+        if (cacheBitmap == null) {
+//            Log.e(TAG, "failed getViewBitmap(" + v + ")", new RuntimeException());
+            return null;
+        }
+
+        Bitmap bitmap = Bitmap.createBitmap(cacheBitmap);
+
+        // Restore the view
+        v.destroyDrawingCache();
+        v.setWillNotCacheDrawing(willNotCache);
+        v.setDrawingCacheBackgroundColor(color);
+
+        return bitmap;
+    }
+	
 	
 	public static List<Bitmap> getBitmapOfQuestions(AppController controller ,LocalQuizHistory quizHistory){
 		return getBitmapOfQuestions(
@@ -232,7 +265,7 @@ public class QuestionScreen extends Screen implements View.OnClickListener, Anim
 			userProgressView.userProgressView.setBackgroundResource(R.drawable.fat_progress_bar);//(getApp().getConfig().getAThemeColor());
 			userProgressView.userProgressView.getProgressDrawable().setColorFilter(getApp().getConfig().getAThemeColor(), android.graphics.PorterDuff.Mode.MULTIPLY);
 			
-			userProgressView.userScoreView.setText( (!pQuizController.isChallengeMode() || user.uid.equalsIgnoreCase(getApp().getUser().uid))?"+0 Xp":"?");
+			userProgressView.userScoreView.setText( (!(pQuizController!=null && pQuizController.isChallengeMode()) || user.uid.equalsIgnoreCase(getApp().getUser().uid))?"+0 Xp":"?");
 		}
 	}
 	
