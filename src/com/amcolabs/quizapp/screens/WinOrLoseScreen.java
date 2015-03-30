@@ -8,6 +8,7 @@ import android.graphics.Bitmap;
 import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
@@ -193,11 +194,11 @@ public class WinOrLoseScreen extends Screen{
 	        	imageViews[i].addView(temp);
 	        }
 	        ABTemplating template = new ABTemplating(controller.getContext());
-	        quizResult.addView(
-    			template.h(ABTemplating.IS_HORIZONTAL_SCROLL,imageViews)
-			 );
-	        addView(quizResult);
+	        ((LinearLayout) quizResult.getChildAt(0)).addView(
+	        		template.h(ABTemplating.IS_HORIZONTAL_SCROLL,imageViews)
+			);
         }
+        addView(quizResult);
 	}
 	
 	private User getOtherUser(ArrayList<User> currentUsers) {
