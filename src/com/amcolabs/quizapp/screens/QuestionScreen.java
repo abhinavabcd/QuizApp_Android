@@ -92,13 +92,9 @@ public class QuestionScreen extends Screen implements View.OnClickListener, Anim
 		questionAndOptionsViewWrapper.setVisibility(View.INVISIBLE);
 		questionViewWrapper = (LinearLayout) questionAndOptionsViewWrapper.findViewById(R.id.quizQuestion);
 		optionsViewWrapper = (LinearLayout) questionAndOptionsViewWrapper.findViewById(R.id.quizOptions);
-		setTimerView((CircularCounter) headerViewWrapper.findViewById(R.id.timerView));
-		
-		
 		questionTextView = (TextView) questionViewWrapper.findViewById(R.id.questionText);
 		questionImageView = (ImageView) questionViewWrapper.findViewById(R.id.questionImage);
 		
-
 		questionOptionsViews = new ArrayList<GothamButtonView>();
 		questionOptionsViews.add((GothamButtonView) optionsViewWrapper.findViewById(R.id.optionA));
 		questionOptionsViews.add((GothamButtonView) optionsViewWrapper.findViewById(R.id.optionB));
@@ -108,14 +104,19 @@ public class QuestionScreen extends Screen implements View.OnClickListener, Anim
 			optionView.setOnClickListener(this);
 		}
 		
-		animFadeOut = AnimationUtils.loadAnimation(getApp().getContext(), R.anim.fade_out_animation);
-		animFadeOut.setAnimationListener(this);
-
-		animTextScale = AnimationUtils.loadAnimation(getApp().getContext(), R.anim.xp_points_animation);
 		preQuestionText1 = (TextView) preQuestionView.findViewById(R.id.textView1);
 		preQuestionText2 = (TextView) preQuestionView.findViewById(R.id.textView2);
 		preQuestionText3 = (TextView) preQuestionView.findViewById(R.id.textView3);
+
+		
+		
+		setTimerView((CircularCounter) headerViewWrapper.findViewById(R.id.timerView));
+
 		if(liveGame){
+			animFadeOut = AnimationUtils.loadAnimation(getApp().getContext(), R.anim.fade_out_animation);
+			animFadeOut.setAnimationListener(this);
+
+			animTextScale = AnimationUtils.loadAnimation(getApp().getContext(), R.anim.xp_points_animation);
 			onQuestionTimeEnd = new DataInputListener<Boolean>(){
 				public String onData(Boolean s) {
 					isOptionSelected = true;
@@ -148,8 +149,8 @@ public class QuestionScreen extends Screen implements View.OnClickListener, Anim
 		//		// on click on the bitmap , open a dialog , with little lesser height and the close button with the image on it ? 
 		List<Bitmap> ret = new ArrayList<Bitmap>();
 		int questionIndex = 0;
+		QuestionScreen questionScreen = new QuestionScreen(controller, true);
 		for(Question question : questions){
-			QuestionScreen questionScreen = new QuestionScreen(controller, true);
 			questionScreen.showUserInfo(users,maxScore); //load user info
 			questionScreen.loadQuestion(question, questionIndex++);
 			questionScreen.questionAndOptionsViewWrapper.setVisibility(View.VISIBLE);//show it
@@ -177,47 +178,32 @@ public class QuestionScreen extends Screen implements View.OnClickListener, Anim
 			
 			questionScreen.userViews.get(userAnswer1.uid).userProgressView.setProgress(userAnswer1.whatUserGot);
 			questionScreen.userViews.get(userAnswer2.uid).userProgressView.setProgress(userAnswer2.whatUserGot);
+			
+			questionScreen.userViews.get(userAnswer1.uid).userScoreView.setText(userAnswer1.whatUserGot+" xp");
+			questionScreen.userViews.get(userAnswer2.uid).userScoreView.setText(userAnswer2.whatUserGot+" xp");
 
-			 questionScreen.measure(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-			Bitmap b = getViewBitmap(questionScreen);
-			ret.add(b);
+			questionScreen.getTimerView().attachToWindow();
+			ret.add(getScreenViewBitmap(questionScreen));
+			questionScreen.getTimerView().dettachToWindow();
 		}
 			
 		return ret;
 	}
 	
-	
-    private static Bitmap getViewBitmap(View v) {
-        v.clearFocus();
-        v.setPressed(false);
+	public static Bitmap getScreenViewBitmap(final View v) {
+	    v.setDrawingCacheEnabled(true);
 
-        boolean willNotCache = v.willNotCacheDrawing();
-        v.setWillNotCacheDrawing(false);
+	    v.measure(MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED),
+	            MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED));
+	    v.layout(0, 0, v.getMeasuredWidth(), v.getMeasuredHeight());
 
-        // Reset the drawing cache background color to fully transparent
-        // for the duration of this operation
-        int color = v.getDrawingCacheBackgroundColor();
-        v.setDrawingCacheBackgroundColor(0);
+	    v.buildDrawingCache(true);
+	    Bitmap g = v.getDrawingCache();
+	    Bitmap b = Bitmap.createScaledBitmap(g, g.getWidth()/3,g.getHeight()/3, false);
+	    v.setDrawingCacheEnabled(false); // clear drawing cache
 
-        if (color != 0) {
-            v.destroyDrawingCache();
-        }
-        v.buildDrawingCache();
-        Bitmap cacheBitmap = v.getDrawingCache();
-        if (cacheBitmap == null) {
-//            Log.e(TAG, "failed getViewBitmap(" + v + ")", new RuntimeException());
-            return null;
-        }
-
-        Bitmap bitmap = Bitmap.createBitmap(cacheBitmap);
-
-        // Restore the view
-        v.destroyDrawingCache();
-        v.setWillNotCacheDrawing(willNotCache);
-        v.setDrawingCacheBackgroundColor(color);
-
-        return bitmap;
-    }
+	    return b;
+	}
 	
 	
 	public static List<Bitmap> getBitmapOfQuestions(AppController controller ,LocalQuizHistory quizHistory){

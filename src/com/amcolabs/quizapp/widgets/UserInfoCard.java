@@ -8,6 +8,7 @@ import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.view.Gravity;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
@@ -59,8 +60,17 @@ public class UserInfoCard extends LinearLayout implements IViewType{
 		for(String badgeId : badgeIds){
 			Badge badge = quizApp.getDataBaseHelper().getBadgeById(badgeId);
 			ImageView temp = new ImageView(quizApp.getContext());
+			temp.setPadding(0, 0, 10, 0);
 			badgesLayout.addView(temp);
 			quizApp.getUiUtils().loadImageIntoView(quizApp.getContext(), temp, badge.getAssetPath(), true , quizApp.getUiUtils().dp2px(30),quizApp.getUiUtils().dp2px(30), null);
+			temp.setTag(badgeId);
+			temp.setOnClickListener(new OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					quizApp.getStaticPopupDialogBoxes().showUnlockedBadge((String)v.getTag(), true);
+				}
+			});
 		}
 
 		
