@@ -206,7 +206,8 @@ public class UiUtils {
 		REMOVED_USER("Removed User"),
 		SUBSCRIBE("Subscribe"), USER_SENT_YOU_MESSAGE("%s sent you a message"),
 		REQUESTED("Requesting Rematch"), PROFILE("My Profile"),
-		TOTAL_GAMES_PLAYED("Total Matches Played : %d");	
+		TOTAL_GAMES_PLAYED("Total Matches Played : %d"),
+		ANSWERS_LIST("Your Answers");	
 		
 		String value = null;
 		UiText(String value){

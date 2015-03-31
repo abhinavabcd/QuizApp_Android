@@ -6,6 +6,7 @@ import java.util.List;
 
 import android.graphics.Bitmap;
 import android.os.Handler;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -188,14 +189,22 @@ public class WinOrLoseScreen extends Screen{
         	ABView[] imageViews = new ABView[answerBitmaps.size()];
 	        for(int i=0;i<answerBitmaps.size();i++){
 	        	imageViews[i] = new ABView(getContext(),R.style.answer_bitmap_imageview);
+	        	getApp().getUiUtils();
 	        	ImageView temp = new ImageView(getContext());
-	        	temp.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
+	        	LayoutParams lp = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
+	        	lp.setMargins(10, 10, 10, 10);
+	        	temp.setLayoutParams(lp);
+				UiUtils.setBg(temp, getApp().getResources().getDrawable(R.drawable.custom_border));
 	        	temp.setImageBitmap(answerBitmaps.get(i));
 	        	imageViews[i].addView(temp);
 	        }
 	        ABTemplating template = new ABTemplating(controller.getContext());
 	        ((LinearLayout) quizResult.getChildAt(0)).addView(
-	        		template.h(ABTemplating.IS_HORIZONTAL_SCROLL,imageViews)
+	        		template.v(
+		        		new ABView(getApp().getContext()).addLabel(UiText.ANSWERS_LIST.getValue()).gty(Gravity.CENTER),
+		        		new ABView(getApp().getContext()).underline(),
+		        		template.h(ABTemplating.IS_HORIZONTAL_SCROLL,imageViews)
+	        		)
 			);
         }
         addView(quizResult);

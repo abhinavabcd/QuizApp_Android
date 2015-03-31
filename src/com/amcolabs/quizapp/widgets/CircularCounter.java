@@ -17,6 +17,7 @@ import android.graphics.Typeface;
 import android.os.Handler;
 import android.os.Message;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout.LayoutParams;
 
@@ -348,7 +349,9 @@ public class CircularCounter extends View {
 	@Override
 	protected void onDraw(Canvas canvas) {
 		super.onDraw(canvas);
-
+		if(mBackgroundPaint==null){
+			Log.v("CIrcular Counter","Paint cannot be null");
+		}
 		canvas.drawCircle(mBackgroundCenter, mBackgroundCenter,
 				mBackgroundRadius, mBackgroundPaint);
 
@@ -595,5 +598,14 @@ public class CircularCounter extends View {
 		val2=0;
 		val3=0;
 		setValues(0,0,0);
+	}
+
+
+	public void attachToWindow() {
+		onAttachedToWindow();
+	}
+	
+	public void dettachToWindow() {
+		onDetachedFromWindow();
 	}
 }
