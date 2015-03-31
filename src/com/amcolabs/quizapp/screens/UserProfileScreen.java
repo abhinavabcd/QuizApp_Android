@@ -88,6 +88,7 @@ public class UserProfileScreen extends Screen {
 		for(String badgeId : badgeIds){
 			Badge badge = getApp().getDataBaseHelper().getBadgeById(badgeId);
 			ImageView temp = new ImageView(getApp().getContext());
+			temp.setPadding(0,0,20,10);
 			badgesLayout.addView(temp);
 			getApp().getUiUtils().loadImageIntoView(getApp().getContext(), temp, badge.getAssetPath(), true , getApp().getUiUtils().dp2px(20),getApp().getUiUtils().dp2px(20), null);
 		}
