@@ -15,8 +15,11 @@ public class Screen extends LinearLayout {
 		QUIZZES_SCREEN,
 		QUESTIONS_SCREEN,
 		CLASH_SCREEN, 
-		HOME_SCREEN, WELCOME_SCREEN;
+		HOME_SCREEN, 
+		WELCOME_SCREEN,
+		PROFILE_SCREEN;
 	}
+	
 	protected AppController controller = null;
 	protected boolean isInViewPort = true;
 	private LinearLayout scrollView = null;

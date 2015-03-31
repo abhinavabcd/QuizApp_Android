@@ -264,6 +264,10 @@ public class QuestionScreen extends Screen implements View.OnClickListener, Anim
 			userProgressView.userScoreView.setText( (!(pQuizController!=null && pQuizController.isChallengeMode()) || user.uid.equalsIgnoreCase(getApp().getUser().uid))?"+0 Xp":"?");
 		}
 	}
+	public void animateXpPoints(String uid,  String xpPointsStr){
+		userViews.get(uid).userScoreView.setText(xpPointsStr);
+		animTextScale.reset();
+	}
 	
 	public void animateXpPoints(String uid,  int xpPoints){
 		userViews.get(uid).userScoreView.setText(xpPoints+" xp");
