@@ -136,7 +136,7 @@ public class LocalQuizHistory {
 
 
 
-	public List<Question> getQUestions() {
+	public List<Question> getQuestions() {
 		// TODO Auto-generated method stub
 		return null;
 	}

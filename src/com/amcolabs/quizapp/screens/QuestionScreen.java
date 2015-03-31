@@ -6,8 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 
 import android.graphics.Bitmap;
-import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Point;
 import android.media.MediaPlayer;
 import android.os.Handler;
 import android.view.LayoutInflater;
@@ -15,7 +15,7 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
 import android.view.animation.AnimationUtils;
-import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -32,10 +32,10 @@ import com.amcolabs.quizapp.databaseutils.LocalQuizHistory;
 import com.amcolabs.quizapp.databaseutils.Question;
 import com.amcolabs.quizapp.datalisteners.DataInputListener;
 import com.amcolabs.quizapp.gameutils.GameUtils;
+import com.amcolabs.quizapp.uiutils.UiUtils;
 import com.amcolabs.quizapp.widgets.CircularCounter;
 import com.amcolabs.quizapp.widgets.CustomProgressBar;
 import com.amcolabs.quizapp.widgets.GothamButtonView;
-import com.google.gson.reflect.TypeToken;
 
 class UserProgressViewHolder{
 
@@ -170,6 +170,7 @@ public class QuestionScreen extends Screen implements View.OnClickListener, Anim
 			questionScreen.showUserInfo(users,maxScore); //load user info
 			questionScreen.loadQuestion(question, questionIndex++);
 			questionScreen.questionAndOptionsViewWrapper.setVisibility(View.VISIBLE);//show it
+			((FrameLayout.LayoutParams)questionScreen.questionAndOptionsViewWrapper.getLayoutParams()).width = 700;
 			//TODO: Currently only for two users only
 			UserAnswer userAnswer1  = null;
 			for(UserAnswer a : answers1){
@@ -199,7 +200,9 @@ public class QuestionScreen extends Screen implements View.OnClickListener, Anim
 			questionScreen.userViews.get(userAnswer2.uid).userScoreView.setText(userAnswer2.whatUserGot+" xp");
 
 			questionScreen.getTimerView().attachToWindow();
-			ret.add(getScreenViewBitmap(questionScreen));
+			Bitmap viewBitmap = getScreenViewBitmap(questionScreen);
+			if(viewBitmap!=null)
+				ret.add(viewBitmap);
 			questionScreen.getTimerView().dettachToWindow();
 		}
 			
@@ -215,7 +218,13 @@ public class QuestionScreen extends Screen implements View.OnClickListener, Anim
 
 	    v.buildDrawingCache(true);
 	    Bitmap g = v.getDrawingCache();
-	    Bitmap b = Bitmap.createScaledBitmap(g, g.getWidth()/2,g.getHeight()/2, false);
+	    Bitmap b;
+	    try{
+		    b = Bitmap.createScaledBitmap(g, g.getWidth()/2,g.getHeight()/2, false);
+	    }
+	    catch(Exception e){
+	    	b=null;
+	    }
 	    v.setDrawingCacheEnabled(false); // clear drawing cache
 
 	    return b;
@@ -225,7 +234,7 @@ public class QuestionScreen extends Screen implements View.OnClickListener, Anim
 	public static List<Bitmap> getBitmapOfQuestions(AppController controller ,LocalQuizHistory quizHistory){
 		return getBitmapOfQuestions(
 					controller,
-					quizHistory.getQUestions(),
+					quizHistory.getQuestions(),
 					controller.quizApp.getUser().uid,
 					quizHistory.getUsers(),
 					quizHistory.maxScore,

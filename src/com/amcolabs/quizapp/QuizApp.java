@@ -556,7 +556,7 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 	double lastClick = 0;
 	String lastClickId = null;
 	public boolean isRapidReClick(String clickId){
-		if(!clickId.equalsIgnoreCase(clickId) || Config.getCurrentNanos()-lastClick>1000000000){//1 sec
+		if(!clickId.equalsIgnoreCase(clickId) || Config.getCurrentNanos()-lastClick>2000000000){//1 sec
 			lastClick = Config.getCurrentNanos();
 			lastClickId = clickId;
 			return false;
@@ -568,7 +568,7 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 	private int reClickId = 0;
 	public boolean isRapidReClick(int id){
 		if(id==reClickId){
-			if(Config.getCurrentNanos()-lastClick>1000000000){//1 sec
+			if(Config.getCurrentNanos()-lastClick> 2000000000){//1 sec
 				lastClick = Config.getCurrentNanos();
 				reClickId = 0;
 				return false;
@@ -581,7 +581,7 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 	}
 
 	public boolean isRapidReClick(){
-		if(Config.getCurrentNanos()-lastClick>1000000000){//1 sec
+		if(Config.getCurrentNanos()-lastClick>2000000000){//1 sec
 			lastClick = Config.getCurrentNanos();
 			return false;
 		}
