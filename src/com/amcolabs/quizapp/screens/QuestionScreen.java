@@ -199,7 +199,7 @@ public class QuestionScreen extends Screen implements View.OnClickListener, Anim
 
 	    v.buildDrawingCache(true);
 	    Bitmap g = v.getDrawingCache();
-	    Bitmap b = Bitmap.createScaledBitmap(g, g.getWidth()/3,g.getHeight()/3, false);
+	    Bitmap b = Bitmap.createScaledBitmap(g, g.getWidth()/2,g.getHeight()/2, false);
 	    v.setDrawingCacheEnabled(false); // clear drawing cache
 
 	    return b;
