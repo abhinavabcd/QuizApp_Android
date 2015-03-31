@@ -253,9 +253,9 @@ public class HomeScreen extends Screen {
 	
 	
 	private void addShortProfileStats() {
-		 LinearLayout wrapUserStrip;
-		 GothamTextView userName;
-		 ImageButton viewProfileButton;
+		LinearLayout wrapUserStrip;
+		GothamTextView userName;
+		ImageButton viewProfileButton;
 		LinearLayout baseLayout = (LinearLayout) getApp().getActivity().getLayoutInflater().inflate(R.layout.user_strip, null);
 		baseLayout.setBackgroundColor(getResources().getColor(R.color.black));
 		wrapUserStrip = (LinearLayout) baseLayout.findViewById(R.id.wrap_user_strip);

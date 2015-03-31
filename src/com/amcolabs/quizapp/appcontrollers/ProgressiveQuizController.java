@@ -322,6 +322,8 @@ public class ProgressiveQuizController extends AppController{
 	private void checkAndProceedToNextQuestion(UserAnswer userAnswer){
 		userAnswers.put(userAnswer.uid,  userAnswer);
 		questionScreen.animateProgressView(userAnswer.uid, userAnswer.whatUserGot);
+		if(userAnswer.uid.equalsIgnoreCase(quizApp.getUser().uid))
+			questionScreen.animateXpPoints(quizApp.getUser().uid, userAnswers.get(quizApp.getUser().uid).whatUserGot);
 		if(userAnswersStack.containsKey(userAnswer.uid)){
 			userAnswersStack.get(userAnswer.uid).add(userAnswer);
 		}
