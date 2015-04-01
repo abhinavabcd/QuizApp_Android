@@ -84,10 +84,10 @@ public class ServerCalls {
 
 	public static final String SERVER_ADDR = Config.IS_SERVER_BUILD ?
 														(Config.IS_TEST_BUILD? "http://54.187.73.133:8085":"http://quizapp-main.amcolabs.com") 
-														: (Config.IS_TEST_BUILD? "http://192.168.42.25:8085":"http://quizapp-main.amcolabs.com");
+														: (Config.IS_TEST_BUILD? "http://192.168.42.108:8085":"http://quizapp-main.amcolabs.com");
 	public static final String CDN_IMAGES_PATH = Config.IS_SERVER_BUILD ?
 														(Config.IS_TEST_BUILD?"http://appsandlabs.com/quizApp/images/":"http://appsandlabs.com/quizApp/images/")  
-														: (Config.IS_TEST_BUILD?"http://192.168.42.25:8081/images/":"http://appsandlabs.com/quizApp/images/");
+														: (Config.IS_TEST_BUILD?"http://192.168.42.108:8081/images/":"http://appsandlabs.com/quizApp/images/");
 	
 
 

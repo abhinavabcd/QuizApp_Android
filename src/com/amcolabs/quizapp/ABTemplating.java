@@ -27,7 +27,8 @@ public class ABTemplating{
 	public final static int NONE = -5;
 	public enum ViewType{
 		SCROLL_VIEW,
-		NORMAL, HORIZONTAL_SCROLL_VIEW;
+		NORMAL, 
+		HORIZONTAL_SCROLL_VIEW;
 	}
 	public final static boolean IS_HORIZONTAL_SCROLL = true;
 	public static class ABView  extends LinearLayout{
@@ -345,40 +346,6 @@ public class ABTemplating{
 	
 	/*
 	 * all app based templates here 
-	 */
-	
-	public ABView getVideoMainTemplate(){
-		return v(
-				h( new ABView(ctx,"label").addLabel("YURL:"),new ABView(ctx, "url").wgt(1.0f),new ABView(ctx, "load")), 
-				new ABView(ctx, "video"),
-				h(IS_HORIZONTAL_SCROLL, new ABView(ctx, "AtoB"), new ABView(ctx, "recordButton"),new ABView(ctx, "saveToJobs")),
-				new ABView(ctx,"temp2").underline(),
-				v(true,
-					new ABView(ctx, "label3").addLabel("Current Editing").wd(LayoutParams.MATCH_PARENT).gty(Gravity.CENTER),
-					new ABView(ctx, "pendingJob"),
-					new ABView(ctx, "jobStatus"),
-					new ABView(ctx,"temp").underline(),
-					new ABView(ctx, "label2").addLabel("Saved Jobs").wd(LayoutParams.MATCH_PARENT).gty(Gravity.CENTER),
-					new ABView(ctx, "savedJobs").asVScrollView(),
-					new ABView(ctx, "submitButton"),
-					new ABView(ctx, "debug").addLabel("")
-				)
-		);
-	}
-	
-	public ABView getSavedRecordingTemplate(){
-		return v( 
-				 h( 
-				     new ABView(ctx,"label").addLabel("Title"),
-			    	 new ABView(ctx,"titleEdit").wgt(1.0f)
-				  ),
-				h(	new ABView(ctx,"timeline").wgt(1.0f).gty(Gravity.CENTER),
-					new ABView(ctx, "playButton"),
-					new ABView(ctx,"deleteButton"),
-					new ABView(ctx,"statustext")
-				).gty(Gravity.CENTER_VERTICAL).wd(LayoutParams.MATCH_PARENT)
-				);
-	}
-	
+	 */		
 }
 	

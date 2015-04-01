@@ -47,12 +47,12 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.amcolabs.quizapp.MainActivity;
+import com.amcolabs.quizapp.NotificationReciever;
 import com.amcolabs.quizapp.QuizApp;
 import com.amcolabs.quizapp.R;
 import com.amcolabs.quizapp.configuration.Config;
 import com.amcolabs.quizapp.databaseutils.OfflineChallenge;
 import com.amcolabs.quizapp.datalisteners.DataInputListener;
-import com.amcolabs.quizapp.notificationutils.NotificationReciever;
 import com.amcolabs.quizapp.serverutils.ServerCalls;
 import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.utils.ValueFormatter;

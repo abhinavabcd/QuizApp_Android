@@ -3,7 +3,7 @@ package com.amcolabs.quizapp.datalisteners;
 import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
 
-import com.amcolabs.quizapp.notificationutils.NotificationReciever.NotificationPayload;
+import com.amcolabs.quizapp.NotificationReciever.NotificationPayload;
 import com.amcolabs.quizapp.serverutils.ServerResponse.MessageType;
 
 public interface IDataInputListener<T> extends OnClickListener,OnLongClickListener{ 
