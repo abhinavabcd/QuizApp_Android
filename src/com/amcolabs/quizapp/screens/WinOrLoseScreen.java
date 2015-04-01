@@ -15,6 +15,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
+import android.widget.TextView;
 
 import com.amcolabs.quizapp.ABTemplating;
 import com.amcolabs.quizapp.ABTemplating.ABView;
@@ -54,6 +55,7 @@ public class WinOrLoseScreen extends Screen{
 	private GothamTextView quizPoints;
 	private GothamTextView quizWinPoints;
 	private GothamTextView quizLevelupPoints;
+	private GothamTextView quizFinishPoints;
 	private GothamTextView quizTotalPoints;
 	private LinearLayout buttonsWrapper;
 	private GothamButtonView rematchButton;
@@ -129,6 +131,7 @@ public class WinOrLoseScreen extends Screen{
         quizPoints = (GothamTextView)quizResult.findViewById(R.id.quizPoints);
         quizWinPoints = (GothamTextView)quizResult.findViewById(R.id.quizWinPoints);
         quizLevelupPoints = (GothamTextView)quizResult.findViewById(R.id.quizLevelupPoints);
+        quizFinishPoints = (GothamTextView)quizResult.findViewById(R.id.quizFinishPoints);
         quizTotalPoints = (GothamTextView)quizResult.findViewById(R.id.quizTotalPoints);
         
         final User user2 = getOtherUser(curUsers); 
@@ -289,11 +292,11 @@ public class WinOrLoseScreen extends Screen{
 		if(matchResult>0&&!isChallengeMode){
 			qwPoints = (int)Math.floor(Config.QUIZ_WIN_BONUS+ qPoints-opponentQPoints); // Adding differential score to bonus
 		}
-		animatePoints(qPoints,qwPoints,(int)Math.floor(levelUp?Config.QUIZ_LEVEL_UP_BONUS:0));
+		animatePoints(qPoints,qwPoints,(int)Math.floor(levelUp?Config.QUIZ_LEVEL_UP_BONUS:0),(int)Config.QUIZ_FINISH_BONUS);
 		showResultInChart();
 	}
 
-	private void animatePoints(int qPoints, int qwPoints, int luPoints) {
+	private void animatePoints(int qPoints, int qwPoints, int luPoints, int qfPoints) {
 		final Animation anim = AnimationUtils.loadAnimation(getApp().getContext(), R.anim.push_down_in);
 		final Animation fanim = AnimationUtils.loadAnimation(getApp().getContext(), R.anim.fadein);
 		quizPoints.setText("+"+qPoints);
@@ -303,7 +306,8 @@ public class WinOrLoseScreen extends Screen{
 			quizWinPoints.setText("?");
 		}
 		quizLevelupPoints.setText("+"+luPoints);
-		quizTotalPoints.setText("+"+(qPoints+qwPoints+luPoints));
+		quizFinishPoints.setText("+"+qfPoints);
+		quizTotalPoints.setText("+"+(qPoints+qwPoints+luPoints+qfPoints));
 		quizTotalPoints.setVisibility(View.INVISIBLE);
 		new Handler().postDelayed(new Runnable() {
 			@Override
@@ -311,6 +315,7 @@ public class WinOrLoseScreen extends Screen{
 				quizPoints.startAnimation(anim);
 				quizWinPoints.startAnimation(anim);
 				quizLevelupPoints.startAnimation(anim);
+				quizFinishPoints.startAnimation(anim);
 				new Handler().postDelayed(new Runnable() {
 					@Override
 					public void run() {
@@ -447,10 +452,10 @@ public class WinOrLoseScreen extends Screen{
         PieData data = new PieData(xVals, set);
         mPieChart.setValueFormatter(getApp().getUiUtils().getDecimalFormatter());
         mPieChart.setData(data);
-        mPieChart.setDescriptionTextSize(4f);
-        mPieChart.setValueTextSize(4f);
+        mPieChart.setDescriptionTextSize(8f);
+        mPieChart.setValueTextSize(8f);
 
-        mPieChart.setCenterTextSize(5f); 
+        mPieChart.setCenterTextSize(10f); 
 
         // undo all highlights
         mPieChart.highlightValues(null);
@@ -458,7 +463,8 @@ public class WinOrLoseScreen extends Screen{
         // set a text for the chart center
         mPieChart.setCenterText("Total XP: " + (int) mPieChart.getYValueSum());
         
-        mPieChart.setDescription(UiText.QUIZ_LEVEL_DISTRIBUTION.getValue());
+//        mPieChart.setDescription(UiText.QUIZ_LEVEL_DISTRIBUTION.getValue());
+        mPieChart.setDescription(user.getName());
         mPieChart.invalidate();
 	}
 

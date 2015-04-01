@@ -819,9 +819,24 @@ public class ProgressiveQuizController extends AppController{
 				else{
 					qResult = Quiz.LOOSE;
 				}
+				
+				List<UserAnswer> ans = userAnswersStack.get(quizApp.getUser().uid);
+				List<UserAnswer> opponentAns = userAnswersStack.get(getOtherUser().uid);
+				int qwPoints = 0;
+				int qPoints = (int)Math.floor(ans.get(ans.size()-1).whatUserGot);
+				int opponentQPoints = (int)Math.floor(opponentAns.get(opponentAns.size()-1).whatUserGot);
+				
+				if(qResult==Quiz.WON){
+					qwPoints = (int)Math.floor(Config.QUIZ_WIN_BONUS+ qPoints-opponentQPoints); // Adding differential score to bonus
+				}
+				
 				oldPoints = curUser.getPoints(quiz.quizId);
 				uAns = userAnswersStack.get(curUser.uid);
-				newPoints = oldPoints+uAns.get(uAns.size()-1).whatUserGot+(qResult>0?Config.QUIZ_WIN_BONUS:0);
+				double tmpNewPoints = oldPoints+uAns.get(uAns.size()-1).whatUserGot+ qwPoints +Config.QUIZ_FINISH_BONUS;
+				if(GameUtils.didUserLevelUp(oldPoints, tmpNewPoints)){
+					tmpNewPoints = tmpNewPoints + Config.QUIZ_LEVEL_UP_BONUS;
+				}
+				newPoints = tmpNewPoints;
 				
 				if(qResult>=Quiz.LOOSE){
 					curUser.setPoints(quiz.quizId, (int) newPoints);
@@ -854,7 +869,23 @@ public class ProgressiveQuizController extends AppController{
 		
 		newPoints = quizApp.getUser().getPoints(quiz.quizId);
 		uAns = userAnswersStack.get(quizApp.getUser().uid);
-		oldPoints = newPoints - (uAns.get(uAns.size()-1).whatUserGot+(quizResult>0?Config.QUIZ_WIN_BONUS:0));
+		
+		List<UserAnswer> ans = userAnswersStack.get(quizApp.getUser().uid);
+		List<UserAnswer> opponentAns = userAnswersStack.get(getOtherUser().uid);
+		int qwPoints = 0;
+		int qPoints = (int)Math.floor(ans.get(ans.size()-1).whatUserGot);
+		int opponentQPoints = (int)Math.floor(opponentAns.get(opponentAns.size()-1).whatUserGot);
+		
+		if(quizResult>0){
+			qwPoints = (int)Math.floor(Config.QUIZ_WIN_BONUS+ qPoints-opponentQPoints); // Adding differential score to bonus
+		}
+		
+		// Calculating old points
+		double tmpOldPoints = newPoints - (uAns.get(uAns.size()-1).whatUserGot+qwPoints+Config.QUIZ_FINISH_BONUS) - Config.QUIZ_LEVEL_UP_BONUS;
+		if (!GameUtils.didUserLevelUp(tmpOldPoints, newPoints)){ // If not level up, adjust old points
+			tmpOldPoints = tmpOldPoints + Config.QUIZ_LEVEL_UP_BONUS;
+		}
+		oldPoints = tmpOldPoints;
 		
 		if(isChallengeMode()){ 
 			quizApp.getServerCalls().addOfflineChallange(quiz , getOtherUser(), userAnswersStack.get(quizApp.getUser().uid), quizMode.getId() ,new DataInputListener<OfflineChallenge>(){
