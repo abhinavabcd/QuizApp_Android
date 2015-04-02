@@ -17,6 +17,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.amcolabs.quizapp.AppController;
+import com.amcolabs.quizapp.QuizApp;
 import com.amcolabs.quizapp.R;
 import com.amcolabs.quizapp.Screen;
 import com.amcolabs.quizapp.adapters.CategoryItemListAdapter;
@@ -252,9 +253,9 @@ public class HomeScreen extends Screen {
 	
 	
 	private void addShortProfileStats() {
-		 LinearLayout wrapUserStrip;
-		 GothamTextView userName;
-		 ImageButton viewProfileButton;
+		LinearLayout wrapUserStrip;
+		GothamTextView userName;
+		ImageButton viewProfileButton;
 		LinearLayout baseLayout = (LinearLayout) getApp().getActivity().getLayoutInflater().inflate(R.layout.user_strip, null);
 		baseLayout.setBackgroundColor(getResources().getColor(R.color.black));
 		wrapUserStrip = (LinearLayout) baseLayout.findViewById(R.id.wrap_user_strip);
@@ -285,6 +286,9 @@ public class HomeScreen extends Screen {
 		OnClickListener profileClickListener = new OnClickListener() {
 			@Override
 			public void onClick(View v) {
+				if(getApp().isRapidReClick(getId())){
+					return;
+				}
 				ProfileAndChatController c = (ProfileAndChatController) getApp().loadAppController(ProfileAndChatController.class);
 				c.showProfileScreen(getApp().getUser());
 			}

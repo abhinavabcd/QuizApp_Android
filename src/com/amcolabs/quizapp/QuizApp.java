@@ -502,11 +502,17 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 //		}
 	}
 
+	public synchronized void setScreenAnimationActive(boolean activate){
+		if(activate)
+			++isScreenAnimationActive;
+		else
+			--isScreenAnimationActive;
+	}
 	
 	@Override
 	public void onAnimationStart(Animation animation) {
 		uiUtils.addUiBlock("Loading...");
-		++isScreenAnimationActive;
+		setScreenAnimationActive(true);
 	}
 	@Override
 	public void onAnimationEnd(Animation animation) {
@@ -520,7 +526,7 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 		catch(NoSuchElementException e){
 			e.printStackTrace();
 		}
-		--isScreenAnimationActive;
+		setScreenAnimationActive(false);
 		uiUtils.removeUiBlock();
 	}
 
@@ -550,7 +556,7 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 	double lastClick = 0;
 	String lastClickId = null;
 	public boolean isRapidReClick(String clickId){
-		if(!clickId.equalsIgnoreCase(clickId) || Config.getCurrentNanos()-lastClick>1000000000){//1 sec
+		if(!clickId.equalsIgnoreCase(clickId) || Config.getCurrentNanos()-lastClick>2000000000){//1 sec
 			lastClick = Config.getCurrentNanos();
 			lastClickId = clickId;
 			return false;
@@ -562,18 +568,20 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 	private int reClickId = 0;
 	public boolean isRapidReClick(int id){
 		if(id==reClickId){
-			if(Config.getCurrentNanos()-lastClick>1000000000){//1 sec
+			if((Config.getCurrentNanos()-lastClick)> 4000000000d){//1 sec
 				lastClick = Config.getCurrentNanos();
+				reClickId = 0;
 				return false;
 			}
 			lastClick = Config.getCurrentNanos();
 			return true;
 		}
+		reClickId = id;
 		return false;
 	}
 
 	public boolean isRapidReClick(){
-		if(Config.getCurrentNanos()-lastClick>1000000000){//1 sec
+		if(Config.getCurrentNanos()-lastClick>2000000000){//1 sec
 			lastClick = Config.getCurrentNanos();
 			return false;
 		}

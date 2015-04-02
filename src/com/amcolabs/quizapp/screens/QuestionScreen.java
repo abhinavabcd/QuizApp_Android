@@ -6,8 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 
 import android.graphics.Bitmap;
-import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Point;
 import android.media.MediaPlayer;
 import android.os.Handler;
 import android.view.LayoutInflater;
@@ -16,6 +16,7 @@ import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -32,10 +33,10 @@ import com.amcolabs.quizapp.databaseutils.LocalQuizHistory;
 import com.amcolabs.quizapp.databaseutils.Question;
 import com.amcolabs.quizapp.datalisteners.DataInputListener;
 import com.amcolabs.quizapp.gameutils.GameUtils;
+import com.amcolabs.quizapp.uiutils.UiUtils;
 import com.amcolabs.quizapp.widgets.CircularCounter;
 import com.amcolabs.quizapp.widgets.CustomProgressBar;
 import com.amcolabs.quizapp.widgets.GothamButtonView;
-import com.google.gson.reflect.TypeToken;
 
 class UserProgressViewHolder{
 
@@ -98,9 +99,6 @@ public class QuestionScreen extends Screen implements View.OnClickListener, Anim
 		questionViewWrapper = (LinearLayout) questionAndOptionsViewWrapper.findViewById(R.id.quizQuestion);
 		questionHintViewWrapper = (RelativeLayout) questionAndOptionsViewWrapper.findViewById(R.id.hint_wrapper);
 		optionsViewWrapper = (LinearLayout) questionAndOptionsViewWrapper.findViewById(R.id.quizOptions);
-		setTimerView((CircularCounter) headerViewWrapper.findViewById(R.id.timerView));
-		
-		
 		questionTextView = (TextView) questionViewWrapper.findViewById(R.id.questionText);
 		questionImageView = (ImageView) questionViewWrapper.findViewById(R.id.questionImage);
 		
@@ -124,14 +122,19 @@ public class QuestionScreen extends Screen implements View.OnClickListener, Anim
 			optionView.setOnClickListener(this);
 		}
 		
-		animFadeOut = AnimationUtils.loadAnimation(getApp().getContext(), R.anim.fade_out_animation);
-		animFadeOut.setAnimationListener(this);
-
-		animTextScale = AnimationUtils.loadAnimation(getApp().getContext(), R.anim.xp_points_animation);
 		preQuestionText1 = (TextView) preQuestionView.findViewById(R.id.textView1);
 		preQuestionText2 = (TextView) preQuestionView.findViewById(R.id.textView2);
 		preQuestionText3 = (TextView) preQuestionView.findViewById(R.id.textView3);
+
+		
+		
+		setTimerView((CircularCounter) headerViewWrapper.findViewById(R.id.timerView));
+
 		if(liveGame){
+			animFadeOut = AnimationUtils.loadAnimation(getApp().getContext(), R.anim.fade_out_animation);
+			animFadeOut.setAnimationListener(this);
+
+			animTextScale = AnimationUtils.loadAnimation(getApp().getContext(), R.anim.xp_points_animation);
 			onQuestionTimeEnd = new DataInputListener<Boolean>(){
 				public String onData(Boolean s) {
 					isOptionSelected = true;
@@ -164,11 +167,12 @@ public class QuestionScreen extends Screen implements View.OnClickListener, Anim
 		//		// on click on the bitmap , open a dialog , with little lesser height and the close button with the image on it ? 
 		List<Bitmap> ret = new ArrayList<Bitmap>();
 		int questionIndex = 0;
+		QuestionScreen questionScreen = new QuestionScreen(controller, true);
 		for(Question question : questions){
-			QuestionScreen questionScreen = new QuestionScreen(controller, true);
 			questionScreen.showUserInfo(users,maxScore); //load user info
 			questionScreen.loadQuestion(question, questionIndex++);
 			questionScreen.questionAndOptionsViewWrapper.setVisibility(View.VISIBLE);//show it
+			((FrameLayout.LayoutParams)questionScreen.questionAndOptionsViewWrapper.getLayoutParams()).width = 700;
 			//TODO: Currently only for two users only
 			UserAnswer userAnswer1  = null;
 			for(UserAnswer a : answers1){
@@ -194,19 +198,45 @@ public class QuestionScreen extends Screen implements View.OnClickListener, Anim
 			questionScreen.userViews.get(userAnswer1.uid).userProgressView.setProgress(userAnswer1.whatUserGot);
 			questionScreen.userViews.get(userAnswer2.uid).userProgressView.setProgress(userAnswer2.whatUserGot);
 			
-			Bitmap b = Bitmap.createBitmap(questionScreen.getWidth(), questionScreen.getHeight(), Bitmap.Config.ARGB_8888);
-			Canvas c = new Canvas(b);
-			questionScreen.draw(c);
-			ret.add(b);
+			questionScreen.userViews.get(userAnswer1.uid).userScoreView.setText(userAnswer1.whatUserGot+" xp");
+			questionScreen.userViews.get(userAnswer2.uid).userScoreView.setText(userAnswer2.whatUserGot+" xp");
+
+			questionScreen.getTimerView().attachToWindow();
+			Bitmap viewBitmap = getScreenViewBitmap(questionScreen);
+			if(viewBitmap!=null)
+				ret.add(viewBitmap);
+			questionScreen.getTimerView().dettachToWindow();
 		}
 			
 		return ret;
 	}
 	
+	public static Bitmap getScreenViewBitmap(final View v) {
+	    v.setDrawingCacheEnabled(true);
+
+	    v.measure(MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED),
+	            MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED));
+	    v.layout(0, 0, v.getMeasuredWidth(), v.getMeasuredHeight());
+
+	    v.buildDrawingCache(true);
+	    Bitmap g = v.getDrawingCache();
+	    Bitmap b;
+	    try{
+		    b = Bitmap.createScaledBitmap(g, g.getWidth()/2,g.getHeight()/2, false);
+	    }
+	    catch(Exception e){
+	    	b=null;
+	    }
+	    v.setDrawingCacheEnabled(false); // clear drawing cache
+
+	    return b;
+	}
+	
+	
 	public static List<Bitmap> getBitmapOfQuestions(AppController controller ,LocalQuizHistory quizHistory){
 		return getBitmapOfQuestions(
 					controller,
-					quizHistory.getQUestions(),
+					quizHistory.getQuestions(),
 					controller.quizApp.getUser().uid,
 					quizHistory.getUsers(),
 					quizHistory.maxScore,
@@ -248,8 +278,12 @@ public class QuestionScreen extends Screen implements View.OnClickListener, Anim
 			userProgressView.userProgressView.setBackgroundResource(R.drawable.fat_progress_bar);//(getApp().getConfig().getAThemeColor());
 			userProgressView.userProgressView.getProgressDrawable().setColorFilter(getApp().getConfig().getAThemeColor(), android.graphics.PorterDuff.Mode.MULTIPLY);
 			
-			userProgressView.userScoreView.setText( (!pQuizController.isChallengeMode() || user.uid.equalsIgnoreCase(getApp().getUser().uid))?"+0 Xp":"?");
+			userProgressView.userScoreView.setText( (!(pQuizController!=null && pQuizController.isChallengeMode()) || user.uid.equalsIgnoreCase(getApp().getUser().uid))?"+0 Xp":"?");
 		}
+	}
+	public void animateXpPoints(String uid,  String xpPointsStr){
+		userViews.get(uid).userScoreView.setText(xpPointsStr);
+		animTextScale.reset();
 	}
 	
 	public void animateXpPoints(String uid,  int xpPoints){

@@ -16,6 +16,7 @@ import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Point;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
@@ -33,6 +34,7 @@ import android.view.Display;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -206,7 +208,8 @@ public class UiUtils {
 		REMOVED_USER("Removed User"),
 		SUBSCRIBE("Subscribe"), USER_SENT_YOU_MESSAGE("%s sent you a message"),
 		REQUESTED("Requesting Rematch"), PROFILE("My Profile"),
-		TOTAL_GAMES_PLAYED("Total Matches Played : %d");	
+		TOTAL_GAMES_PLAYED("Total Matches Played : %d"),
+		ANSWERS_LIST("Your Answers");	
 		
 		String value = null;
 		UiText(String value){
@@ -623,6 +626,20 @@ public class UiUtils {
 			}
 		}
 		return false;
+	}
+	
+	public static Point getScreenDimetions(QuizApp quizApp){
+		WindowManager w = quizApp.getActivity().getWindowManager();
+		Point point = new Point();
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
+		    Point size = new Point();
+		    w.getDefaultDisplay().getSize(size);
+		} else {
+		    Display d = w.getDefaultDisplay();
+		    point.x = d.getWidth();
+		    point.y = d.getHeight();
+		}
+	    return point;
 	}
 	
 	public void populateViews(LinearLayout linearLayout, View[] views, Context context, View extraView){
