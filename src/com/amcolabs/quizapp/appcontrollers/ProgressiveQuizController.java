@@ -205,6 +205,7 @@ public class ProgressiveQuizController extends AppController{
 	public final static  String USERS="8";
 	public final  static String CREATED_AT="9";
 	public final  static String ELAPSED_TIME="10";
+	public final  static String CURRENT_INCREMENT="11";
 	
 	
 
@@ -309,13 +310,17 @@ public class ProgressiveQuizController extends AppController{
 	    public int elapsedTime;
 	    @SerializedName(WHAT_USER_HAS_GOT)
 	    public int whatUserGot;
+	    
+	    @SerializedName(CURRENT_INCREMENT)
+	    public int currentIncrement;
 		
-		public UserAnswer(String questionId, String uid, String userAnswer, int elapsedTime, int whatUserGot) {
+		public UserAnswer(String questionId, String uid, String userAnswer, int elapsedTime, int whatUserGot, int currentIncrement) {
 			this.questionId = questionId;
 			this.uid = uid;
 			this.userAnswer = userAnswer;
 			this.elapsedTime = elapsedTime;
 			this.whatUserGot = whatUserGot;
+			this.currentIncrement = currentIncrement;
 		}
 	}
 	
@@ -323,7 +328,8 @@ public class ProgressiveQuizController extends AppController{
 		userAnswers.put(userAnswer.uid,  userAnswer);
 		questionScreen.animateProgressView(userAnswer.uid, userAnswer.whatUserGot);
 		if(userAnswer.uid.equalsIgnoreCase(quizApp.getUser().uid))
-			questionScreen.animateXpPoints(quizApp.getUser().uid, userAnswers.get(quizApp.getUser().uid).whatUserGot);
+			questionScreen.animateXpPoints(quizApp.getUser().uid, userAnswers.get(quizApp.getUser().uid).whatUserGot+"xp ("+userAnswer.currentIncrement+" xp)");
+
 		if(userAnswersStack.containsKey(userAnswer.uid)){
 			userAnswersStack.get(userAnswer.uid).add(userAnswer);
 		}
@@ -409,7 +415,7 @@ public class ProgressiveQuizController extends AppController{
 							botScore+=Math.ceil((currentQuestion.getTime() - elapsedTime)*currentQuestion.xp/currentQuestion.getTime())*quizApp.getGameUtils().multiplyFactor(currentQuestions.size());
 						}
 						final UserAnswer botAnswer = new UserAnswer(currentQuestion.questionId, user.uid, isRightAnswer?currentQuestion.getCorrectAnswer():currentQuestion.getWrongRandomAnswer(rand),
-								 	elapsedTime, botScore);
+								 	elapsedTime, botScore,0);
 			    		
 						new Handler().postDelayed( new Runnable() {
 							
@@ -751,10 +757,12 @@ public class ProgressiveQuizController extends AppController{
 	public void onOptionSelected(Boolean isAnwer, String answer , Question currentQuestion) {
 		UserAnswer payload =null; 
 		double timeElapsed = questionScreen.getTimerView().stopPressed(1);
+		int recentIncrement = 0;
 		if(isAnwer){
-			currentScore += ( Math.ceil(currentQuestion.getTime()-timeElapsed)*quizApp.getGameUtils().multiplyFactor(currentQuestions.size()));
+			recentIncrement = (int) ( Math.ceil(currentQuestion.getTime()-timeElapsed)*quizApp.getGameUtils().multiplyFactor(currentQuestions.size()));
+			currentScore += recentIncrement;
 		}
-		payload = new UserAnswer(currentQuestion.questionId, quizApp.getUser().uid, answer, (int)timeElapsed, currentScore);
+		payload = new UserAnswer(currentQuestion.questionId, quizApp.getUser().uid, answer, (int)timeElapsed, currentScore,recentIncrement);
 		if(isNormalMode())
 			serverSocket.sendTextMessage(quizApp.getConfig().getGson().toJson(payload));
 		checkAndProceedToNextQuestion(payload);
@@ -764,7 +772,7 @@ public class ProgressiveQuizController extends AppController{
 	public String onNoAnswer(Question currentQuestion) {
 		UserAnswer payload = null; 
 		currentScore += 0;
-		payload = new UserAnswer(currentQuestion.questionId, quizApp.getUser().uid, "", currentQuestion.getTime(), currentScore);//all time elapsed
+		payload = new UserAnswer(currentQuestion.questionId, quizApp.getUser().uid, "", currentQuestion.getTime(), currentScore,0);//all time elapsed
 		if(isNormalMode()){
 			if(serverSocket==null || !serverSocket.isConnected()){
 				return null;

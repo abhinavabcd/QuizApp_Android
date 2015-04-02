@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
 import android.view.animation.AnimationUtils;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -119,6 +120,7 @@ public class QuestionScreen extends Screen implements View.OnClickListener, Anim
 		
 		
 		setTimerView((CircularCounter) headerViewWrapper.findViewById(R.id.timerView));
+
 		hintButtonView.setOnClickListener(new OnClickListener() {
 			
 			@Override
@@ -127,6 +129,7 @@ public class QuestionScreen extends Screen implements View.OnClickListener, Anim
 				hintTextView.setVisibility(View.VISIBLE);
 			}
 		});
+
 
 		if(liveGame){
 			animFadeOut = AnimationUtils.loadAnimation(getApp().getContext(), R.anim.fade_out_animation);
@@ -278,6 +281,10 @@ public class QuestionScreen extends Screen implements View.OnClickListener, Anim
 			
 			userProgressView.userScoreView.setText( (!(pQuizController!=null && pQuizController.isChallengeMode()) || user.uid.equalsIgnoreCase(getApp().getUser().uid))?"+0 Xp":"?");
 		}
+	}
+	public void animateXpPoints(String uid,  String xpPointsStr){
+		userViews.get(uid).userScoreView.setText(xpPointsStr);
+		animTextScale.reset();
 	}
 	
 	public void animateXpPoints(String uid,  int xpPoints){
