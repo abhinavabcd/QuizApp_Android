@@ -117,9 +117,12 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
         return mDb;
     }
     
+    /*
+     * Ordered by categoryId instead of modifiedtimestap - change is necessary
+     */
     public List<Category> getCategories(int quantity){
     		try {
-				return getCategoryDao().queryBuilder().limit((long)quantity).orderBy("modifiedTimestamp", false).query();
+				return getCategoryDao().queryBuilder().limit((long)quantity).orderBy("categoryId", false).query();
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

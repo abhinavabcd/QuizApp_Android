@@ -99,7 +99,7 @@ public class ProgressiveQuizController extends AppController{
 	public void initlializeQuiz(Quiz quiz) {
 		this.quiz = quiz;
 		showWaitingScreen(quiz);
-		playType = RANDOM_USER_TYPE;
+		playType = SIMO_USER_TYPE;
 		noResponseFromServer = true;
 		quizMode = QuizMode.NORMAL_MODE;
 	}
@@ -112,7 +112,7 @@ public class ProgressiveQuizController extends AppController{
 		clashingScreen.setClashCount(2); 
 		clashingScreen.updateClashScreen(quizApp.getUser()/*quizApp.getUser()*/,quiz, 0);//TODO: change to quizApp.getUser()
 		insertScreen(clashingScreen);
-		quizApp.getServerCalls().startProgressiveQuiz(this, quiz, RANDOM_USER_TYPE, null);
+		quizApp.getServerCalls().startProgressiveQuiz(this, quiz, SIMO_USER_TYPE, null);
 	}	
 	
 	
@@ -121,7 +121,7 @@ public class ProgressiveQuizController extends AppController{
 			return 0;
 		int mscore = 0;
 		for(int i=0;i<currentQuestions.size();i++){
-			mscore += currentQuestions.get(i).xp*quizApp.getGameUtils().multiplyFactor(i+1);
+			mscore += Math.ceil((currentQuestions.get(i).xp*currentQuestions.get(i).xp/currentQuestions.get(i).getTime()*quizApp.getGameUtils().multiplyFactor(i+1,SIMO_USER_TYPE)));
 		}
 		return mscore;
 	}
@@ -212,7 +212,8 @@ public class ProgressiveQuizController extends AppController{
 	
 	// type of quiz
 	private static final int CHALLENGE_QUIZ_TYPE = 2; // for layout adjustments //TODO: remove this carefully  , don't remmeber usage
-	private static final int RANDOM_USER_TYPE = 1; 
+	public static final int RANDOM_USER_TYPE = 1; 
+	public static final int SIMO_USER_TYPE = 4; 
 	private static final int CHALLENGED_LIVE_QUIZ_TYPE = 3;
 
 	double waitinStartTime = 0;
@@ -230,7 +231,7 @@ public class ProgressiveQuizController extends AppController{
 	private WinOrLoseScreen quizResultScreen;
 	private QuizMode quizMode = QuizMode.NORMAL_MODE;
 	private boolean waitingForRematch;
-	private int playType = RANDOM_USER_TYPE;
+	private int playType = SIMO_USER_TYPE;
 	private DataInputListener2<ServerWebSocketConnection, Quiz, Void, Void> socketConnectedListener = null;
 	private YesNoDialog rematchDialog = null;
 	protected double userLevel;
@@ -354,7 +355,7 @@ public class ProgressiveQuizController extends AppController{
 				public void run() {
 					if(currentQuestions.size()>0){ // more questions
 						Question currentQuestion = currentQuestions.remove(0);
-						int bonusFactor = quizApp.getGameUtils().multiplyFactor(currentQuestions.size());
+						int bonusFactor = quizApp.getGameUtils().multiplyFactor(currentQuestions.size(),SIMO_USER_TYPE);
 						int questionNum = quiz.nQuestions - currentQuestions.size();
 						if(bonusFactor<2){
 							questionScreen.animateQuestionChange(UiText.QUESTION.getValue(questionNum), UiText.GET_READY.getValue(), currentQuestion , questionNum-1);
@@ -412,7 +413,7 @@ public class ProgressiveQuizController extends AppController{
 						int elapsedTime = rand.nextInt((int) (5*Math.max(0, (100-userLevel)/100))); 
 						boolean isRightAnswer = rand.nextInt(100) < (50+Math.sqrt(25*userLevel))? true:false;
 						if(isRightAnswer){
-							botScore+=Math.ceil((currentQuestion.getTime() - elapsedTime)*currentQuestion.xp/currentQuestion.getTime())*quizApp.getGameUtils().multiplyFactor(currentQuestions.size());
+							botScore+=Math.ceil(((currentQuestion.getTime() - elapsedTime)*currentQuestion.xp/currentQuestion.getTime())*quizApp.getGameUtils().multiplyFactor(currentQuestions.size(),SIMO_USER_TYPE));
 						}
 						final UserAnswer botAnswer = new UserAnswer(currentQuestion.questionId, user.uid, isRightAnswer?currentQuestion.getCorrectAnswer():currentQuestion.getWrongRandomAnswer(rand),
 								 	elapsedTime, botScore,0);
@@ -759,7 +760,7 @@ public class ProgressiveQuizController extends AppController{
 		double timeElapsed = questionScreen.getTimerView().stopPressed(1);
 		int recentIncrement = 0;
 		if(isAnwer){
-			recentIncrement = (int) ( Math.ceil(currentQuestion.getTime()-timeElapsed)*quizApp.getGameUtils().multiplyFactor(currentQuestions.size()));
+			recentIncrement = (int) ( Math.ceil(((currentQuestion.getTime()-timeElapsed)*currentQuestion.xp/currentQuestion.getTime())*quizApp.getGameUtils().multiplyFactor(currentQuestions.size(),playType)));
 			currentScore += recentIncrement;
 		}
 		payload = new UserAnswer(currentQuestion.questionId, quizApp.getUser().uid, answer, (int)timeElapsed, currentScore,recentIncrement);

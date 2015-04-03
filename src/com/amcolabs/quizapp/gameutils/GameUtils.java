@@ -6,6 +6,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.amcolabs.quizapp.QuizApp;
+import com.amcolabs.quizapp.appcontrollers.ProgressiveQuizController;
 import com.amcolabs.quizapp.databaseutils.OfflineChallenge;
 
 /**
@@ -66,7 +67,10 @@ public class GameUtils {
 	 * This method will be our bonus question points calculator to be used by all methods
 	 * @return scale factor
 	 */
-	public int multiplyFactor(int questionNumber){
+	public int multiplyFactor(int questionNumber,int quizType){
+		if (quizType==ProgressiveQuizController.SIMO_USER_TYPE){
+			return 1;
+		}
 		if(questionNumber%4==0){ //currentQuestions.size()%4==0 && currentQuestions.size()<quiz.nQuestions
 			return 2;
 		};

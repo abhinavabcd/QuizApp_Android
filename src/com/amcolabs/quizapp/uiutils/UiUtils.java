@@ -105,7 +105,7 @@ public class UiUtils {
 		QUESTIONS_BONUS("%dx Bonus"),
 		QUESTION("Question %s"), 
 		LEVEL("Level"), 
-		RECENT_QUIZZES("Recently Updated Quizzes"),
+		RECENT_QUIZZES("Recently Updated"),
 		BADGES("Badges"), 
 		SHOW_QUIZZES("Quizzes"), 
 		SHOW_MESSAGES("Messages"), 

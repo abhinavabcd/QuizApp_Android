@@ -628,10 +628,12 @@ public class ServerCalls {
 	}
 	
 	
-	private void startProgressiveQuiz(String webSocketAddr , final ProgressiveQuizController pController , final Quiz quiz, String serverId, HashMap<String,String> additionalParams){
+	private void startProgressiveQuiz(String webSocketAddr , final ProgressiveQuizController pController , final Quiz quiz, String serverId, int quizType, HashMap<String,String> additionalParams){
 		  String wsuri = webSocketAddr +"/progressiveQuiz";
 		  wsuri+="?encodedKey="+quizApp.getUserDeviceManager().getEncodedKey();
 		  wsuri+="&quizId="+quiz.quizId;
+		  wsuri+="&quizType="+quizType;
+		  
 		  if(additionalParams!=null)
 			  wsuri+="&"+mapToQuery(additionalParams);
 		  if(mConnection!=null && mConnection.isConnected()){
@@ -689,18 +691,18 @@ public class ServerCalls {
 		 URI uri;
 			try {
 				uri = new URI(serverMap.get(serverId));
-				startProgressiveQuiz("ws://"+uri.getHost()+":"+uri.getPort() , pController, quiz , serverId, additionalParams);
+				startProgressiveQuiz("ws://"+uri.getHost()+":"+uri.getPort() , pController, quiz , serverId, quizType, additionalParams);
 			} catch (URISyntaxException e) {
 				e.printStackTrace();
 			}
 	 }
 	 
-	 public void startProgressiveQuiz(final ProgressiveQuizController pController, final Quiz quiz, int quizType ,final HashMap<String,String> additionalParams) {
+	 public void startProgressiveQuiz(final ProgressiveQuizController pController, final Quiz quiz, final int quizType ,final HashMap<String,String> additionalParams) {
 		 String url = getMasterServerAddr()+"/func?task=getServer";
 		 url+="&quizId="+quiz.quizId+"&quizType="+quizType;
 		 
 		 url+="&encodedKey="+quizApp.getUserDeviceManager().getEncodedKey();
-			
+		 
 		  makeServerCall(url , new ServerNotifier(){
 			@Override
 			public void onServerResponse(MessageType messageType, ServerResponse response) {
@@ -716,7 +718,7 @@ public class ServerCalls {
 						URI uri;
 						try {
 							uri = new URI(response.payload2);
-							startProgressiveQuiz("ws://"+uri.getHost()+":"+uri.getPort() , pController, quiz , sid, additionalParams);
+							startProgressiveQuiz("ws://"+uri.getHost()+":"+uri.getPort() , pController, quiz , sid, quizType, additionalParams);
 						} catch (URISyntaxException e) {
 							e.printStackTrace();
 						}
