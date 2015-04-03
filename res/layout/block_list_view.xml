@@ -18,11 +18,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:gravity="center"
         android:layout_margin="10dp"
+        android:gravity="center"
         android:text="TextView"
         android:textAllCaps="true"
-        android:textSize="20dp" />
+        android:textColor="@color/white"
+        android:textSize="18dp" />
     
     <com.amcolabs.quizapp.widgets.GothamTextView
         android:id="@+id/debugMessage"
@@ -34,7 +35,6 @@
         android:textSize="15sp" 
         android:visibility="gone"/>
 
-
     <com.amcolabs.quizapp.widgets.ExpandableHeightListView
         android:id="@+id/listView"
         android:layout_width="match_parent"
@@ -42,10 +42,12 @@
         android:layout_marginBottom="20dp"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
-        android:divider="#00000000"    
+        android:divider="#00000000"
         android:listSelector="@android:color/transparent"
+        android:minHeight="100dp"
         android:scrollbarAlwaysDrawVerticalTrack="false"
-        android:scrollbars="none" />
+        android:scrollbars="none"
+        android:stackFromBottom="true" />
 
     <FrameLayout
         android:id="@+id/view_all_wrapper"
