@@ -52,7 +52,7 @@
             android:value="@integer/google_play_services_version" />
 
         <receiver
-            android:name="com.amcolabs.quizapp.GCMBroadcastReceiver"
+            android:name=".GCMBroadcastReceiver"
 			android:exported="true"
             android:permission="com.google.android.c2dm.permission.SEND" >
             <intent-filter>
@@ -65,11 +65,12 @@
             </intent-filter>
         </receiver>
 
-        <service android:name="com.amcolabs.quizapp.GCMIntentService" />
+        <service android:name=".GCMIntentService" />
 		<service android:name="MusicService" android:enabled="true"></service> 	
         <receiver
-            android:name="com.amcolabs.quizapp.notificationutils.NotificationReciever"
-            android:enabled="true" >
+            android:name=".NotificationReciever"
+            android:enabled="true"
+            android:exported="true" >
             <intent-filter android:priority="99">
                 <action android:name="com.amcolabs.quizapp.gcmnotification"/>
             </intent-filter>

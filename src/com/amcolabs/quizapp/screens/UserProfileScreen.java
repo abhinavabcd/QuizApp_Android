@@ -6,6 +6,7 @@ import java.util.List;
 import android.graphics.drawable.ColorDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -59,6 +60,7 @@ public class UserProfileScreen extends Screen {
 	public UserProfileScreen(AppController cont) {
 		super(cont);
 		controller = cont;
+		screenType = ScreenType.PROFILE_SCREEN;
 	}
 	
 	public void showUser(User user){
@@ -91,8 +93,14 @@ public class UserProfileScreen extends Screen {
 			temp.setPadding(0,0,20,10);
 			badgesLayout.addView(temp);
 			getApp().getUiUtils().loadImageIntoView(getApp().getContext(), temp, badge.getAssetPath(), true , getApp().getUiUtils().dp2px(20),getApp().getUiUtils().dp2px(20), null);
+			temp.setTag(badgeId);
+			temp.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					getApp().getStaticPopupDialogBoxes().showUnlockedBadge((String)v.getTag(), true);
+				}
+			});
 		}
-
 		
 		drawUserQuizChartsAndUpdateStats(user);
 	}

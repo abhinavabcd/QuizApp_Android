@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Random;
 import java.util.TimeZone;
 
 import android.content.Context;
@@ -23,6 +24,7 @@ import com.google.gson.Gson;
 public class Config{
 
 	private final Gson gson = new Gson();
+	public final Random random = new Random();
 	public static final String PREF_SERVER_TIME_DIFF = "serverTimeDiff";
 	public static final int RETRY_URL_COUNT = 1;
 	public static final String GCM_APP_ID = "591807556804";
@@ -88,6 +90,7 @@ public class Config{
 	public static final String URL_PARAM_IS_CHALLENGED = "isChallenged";
 	public static final boolean IS_SERVER_BUILD = false;
 	public static final long PROGRESS_BAR_POINTS_ANIMATION_STEP_TIME = 100;
+	public static final String QUIZAPP_ERR_LOG_TAG = "QUIZAPP_ERR";
 	
 	private QuizApp quizApp;
 	

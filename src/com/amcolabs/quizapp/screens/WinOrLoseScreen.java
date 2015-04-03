@@ -5,11 +5,12 @@ import java.util.HashMap;
 import java.util.List;
 
 import android.graphics.Bitmap;
+import android.os.AsyncTask;
+import android.os.AsyncTask.Status;
 import android.os.Handler;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
@@ -42,7 +43,6 @@ import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
-import com.squareup.picasso.Picasso;
 
 public class WinOrLoseScreen extends Screen{
 	
@@ -66,6 +66,7 @@ public class WinOrLoseScreen extends Screen{
 	private HashMap<String, List<UserAnswer>> userAnswersStack;
 	private ProgressiveQuizController progressiveQuizController;
 	private QuizMode quizMode;
+	private AsyncTask bgTask;
 	
 	public static class userViewHolder{
 		GothamTextView userNameView;
@@ -185,6 +186,13 @@ public class WinOrLoseScreen extends Screen{
 			}
 		});
         
+        addAnswerBitmaps(answerBitmaps);
+        addView(quizResult);
+	}
+	
+	
+	
+	public void addAnswerBitmaps(List<Bitmap> answerBitmaps){
         if(answerBitmaps!=null && answerBitmaps.size()>0){
         	ABView[] imageViews = new ABView[answerBitmaps.size()];
 	        for(int i=0;i<answerBitmaps.size();i++){
@@ -207,7 +215,7 @@ public class WinOrLoseScreen extends Screen{
 	        		)
 			);
         }
-        addView(quizResult);
+
 	}
 	
 	private User getOtherUser(ArrayList<User> currentUsers) {
@@ -504,6 +512,19 @@ public class WinOrLoseScreen extends Screen{
 	@Override
 	public boolean showOnBackPressed() {
 		return true;
+	}
+
+	@Override
+	public void beforeRemove() {
+		if(bgTask!=null && bgTask.getStatus()==Status.RUNNING)
+			bgTask.cancel(true);
+		super.beforeRemove();
+	}
+
+	public void setBgTask(
+			AsyncTask loadAnswerBitmapsInBackground) {
+		// TODO Auto-generated method stub
+		bgTask = loadAnswerBitmapsInBackground;
 	}
 	
 }
