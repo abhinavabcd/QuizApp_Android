@@ -31,6 +31,8 @@ import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
 import android.widget.FrameLayout;
 
+import com.amcolabs.quizapp.NotificationReciever.NotificationPayload;
+import com.amcolabs.quizapp.NotificationReciever.NotificationType;
 import com.amcolabs.quizapp.Screen.ScreenType;
 import com.amcolabs.quizapp.appcontrollers.BadgeScreenController;
 import com.amcolabs.quizapp.appcontrollers.ProfileAndChatController;
@@ -43,9 +45,6 @@ import com.amcolabs.quizapp.databaseutils.Quiz;
 import com.amcolabs.quizapp.datalisteners.DataInputListener;
 import com.amcolabs.quizapp.gameutils.BadgeEvaluator;
 import com.amcolabs.quizapp.gameutils.GameUtils;
-import com.amcolabs.quizapp.notificationutils.NotificationReciever;
-import com.amcolabs.quizapp.notificationutils.NotificationReciever.NotificationPayload;
-import com.amcolabs.quizapp.notificationutils.NotificationReciever.NotificationType;
 import com.amcolabs.quizapp.notificationutils.NotifificationProcessingState;
 import com.amcolabs.quizapp.popups.StaticPopupDialogBoxes;
 import com.amcolabs.quizapp.serverutils.ServerCalls;
@@ -568,9 +567,8 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 	private int reClickId = 0;
 	public boolean isRapidReClick(int id){
 		if(id==reClickId){
-			if((Config.getCurrentNanos()-lastClick)> 4000000000d){//1 sec
+			if((Config.getCurrentNanos()-lastClick)> 10000000000d){//1 sec
 				lastClick = Config.getCurrentNanos();
-				reClickId = 0;
 				return false;
 			}
 			lastClick = Config.getCurrentNanos();
@@ -579,7 +577,7 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 		reClickId = id;
 		return false;
 	}
-
+	
 	public boolean isRapidReClick(){
 		if(Config.getCurrentNanos()-lastClick>2000000000){//1 sec
 			lastClick = Config.getCurrentNanos();
@@ -873,6 +871,7 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 
                     // Persist the regID - no need to register again.
                 } catch (IOException ex) {
+                	Log.e(Config.QUIZAPP_ERR_LOG_TAG , "Io exception in gcm registering");
                     msg = null;//"Error :" + ex.getMessage();
                 }
                 return msg;

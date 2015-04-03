@@ -601,11 +601,30 @@ public class CircularCounter extends View {
 	}
 
 
-	public void attachToWindow() {
-		onAttachedToWindow();
+	public void attachToWindow(boolean inBackground) {
+		if(!inBackground)
+			onAttachedToWindow();
+		else{//have to setup manually as sping handler in bg returns error
+			setupBounds();
+			setupPaints();
+			setupTextPosition();
+			this.invalidate();
+		}
 	}
 	
-	public void dettachToWindow() {
-		onDetachedFromWindow();
+	public void dettachToWindow(boolean inBackground) {
+		if(!inBackground)
+			onDetachedFromWindow();
+		else{//have to setup manually as sping handler in bg returns error
+			mSpinHandler = null;
+			mOnePaint = null;
+			mOneBounds = null;
+			mTwoPaint = null;
+			mTwoBounds = null;
+			mBackgroundPaint = null;
+			mTextPaint = null;
+			mMetricPaint = null;
+
+		}
 	}
 }

@@ -15,7 +15,6 @@ import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
 
 import com.amcolabs.quizapp.configuration.Config;
-import com.amcolabs.quizapp.notificationutils.NotificationReciever;
 import com.amcolabs.quizapp.uiutils.UiUtils;
 
 public class UserDeviceManager {

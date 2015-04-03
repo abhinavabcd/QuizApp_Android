@@ -6,6 +6,7 @@ import java.util.List;
 import android.graphics.drawable.ColorDrawable;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
@@ -286,9 +287,11 @@ public class HomeScreen extends Screen {
 		OnClickListener profileClickListener = new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				if(getApp().isRapidReClick(getId())){
+				if(getApp().isRapidReClick(getScreenId())){
+					Log.w("PROFILE_BUTTON", "fast reclick");
 					return;
 				}
+				Log.w("PROFILE_BUTTON", "clicked");
 				ProfileAndChatController c = (ProfileAndChatController) getApp().loadAppController(ProfileAndChatController.class);
 				c.showProfileScreen(getApp().getUser());
 			}

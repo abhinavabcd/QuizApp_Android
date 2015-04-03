@@ -21,9 +21,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.amcolabs.quizapp.configuration.Config;
-import com.amcolabs.quizapp.datalisteners.DataInputListener;
 import com.amcolabs.quizapp.serverutils.ServerCalls;
 import com.amcolabs.quizapp.uiutils.UiUtils;
 import com.amcolabs.quizapp.uiutils.UiUtils.UiText;
@@ -63,10 +63,6 @@ public class GCMIntentService extends IntentService {
             // If it's a regular GCM message, do some work.
             } else if (GoogleCloudMessaging.MESSAGE_TYPE_MESSAGE.equals(messageType)) {
                 // This loop represents the service doing some work.
-                for (int i = 0; i < 5; i++) {
-                    Log.i(TAG, "Working... " + (i + 1)
-                            + "/5 @ " + SystemClock.elapsedRealtime());
-                }
                 onMessage(getApplicationContext(), intent);
             }
         }
@@ -90,9 +86,9 @@ public class GCMIntentService extends IntentService {
     }
 
     protected void onMessage(Context context, Intent intent) {
-//    	Toast.makeText(context, "Received GCM Message!", Toast.LENGTH_LONG).show();
- //       Log.i(TAG, "Received message. Extras: " + intent.getExtras());     
-//
+    	Toast.makeText(context, "Received GCM Message!", Toast.LENGTH_LONG).show();
+        Log.i(TAG, "Received message. Extras: " + intent.getExtras());     
+
 	    Intent intent2 = new Intent(Config.RECIEVER_NEW_GCM_NOTIFICATION);
 	    intent2.putExtras(intent.getExtras());
         sendOrderedBroadcast(intent2, null);

@@ -25,13 +25,17 @@ public class Screen extends LinearLayout {
 	private LinearLayout scrollView = null;
 	protected ScreenType screenType = ScreenType.UNKNOWN;
 	
-	
+	private int screenId;
+	public int getScreenId(){
+		return screenId;
+	}
 	public Screen(AppController controller) {
 		super(controller.getContext());
 		this.controller = controller;
 		this.controller.incRefCount();
 		this.setOrientation(LinearLayout.VERTICAL);
 		setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.MATCH_PARENT,1));
+		screenId = controller.quizApp.getConfig().random.nextInt();
 	}
 	
 	

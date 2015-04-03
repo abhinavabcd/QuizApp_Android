@@ -1,4 +1,4 @@
-package com.amcolabs.quizapp.notificationutils;
+package com.amcolabs.quizapp;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -12,11 +12,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
-import com.amcolabs.quizapp.QuizApp;
-import com.amcolabs.quizapp.UserDeviceManager;
+import com.amcolabs.quizapp.NotificationReciever.NotificationType;
 import com.amcolabs.quizapp.configuration.Config;
 import com.amcolabs.quizapp.datalisteners.DataInputListener;
-import com.amcolabs.quizapp.notificationutils.NotificationReciever.NotificationType;
+import com.amcolabs.quizapp.notificationutils.NotifificationProcessingState;
 import com.amcolabs.quizapp.uiutils.UiUtils;
 import com.amcolabs.quizapp.uiutils.UiUtils.UiText;
 import com.google.gson.Gson;

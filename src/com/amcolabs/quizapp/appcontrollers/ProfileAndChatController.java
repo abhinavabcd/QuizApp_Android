@@ -6,11 +6,15 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 
+import android.os.AsyncTask;
 import android.view.View;
 
 import com.amcolabs.quizapp.AppController;
+import com.amcolabs.quizapp.NotificationReciever;
 import com.amcolabs.quizapp.QuizApp;
 import com.amcolabs.quizapp.User;
+import com.amcolabs.quizapp.NotificationReciever.NotificationPayload;
+import com.amcolabs.quizapp.NotificationReciever.NotificationType;
 import com.amcolabs.quizapp.adapters.ChatListAdapter;
 import com.amcolabs.quizapp.adapters.GameEventsListItemAdaptor;
 import com.amcolabs.quizapp.configuration.Config;
@@ -21,9 +25,6 @@ import com.amcolabs.quizapp.databaseutils.Quiz;
 import com.amcolabs.quizapp.databaseutils.UserInboxMessage;
 import com.amcolabs.quizapp.datalisteners.DataInputListener;
 import com.amcolabs.quizapp.datalisteners.DataInputListener2;
-import com.amcolabs.quizapp.notificationutils.NotificationReciever;
-import com.amcolabs.quizapp.notificationutils.NotificationReciever.NotificationPayload;
-import com.amcolabs.quizapp.notificationutils.NotificationReciever.NotificationType;
 import com.amcolabs.quizapp.screens.ChatScreen;
 import com.amcolabs.quizapp.screens.SelectFriendsScreen;
 import com.amcolabs.quizapp.screens.UserChatListScreen;
@@ -75,28 +76,50 @@ public class ProfileAndChatController extends AppController {
 	public void showProfileScreen(final User user){
 			showProfileScreen(user, true);
 	}
+	
+	static class DbLoadGameEventsInBackground extends AsyncTask<Object, Void, List<GameEvents>>{
+		QuizApp quizApp;
+		DataInputListener<List<GameEvents>> dataListener;
+		@Override
+		protected List<GameEvents> doInBackground(Object... params) {
+			quizApp = (QuizApp)(params[0]);
+			dataListener = (DataInputListener<List<GameEvents>>) params[1];
+			return  quizApp.getDataBaseHelper().getAllGameEvents(-1);//50 events or less
+		}
+		
+	     protected void onPostExecute(List<GameEvents>events ) {
+	    	dataListener.onData(events);
+	     }
+	}
+	
+	
 	public void showProfileScreen(final User user, boolean clearScreen){
 		if(clearScreen)
 			clearScreen();
 		final UserProfileScreen profileScreen = new UserProfileScreen(this);
 		profileScreen.showUser(user);
-		if(user.uid.equalsIgnoreCase(quizApp.getUser().uid)){
+		insertScreen(profileScreen);
+		if(user.uid.equalsIgnoreCase(quizApp.getUser().uid)){		
+   		    new DbLoadGameEventsInBackground().execute(quizApp, new DataInputListener<List<GameEvents>>(){
+   		    	@Override
+   		    	public String onData(final List<GameEvents> events) {
+   		    	 quizApp.getDataBaseHelper().getAllUsersByUid(GameEventsListItemAdaptor.getAllUids(events), new DataInputListener<Boolean>(){
+ 					@Override
+ 					public String onData(Boolean s) {
+ 						profileScreen.addEventsListView(events);
+ 						return super.onData(s);
+ 					}
+ 				});
+				return null; 
+   		    	}
+   		    });
 			
-			final List<GameEvents> events = quizApp.getDataBaseHelper().getAllGameEvents(-1);
-			quizApp.getDataBaseHelper().getAllUsersByUid(GameEventsListItemAdaptor.getAllUids(events), new DataInputListener<Boolean>(){
-				@Override
-				public String onData(Boolean s) {
-					profileScreen.addEventsListView(events);
-					return super.onData(s);
-				}
-			});
 		}
 		else{
 				final List<LocalQuizHistory> history = quizApp.getDataBaseHelper().getQuizHistoryListByUid(user.uid);
 				profileScreen.showHistoryWithUser(user , history);
 		}
  
-		insertScreen(profileScreen);
 	}
 	
 	public void showQuizLocalHistory(final List<LocalQuizHistory> history){
