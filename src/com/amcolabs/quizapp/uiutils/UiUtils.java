@@ -16,11 +16,13 @@ import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Point;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Looper;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.NotificationCompat;
 import android.text.Html;
@@ -56,7 +58,10 @@ import com.amcolabs.quizapp.datalisteners.DataInputListener;
 import com.amcolabs.quizapp.serverutils.ServerCalls;
 import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.utils.ValueFormatter;
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.RequestCreator;
+import com.squareup.picasso.Target;
 
 
 public class UiUtils {
@@ -434,10 +439,93 @@ public class UiUtils {
 	public Animation getAnimationSlideInRight() {
 		return animationSlideInRight;
 	}        
+
+	public static void into(RequestCreator requestCreator, Drawable placeHolder, Drawable errorDrawable, Target target) {
+        boolean mainThread = Looper.myLooper() == Looper.getMainLooper();
+        if (mainThread) {
+            requestCreator.into(target);
+        } else {
+            try {
+                target.onBitmapFailed(placeHolder);
+                Bitmap bitmap = requestCreator.get();
+                target.onBitmapLoaded(bitmap, Picasso.LoadedFrom.MEMORY);
+            } catch (IOException e) {
+                target.onBitmapFailed(errorDrawable);
+            }
+        }
+    }
+	
+	public static void into(RequestCreator requestCreator, ImageView imageView, Callback callback) {
+		  boolean mainThread = Looper.myLooper() == Looper.getMainLooper();
+		  if (mainThread) {
+		    requestCreator.into(imageView, callback);
+		  } else {
+		    try {
+		      Bitmap bitmap = requestCreator.get();
+		      imageView.setImageBitmap(bitmap);
+		      if (callback != null) {
+		        callback.onSuccess();
+		      }
+		    } catch (IOException e) {
+		      if (callback != null) {
+		        callback.onError();
+		      }
+		    }
+		  }
+	}
 	
 	public static boolean loadImageIntoView(Context ctx , final ImageView imgView, final String assetPath , final boolean downloadToAssets){
-			return loadImageIntoView(ctx , imgView,  assetPath , downloadToAssets , -1 , -1 , null);
+		return loadImageIntoView(ctx , imgView,  assetPath , downloadToAssets , -1 , -1 , null);
 	}
+	
+	public static boolean loadImageIntoViewBackground(Context ctx , final ImageView imgView, final String assetPath , final boolean downloadToAssets){
+			return loadImageIntoViewBackground(ctx , imgView,  assetPath , downloadToAssets , -1 , -1 , null);
+	}
+
+	public static boolean loadImageIntoViewBackground(Context ctx , final ImageView imgView, final String assetPath , final boolean downloadToAssets ,int width , int height , DataInputListener<Boolean> completedLoadingImage){
+		if(assetPath==null || assetPath.isEmpty())
+			return false;
+		try{
+			if(assetPath.startsWith("http://") || assetPath.startsWith("https://")){
+				if(width> 0 && height>0)
+					into(Picasso.with(ctx).load(assetPath).resize(width , height), imgView, null);
+				else
+					into(Picasso.with(ctx).load(assetPath), imgView, null);
+			    return true;
+			}
+			
+		    InputStream ims = ctx.getAssets().open("images/"+assetPath); //assets folder 
+			if(width>0 && height>0)
+				into(Picasso.with(ctx).load("file:///android_asset/images/"+assetPath).resize(width, height),imgView, null);
+			else
+				into(Picasso.with(ctx).load("file:///android_asset/images/"+assetPath), imgView, null);
+			return true;
+		}
+		catch(IOException ex) {//files in SD card
+			File file = new File(ctx.getFilesDir().getParentFile().getPath()+"/images/"+assetPath);
+			if(file.exists()){
+				into(Picasso.with(ctx).load(file).fit().centerCrop() , imgView, null);
+			}
+			else{
+				if(downloadToAssets){//from cdn //TODO: convert this for synchronous use
+					imgView.setTag(new LoadAndSave(imgView, file, assetPath, downloadToAssets, completedLoadingImage));
+					if(width>0 && height>0)
+						Picasso.with(ctx).load(ServerCalls.CDN_IMAGES_PATH+assetPath).error(R.drawable.error_image).resize(width , height).into((LoadAndSave)imgView.getTag());
+					else{
+						Picasso.with(ctx).load(ServerCalls.CDN_IMAGES_PATH+assetPath).error(R.drawable.error_image).into((LoadAndSave)imgView.getTag());
+					}
+				}
+				else{
+					into(Picasso.with(ctx).load(ServerCalls.CDN_IMAGES_PATH+assetPath).error(R.drawable.error_image), imgView,null);//directly
+				}
+			}
+		}		 
+		catch (Exception e) {
+			return false;
+		}
+		return true;
+	}
+
 	
 	public static boolean loadImageIntoView(Context ctx , final ImageView imgView, final String assetPath , final boolean downloadToAssets ,int width , int height , DataInputListener<Boolean> completedLoadingImage){
 		if(assetPath==null || assetPath.isEmpty())

@@ -9,9 +9,10 @@ import java.util.List;
 import java.util.Random;
 import java.util.Set;
 
+import android.graphics.Bitmap;
 import android.media.MediaPlayer;
+import android.os.AsyncTask;
 import android.os.Handler;
-import android.view.View;
 
 import com.amcolabs.quizapp.AppController;
 import com.amcolabs.quizapp.QuizApp;
@@ -948,15 +949,34 @@ public class ProgressiveQuizController extends AppController{
 			badgeEvaluator.evaluateBadges(userAnswersStack,quizResult);
 		}
 		if (quizResultScreen==null){
-			quizResultScreen = new WinOrLoseScreen(this,currentUsers , 
-					       QuestionScreen.getBitmapOfQuestions(this,
-								(List<Question>) quizApp.getConfig().getGson().fromJson(currentQuestionsJson,new TypeToken<List<Question>>(){}.getType()),
-								quizApp.getUser().uid, 
-								currentUsers, 
-								getMaxScore(), 
-								userAnswersStack.get(quizApp.getUser().uid), 
-								userAnswersStack.get(getOtherUser().uid))
-							);
+			quizResultScreen = new WinOrLoseScreen(this,currentUsers , null
+//					QuestionScreen.getBitmapOfQuestions(						this,
+//					(List<Question>) quizApp.getConfig().getGson().fromJson(currentQuestionsJson,new TypeToken<List<Question>>(){}.getType()),
+//					quizApp.getUser().uid,
+//					currentUsers, 
+//					getMaxScore(), 
+//					userAnswersStack.get(quizApp.getUser().uid), 
+//					userAnswersStack.get(getOtherUser().uid)
+//				)
+				);
+			LoadAnswerBitmapsInBackground anyncTask = new LoadAnswerBitmapsInBackground();
+			anyncTask.execute(
+					this,
+					(List<Question>) quizApp.getConfig().getGson().fromJson(currentQuestionsJson,new TypeToken<List<Question>>(){}.getType()),
+					quizApp.getUser().uid,
+					currentUsers, 
+					getMaxScore(), 
+					userAnswersStack.get(quizApp.getUser().uid), 
+					userAnswersStack.get(getOtherUser().uid),
+					new DataInputListener<List<Bitmap>>(){
+						public String onData(List<Bitmap> answerBitmaps) {
+							quizResultScreen.addAnswerBitmaps(answerBitmaps);
+							return null;
+						};
+					}
+					
+				);
+			quizResultScreen.setBgTask(anyncTask);
 		}
 		
 		boolean isLevelUp = GameUtils.didUserLevelUp(oldPoints,newPoints);
@@ -966,9 +986,38 @@ public class ProgressiveQuizController extends AppController{
 		}
 		quizResultScreen.showResult(userAnswersStack,quizResult,isLevelUp , quizMode);
 		insertScreen(quizResultScreen);
+	}
+	
+	// not working // should call from main thread ?  not possible i guess 
+	static class LoadAnswerBitmapsInBackground extends AsyncTask<Object, Void, List<Bitmap>>{
+		DataInputListener<List<Bitmap>> dataListener;
+		@Override
+		protected List<Bitmap> doInBackground(Object... params) {
+			ProgressiveQuizController controller = (ProgressiveQuizController)(params[0]);
+			List<Question> questions = (List<Question>)(params[1]);
+			String uid = (String)(params[2]);
+			ArrayList<User>  currentUsers = ( ArrayList<User> )(params[3]);
+			int maxScore = (Integer)params[4];
+			List<UserAnswer> currentUserAnswers = ( List<UserAnswer> )(params[5]);
+			List<UserAnswer> otherUserAnswers = ( List<UserAnswer> )(params[6]);
+			dataListener = (DataInputListener<List<Bitmap>>) params[7];
+			
+		    return QuestionScreen.getBitmapOfQuestions(controller,
+		    			questions,
+		    			uid,
+						currentUsers, 
+						maxScore, 
+						currentUserAnswers, 
+						otherUserAnswers);
+		    
+		}
 		
+	     protected void onPostExecute(List<Bitmap> bitmaps ) {
+	    	dataListener.onData(bitmaps);
+	     }
 	}
 
+	
 	private boolean shouldUserSendAllUserAnswers() {
 		User currentUser = quizApp.getUser();
 		for(User user : getOtherUsers()){

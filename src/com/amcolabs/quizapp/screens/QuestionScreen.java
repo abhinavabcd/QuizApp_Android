@@ -69,6 +69,7 @@ public class QuestionScreen extends Screen implements View.OnClickListener, Anim
 	private MediaPlayer possitiveButtonSounds;
 	private MediaPlayer negetiveButtonSounds;
 //	private WakeLock wklock;
+	private boolean isLoadingForBitmaps;
 
 	
 	
@@ -151,6 +152,7 @@ public class QuestionScreen extends Screen implements View.OnClickListener, Anim
 		List<Bitmap> ret = new ArrayList<Bitmap>();
 		int questionIndex = 0;
 		QuestionScreen questionScreen = new QuestionScreen(controller, true);
+		questionScreen.isLoadingForBitmaps  = true;
 		for(Question question : questions){
 			questionScreen.showUserInfo(users,maxScore); //load user info
 			questionScreen.loadQuestion(question, questionIndex++);
@@ -173,7 +175,7 @@ public class QuestionScreen extends Screen implements View.OnClickListener, Anim
 				}
 			}
 			questionScreen.getTimerView().setValues(userAnswer1.elapsedTime, userAnswer2.elapsedTime, 0);
-			
+			 
 			questionScreen.highlightCorrectAnswer();
 			questionScreen.highlightOtherUsersOption(userAnswer1.uid, userAnswer1.userAnswer);
 			questionScreen.highlightOtherUsersOption(userAnswer2.uid, userAnswer2.userAnswer);
@@ -184,11 +186,11 @@ public class QuestionScreen extends Screen implements View.OnClickListener, Anim
 			questionScreen.userViews.get(userAnswer1.uid).userScoreView.setText(userAnswer1.whatUserGot+" xp");
 			questionScreen.userViews.get(userAnswer2.uid).userScoreView.setText(userAnswer2.whatUserGot+" xp");
 
-			questionScreen.getTimerView().attachToWindow();
+			questionScreen.getTimerView().attachToWindow(true);
 			Bitmap viewBitmap = getScreenViewBitmap(questionScreen);
 			if(viewBitmap!=null)
 				ret.add(viewBitmap);
-			questionScreen.getTimerView().dettachToWindow();
+			questionScreen.getTimerView().dettachToWindow(true);
 		}
 			
 		return ret;
@@ -253,8 +255,12 @@ public class QuestionScreen extends Screen implements View.OnClickListener, Anim
 			userViews.put(user.uid, userProgressView);
 			
 			userProgressView.userNameView.setText(user.getName());
-			getApp().getUiUtils().loadImageIntoView(getApp().getContext(), userProgressView.userImageView, user.pictureUrl, false);
-
+			if(!isLoadingForBitmaps){
+				getApp().getUiUtils().loadImageIntoView(getApp().getContext(), userProgressView.userImageView, user.pictureUrl, false);
+			}
+			else
+				getApp().getUiUtils().loadImageIntoViewBackground(getApp().getContext(), userProgressView.userImageView, user.pictureUrl, false);
+				
 			userProgressView.userProgressView.setProgress(0);
 			userProgressView.userProgressView.setMax(maxScore);
 
@@ -324,7 +330,12 @@ public class QuestionScreen extends Screen implements View.OnClickListener, Anim
 			questionImageView.setVisibility(View.VISIBLE);
 			optionsViewWrapper.setOrientation(LinearLayout.HORIZONTAL);
 			optionsViewWrapper.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, 0,0.4f));			
-			isImageAvailable = getApp().getUiUtils().loadImageIntoView(getApp().getContext(), questionImageView, ques.getPictures().get(0), false);
+			if(!isLoadingForBitmaps){
+				isImageAvailable = getApp().getUiUtils().loadImageIntoView(getApp().getContext(), questionImageView, ques.getPictures().get(0), false);
+			}
+			else
+				isImageAvailable = getApp().getUiUtils().loadImageIntoViewBackground(getApp().getContext(), questionImageView, ques.getPictures().get(0), false);
+				
 			if(!isImageAvailable){
 				// TODO: Show could not load image or quit quiz
 			}
