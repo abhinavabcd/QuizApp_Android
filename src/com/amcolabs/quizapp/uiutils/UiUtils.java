@@ -7,8 +7,8 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
-
 import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -47,7 +47,6 @@ import android.widget.LinearLayout.LayoutParams;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
-
 import com.amcolabs.quizapp.MainActivity;
 import com.amcolabs.quizapp.NotificationReciever;
 import com.amcolabs.quizapp.QuizApp;
@@ -716,7 +715,7 @@ public class UiUtils {
 		return false;
 	}
 	
-	public static Point getScreenDimetions(QuizApp quizApp){
+	@TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2) public static Point getScreenDimetions(QuizApp quizApp){
 		WindowManager w = quizApp.getActivity().getWindowManager();
 		Point point = new Point();
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
