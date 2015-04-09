@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import android.util.Log;
+import android.widget.Toast;
 
 import com.amcolabs.quizapp.AppController;
 import com.amcolabs.quizapp.QuizApp;
@@ -175,10 +176,14 @@ public class UserMainPageController  extends AppController{
 		//categories
 		List<Category> categories = quizApp.getDataBaseHelper().getCategories(Config.MAX_CATEGORIES_ON_HOME_SCREEN);
 		boolean showMore = false;
+		
 		if(categories.size()==Config.MAX_CATEGORIES_ON_HOME_SCREEN){
 			categories.remove(categories.size()-1);
 			showMore = true;
 		}
+//		Toast.makeText(quizApp.getContext(), String.valueOf(showMore), Toast.LENGTH_LONG).show();
+//		Log.d("controller","check out the passage ! "+ String.valueOf(categories.size()));
+		
 		homeScreen.addCategoriesView(categories, showMore);
 		 //quizzes
 		showMore = false;

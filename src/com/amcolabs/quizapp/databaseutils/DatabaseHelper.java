@@ -122,7 +122,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
      */
     public List<Category> getCategories(int quantity){
     		try {
-				return getCategoryDao().queryBuilder().limit((long)quantity).orderBy("categoryId", false).query();
+				return getCategoryDao().queryBuilder().limit((long)quantity).orderBy("categoryId", true).query();
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

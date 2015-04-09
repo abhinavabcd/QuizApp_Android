@@ -13,12 +13,11 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.amcolabs.quizapp.AppController;
-import com.amcolabs.quizapp.QuizApp;
 import com.amcolabs.quizapp.R;
 import com.amcolabs.quizapp.Screen;
 import com.amcolabs.quizapp.adapters.CategoryItemListAdapter;
@@ -33,7 +32,6 @@ import com.amcolabs.quizapp.databaseutils.Feed;
 import com.amcolabs.quizapp.databaseutils.OfflineChallenge;
 import com.amcolabs.quizapp.databaseutils.Quiz;
 import com.amcolabs.quizapp.datalisteners.DataInputListener;
-import com.amcolabs.quizapp.uiutils.UiUtils;
 import com.amcolabs.quizapp.uiutils.UiUtils.UiText;
 import com.amcolabs.quizapp.widgets.ExpandableHeightListView;
 import com.amcolabs.quizapp.widgets.GothamTextView;
@@ -67,10 +65,13 @@ public class HomeScreen extends Screen {
 		title.setText(UiText.CATEGORIES.getValue());
 		lView.findViewById(R.id.search_text).setVisibility(View.GONE);
 		FrameLayout viewMore = (FrameLayout) lView.findViewById(R.id.view_all_wrapper);
+		
 		if(!showViewMore){
 			viewMore.setVisibility(View.GONE);
 		}
 		else{
+			// TODO: Correct below hack to show categories
+			lView.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, Config.MAX_CATEGORIES_ON_HOME_SCREEN*100));
 			viewMore.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) { 

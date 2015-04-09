@@ -98,7 +98,7 @@
                         android:layout_margin="10dp"
                         android:ellipsize="end"
                         android:maxLines="2"
-                        android:text="No Hint Available"
+                        android:text="@string/hint_not_available"
                         android:visibility="invisible" />
                     
                 </RelativeLayout>

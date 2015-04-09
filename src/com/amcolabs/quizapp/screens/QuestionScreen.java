@@ -364,9 +364,10 @@ public class QuestionScreen extends Screen implements View.OnClickListener, Anim
 		if (ques.hint!=null && !ques.hint.equalsIgnoreCase("")){
 			hintTextView.setText(ques.hint);
 		}
-//		else{
-//			hintButtonView.setVisibility(View.GONE);
-//		}
+		else{
+			hintButtonView.setVisibility(View.GONE);
+			hintTextView.setText(R.string.hint_not_available);
+		}
 		
 		String[] mcqOptions = ques.getMCQOptions();
 		int tmpIndex = ques.getAnswerIndex();
