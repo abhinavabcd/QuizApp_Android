@@ -213,7 +213,9 @@ public class UiUtils {
 		SUBSCRIBE("Subscribe"), USER_SENT_YOU_MESSAGE("%s sent you a message"),
 		REQUESTED("Requesting Rematch"), PROFILE("My Profile"),
 		TOTAL_GAMES_PLAYED("Total Matches Played : %d"),
-		ANSWERS_LIST("Your Answers");	
+		ANSWERS_LIST("Your Answers"),
+		RESULT_SHARE_TEXT("Hey! I just %s a Quiz with %s, scoring %s points!! Get "+Config.APP_NAME+" App to catch some fun! "+Config.playStoreUrl),
+		ERROR_RESULT_SHARE_TEXT("Hey! I just played a Quiz with %s!! Get "+Config.APP_NAME+" App to catch some fun! "+Config.playStoreUrl);	
 		
 		String value = null;
 		UiText(String value){

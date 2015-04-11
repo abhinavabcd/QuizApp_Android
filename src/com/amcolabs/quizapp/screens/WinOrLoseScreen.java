@@ -8,6 +8,7 @@ import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.AsyncTask.Status;
 import android.os.Handler;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,7 +17,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
-import android.widget.TextView;
+import android.widget.Toast;
 
 import com.amcolabs.quizapp.ABTemplating;
 import com.amcolabs.quizapp.ABTemplating.ABView;
@@ -30,6 +31,7 @@ import com.amcolabs.quizapp.appcontrollers.ProgressiveQuizController.UserAnswer;
 import com.amcolabs.quizapp.appcontrollers.UserMainPageController;
 import com.amcolabs.quizapp.configuration.Config;
 import com.amcolabs.quizapp.databaseutils.Quiz;
+import com.amcolabs.quizapp.fileandcommonutils.CommonFunctions;
 import com.amcolabs.quizapp.gameutils.GameUtils;
 import com.amcolabs.quizapp.uiutils.UiUtils;
 import com.amcolabs.quizapp.uiutils.UiUtils.UiText;
@@ -61,6 +63,7 @@ public class WinOrLoseScreen extends Screen{
 	private GothamButtonView rematchButton;
 	private GothamButtonView leaderBoardsButton;
 	private GothamButtonView addFriendButton;
+	private GothamButtonView shareResultButton;
 	private GothamButtonView viewProfileButton;
 	private GothamTextView quizResultMessage;
 	
@@ -69,6 +72,8 @@ public class WinOrLoseScreen extends Screen{
 	private ProgressiveQuizController progressiveQuizController;
 	private QuizMode quizMode;
 	private AsyncTask bgTask;
+	
+	public String resultSharingText;
 	
 	public static class userViewHolder{
 		GothamTextView userNameView;
@@ -123,9 +128,6 @@ public class WinOrLoseScreen extends Screen{
 //			setSampleData(this.getContext(),uView.userPieChartView);
 		}
 		
-
-		
-		
 		quizResultMessage = (GothamTextView) quizResult.findViewById(R.id.quizResultMessage);
 		mChart = (BarChartViewMultiDataset) quizResult.findViewById(R.id.bar_chart);
         
@@ -159,6 +161,7 @@ public class WinOrLoseScreen extends Screen{
 		});
         
         addFriendButton = (GothamButtonView)quizResult.findViewById(R.id.addFriendButton);
+		
 		for(String uid : getApp().getUser().getSubscribedTo()){
 			if(uid.equalsIgnoreCase(getApp().getUser().uid)){
 					addFriendButton.setText(UiText.UNSUBSCRIBE.getValue());
@@ -180,7 +183,15 @@ public class WinOrLoseScreen extends Screen{
 				});
 			}
 		}
-			
+		
+		shareResultButton = (GothamButtonView)quizResult.findViewById(R.id.shareResultButton);
+		shareResultButton.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				CommonFunctions.shareText(resultSharingText, getApp().getActivity());
+			}
+		});
+		
         viewProfileButton = (GothamButtonView)quizResult.findViewById(R.id.viewProfileButton);
         viewProfileButton.setOnClickListener(new OnClickListener() {
 			@Override
@@ -191,9 +202,9 @@ public class WinOrLoseScreen extends Screen{
         
         addAnswerBitmaps(answerBitmaps);
         addView(quizResult);
+        
+        resultSharingText = Config.sharingAppText; // Using this temporarily just for worst cases :D
 	}
-	
-	
 	
 	public void addAnswerBitmaps(List<Bitmap> answerBitmaps){
         if(answerBitmaps!=null && answerBitmaps.size()>0){
@@ -268,25 +279,9 @@ public class WinOrLoseScreen extends Screen{
 				}
 			});
 		}
-		if(matchResult==1){
-			quizResultMessage.setText(UiText.WON_QUIZ_MESSAGE.getValue());
-		}
-		else if(matchResult==-1){
-			quizResultMessage.setText(UiText.LOST_QUIZ_MESAGE.getValue());
-		}
-		else if(matchResult==0){
-			quizResultMessage.setText(UiText.TIE_QUIZ_MESAGE.getValue());
-		} 
-		else if(matchResult==-2){
-			quizResultMessage.setText(UiText.SERVER_ERROR_MESSAGE.getValue());
-		}
 		boolean isChallengeMode = quizMode==QuizMode.CHALLENGE_MODE;
 		
-		if(quizMode == QuizMode.CHALLENGE_MODE){
-			quizResultMessage.setText(UiText.YOU_CHALLENGED.getValue());	
-		}
-		
-		if(quizMode==QuizMode.CHALLENGED_MODE || quizMode==QuizMode.CHALLENGED_MODE){
+		if(quizMode==QuizMode.CHALLENGED_MODE || quizMode==QuizMode.CHALLENGE_MODE){
 			buttonsWrapper.setVisibility(View.GONE);
 		}
 		
@@ -300,7 +295,31 @@ public class WinOrLoseScreen extends Screen{
 		if(matchResult>0&&!isChallengeMode){
 			qwPoints = (int)Math.floor(Config.QUIZ_WIN_BONUS+ qPoints-opponentQPoints); // Adding differential score to bonus
 		}
-		animatePoints(qPoints,qwPoints,(int)Math.floor(levelUp?Config.QUIZ_LEVEL_UP_BONUS:0),(int)Config.QUIZ_FINISH_BONUS);
+		int levelupPoints = (int)Math.floor(levelUp?Config.QUIZ_LEVEL_UP_BONUS:0);
+		int totalPoints = qPoints+qwPoints+levelupPoints+(int)Config.QUIZ_FINISH_BONUS;
+		animatePoints(qPoints,qwPoints,levelupPoints,(int)Config.QUIZ_FINISH_BONUS);
+
+		String otherUserName = ((ProgressiveQuizController) controller).getOtherUser().getName();
+		if(matchResult==1){
+			quizResultMessage.setText(UiText.WON_QUIZ_MESSAGE.getValue());
+			resultSharingText = UiUtils.UiText.RESULT_SHARE_TEXT.getValue(UiUtils.UiText.PROFILE_WON_STATS_TEXT.getValue(),otherUserName,String.valueOf(totalPoints));
+		}
+		else if(matchResult==-1){
+			quizResultMessage.setText(UiText.LOST_QUIZ_MESAGE.getValue());
+			resultSharingText = UiUtils.UiText.RESULT_SHARE_TEXT.getValue(UiUtils.UiText.PROFILE_LOST_STATS_TEXT.getValue(),otherUserName,String.valueOf(totalPoints));
+		}
+		else if(matchResult==0){
+			quizResultMessage.setText(UiText.TIE_QUIZ_MESAGE.getValue());
+			resultSharingText = UiUtils.UiText.RESULT_SHARE_TEXT.getValue(UiUtils.UiText.PROFILE_TIE_STATS_TEXT.getValue(),otherUserName,String.valueOf(totalPoints));
+		} 
+		else if(matchResult==-2){
+			quizResultMessage.setText(UiText.SERVER_ERROR_MESSAGE.getValue());
+			resultSharingText = UiUtils.UiText.ERROR_RESULT_SHARE_TEXT.getValue(otherUserName);
+		}
+		if(quizMode == QuizMode.CHALLENGE_MODE){
+			quizResultMessage.setText(UiText.YOU_CHALLENGED.getValue());
+			resultSharingText = UiUtils.UiText.RESULT_SHARE_TEXT.getValue(UiUtils.UiText.CHALLENGE,otherUserName,String.valueOf(totalPoints));
+		}
 		showResultInChart();
 	}
 

@@ -44,6 +44,8 @@ public class Config{
 	
 	public static final String PREF_USER_NAME = "userName";
 	public static final String PREF_APP_RATING = "appRating";
+	
+	public static final String APP_NAME = "OneUp";
 	public static final String playStoreUrl = "https://play.google.com/store/apps/details?badgeId=com.amcolabs.quizApp";
 	public static final String sharingAppText = "Try this app \n "+playStoreUrl;
 	public static final int NOTIFICATION_ID_SERVER_PUSH = 10;
@@ -89,7 +91,7 @@ public class Config{
 	public static final String APP_VERSION = "app_version";
 	public static final String APP_LOADING_VIEW_IMAGE = null;
 	public static final String URL_PARAM_IS_CHALLENGED = "isChallenged";
-	public static final boolean IS_SERVER_BUILD = false;
+	public static final boolean IS_SERVER_BUILD = true;
 	public static final long PROGRESS_BAR_POINTS_ANIMATION_STEP_TIME = 100;
 	public static final String QUIZAPP_ERR_LOG_TAG = "QUIZAPP_ERR";
 	
@@ -100,7 +102,6 @@ public class Config{
 		this.quizApp = quizApp;
 		serverTimeZoneDiff = Double.parseDouble(quizApp.getUserDeviceManager().getPreference(Config.PREF_SERVER_TIME_DIFF , "0"));
 	}
-	
 	
 	private int tempThemeCount=0;
 	public int getAThemeColor(){

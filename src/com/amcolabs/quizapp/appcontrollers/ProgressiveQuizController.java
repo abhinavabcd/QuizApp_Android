@@ -13,6 +13,8 @@ import android.graphics.Bitmap;
 import android.media.MediaPlayer;
 import android.os.AsyncTask;
 import android.os.Handler;
+import android.util.Log;
+import android.widget.Toast;
 
 import com.amcolabs.quizapp.AppController;
 import com.amcolabs.quizapp.QuizApp;
@@ -1249,6 +1251,8 @@ public class ProgressiveQuizController extends AppController{
 	}
 	
 	public void addFriend(final User user) {
+		Toast.makeText(quizApp.getContext(), "Adding friend!", Toast.LENGTH_LONG).show();
+		Log.d("addfriend",user.getName());
 		quizApp.getServerCalls().subscribeTo(user, new DataInputListener<Boolean>(){
 			@Override
 			public String onData(Boolean s) {

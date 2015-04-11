@@ -5,13 +5,14 @@ import java.util.Date;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.widget.Toast;
 
-import com.amcolabs.quizapp.popups.StaticPopupDialogBoxes;
+import com.amcolabs.quizapp.R;
 import com.amcolabs.quizapp.uiutils.UiUtils.UiText;
 
 public class CommonFunctions {
@@ -83,6 +84,14 @@ public class CommonFunctions {
 			res = new String[]{str};
 		}
     	return res;
+    }
+    
+    public static void shareText(String txt, Activity act){
+    	Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+        sharingIntent.setType("text/plain");
+        sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Subject Here");
+        sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, txt);
+        act.startActivity(Intent.createChooser(sharingIntent, "Share Using"));
     }
     
     public static void main(String[] args) {

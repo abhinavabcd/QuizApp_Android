@@ -92,6 +92,17 @@
             </LinearLayout>
         </LinearLayout>
 
+		<com.amcolabs.quizapp.widgets.GothamButtonView
+		    android:id="@+id/shareResultButton"
+		    android:layout_width="match_parent"
+		    android:layout_height="wrap_content"
+		    android:layout_marginBottom="10dp"
+		    android:layout_marginLeft="50dp"
+		    android:layout_marginRight="50dp"
+		    android:background="@drawable/list_item_bg"
+		    android:gravity="center"
+		    android:text="Share Result" />
+
         <LinearLayout
             android:id="@+id/users"
             android:layout_width="match_parent"
