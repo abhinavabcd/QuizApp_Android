@@ -22,7 +22,7 @@
         android:gravity="center"
         android:text="TextView"
         android:textAllCaps="true"
-        android:textColor="@color/white"
+        android:textColor="#666666"
         android:textSize="18dp" />
     
     <com.amcolabs.quizapp.widgets.GothamTextView
