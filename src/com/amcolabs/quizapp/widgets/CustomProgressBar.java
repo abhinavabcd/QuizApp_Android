@@ -51,7 +51,7 @@ public class CustomProgressBar extends ProgressBar{
 					@Override
 					public void run() {
 						int cpos = CustomProgressBar.this.getProgress();
-						if(cpos<=100 && cpos<pos){
+						if(cpos<pos){ 
 							cpos = cpos+1;
 							CustomProgressBar.this.setProgress(cpos);
 						}
@@ -59,7 +59,7 @@ public class CustomProgressBar extends ProgressBar{
 							this.cancel();
 						}
 					}
-		}, 100,Config.PROGRESS_BAR_POINTS_ANIMATION_STEP_TIME);		//TODO: vinay change this to config variables ? 
+		}, 0,Config.PROGRESS_BAR_POINTS_ANIMATION_STEP_TIME);		//TODO: vinay change this to config variables ? 
 
 //		Thread bg = new Thread(new Runnable() {
 //			

@@ -124,8 +124,12 @@ public class ProgressiveQuizController extends AppController{
 			return 0;
 		int mscore = 0;
 		for(int i=0;i<currentQuestions.size();i++){
-			mscore += Math.ceil((currentQuestions.get(i).xp*currentQuestions.get(i).xp/currentQuestions.get(i).getTime()*quizApp.getGameUtils().multiplyFactor(i+1,SIMO_USER_TYPE)));
+			mscore += Math.ceil((currentQuestions.get(i).xp*quizApp.getGameUtils().multiplyFactor(i+1,SIMO_USER_TYPE)));
 		}
+
+//		Log.d("maxscore", String.valueOf(mscore));
+//		Toast.makeText(quizApp.getContext(), String.valueOf(mscore), Toast.LENGTH_LONG).show();
+
 		return mscore;
 	}
 	
