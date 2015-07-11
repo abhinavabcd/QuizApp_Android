@@ -96,21 +96,16 @@ public class NotificationReciever extends BroadcastReceiver{
 				String messageToDisplay = UiText.NEW_TEXT_AVAILABLE.getValue();
 				boolean abortThisRequest = false;
 				boolean generateNotification = true;
+				boolean payloadConsumed = false;
 				NotificationPayload payload = null;
 				if(extras!=null){
-					if(!QuizApp.pendingNotifications.containsKey(type)){
-						ArrayList<NotificationPayload> temp2 = new ArrayList<NotificationPayload>();
-						QuizApp.pendingNotifications.put(type, temp2);
-					}
-					if(!UserDeviceManager.isRunning() || QuizApp.nState==NotifificationProcessingState.CONTINUE){
-						payload = getNotificationPayload(extras);
-						QuizApp.pendingNotifications.get(type).add(payload);
-					}
+					payload = getNotificationPayload(extras);
 					switch(type){
 						case NOTIFICATION_GCM_INBOX_MESSAGE:
 							//type.setPayload(extras);
 							payload = getNotificationPayload(extras);
 							if(checkAndCallListener(type , payload)){
+								payloadConsumed = true;
 								generateNotification = false;
 							}
 							else{
@@ -123,7 +118,7 @@ public class NotificationReciever extends BroadcastReceiver{
 						case NOTIFICATION_GCM_CHALLENGE_NOTIFICATION:
 							payload = getNotificationPayload(extras);
 							if(checkAndCallListener(type , payload)){
-								// generateNotification = false;
+								payloadConsumed= true;
 								generateNotification = false; // listener says ok
 							}
 							else{
@@ -140,12 +135,11 @@ public class NotificationReciever extends BroadcastReceiver{
 							}
 							break;
 						case NOTIFICATION_GCM_GENERAL_FROM_SERVER:
-							payload = getNotificationPayload(extras);
-							messageToDisplay = payload.textMessage;	
+							messageToDisplay = payload.textMessage;
 							break;
 						case NOTIFICATION_GCM_OFFLINE_CHALLENGE_NOTIFICATION:
-							payload = getNotificationPayload(extras);
 							if(checkAndCallListener(type , getNotificationPayload(extras))){
+								payloadConsumed = true;
 								generateNotification = false;
 							}
 							else{
@@ -167,8 +161,12 @@ public class NotificationReciever extends BroadcastReceiver{
 				}
 				if(abortThisRequest)
 					abortBroadcast();
-				if(generateNotification && !UserDeviceManager.isRunning()) // inside app all notifications should be handled without notifications
+				if(generateNotification) // inside app all notifications should be handled without notifications
 					UiUtils.generateNotification(context, titleText , messageToDisplay, extras);
+				if(!payloadConsumed){
+					QuizApp.pendingNotifications.put(type, new ArrayList<NotificationPayload>());
+					QuizApp.pendingNotifications.get(type).add(payload);
+				}
 		 	}
 			
 			static HashMap<NotificationType, DataInputListener<NotificationPayload>> listeners = new HashMap<NotificationReciever.NotificationType, DataInputListener<NotificationPayload>>();
@@ -183,8 +181,7 @@ public class NotificationReciever extends BroadcastReceiver{
 
 
 			public static void removeListener(
-					NotificationType notificationGcmInboxMessage,
-					DataInputListener<NotificationPayload> gcmListener) {
+					NotificationType notificationGcmInboxMessage) {
 				listeners.remove(notificationGcmInboxMessage);
 			}
 			

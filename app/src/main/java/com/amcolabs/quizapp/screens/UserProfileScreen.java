@@ -25,6 +25,7 @@ import com.amcolabs.quizapp.databaseutils.Badge;
 import com.amcolabs.quizapp.databaseutils.GameEvents;
 import com.amcolabs.quizapp.databaseutils.LocalQuizHistory;
 import com.amcolabs.quizapp.databaseutils.Quiz;
+import com.amcolabs.quizapp.datalisteners.DataInputListener;
 import com.amcolabs.quizapp.gameutils.GameUtils;
 import com.amcolabs.quizapp.uiutils.UiUtils;
 import com.amcolabs.quizapp.uiutils.UiUtils.UiText;
@@ -64,7 +65,6 @@ public class UserProfileScreen extends Screen {
 	}
 	
 	public void showUser(User user){
-		
 		userProfile = (ScrollView) LayoutInflater.from(controller.getContext()).inflate(R.layout.user_profile, this, false);
 		userProfileWrapper = (LinearLayout) userProfile.findViewById(R.id.profile_data_wrapper);
 		userProfile.findViewById(R.id.user_info_card).setBackgroundColor(getResources().getColor(R.color.black));		

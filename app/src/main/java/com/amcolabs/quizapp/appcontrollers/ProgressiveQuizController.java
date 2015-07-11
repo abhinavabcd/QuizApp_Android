@@ -13,6 +13,7 @@ import android.graphics.Bitmap;
 import android.media.MediaPlayer;
 import android.os.AsyncTask;
 import android.os.Handler;
+import android.util.Log;
 
 import com.amcolabs.quizapp.AppController;
 import com.amcolabs.quizapp.QuizApp;
@@ -107,13 +108,17 @@ public class ProgressiveQuizController extends AppController{
 
 	ClashScreen clashingScreen = null;
 	QuestionScreen questionScreen = null;
-	public void showWaitingScreen(Quiz quiz){
+	public void showWaitingScreen(Quiz quiz) {
+		showWaitingScreen(quiz, false);
+	}
+	public void showWaitingScreen(Quiz quiz, boolean isRematch){
 		clearScreen();
 		clashingScreen = new ClashScreen(this);
 		clashingScreen.setClashCount(2); 
-		clashingScreen.updateClashScreen(quizApp.getUser()/*quizApp.getUser()*/,quiz, 0);//TODO: change to quizApp.getUser()
+		clashingScreen.updateClashScreen(quizApp.getUser()/*quizApp.getUser()*/, quiz, 0);//TODO: change to quizApp.getUser()
 		insertScreen(clashingScreen);
-		quizApp.getServerCalls().startProgressiveQuiz(this, quiz, RANDOM_USER_TYPE, null);
+		if(!isRematch)
+			quizApp.getServerCalls().startProgressiveQuiz(this, quiz, RANDOM_USER_TYPE, null);
 	}	
 	
 	
@@ -127,7 +132,7 @@ public class ProgressiveQuizController extends AppController{
 		return mscore;
 	}
 	
-	public void showQuestionScreen(ArrayList<User> users){
+	public void showQuestionScreen(List<User> users){
 		//pre download assets if ever its possible
 		questionScreen = new QuestionScreen(this);
 		questionScreen.showUserInfo(users,getMaxScore()); //load user info
@@ -176,20 +181,20 @@ public class ProgressiveQuizController extends AppController{
 	
 	int backPressedCount = 0;
 	
-	@Override
-	public boolean onBackPressed() {
+
+	public boolean isRemoveQuestionScreenOnBackPressed() {
 		if(quizApp.peekCurrentScreen() instanceof QuestionScreen){
 			backPressedCount++;
 			if(backPressedCount>1){
 				backPressedCount = 0;
 				gracefullyCloseSocket();
-				return false;
+				return true;
 			}
-			return true;
+			return false;
 		}		
 		else{
 			gracefullyCloseSocket();
-			return false;
+			return true;
 		}
 	}
 /*
@@ -221,7 +226,7 @@ public class ProgressiveQuizController extends AppController{
 	String serverId = null;
 	
 	private List<Question> currentQuestions = new ArrayList<Question>();
-	private ArrayList<User> currentUsers = new ArrayList<User>();
+	private List<User> currentUsers = new ArrayList<User>();
 	private HashMap<String ,UserAnswer> userAnswers;
 	private HashMap<String ,List<UserAnswer>> userAnswersStack = new HashMap<String, List<UserAnswer>>();
 	
@@ -284,8 +289,8 @@ public class ProgressiveQuizController extends AppController{
 			new Handler().postDelayed(new Runnable() {
 				@Override
 				public void run() {
-					if(noResponseFromServer && !preventBot){
-						if(serverSocket!=null)
+					if (noResponseFromServer && !preventBot) {
+						if (serverSocket != null)
 							serverSocket.sendTextMessage(constructSocketMessage(MessageType.ACTIVATE_BOT, null, null));
 					}
 					preventBot = false;
@@ -293,7 +298,7 @@ public class ProgressiveQuizController extends AppController{
 			}, Config.BOT_INTIALIZE_AFTER_NO_USER_TIME);
 		}
 		if(socketConnectedListener!=null){
-			socketConnectedListener.onData(mConnection, quiz,null);
+			socketConnectedListener.onData(mConnection, quiz, null);
 		}
 	}
 	
@@ -386,18 +391,18 @@ public class ProgressiveQuizController extends AppController{
 	
 	private void scheduleChallengedAnswer(final UserAnswer userAnswer){
 		new Handler().postDelayed(new Runnable() {
-			
+
 			@Override
 			public void run() {
-						int elapsedTime =  userAnswer.elapsedTime;
-						new Handler().postDelayed( new Runnable() {
-							@Override
-							public void run() {
-								questionScreen.getTimerView().stopPressed(2, userAnswer.elapsedTime);
-								checkAndProceedToNextQuestion(userAnswer);
-							}
-						}, elapsedTime*1000);
+				int elapsedTime = userAnswer.elapsedTime;
+				new Handler().postDelayed(new Runnable() {
+					@Override
+					public void run() {
+						questionScreen.getTimerView().stopPressed(2, userAnswer.elapsedTime);
+						checkAndProceedToNextQuestion(userAnswer);
 					}
+				}, elapsedTime * 1000);
+			}
 		}, Config.PREQUESTION_FADE_OUT_ANIMATION_TIME);
 	}
 	
@@ -414,7 +419,7 @@ public class ProgressiveQuizController extends AppController{
 						if(isRightAnswer){
 							botScore+=Math.ceil((currentQuestion.getTime() - elapsedTime)*currentQuestion.xp/currentQuestion.getTime())*quizApp.getGameUtils().multiplyFactor(currentQuestions.size());
 						}
-						final UserAnswer botAnswer = new UserAnswer(currentQuestion.questionId, user.uid, isRightAnswer?currentQuestion.getCorrectAnswer():currentQuestion.getWrongRandomAnswer(rand),
+						final UserAnswer botAnswer = new UserAnswer(currentQuestion.questionId, user.uid, isRightAnswer?currentQuestion.getAnswer():currentQuestion.getWrongRandomAnswer(rand),
 								 	elapsedTime, botScore,0);
 			    		
 						new Handler().postDelayed( new Runnable() {
@@ -465,6 +470,8 @@ public class ProgressiveQuizController extends AppController{
 	
 
 	public void onMessageRecieved(MessageType messageType, ServerResponse response, String data) {
+		Log.i(Config.QUIZAPP_INFO_TAG , messageType.toString());
+		List<User> users;
 		switch(messageType){
 			case USER_ANSWERED_QUESTION:
 	    		UserAnswer userAnswer = quizApp.getConfig().getGson().fromJson(response.payload, UserAnswer.class);
@@ -480,7 +487,8 @@ public class ProgressiveQuizController extends AppController{
 
 	    	case LOAD_QUESTIONS:
 	    		noResponseFromServer = false;
-	    		loadQuestionsAndUsers(response , new DataInputListener<Boolean>(){
+				users = getUsersFromJson(response.payload1);
+	    		loadQuestionsAndUsers(response.payload2 ,users , new DataInputListener<Boolean>(){
 					@Override
 					public String onData(Boolean fullLoaded , int progress) {
 						if(fullLoaded){
@@ -527,7 +535,8 @@ public class ProgressiveQuizController extends AppController{
 	    		quizApp.getServerCalls().informActivatingBot(quiz, serverSocket.serverId); 
 	    		setQuizMode(QuizMode.BOT_MODE);
 	    		serverSocket.disconnect();
-	    		loadQuestionsAndUsers(response , new DataInputListener<Boolean>(){
+				users = getUsersFromJson(response.payload1);
+	    		loadQuestionsAndUsers(response.payload2, users , new DataInputListener<Boolean>(){
 					@Override
 					public String onData(Boolean fullLoaded , int progress) {
 						if(fullLoaded)
@@ -546,7 +555,7 @@ public class ProgressiveQuizController extends AppController{
 //	    		break; 
 	    	case REMATCH_REQUEST: 
 	    		User user = quizApp.cachedUsers.get(response.payload);
-	    		rematchDialog  = quizApp.getStaticPopupDialogBoxes().yesOrNo(UiText.USER_WANTS_REMATCH.getValue(user.getName()), UiText.CHALLENGE.getValue() , UiText.EXIT.getValue() , new DataInputListener<Boolean>(){
+	    		rematchDialog  = quizApp.getStaticPopupDialogBoxes().yesOrNo(UiText.USER_WANTS_REMATCH.getValue(user.getName()), UiText.REMATCH.getValue() , UiText.LEAVE.getValue() , new DataInputListener<Boolean>(){
 	    			@Override
 	    			public String onData(Boolean s) {
 	    				if(s){
@@ -555,7 +564,7 @@ public class ProgressiveQuizController extends AppController{
 	    				else{
 	    					gracefullyCloseSocket();
 	    				}
-	    				return super.onData(s);
+	    				return null;
 	    			}
 	    		});
 	    		break;
@@ -563,9 +572,21 @@ public class ProgressiveQuizController extends AppController{
 	    		if(rematchDialog!=null && rematchDialog.isShowing())
 	    			rematchDialog.dismissQuietly();
 //	    		quizApp.getStaticPopupDialogBoxes().removeRematchRequestScreen();
-	    		setCurrentQuestions((List<Question>) quizApp.getConfig().getGson().fromJson(response.payload1, new TypeToken<List<Question>>(){}.getType()) , response.payload1);
-	    		showWaitingScreen(quiz);
-	    		showQuestionScreen(currentUsers);
+	    		showWaitingScreen(quiz, true);
+				loadQuestionsAndUsers(response.payload1, currentUsers,new DataInputListener<Boolean>(){
+					@Override
+					public String onData(Boolean fullLoaded , int progress) {
+						if(fullLoaded){
+							serverSocket.sendTextMessage(constructSocketMessage(MessageType.USER_READY, null,null));
+							//TODO:UPDATE CLASHING SCREEN , SAYING WAITING FOR OTHER USER
+							clashingScreen.setCurrentUserDebugText(UiText.USER_DOWNLOADING_ASSETS_WAITING.getValue());
+						}
+						else{
+							clashingScreen.setCurrentUserDebugText(UiText.DOWNLOADING_QUESTIONS_AND_ASSETS.getValue());
+						}
+						return super.onData(fullLoaded);
+					}
+				});
 	    		break;
 	    	case LOAD_CHALLENGE_FROM_OFFLINE:
 	    	case USER_HAS_LEFT_POOL:
@@ -574,7 +595,7 @@ public class ProgressiveQuizController extends AppController{
 	    			@Override
 	    			public String onData(Boolean s) {
 	    				if(!s){
-	    					onBackPressed();
+	    					isRemoveQuestionScreenOnBackPressed();
 	    				}
 	    				return super.onData(s);
 	    			}
@@ -587,7 +608,7 @@ public class ProgressiveQuizController extends AppController{
 	    	case OK_CHALLENGE_WITHOUT_OPPONENT:
 				setQuizMode(QuizMode.CHALLENGE_MODE);
 				quizMode.setId(response.payload3);
-				loadQuestionsAndUsers(response, new DataInputListener<Boolean>(){
+				loadQuestionsAndUsers(response.payload2, getUsersFromJson(response.payload1), new DataInputListener<Boolean>(){
 					@Override
 					public String onData(Boolean fullLoaded , int progress) {
 						if(fullLoaded)
@@ -615,7 +636,7 @@ public class ProgressiveQuizController extends AppController{
 	}
 
 
-	private boolean checkAndRemoveDuplicateUsers(ArrayList<User> currentUsers) {
+	private boolean checkAndRemoveDuplicateUsers(List<User> currentUsers) {
 		HashMap<String,Boolean>  map = new HashMap<String, Boolean>();
 		boolean duplicatesFound = false;
 		for(User user : currentUsers){
@@ -636,11 +657,10 @@ public class ProgressiveQuizController extends AppController{
 		//TODO: check if an offline challenge available in line
 	}
 
-
-	private void loadQuestionsAndUsers(ServerResponse response, DataInputListener<Boolean> questionsLoadedListener) {
-		setCurrentQuestions((List<Question>) quizApp.getConfig().getGson().fromJson(response.payload2, new TypeToken<List<Question>>(){}.getType()), response.payload2);
+	private List<User> getUsersFromJson(String usersJson){
+		List<User> currentUsers = new ArrayList<>();
 		try{
-			currentUsers = quizApp.getConfig().getGson().fromJson(response.payload1, new TypeToken<List<User>>(){}.getType());
+			currentUsers = quizApp.getConfig().getGson().fromJson(usersJson, new TypeToken<List<User>>(){}.getType());
 			for(User user : currentUsers){//remove current user and add the current user obj locally  more better
 				if(quizApp.getUser().uid.equalsIgnoreCase(user.uid)){
 					currentUsers.remove(user);
@@ -652,8 +672,15 @@ public class ProgressiveQuizController extends AppController{
 		catch(JsonSyntaxException ex){//single user in payload
 			currentUsers.clear();
 			currentUsers.add(quizApp.getUser());
-			currentUsers.add((User) quizApp.getConfig().getGson().fromJson(response.payload1, new TypeToken<User>(){}.getType()));
+			currentUsers.add((User) quizApp.getConfig().getGson().fromJson(usersJson, new TypeToken<User>(){}.getType()));
 		}
+		return currentUsers;
+	}
+
+
+	private void loadQuestionsAndUsers(String questionsJson , List<User> currentUsers, DataInputListener<Boolean> questionsLoadedListener) {
+		setCurrentQuestions((List<Question>) quizApp.getConfig().getGson().fromJson(questionsJson, new TypeToken<List<Question>>(){}.getType()), questionsJson);
+		this.currentUsers = currentUsers;
 		if(checkAndRemoveDuplicateUsers(currentUsers)){
 			quizApp.getStaticPopupDialogBoxes().yesOrNo(UiText.UNEXPECTED_ERROR.getValue(), null, UiText.CLOSE.getValue(), null);
 			gracefullyCloseSocket();
@@ -722,14 +749,14 @@ public class ProgressiveQuizController extends AppController{
 			return true;
 		}
 		else{
-			quizApp.getStaticPopupDialogBoxes().yesOrNo(UiText.USER_HAS_LEFT.getValue(), UiText.CHALLENGE.getValue(), UiText.OK.getValue(), new DataInputListener<Boolean>(){
+			quizApp.getStaticPopupDialogBoxes().yesOrNo(UiText.USER_HAS_LEFT.getValue(), UiText.CHALLENGE.getValue(), UiText.CANCEL.getValue(), new DataInputListener<Boolean>(){
 				@Override
 				public String onData(Boolean s) {
 					if(s){
 						startNewChallenge(getOtherUser());
 					}
 					else{
-						
+
 					}
 					return super.onData(s);
 				}
@@ -743,6 +770,7 @@ public class ProgressiveQuizController extends AppController{
 	}
 	
 	public void gracefullyCloseSocket(){
+		Log.i(Config.QUIZAPP_INFO_TAG, "closing socket gracefully");
 		if(serverSocket!=null){
 			serverSocket.disconnect();
 			serverSocket = null;
@@ -802,7 +830,7 @@ public class ProgressiveQuizController extends AppController{
 	private MediaPlayer negetiveButtonSounds;
 	private boolean preventBot = false;
 	
-	public void loadResultScreen(Quiz quiz, ArrayList<User> currentUsers, HashMap<String, List<UserAnswer>> userAnswersStack) {
+	public void loadResultScreen(Quiz quiz, List<User> currentUsers, HashMap<String, List<UserAnswer>> userAnswersStack) {
 		// TODO Auto-generated method stub
 		ArrayList<String> winnersList = whoWon(userAnswersStack);
 		int quizResult = Quiz.TIE;
@@ -951,8 +979,7 @@ public class ProgressiveQuizController extends AppController{
 			BadgeEvaluator badgeEvaluator = quizApp.getBadgeEvaluator();
 			badgeEvaluator.evaluateBadges(userAnswersStack,quizResult);
 		}
-		if (quizResultScreen==null){
-			quizResultScreen = new WinOrLoseScreen(this,currentUsers , null
+		quizResultScreen = new WinOrLoseScreen(this,currentUsers , null
 //					QuestionScreen.getBitmapOfQuestions(						this,
 //					(List<Question>) quizApp.getConfig().getGson().fromJson(currentQuestionsJson,new TypeToken<List<Question>>(){}.getType()),
 //					quizApp.getUser().uid,
@@ -961,27 +988,26 @@ public class ProgressiveQuizController extends AppController{
 //					userAnswersStack.get(quizApp.getUser().uid), 
 //					userAnswersStack.get(getOtherUser().uid)
 //				)
-				);
-			LoadAnswerBitmapsInBackground anyncTask = new LoadAnswerBitmapsInBackground();
-			anyncTask.execute(
-					this,
-					(List<Question>) quizApp.getConfig().getGson().fromJson(currentQuestionsJson,new TypeToken<List<Question>>(){}.getType()),
-					quizApp.getUser().uid,
-					currentUsers, 
-					getMaxScore(), 
-					userAnswersStack.get(quizApp.getUser().uid), 
-					userAnswersStack.get(getOtherUser().uid),
-					new DataInputListener<List<Bitmap>>(){
-						public String onData(List<Bitmap> answerBitmaps) {
-							quizResultScreen.addAnswerBitmaps(answerBitmaps);
-							return null;
-						};
-					}
-					
-				);
-			quizResultScreen.setBgTask(anyncTask);
-		}
-		
+			);
+		LoadAnswerBitmapsInBackground anyncTask = new LoadAnswerBitmapsInBackground();
+		anyncTask.execute(
+				this,
+				(List<Question>) quizApp.getConfig().getGson().fromJson(currentQuestionsJson,new TypeToken<List<Question>>(){}.getType()),
+				quizApp.getUser().uid,
+				currentUsers,
+				getMaxScore(),
+				userAnswersStack.get(quizApp.getUser().uid),
+				userAnswersStack.get(getOtherUser().uid),
+				new DataInputListener<List<Bitmap>>(){
+					public String onData(List<Bitmap> answerBitmaps) {
+						quizResultScreen.addAnswerBitmaps(answerBitmaps);
+						return null;
+					};
+				}
+
+			);
+		quizResultScreen.setBgTask(anyncTask);
+
 		boolean isLevelUp = GameUtils.didUserLevelUp(oldPoints,newPoints);
 		if(isLevelUp){
 			//update game event

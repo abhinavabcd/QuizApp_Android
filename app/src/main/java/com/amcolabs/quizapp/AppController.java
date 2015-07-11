@@ -21,11 +21,7 @@ public abstract class AppController {
 	}
 	
 	public abstract void onDestroy();
-	
-	public boolean onBackPressed(){
-		return false;
-	}
-	
+
 	@Deprecated
 	public void showScreen(Screen newScreen){
 		clearScreen();
@@ -48,10 +44,12 @@ public abstract class AppController {
 	public int incRefCount() {
 		return ++refCount;
 	}
+
 	public void decRefCount() {
 		--this.refCount;
 		if(refCount<=0){
 			onDestroy();
 		}
 	}
+
 }

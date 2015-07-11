@@ -26,6 +26,7 @@ public class Config{
 
 	public static final String GCM_SAVED = "gcm_saved";
 	public static final String  REGISTRATION_COMPLETE = "registrationComplete";
+	public static final String QUIZAPP_INFO_TAG = "QUIZAPP_INFO";
 	private final Gson gson = new Gson();
 	public final Random random = new Random();
 	public static final String PREF_SERVER_TIME_DIFF = "serverTimeDiff";

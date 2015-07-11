@@ -177,6 +177,7 @@ public class UiUtils {
 		YOU_DEFEATED_USER("You defeated <a href='userProfile/%s'>%s</a> in <a href='quizStats/%s'>%s</a> with %s xp Points"),
 		THE_QUIZ_WAS_TIE("It was a tie with <a href='userProfile/%s'>%s</a> in <a href='quizStats/%s'>%s</a> with %s xp Points"),
 		THERE_WAS_SERVER_ERROR("There was a server error while you were playing with <a href='userProfile/%s'>%s</a> in <a href='quizStats/%s'>%s</a>"),
+		THERE_WAS_SERVER_ERROR_USER_FETCHING("There was a server error fetching user profile"),
 		YOU_UNLOCKED_BADGE("You unlocked a badge <a href='badge/%s'>%s</a>"),
 		NO_ACTIVITY_AVAILABLE("No Activity Available"),
 		ACTIVITY_LOG("Activity log"),
@@ -217,6 +218,8 @@ public class UiUtils {
 		TOTAL_GAMES_PLAYED("Total Matches Played : %d"),
 		REGISTERING_USER("Registering User"),
 		SIGNEDOUT("You have been signed out"),
+		REMATCH("Rematch"),
+		LEAVE("leave"),
 		ANSWERS_LIST("Your Answers");
 
 		String value = null;

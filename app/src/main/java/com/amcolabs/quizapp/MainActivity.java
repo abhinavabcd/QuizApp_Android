@@ -91,7 +91,6 @@ public class MainActivity extends FragmentActivity {
     @Override
     public void onBackPressed() {
         quizApp.onBackPressed();
-//        super.onBackPressed();
     }
 
     @Override
@@ -101,7 +100,6 @@ public class MainActivity extends FragmentActivity {
                 onBackPressed();
                 return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
     

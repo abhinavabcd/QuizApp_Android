@@ -1,12 +1,12 @@
 package com.amcolabs.quizapp;
 
-import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.EmptyStackException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Stack;
 
@@ -15,7 +15,6 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -40,7 +39,6 @@ import com.amcolabs.quizapp.appcontrollers.UserMainPageController;
 import com.amcolabs.quizapp.configuration.Config;
 import com.amcolabs.quizapp.databaseutils.ChatList;
 import com.amcolabs.quizapp.databaseutils.DatabaseHelper;
-import com.amcolabs.quizapp.databaseutils.OfflineChallenge;
 import com.amcolabs.quizapp.databaseutils.Quiz;
 import com.amcolabs.quizapp.datalisteners.DataInputListener;
 import com.amcolabs.quizapp.gameutils.BadgeEvaluator;
@@ -50,9 +48,7 @@ import com.amcolabs.quizapp.popups.StaticPopupDialogBoxes;
 import com.amcolabs.quizapp.serverutils.ServerCalls;
 import com.amcolabs.quizapp.uiutils.UiUtils;
 import com.amcolabs.quizapp.uiutils.UiUtils.UiText;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GooglePlayServicesUtil;
-import com.google.android.gms.gcm.GoogleCloudMessaging;
+
 /**
  * 
  * @author abhinav2
@@ -98,9 +94,9 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 	private GameUtils gameUtils;
 
 	private BadgeEvaluator badgeEvaluator;
+	public DataInputListener<NotificationPayload> defaultChatMessagesListener;
 
 
-	 
 	public void setMainActivity(MainActivity mainActivity) {
 		ref = mainActivity;
 	}
@@ -170,18 +166,18 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 		NotificationReciever.setListener(NotificationType.NOTIFICATION_GCM_CHALLENGE_NOTIFICATION, new DataInputListener<NotificationPayload>(){
 			@Override
 			public String onData(final NotificationPayload payload) { 
-				getDataBaseHelper().getAllUsersByUid(Arrays.asList(payload.fromUser), new DataInputListener<Boolean>(){
+				getDataBaseHelper().getAllUsersByUid(Arrays.asList(payload.fromUser), new DataInputListener<Boolean>() {
 					@Override
 					public String onData(Boolean s) {
-						getStaticPopupDialogBoxes().challengeRequestedPopup(cachedUsers.get(payload.fromUser) , getDataBaseHelper().getQuizById(payload.quizId), payload, new DataInputListener<Boolean>(){
+						getStaticPopupDialogBoxes().challengeRequestedPopup(cachedUsers.get(payload.fromUser), getDataBaseHelper().getQuizById(payload.quizId), payload, new DataInputListener<Boolean>() {
 							@Override
 							public String onData(Boolean s) {
-								if(!s)// all notifications will be pending until user returns back 
+								if (!s)// all notifications will be pending until user returns back
 									setNotificationProcessingState(NotifificationProcessingState.CONTINUE);
 								return super.onData(s);
 							}
 						});
-						return null; 
+						return null;
 					}
 				});
 				return null;
@@ -197,8 +193,9 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 			}
 		});
 		
-		//new gcm message from server
-		NotificationReciever.setListener(NotificationType.NOTIFICATION_GCM_INBOX_MESSAGE, new DataInputListener<NotificationPayload>(){
+		//new chat message message from server
+
+		defaultChatMessagesListener = new DataInputListener<NotificationPayload>(){
 			public String onData(final NotificationPayload payload) {
 				getStaticPopupDialogBoxes().yesOrNo(UiText.USER_SAYS.getValue(payload.fromUserName, payload.textMessage), UiText.START_CONVERSATION.getValue(""), UiText.OK.getValue(), new DataInputListener<Boolean>(){//opens popup
 					@Override
@@ -211,11 +208,11 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 						if(s){//load chat screen
 							chatListItem.unseenMessagesFlag=0;
 							getDataBaseHelper().getAllUsersByUid(Arrays.asList(payload.fromUser), new DataInputListener<Boolean>(){ // get user obj
-									@Override
-									public String onData(Boolean s) {
-										((ProfileAndChatController)loadAppController(ProfileAndChatController.class)).loadChatScreen(cachedUsers.get(payload.fromUser), -1); //load chat screen
-										return super.onData(s);
-									}
+								@Override
+								public String onData(Boolean s) {
+									((ProfileAndChatController)loadAppController(ProfileAndChatController.class)).loadChatScreen(cachedUsers.get(payload.fromUser), -1); //load chat screen
+									return super.onData(s);
+								}
 							});
 						}
 						else{// add to pending messages
@@ -228,7 +225,10 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 				});
 				return null;
 			}
-		});
+		};
+
+
+		NotificationReciever.setListener(NotificationType.NOTIFICATION_GCM_INBOX_MESSAGE, defaultChatMessagesListener);
 		setNotificationProcessingState(NotifificationProcessingState.CONTINUE);
 	}
 
@@ -276,11 +276,11 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 	private void disposeViews() {
 		while(!disposeScreens.isEmpty()){
 			Screen screen = disposeScreens.remove(0);
-			screen.controller.setActive(false);
+
 			mainFrame.removeView(screen);
 			//if(!screen.showOnBackPressed()){
 			screen.onRemovedFromScreen();
-			//screen.beforeRemove(); // you can call before remove directly here because , it wont be shown again 
+			//screen.beforeRemove(); // you can call before remove directly here because , it wont be shown again
 			//}
 		}
 	}
@@ -385,51 +385,51 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 
 	private int isScreenAnimationActive = 0;
 	public void onBackPressed() {
-			if(isScreenAnimationActive!=0){
-				return;
-			}
-			currentActiveMenu = -1;
-			if(Config.getCurrentTimeStamp() - wantsToExitLastTimestamp<2){
-				getActivity().finish();//all controllers finished
-				wantsToExitLastTimestamp = Config.getCurrentTimeStamp();
-				return;
-			}
-
-			try{
-				// TODO: overridePendingTransition(R.anim.in,R.anim.out); fragment activity to animate screen out and in
-				Screen screen = peekCurrentScreen();
-				if(screenStack.size()<2 || screen==null){
-					this.getActivity().finish();
+			synchronized (uiSync) {
+				if (isScreenAnimationActive != 0) {
 					return;
 				}
-				Log.d(">>>screens<<<", screenStack.size()+" \n"+screenStack);
-				if(screen!=null && !screen.controller.onBackPressed()){
-					screen = popCurrentScreen();
-					screen.beforeRemove();
-					screen.controller.decRefCount();
-					animateScreenRemove(screen , TO_RIGHT,null);
-					
-					Screen oldScreen = popCurrentScreen();
-					while(oldScreen!=null && !oldScreen.showOnBackPressed()){
-						oldScreen = popCurrentScreen();
-						if(oldScreen!=null)
-							oldScreen.beforeRemove(); // we are already calling it in dispose view , that would be more appropriate
-					}
-					
-					if(oldScreen==null){
-						reinit(false);//should show first screen fetching updates and shit again
-						((UserMainPageController)loadAppController(UserMainPageController.class))
-						.checkAndShowCategories();
+				currentActiveMenu = -1;
+				if (Config.getCurrentTimeStamp() - wantsToExitLastTimestamp < 2) {
+					getActivity().finish();//all controllers finished
+					wantsToExitLastTimestamp = Config.getCurrentTimeStamp();
+					return;
+				}
+
+				try {
+					// TODO: overridePendingTransition(R.anim.in,R.anim.out); fragment activity to animate screen out and in
+					Screen screen = peekCurrentScreen();
+					if (screenStack.size() < 2 || screen == null) {
+						this.getActivity().finish();
 						return;
 					}
-					animateScreenIn(oldScreen, FROM_LEFT);
-					oldScreen.refresh();
-					if(screen.doNotDistrub() && !oldScreen.doNotDistrub())
-						setNotificationProcessingState(NotifificationProcessingState.CONTINUE);
+					Log.d(">>>screens<<<", screenStack.size() + " \n" + screenStack);
+					if(screen.removeOnBackPressed()) {
+						screen = popCurrentScreen();
+						screen.beforeRemove();
+						animateScreenRemove(screen, TO_RIGHT, null);
+
+						Screen oldScreen = popCurrentScreen();
+						while (oldScreen != null && !oldScreen.showOnBackPressed()) {
+							oldScreen.beforeRemove(); // we are already calling it in dispose view , that would be more appropriate
+							disposeScreens.add(oldScreen);
+							oldScreen = popCurrentScreen();
+						}
+
+						if (oldScreen == null) {
+							reinit(false);//should show first screen fetching updates and shit again
+							((UserMainPageController) loadAppController(UserMainPageController.class))
+									.checkAndShowCategories();
+							return;
+						}
+						animateScreenIn(oldScreen, FROM_LEFT);
+						oldScreen.refresh();
+						if (!oldScreen.doNotDistrub())
+							setNotificationProcessingState(NotifificationProcessingState.CONTINUE);
+					}
+				} catch (EmptyStackException e) {
+					getActivity().finish();//all controllers finished
 				}
-			}
-			catch(EmptyStackException e) {
-				getActivity().finish();//all controllers finished
 			}
 	}
 
@@ -443,13 +443,9 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 	}
 	
 	
-	private Object uiSync = new Object();
 	Stack<Screen> screenStack = new Stack<Screen>();
 
 	private View menu;
-
-
-
 
 	public Screen popCurrentScreen(){
 		if(screenStack.isEmpty())
@@ -488,7 +484,6 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 	public void animateScreenRemove(Screen currentScreen , boolean toLeft, AnimationListener endListener) {
 		//synchronized (uiSync) {
 			if(currentScreen==null) return;
-			//loadingView.setVisibility(View.VISIBLE);//while removing
 			disposeScreens.add(currentScreen);
 			if(toLeft){
 				setAnimationListener(getUiUtils().getAnimationSlideOutRight() , null);
@@ -500,12 +495,14 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 			}
 //		}
 	}
-
-	public synchronized void setScreenAnimationActive(boolean activate){
-		if(activate)
-			++isScreenAnimationActive;
-		else
-			--isScreenAnimationActive;
+	Object uiSync = new Object();
+	public void setScreenAnimationActive(boolean activate){
+		synchronized (uiSync) {
+			if (activate)
+				++isScreenAnimationActive;
+			else
+				--isScreenAnimationActive;
+		}
 	}
 	
 	@Override
@@ -759,7 +756,7 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 	private boolean mIsBound;
 
 
-	public void cacheUsersList(ArrayList<User> users) {
+	public void cacheUsersList(List<User> users) {
 		for(User user : users){
 			cachedUsers.put(user.uid, user);
 		}
@@ -825,4 +822,7 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 			profileAndChat.fetchAndLoadProfile(uid);
  	}
 
+	public void showHomeScreen() {
+
+	}
 }

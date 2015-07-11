@@ -37,7 +37,9 @@ public class Question {
     public double time; // time in seconds
 	@DatabaseField
     public int xp;
-	
+
+	private String correctAnswer;
+
 	public List<String> getAssetPaths(){
 		if(getPictures()==null)
 			return new ArrayList<String>(); 
@@ -56,8 +58,13 @@ public class Question {
 			return getPictures();
 		}
 	}
-	
-	
+
+
+	public int getAnswerIndex() {
+		return this.getMCQOptions().indexOf(getAnswer());
+	}
+
+
 	public static enum QuestionType{
 		MCQ(0),
 		MCQ_MULTIPLE(1),
@@ -95,38 +102,30 @@ public class Question {
 		return questionTypeMap.containsKey(value) ? questionTypeMap.get(value):null;
 	}
 	
-	private String[] cachedOptions = null;
-	public String[] getMCQOptions(){
-		if(cachedOptions!=null) return cachedOptions;
-		options = options.trim();
+	private List<String> cachedOptions = null;
+	public synchronized  List<String> getMCQOptions(){
+			if(cachedOptions!=null) return cachedOptions;
+			options = options.trim();
+			cachedOptions = new ArrayList<>();
 			if(!options.startsWith("['") && !options.startsWith("[\"")){
-				cachedOptions = this.options.split("\n");
-				if(cachedOptions.length>1){
-					return cachedOptions;
+				String[] lines = this.options.split("\n");
+				for(String line : lines) {
+					for(String option : this.options.split(",")){
+						cachedOptions.add(option.trim());
+					}
 				}
-				cachedOptions = this.options.split(",");
-				for(int i=0;i<cachedOptions.length;i++){
-					cachedOptions[i] = cachedOptions[i].trim();
-				}
-				return cachedOptions;
+			return cachedOptions;
 			}
 			else
-				return (cachedOptions = new Gson().fromJson(options, new TypeToken<String[]>(){}.getType()));
-//		catch(JsonParseException ex){
-//			return new String[]{};
-//		}
+				return (cachedOptions = new Gson().fromJson(options, new TypeToken<List<String>>(){}.getType()));
 	}
 	
 	
-	//[[3]] => 3RD OPTION IS THE RIGHT ANSWER
+	//[[3]] implies 3RD OPTION IS THE RIGHT ANSWER
 	final static Pattern answerPattern  = Pattern.compile("^\\[\\[(\\d*)\\]\\]"); 
-	public boolean isCorrectAnwer(String ans , int index){
+	public boolean isCorrectAnwer(String ans){
 		if(getQuestionType()==QuestionType.MCQ){
-			Matcher m = answerPattern.matcher(this.answer);
-			if((m.find() && index ==Integer.parseInt(m.group(1))-1)){
-				return true;
-			}
-			if(answer.trim().equalsIgnoreCase(ans.trim())){
+			if(getAnswer().trim().equalsIgnoreCase(ans.trim())){
 				return true;
 			}
 
@@ -140,17 +139,20 @@ public class Question {
 		}
 		return 10;
 	}
-	public String getCorrectAnswer() {
-		// TODO Auto-generated method stub
-		return getAnswer();
-	}
+
 	public String getWrongRandomAnswer(Random rand) {
 		if(getQuestionType()==QuestionType.MCQ){
-			String[] mcqOptions = getMCQOptions();
+			List<String> mcqOptions = getMCQOptions();
+			//check for infifnite loop
+			int temp = 0;
 			while(true){
-				int index = rand.nextInt(mcqOptions.length);
-				String a = mcqOptions[index];
-				if(!isCorrectAnwer(a, index)){
+				if(temp>mcqOptions.size()){
+					return "";
+				}
+				temp++;
+				int index = rand.nextInt(mcqOptions.size());
+				String a = mcqOptions.get(index);
+				if(!isCorrectAnwer(a)){
 					return a;
 				}
 			}
@@ -163,27 +165,19 @@ public class Question {
 	public void setPictures(List<String> pictures) {
 		this.pictures = pictures;
 	}
+
 	public String getAnswer() {
+		if( correctAnswer !=null)
+			return correctAnswer;
+
 		Matcher m = answerPattern.matcher(this.answer);
 		if((m.find())){
-			return getMCQOptions()[Integer.parseInt(m.group(1))-1];
+			return correctAnswer = getMCQOptions().get(Integer.parseInt(m.group(1))-1);
 		}
-		return answer.trim();
+		return correctAnswer = answer.trim();
 	}
-	public void setAnswer(String answer) {
-		this.answer = answer.trim();
-	}
-	public int getAnswerIndex() {
-		String answer = getAnswer();
-		String[] options = getMCQOptions();
-		for(int i=0; i<options.length;i++){
-			if(options[i].equalsIgnoreCase(answer)){
-				return i;
-			}
-		}
-		this.cachedOptions[0] = answer;
-		return 0;
-	}
+
+
 	public String toJson(QuizApp app) {
 		return app.getConfig().getGson().toJson(this);
 	}

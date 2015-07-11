@@ -62,7 +62,7 @@ public class WinOrLoseScreen extends Screen{
 	private GothamButtonView viewProfileButton;
 	private GothamTextView quizResultMessage;
 	
-	private ArrayList<User> currentUsers;
+	private List<User> currentUsers;
 	private HashMap<String, List<UserAnswer>> userAnswersStack;
 	private ProgressiveQuizController progressiveQuizController;
 	private QuizMode quizMode;
@@ -77,7 +77,7 @@ public class WinOrLoseScreen extends Screen{
 		public FlowLayout badgesView;
 	}
 	
-	public WinOrLoseScreen(AppController controller,ArrayList<User> curUsers, List<Bitmap> answerBitmaps) {
+	public WinOrLoseScreen(AppController controller,List<User> curUsers, List<Bitmap> answerBitmaps) {
 		super(controller);
 
 		for(User user : curUsers){
@@ -218,7 +218,7 @@ public class WinOrLoseScreen extends Screen{
 
 	}
 	
-	private User getOtherUser(ArrayList<User> currentUsers) {
+	private User getOtherUser(List<User> currentUsers) {
 		for(User user : currentUsers){
 			if(!user.uid.equalsIgnoreCase(getApp().getUser().uid)){
 				return user;

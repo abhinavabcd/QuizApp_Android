@@ -101,7 +101,7 @@ public class GoogleLoginHelper implements ConnectionCallbacks, OnConnectionFaile
 	private void getUserProfileInformation(){
     	final User user = new User();
         Person person = Plus.PeopleApi.getCurrentPerson(mGoogleApiClient);
-        Plus.PeopleApi.loadVisible(mGoogleApiClient, null).setResultCallback(new ResultCallback<People.LoadPeopleResult>() {
+        Plus.PeopleApi.load(mGoogleApiClient, "me").setResultCallback(new ResultCallback<People.LoadPeopleResult>() {
             @Override
             public void onResult(final People.LoadPeopleResult loadPeopleResult) {
                 quizApp.addUiBlock("Fetching Profile.");

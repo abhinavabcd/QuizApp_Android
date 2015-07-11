@@ -9,7 +9,11 @@ import android.widget.ScrollView;
 
 
 public class Screen extends LinearLayout {
-	
+
+	public boolean removeOnBackPressed() {
+		return true;
+	}
+
 	public static enum ScreenType{
 		UNKNOWN,
 		QUIZZES_SCREEN,
@@ -71,7 +75,7 @@ public class Screen extends LinearLayout {
 	}
 	
 	public void beforeRemove(){
-		
+		controller.decRefCount();
 	}
 	
 	public boolean shouldAddtoScreenStack(){

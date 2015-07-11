@@ -21,6 +21,7 @@ import com.amcolabs.quizapp.R;
 import com.amcolabs.quizapp.User;
 import com.amcolabs.quizapp.configuration.Config;
 import com.amcolabs.quizapp.datalisteners.DataInputListener;
+import com.amcolabs.quizapp.fileandcommonutils.FileHelper;
 import com.j256.ormlite.android.apptools.OrmLiteSqliteOpenHelper;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.Dao.CreateOrUpdateStatus;
@@ -38,8 +39,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 	// name of the database file for your application -- change to something appropriate for your app
 	private static final String DATABASE_NAME = "quizApp.db";
 	// any time you make changes to your database objects, you may have to increase the database version
-	private static final int DATABASE_VERSION = 21;
-	private static String DATABASE_PATH = "/data/data/com.amcolabs.quizapp/databases/";
+	private static final int DATABASE_VERSION = 22;
 
 	// the DAO object we use to access the Category table
 	private Dao<Category, Integer> categoriesDao = null;
@@ -72,18 +72,19 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 
 	QuizApp quizApp = null;
     public DatabaseHelper(QuizApp quizApp) {
-    	super(quizApp.getContext(), DATABASE_PATH+DATABASE_NAME, null, DATABASE_VERSION, R.raw.ormlite_config);
+
+    	super(quizApp.getContext(), quizApp.getContext().getDatabasePath(DATABASE_NAME).getAbsolutePath() , null, DATABASE_VERSION, R.raw.ormlite_config);
+		String dbFilePath = quizApp.getContext().getDatabasePath(DATABASE_NAME).getAbsolutePath();
     	this.quizApp = quizApp;
 //    	if(Config.IS_TEST_BUILD)
 //    		FileHelper.deleteFile("databases", DATABASE_NAME);//delete the existing db file
     	
-        boolean dbexist = true;//FileHelper.isFileExists(quizApp.getContext() , "databases" , DATABASE_NAME); 
-        if (!dbexist || (quizApp!=null && quizApp.getUserDeviceManager().hasJustInstalled)) {
+        boolean dbexist = quizApp.getContext().getDatabasePath(DATABASE_NAME).exists();
+        if (!dbexist) {//try to copy existing packed db from the assets folder.
             try {
                 InputStream myinput = quizApp.getContext().getAssets().open(DATABASE_NAME);
-                String outfilename = DATABASE_PATH + DATABASE_NAME;
-                Log.i(DatabaseHelper.class.getName(), "DB Path : " + outfilename);
-                File newDB = new File(DATABASE_PATH);
+                Log.i(DatabaseHelper.class.getName(), "DB Path : " + dbFilePath);
+				File newDB = quizApp.getContext().getDatabasePath("");
                 if (!newDB.exists()) {
                 	if(newDB.mkdirs()){
                 		
@@ -93,7 +94,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
                 	}
                 }
                 
-                OutputStream myoutput = new FileOutputStream(DATABASE_PATH+DATABASE_NAME);
+                OutputStream myoutput = new FileOutputStream(dbFilePath);
                 byte[] buffer = new byte[1024];
                 int length;
                 while ((length = myinput.read(buffer)) > 0) {
@@ -104,6 +105,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
                 myinput.close();            
             } catch (IOException e) {
                 e.printStackTrace();
+				Log.d(Config.QUIZAPP_ERR_LOG_TAG, dbFilePath);
             }
         }        
     }

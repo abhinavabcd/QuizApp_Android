@@ -58,6 +58,8 @@
             <Button
                 android:id="@+id/facebook_button"
                 android:layout_width="match_parent"
+                android:text="Connect with facebook"
+                style="@style/com_facebook_loginview_default_style"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/normal_padding"
                 android:textColor="@android:color/white" />

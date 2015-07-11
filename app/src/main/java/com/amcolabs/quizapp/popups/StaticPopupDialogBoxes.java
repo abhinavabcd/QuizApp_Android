@@ -264,7 +264,7 @@ public class StaticPopupDialogBoxes {
 				public void onClick(View v) {
 					if(acceptListener!=null)
 						acceptListener.onData(true);	
-					yesNoPopup.dismiss();
+					yesNoPopup.dismissQuietly();
 					}
 				
 			});
@@ -279,7 +279,7 @@ public class StaticPopupDialogBoxes {
 			public void onClick(View v) {
 				if(acceptListener!=null)
 					acceptListener.onData(false);		
-				yesNoPopup.dismiss();
+				yesNoPopup.dismissQuietly();
 				}
 		});
 		button2.setText(negetiveText);

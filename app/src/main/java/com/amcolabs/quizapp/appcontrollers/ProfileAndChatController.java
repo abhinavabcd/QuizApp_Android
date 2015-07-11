@@ -38,7 +38,6 @@ import com.amcolabs.quizapp.uiutils.UiUtils.UiText;
 public class ProfileAndChatController extends AppController {
 
 	private DataInputListener<NotificationPayload> gcmListener;
-	protected DataInputListener<NotificationPayload> oldMessageListener;
 
 	public ProfileAndChatController(QuizApp quizApp) {
 		super(quizApp);
@@ -46,12 +45,6 @@ public class ProfileAndChatController extends AppController {
 
 	@Override
 	public void onDestroy() {
-	}
-
-	@Override
-	public boolean onBackPressed() {
-		removeChatListeners();
-		return super.onBackPressed();
 	}
 	
 	public static void showProfileScreen(QuizApp quizApp , User user) {
@@ -97,6 +90,11 @@ public class ProfileAndChatController extends AppController {
 		if(clearScreen)
 			clearScreen();
 		final UserProfileScreen profileScreen = new UserProfileScreen(this);
+
+		if(user==null){
+			quizApp.getStaticPopupDialogBoxes().yesOrNo(UiText.THERE_WAS_SERVER_ERROR_USER_FETCHING.getValue(), UiText.OK.getValue(), null, null);
+			return;
+		}
 		profileScreen.showUser(user);
 		insertScreen(profileScreen);
 		if(user.uid.equalsIgnoreCase(quizApp.getUser().uid)){		
@@ -117,7 +115,7 @@ public class ProfileAndChatController extends AppController {
 		}
 		else{
 				final List<LocalQuizHistory> history = quizApp.getDataBaseHelper().getQuizHistoryListByUid(user.uid);
-				profileScreen.showHistoryWithUser(user , history);
+				profileScreen.showHistoryWithUser(user, history);
 		}
  
 	}
@@ -157,7 +155,6 @@ public class ProfileAndChatController extends AppController {
 		quizApp.getServerCalls().getMessages(user2 , toIndex , new DataInputListener<List<UserInboxMessage>>(){
 			public String onData(List<UserInboxMessage> userMessages) {
 				final ChatScreen chatScreen = new ChatScreen(ProfileAndChatController.this, user2);
-				oldMessageListener = NotificationReciever.getListener(NotificationType.NOTIFICATION_GCM_INBOX_MESSAGE);
 				gcmListener = new DataInputListener<NotificationPayload>(){
 					public String onData(NotificationPayload payload) {
 						if(payload.fromUser.equalsIgnoreCase(user2.uid)){
@@ -202,13 +199,9 @@ public class ProfileAndChatController extends AppController {
 	}
 
 	public void removeChatListeners() {
-		if(gcmListener!=null){
-			NotificationReciever.removeListener(NotificationType.NOTIFICATION_GCM_INBOX_MESSAGE , gcmListener);
-			gcmListener = null;
-		}
-		if(oldMessageListener!=null){
-			NotificationReciever.setListener(NotificationType.NOTIFICATION_GCM_INBOX_MESSAGE , oldMessageListener);
-		}
+		NotificationReciever.removeListener(NotificationType.NOTIFICATION_GCM_INBOX_MESSAGE);
+		//restore old chat listner
+		NotificationReciever.setListener(NotificationType.NOTIFICATION_GCM_INBOX_MESSAGE , quizApp.defaultChatMessagesListener);
 	}
 	
 

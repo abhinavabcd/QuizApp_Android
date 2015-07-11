@@ -7,7 +7,6 @@ import java.util.List;
 
 import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.graphics.Point;
 import android.media.MediaPlayer;
 import android.os.Handler;
 import android.view.LayoutInflater;
@@ -15,7 +14,6 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
 import android.view.animation.AnimationUtils;
-import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -33,7 +31,6 @@ import com.amcolabs.quizapp.databaseutils.LocalQuizHistory;
 import com.amcolabs.quizapp.databaseutils.Question;
 import com.amcolabs.quizapp.datalisteners.DataInputListener;
 import com.amcolabs.quizapp.gameutils.GameUtils;
-import com.amcolabs.quizapp.uiutils.UiUtils;
 import com.amcolabs.quizapp.widgets.CircularCounter;
 import com.amcolabs.quizapp.widgets.CustomProgressBar;
 import com.amcolabs.quizapp.widgets.GothamButtonView;
@@ -138,9 +135,14 @@ public class QuestionScreen extends Screen implements View.OnClickListener, Anim
 			animTextScale = AnimationUtils.loadAnimation(getApp().getContext(), R.anim.xp_points_animation);
 			onQuestionTimeEnd = new DataInputListener<Boolean>(){
 				public String onData(Boolean s) {
-					isOptionSelected = true;
-					return pQuizController.onNoAnswer(currentQuestion);
-				};
+					synchronized (isOptionSelected) {
+						if (!isOptionSelected) {
+							isOptionSelected = true;
+							pQuizController.onNoAnswer(currentQuestion);
+						}
+					}
+					return  null;
+				}
 			};
 			timerView.setTimerEndListener(onQuestionTimeEnd);
 			
@@ -249,7 +251,7 @@ public class QuestionScreen extends Screen implements View.OnClickListener, Anim
 	
 	
 	
-	public void showUserInfo(ArrayList<User> users,int maxScore) {
+	public void showUserInfo(List<User> users,int maxScore) {
 		int index = 0;
 
 		for(User user : users){
@@ -309,7 +311,7 @@ public class QuestionScreen extends Screen implements View.OnClickListener, Anim
 		pbar.showAnimatedIncrement(newProgress);
 	}
 	
-	private boolean isOptionSelected = true;
+	private Boolean isOptionSelected = true;
 	protected Question currentQuestion;
 	private int currentQuestionIndex;
 	
@@ -364,26 +366,26 @@ public class QuestionScreen extends Screen implements View.OnClickListener, Anim
 //			hintTextView.setText(ques.hint);
 //		}
 		
-		String[] mcqOptions = ques.getMCQOptions();
+		List<String> mcqOptions = ques.getMCQOptions();
 		int tmpIndex = ques.getAnswerIndex();
 		if (tmpIndex>3){
 			tmpIndex = (int)currentQuestionIndex%4;
-			mcqOptions[tmpIndex] = ques.getAnswer();
+			mcqOptions.set(tmpIndex , ques.getAnswer());
 		}
 		for(int i=0;i<questionOptionsViews.size();i++){
 			GothamButtonView opt = questionOptionsViews.get(i);
 			// TODO : get below hard coded values from config
-			if (mcqOptions[i].length()>40)
+			if (mcqOptions.get(i).length()>40)
 				opt.setTextSize(13);
 			else
 				opt.setTextSize(15);
-			if(GameUtils.isUrl(mcqOptions[i])){
-				getApp().getUiUtils().loadImageAsBg(opt , mcqOptions[i],false);
+			if(GameUtils.isUrl(mcqOptions.get(i))){
+				getApp().getUiUtils().loadImageAsBg(opt , mcqOptions.get(i),false);
 			}
 			else{
-				opt.setText(mcqOptions[i]);//lets see
+				opt.setText(mcqOptions.get(i));//lets see
 			}
-			opt.setTag(mcqOptions[i]);
+			opt.setTag(mcqOptions.get(i));
 			opt.setTag2(i);
 			opt.setTextColor(Color.BLACK);
 		}
@@ -409,14 +411,14 @@ public class QuestionScreen extends Screen implements View.OnClickListener, Anim
 
 	public void highlightCorrectAnswer(){
 		for(GothamButtonView b:questionOptionsViews){
-			if(currentQuestion.isCorrectAnwer((String)b.getTag(), (Integer)b.getTag2()) )
+			if(currentQuestion.isCorrectAnwer((String)b.getTag()) )
 				b.setTextColor(Color.GREEN); 
 		}
 	}
 	public void highlightOtherUsersOption(String uid , String option){
 		for(GothamButtonView b:questionOptionsViews){
 			if(((String)b.getTag()).equalsIgnoreCase(option)){ 
-				if(!currentQuestion.isCorrectAnwer((String)b.getTag(), (Integer)b.getTag2()))
+				if(!currentQuestion.isCorrectAnwer((String)b.getTag()))
 					b.setTextColor(Color.RED);					
 			}
 		}
@@ -424,20 +426,21 @@ public class QuestionScreen extends Screen implements View.OnClickListener, Anim
 	
 	@Override
 	public void onClick(View optionView) {
-		if(isOptionSelected) return;
-		isOptionSelected = true;
-		GothamButtonView b = (GothamButtonView)optionView;
-		Boolean isAnwer = currentQuestion.isCorrectAnwer((String)b.getTag(), (Integer)b.getTag2());
-		if(!isAnwer){
-			b.setTextColor(Color.RED);
-			negetiveButtonSounds.start();
-			highlightCorrectAnswer();
+		synchronized (isOptionSelected) {
+			if (isOptionSelected) return;
+			isOptionSelected = true;
+			GothamButtonView b = (GothamButtonView) optionView;
+			Boolean isAnwer = currentQuestion.isCorrectAnwer((String) b.getTag());
+			if (!isAnwer) {
+				b.setTextColor(Color.RED);
+				negetiveButtonSounds.start();
+				highlightCorrectAnswer();
+			} else {
+				possitiveButtonSounds.start();
+				b.setTextColor(Color.GREEN);
+			}
+			pQuizController.onOptionSelected(isAnwer, (String) b.getText(), currentQuestion);
 		}
-		else{
-			possitiveButtonSounds.start();
-			b.setTextColor(Color.GREEN);
-		}
-		pQuizController.onOptionSelected(isAnwer,(String) b.getText() , currentQuestion);
 	}
 
 	public CircularCounter getTimerView() {
@@ -503,5 +506,10 @@ public class QuestionScreen extends Screen implements View.OnClickListener, Anim
 	public boolean doNotDistrub() {
 		// TODO Auto-generated method stub
 		return true;
+	}
+
+	@Override
+	public boolean removeOnBackPressed(){
+		return pQuizController.isRemoveQuestionScreenOnBackPressed();
 	}
 }

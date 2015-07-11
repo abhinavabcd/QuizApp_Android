@@ -145,4 +145,5 @@ public class ChatScreen extends Screen {
 		if(chatList!=null && chatListAdapter!=null)
 			chatList.setSelection(chatListAdapter.getCount() - 1);
 	}
+
 }
