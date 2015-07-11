@@ -1,0 +1,59 @@
+//buildscript {
+//    repositories {
+//        maven { url 'https://maven.fabric.io/public' }
+//    }
+//
+//    dependencies {
+//        classpath 'io.fabric.tools:gradle:1.+'
+//    }
+//}
+apply plugin: 'com.android.application'
+//apply plugin: 'io.fabric'
+apply plugin: 'com.google.gms.google-services'
+android {
+    compileSdkVersion 21
+    buildToolsVersion '21.1.2'
+    defaultConfig {
+        applicationId "com.amcolabs.quizapp"
+        minSdkVersion 13
+        targetSdkVersion 19
+        versionCode 1
+        versionName "1.0"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_7
+        targetCompatibility JavaVersion.VERSION_1_7
+    }
+    productFlavors {
+    }
+}
+repositories {
+    jcenter()
+    mavenCentral()
+    maven { url 'https://jitpack.io' }
+//    maven { url 'https://maven.fabric.io/public' }
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile 'com.squareup.picasso:picasso:2.4.0'
+    compile 'com.google.code.gson:gson:2.2.4'
+    compile 'com.facebook.android:facebook-android-sdk:4.1.0'
+    compile 'com.google.android.gms:play-services-plus:7.5.+'
+    compile 'com.google.android.gms:play-services-gcm:7.5.+'
+    compile 'com.android.support:appcompat-v7:22.1.1'
+    compile 'com.android.support:support-v4:22.1.1'
+    compile 'com.crittercism:crittercism-android-agent:5.0.6'
+    compile 'com.j256.ormlite:ormlite-core:4.48'
+    compile 'com.j256.ormlite:ormlite-android:4.48'
+    compile 'com.loopj.android:android-async-http:1.4.7'
+//    compile('com.crashlytics.sdk.android:crashlytics:2.4.0@aar') {
+//        transitive = true;
+//    }
+}

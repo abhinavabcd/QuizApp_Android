@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
- 
-    <string name="app_name">One Up</string>
-	<string name="main_empty_list">Fetching Messages From server</string>
-	<string name="chat_error_message"> -- Sorry, Unable to load Chat History -- </string>
-	<string name="facebook_app_id" >1458788254375575</string>
-	<string name="welcome_screen_message"> Welcome to the all new trivia app. This is one among the series of upcoming amazing trivia apps.</string>
-</resources>

@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<items version="2" >
+
+    <item
+        jar="/Users/abhinav/any/QuizApp/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-gcm/7.5.0/jars/classes.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="8d736fefa22d896e84a268354b3ed48a42663150">
+        <dex dex="/Users/abhinav/any/QuizApp/app/build/intermediates/pre-dexed/debug/classes-865020d08d1f5b399822ec8b2644720eb1f54727.jar" />
+    </item>
+    <item
+        jar="/Users/abhinav/.gradle/caches/modules-2/files-2.1/com.j256.ormlite/ormlite-core/4.48/e579bd2905d0399af5029aaaf9817d5fa0ca88a5/ormlite-core-4.48.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="e579bd2905d0399af5029aaaf9817d5fa0ca88a5">
+        <dex dex="/Users/abhinav/any/QuizApp/app/build/intermediates/pre-dexed/debug/ormlite-core-4.48-9838d3985c3eb3814ded0e677a063399e87feb82.jar" />
+    </item>
+    <item
+        jar="/Users/abhinav/any/QuizApp/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-plus/7.5.0/jars/classes.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="272bc5d7063f24bc3a33ea1d318cde8f31f5ec4c">
+        <dex dex="/Users/abhinav/any/QuizApp/app/build/intermediates/pre-dexed/debug/classes-f5e60cfb8f05d537b695d6f8416f459fada52f93.jar" />
+    </item>
+    <item
+        jar="/Users/abhinav/any/QuizApp/app/libs/autobahn-0.5.0.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="5f62bc6117f905fd37955f6e2ebd3aad68701b60">
+        <dex dex="/Users/abhinav/any/QuizApp/app/build/intermediates/pre-dexed/debug/autobahn-0.5.0-c0563a043ad1ef7520d4b8155018ad6ecb90ff0a.jar" />
+    </item>
+    <item
+        jar="/Users/abhinav/any/QuizApp/app/libs/GraphView-3.1.3.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="672e4a5d8906ab21665dcc08c1f7edb6efd6f903">
+        <dex dex="/Users/abhinav/any/QuizApp/app/build/intermediates/pre-dexed/debug/GraphView-3.1.3-1343d6e0931b718657ddc086576ff1b3058d8e06.jar" />
+    </item>
+    <item
+        jar="/Users/abhinav/.gradle/caches/modules-2/files-2.1/com.j256.ormlite/ormlite-android/4.48/afa06f539a4026c10b247386312aa67404b80a16/ormlite-android-4.48.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="afa06f539a4026c10b247386312aa67404b80a16">
+        <dex dex="/Users/abhinav/any/QuizApp/app/build/intermediates/pre-dexed/debug/ormlite-android-4.48-fc8edbf373e01a5c1fa3564e6914f6fcc0f7e6b9.jar" />
+    </item>
+    <item
+        jar="/Users/abhinav/any/QuizApp/app/libs/mpandroidchartlibrary-1-7-4.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="c685e45ac6491e51640ce3571606ac22dfd4a6a3">
+        <dex dex="/Users/abhinav/any/QuizApp/app/build/intermediates/pre-dexed/debug/mpandroidchartlibrary-1-7-4-3e8fba163f1909e193a4a285602fc9bf9e6c988e.jar" />
+    </item>
+    <item
+        jar="/Users/abhinav/.gradle/caches/modules-2/files-2.1/com.google.code.gson/gson/2.2.4/a60a5e993c98c864010053cb901b7eab25306568/gson-2.2.4.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="a60a5e993c98c864010053cb901b7eab25306568">
+        <dex dex="/Users/abhinav/any/QuizApp/app/build/intermediates/pre-dexed/debug/gson-2.2.4-ea86b7031c0719e79f6a72be902175186e62c689.jar" />
+    </item>
+    <item
+        jar="/Users/abhinav/.gradle/caches/modules-2/files-2.1/com.crittercism/crittercism-android-agent/5.0.6/927a461dc7228d49ee26d7b4eaecd9d5e813beb4/crittercism-android-agent-5.0.6.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="927a461dc7228d49ee26d7b4eaecd9d5e813beb4">
+        <dex dex="/Users/abhinav/any/QuizApp/app/build/intermediates/pre-dexed/debug/crittercism-android-agent-5.0.6-693c4d301826f6e3e3692d84712cfd8adc962a60.jar" />
+    </item>
+    <item
+        jar="/Users/abhinav/any/QuizApp/app/build/intermediates/exploded-aar/com.android.support/support-v4/22.1.1/jars/libs/internal_impl-22.1.1.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="9e070ad32b2700b0343e8e0cccc437733d91ba3a">
+        <dex dex="/Users/abhinav/any/QuizApp/app/build/intermediates/pre-dexed/debug/internal_impl-22.1.1-1ab674941ca3c1e356104068081a2eca1f4ebe30.jar" />
+    </item>
+    <item
+        jar="/Users/abhinav/.gradle/caches/modules-2/files-2.1/com.loopj.android/android-async-http/1.4.7/cd78109020f9ec803ef4e652c17ee4615b03e20a/android-async-http-1.4.7.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="cd78109020f9ec803ef4e652c17ee4615b03e20a">
+        <dex dex="/Users/abhinav/any/QuizApp/app/build/intermediates/pre-dexed/debug/android-async-http-1.4.7-0e9d8bb135f3b7e16b110c77d3d2fd30474a1aa1.jar" />
+    </item>
+    <item
+        jar="/Users/abhinav/libs/android_sdk/extras/android/m2repository/com/android/support/support-annotations/22.1.1/support-annotations-22.1.1.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="01d051a6bfb1218b1db2d3a5af0480ac2c25c42a">
+        <dex dex="/Users/abhinav/any/QuizApp/app/build/intermediates/pre-dexed/debug/support-annotations-22.1.1-0ba45582b3f10d202f671864d69d7ae222404cc5.jar" />
+    </item>
+    <item
+        jar="/Users/abhinav/any/QuizApp/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/22.1.1/jars/classes.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="a3ff3c506644c820eb2bdf06e8339f72be578551">
+        <dex dex="/Users/abhinav/any/QuizApp/app/build/intermediates/pre-dexed/debug/classes-d1e2f7562ace7a456f6913e7d3e01d46efea62a6.jar" />
+    </item>
+    <item
+        jar="/Users/abhinav/.gradle/caches/modules-2/files-2.1/com.squareup.picasso/picasso/2.4.0/f36d2d4e3a36b3259aaf9d004d29b4cdc6c1bfb2/picasso-2.4.0.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="f36d2d4e3a36b3259aaf9d004d29b4cdc6c1bfb2">
+        <dex dex="/Users/abhinav/any/QuizApp/app/build/intermediates/pre-dexed/debug/picasso-2.4.0-c584393d397f7f9f46c38be92b528c13a48352d4.jar" />
+    </item>
+    <item
+        jar="/Users/abhinav/any/QuizApp/app/build/intermediates/exploded-aar/com.facebook.android/facebook-android-sdk/4.1.0/jars/classes.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="a78bfd2ec508b123ee7c03f4006ba7996ef9a8dc">
+        <dex dex="/Users/abhinav/any/QuizApp/app/build/intermediates/pre-dexed/debug/classes-c65a84a245d161fd8c9a29d71a1373fccdca34d0.jar" />
+    </item>
+    <item
+        jar="/Users/abhinav/.gradle/caches/modules-2/files-2.1/com.parse.bolts/bolts-android/1.2.0/6ee2953ccf51ce72b6d548c30c4633b99eb4f9dd/bolts-android-1.2.0.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="6ee2953ccf51ce72b6d548c30c4633b99eb4f9dd">
+        <dex dex="/Users/abhinav/any/QuizApp/app/build/intermediates/pre-dexed/debug/bolts-android-1.2.0-32b230cfb462294851ce910aa96ba8af96d931dd.jar" />
+    </item>
+    <item
+        jar="/Users/abhinav/any/QuizApp/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-base/7.5.0/jars/classes.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="a78183f30e769a98ab4820794f597763088d3065">
+        <dex dex="/Users/abhinav/any/QuizApp/app/build/intermediates/pre-dexed/debug/classes-eeee48db319038fddb8cb0396665d817f13d7861.jar" />
+    </item>
+    <item
+        jar="/Users/abhinav/any/QuizApp/app/build/intermediates/exploded-aar/com.android.support/support-v4/22.1.1/jars/classes.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="c95ba8152923e4872e86a82cfcba9a51c0214328">
+        <dex dex="/Users/abhinav/any/QuizApp/app/build/intermediates/pre-dexed/debug/classes-4d2332e67b17ba45fdb30946d843811f61a346f7.jar" />
+    </item>
+
+</items>

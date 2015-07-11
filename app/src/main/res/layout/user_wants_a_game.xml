@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:fancy="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:id="@+id/main_wrapper"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:gravity="center_horizontal"
+        android:orientation="vertical" >
+
+        <com.amcolabs.quizapp.widgets.CircularImageView
+            android:id="@+id/title_image"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="10dp"
+            android:layout_weight="0.0"
+            android:scaleType="fitStart"
+            android:src="#222222" />
+
+        <com.amcolabs.quizapp.widgets.GothamTextView
+            android:id="@+id/user_wants_chalenge_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.0"
+            android:gravity="center"
+            android:text="User wants to have a game with you in "
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <com.amcolabs.quizapp.widgets.GothamTextView
+            android:id="@+id/quiz_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.0"
+            android:text="Quiz Name"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+
+        <LinearLayout
+            android:id="@+id/buttons_2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center" >
+
+            <com.amcolabs.quizapp.widgets.QuizAppMenuItem
+                android:id="@+id/start_challenge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="20dp"
+                android:padding="10dp"
+                fancy:borderColor="#FFFFFF"
+                fancy:borderWidth="1dp"
+                fancy:defaultColor="#3b5998"
+                fancy:focusColor="#5577bd"
+                fancy:fontIconSize="10sp"
+                fancy:iconPosition="right"
+                fancy:radius="30dp"
+                fancy:text="Start Challenge"
+                fancy:textColor="#FFFFFF" >
+            </com.amcolabs.quizapp.widgets.QuizAppMenuItem>
+
+            <com.amcolabs.quizapp.widgets.QuizAppMenuItem
+                android:id="@+id/close_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                fancy:borderColor="#FFFFFF"
+                fancy:borderWidth="1dp"
+                fancy:defaultColor="#3b5998"
+                fancy:focusColor="#5577bd"
+                fancy:fontIconSize="10sp"
+                fancy:iconPosition="right"
+                fancy:radius="30dp"
+                fancy:text="Defer"
+                fancy:textColor="#FFFFFF" >
+
+            </com.amcolabs.quizapp.widgets.QuizAppMenuItem>
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

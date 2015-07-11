@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/welcome_Screen_scroll"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="center" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center_vertical"
+        android:gravity="center_vertical"
+        android:orientation="vertical"
+        android:padding="15dp" >
+
+        <ImageView
+            android:id="@+id/imageView1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/logo" />
+
+        <com.amcolabs.quizapp.widgets.GothamTextView
+            android:id="@+id/status_msg"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:paddingBottom="@dimen/normal_padding"
+            android:text=""
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textSize="18dp" />
+
+        <com.amcolabs.quizapp.widgets.GothamTextView
+            android:id="@+id/GothamTextView01"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:paddingBottom="@dimen/normal_padding"
+            android:text="Choose your style of login."
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textSize="20dp" />
+
+        <LinearLayout
+            android:id="@+id/login_buttons_height"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1.0"
+            android:orientation="vertical" >
+
+            <Button
+                android:id="@+id/facebook_button"
+                android:text="Login With facebook"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30dp"
+                android:padding="12dp"
+                style="@style/com_facebook_loginview_default_style"
+                android:layout_marginBottom="@dimen/normal_padding"
+                android:textColor="@android:color/white" />
+
+            <com.google.android.gms.common.SignInButton
+                android:id="@+id/google_plus_button"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_marginBottom="@dimen/normal_padding"
+                android:layout_marginLeft="-5dp"
+                android:layout_marginRight="-5sp"
+                android:text="Login with Google Plus"
+                android:textColor="@android:color/white" />
+
+            <Button
+                android:id="@+id/signup_with_email"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginBottom="@dimen/normal_padding"
+                android:background="#8BAB42"
+                android:padding="@dimen/small_padding"
+                android:text="SignUp with Email"
+                android:textColor="@android:color/white" />
+        </LinearLayout>
+    </LinearLayout>
+
+</ScrollView>
