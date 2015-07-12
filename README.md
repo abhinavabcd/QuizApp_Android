@@ -1,4 +1,6 @@
-#QuizApp android  
+Latest: Made some improvements to get it to work faster, moved to android studio and gradle. I have to admit , this was my 2nd attempt at android app : ) , it might be buggy architechture adding and removing views onto a single fragment, i wanted to have a game and a state machine model. but tried it keep the code classified as possible.
+
+#QuizApp android
 This a  clone of popular trivia app QuizUp , written totally in android, without use of any graphic libraries.
 The server runs on tornado, can horizontally scale over multiple instances by deploying more servers.
 QuizApp uses websockets for the multiplayer game.
@@ -28,6 +30,9 @@ You will need QuizApp_tornado_server to launch the app you can clone it from her
 2. Configure Config.py , change the dbServer address to point to mongoDb.
 3. Change the WebServerMap and ExternalWebServerMap to point which are internal and external ip's for your server instances.
 4. when you want to launch or change the existing webservers update Config.py and relaunch it, this will propapage to existing servers.
+(you may also need the GCM key for the notifications to work , from your cloud project create a public access key for server applications.
+copy that key and place it in Constants.py GCM key.
+)
 
 ##Loading data to server
 5. You will have to download Configure load_spreadsheet.py.

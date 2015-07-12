@@ -589,79 +589,79 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 	private HashMap<Integer, UiText> menuItems = null;
 	public void onMenuClick(int id) {
 		if(isRapidReClick()) return;
-		if(isScreenAnimationActive!=0){
-			return;
-		}
-		if(currentActiveMenu==id){
-			screenStack.peek().refresh();
-			return;
-		}
-		Screen s;
-		Screen lastScreen = s = screenStack.pop();
-		while(screenStack.size()>1){ //quietly remove old screen till the first screen
-			s = screenStack.pop();
-			s.controller.decRefCount();
-			s.beforeRemove();
-		}
-		screenStack.push(lastScreen);
-//		if(screenStack.size()==2){
-//			Screen s = screenStack.pop();
-//			s.controller.decRefCount();
-//			s.beforeRemove();
-//			animateScreenRemove(s, TO_RIGHT, null);
-//		}
-		
-		
-		
-		switch(id){
-			case MENU_HOME:
-				if(screenStack.size()==2 ){ //remove all screens including the home screen
-					if(screenStack.get(0).getScreenType()!=ScreenType.WELCOME_SCREEN){// not on first login welcomeScreen dirty fix
-						animateScreenRemove(screenStack.peek() , TO_RIGHT,null);//currenly appearing screen
-						animateScreenIn(screenStack.get(0),TO_RIGHT);
-						screenStack.get(0).refresh();
+		synchronized (uiSync) {
+			if (isScreenAnimationActive != 0) {
+				return;
+			}
+			if (currentActiveMenu == id) {
+				screenStack.peek().refresh();
+				return;
+			}
+			Screen s;
+			Screen lastScreen = s = screenStack.pop();
+			while (screenStack.size() > 1) { //quietly remove old screen till the first screen
+				s = screenStack.pop();
+				s.controller.decRefCount();
+				s.beforeRemove();
+			}
+			screenStack.push(lastScreen);
+			//		if(screenStack.size()==2){
+			//			Screen s = screenStack.pop();
+			//			s.controller.decRefCount();
+			//			s.beforeRemove();
+			//			animateScreenRemove(s, TO_RIGHT, null);
+			//		}
+
+
+			switch (id) {
+				case MENU_HOME:
+					if (screenStack.size() == 2) { //remove all screens including the home screen
+						if (screenStack.get(0).getScreenType() != ScreenType.WELCOME_SCREEN) {// not on first login welcomeScreen dirty fix
+							animateScreenRemove(screenStack.peek(), TO_RIGHT, null);//currenly appearing screen
+							animateScreenIn(screenStack.get(0), TO_RIGHT);
+							screenStack.get(0).refresh();
+						} else {
+							screenStack.get(1).refresh();
+						}
 					}
-					else{
-						screenStack.get(1).refresh();
-					}
-				}
-				currentActiveMenu = MENU_HOME;
-				break;
-			case MENU_MESSAGES:
-				break;
-			case MENU_ALL_QUIZZES:
-				UserMainPageController uController = (UserMainPageController) loadAppController(UserMainPageController.class);
-				uController.showAllUserQuizzes();
-				currentActiveMenu = MENU_ALL_QUIZZES;
-				break;
-			case MENU_BADGES:
-				BadgeScreenController badgeController = (BadgeScreenController) loadAppController(BadgeScreenController.class);
-				badgeController.showBadgeScreen();
-				currentActiveMenu = MENU_BADGES;
-				break;
-			case MENU_FRIENDS:
-				ProfileAndChatController profileController =( ProfileAndChatController)loadAppController(ProfileAndChatController.class);
-				profileController.showFriendsList();
-				currentActiveMenu = MENU_FRIENDS;
-				break;
-			case MENU_CHATS:
-				ProfileAndChatController pcontroller = (ProfileAndChatController) loadAppController(ProfileAndChatController.class);
-				pcontroller.showChatScreen();
-				currentActiveMenu = MENU_CHATS;
-				break;
-			case MENU_PROFILE:
-				ProfileAndChatController c = (ProfileAndChatController) loadAppController(ProfileAndChatController.class);
-				c.showProfileScreen(getUser());
-				currentActiveMenu = MENU_PROFILE;
-				break;
-			case MENU_SHARE_WITH_FRIENDS:
-				Intent sharingIntent = new Intent(Intent.ACTION_SEND);
-				sharingIntent.setType("text/plain");
-				sharingIntent.putExtra(Intent.EXTRA_SUBJECT, "Play realtime quizzes with your friends on tollywood.");
-				String link = "https://play.google.com/store/apps/details?id=com.amcolabs.quizapp";
-				sharingIntent.putExtra(Intent.EXTRA_TEXT, link);
-				getContext().startActivity(sharingIntent);
-				break;
+					currentActiveMenu = MENU_HOME;
+					break;
+				case MENU_MESSAGES:
+					break;
+				case MENU_ALL_QUIZZES:
+					UserMainPageController uController = (UserMainPageController) loadAppController(UserMainPageController.class);
+					uController.showAllUserQuizzes();
+					currentActiveMenu = MENU_ALL_QUIZZES;
+					break;
+				case MENU_BADGES:
+					BadgeScreenController badgeController = (BadgeScreenController) loadAppController(BadgeScreenController.class);
+					badgeController.showBadgeScreen();
+					currentActiveMenu = MENU_BADGES;
+					break;
+				case MENU_FRIENDS:
+					ProfileAndChatController profileController = (ProfileAndChatController) loadAppController(ProfileAndChatController.class);
+					profileController.showFriendsList();
+					currentActiveMenu = MENU_FRIENDS;
+					break;
+				case MENU_CHATS:
+					ProfileAndChatController pcontroller = (ProfileAndChatController) loadAppController(ProfileAndChatController.class);
+					pcontroller.showChatScreen();
+					currentActiveMenu = MENU_CHATS;
+					break;
+				case MENU_PROFILE:
+					ProfileAndChatController c = (ProfileAndChatController) loadAppController(ProfileAndChatController.class);
+					c.showProfileScreen(getUser());
+					currentActiveMenu = MENU_PROFILE;
+					break;
+				case MENU_SHARE_WITH_FRIENDS:
+					Intent sharingIntent = new Intent(Intent.ACTION_SEND);
+					sharingIntent.setType("text/plain");
+					sharingIntent.putExtra(Intent.EXTRA_SUBJECT, "Play realtime quizzes with your friends on tollywood.");
+					String link = "https://play.google.com/store/apps/details?id=com.amcolabs.quizapp";
+					sharingIntent.putExtra(Intent.EXTRA_TEXT, link);
+					getContext().startActivity(sharingIntent);
+					break;
+			}
 		}
 	}
 

@@ -510,6 +510,6 @@ public class QuestionScreen extends Screen implements View.OnClickListener, Anim
 
 	@Override
 	public boolean removeOnBackPressed(){
-		return pQuizController.isRemoveQuestionScreenOnBackPressed();
+		return pQuizController.isRemoveScreenOnBackPressed();
 	}
 }

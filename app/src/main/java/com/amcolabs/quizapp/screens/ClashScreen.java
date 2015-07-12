@@ -80,6 +80,10 @@ public class ClashScreen extends Screen {
 	
 	public void beforeRemove(){
 	}
+
+	public boolean removeOnBackPressed(){
+		return getController().isRemoveScreenOnBackPressed();
+	}
 	
 	@Override
 	public void onRemovedFromScreen() {

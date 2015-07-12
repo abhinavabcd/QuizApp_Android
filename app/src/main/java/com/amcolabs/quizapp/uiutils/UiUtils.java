@@ -56,6 +56,7 @@ import com.amcolabs.quizapp.configuration.Config;
 import com.amcolabs.quizapp.databaseutils.OfflineChallenge;
 import com.amcolabs.quizapp.datalisteners.DataInputListener;
 import com.amcolabs.quizapp.serverutils.ServerCalls;
+import com.amcolabs.quizapp.widgets.CustomLoadingDialog;
 import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.utils.ValueFormatter;
 import com.squareup.picasso.Callback;
@@ -95,7 +96,7 @@ public class UiUtils {
 		}
 		return false;
 	}
-	
+
 	public static enum UiText{
 		NO_PREVIOUS_MESSAGES("No Previous Messages"), 
 		TEXT_LOADING("loading.."), 
@@ -237,17 +238,16 @@ public class UiUtils {
 
 	}
 
-
-	
 	
 	private static int uiBlockCount  =0;
-	private static ProgressDialog preloader = null;
+	private static CustomLoadingDialog preloader = null;
 	private static CharSequence preloaderText;
 	public  synchronized void addUiBlock(){
 		try{
 			if(uiBlockCount==0){
 				preloaderText = UiText.TEXT_LOADING.getValue();
-				preloader = ProgressDialog.show(quizApp.getContext(), "", preloaderText, true);
+				preloader = new CustomLoadingDialog(quizApp.getContext(), preloaderText);
+				preloader.show();
 			}
 			uiBlockCount++;
 		}
@@ -261,7 +261,8 @@ public class UiUtils {
 		try{
 		if(uiBlockCount==0){
 			preloaderText = text;
-			preloader = ProgressDialog.show(quizApp.getContext(), "", text, true);
+			preloader = new CustomLoadingDialog(quizApp.getContext(), preloaderText);
+			preloader.show();
 		}
 		else{
 			if(!preloaderText.toString().endsWith(text)){

@@ -182,7 +182,7 @@ public class ProgressiveQuizController extends AppController{
 	int backPressedCount = 0;
 	
 
-	public boolean isRemoveQuestionScreenOnBackPressed() {
+	public boolean isRemoveScreenOnBackPressed() {
 		if(quizApp.peekCurrentScreen() instanceof QuestionScreen){
 			backPressedCount++;
 			if(backPressedCount>1){
@@ -595,7 +595,7 @@ public class ProgressiveQuizController extends AppController{
 	    			@Override
 	    			public String onData(Boolean s) {
 	    				if(!s){
-	    					isRemoveQuestionScreenOnBackPressed();
+	    					isRemoveScreenOnBackPressed();
 	    				}
 	    				return super.onData(s);
 	    			}
