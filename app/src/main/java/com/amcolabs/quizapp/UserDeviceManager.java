@@ -33,7 +33,6 @@ public class UserDeviceManager {
 		initializePreferences(quizApp.getContext());
 		hasJustInstalled = isFirstTimeUser();// false only after first call to getFeed from server
 		UserDeviceManager.getDeviceId(quizApp.getContentResolver());
-		currentState = AppRunningState.IS_RUNNING;
 	}
 		
 	// initialized on the main screen
@@ -162,19 +161,9 @@ public class UserDeviceManager {
 		IS_DESTROYED;
 	};
 
-	static AppRunningState currentState = AppRunningState.IS_DESTROYED;
 	public static double lastActiveTime;
-	public static boolean isAppPaused() {
-		return AppRunningState.IS_IN_BACKGROUND == currentState;
-	}
-	public static void setAppRunningState(AppRunningState state) {
-		 currentState = state;
-		 NotificationReciever.destroyAllListeners();
-	}
-	public static boolean isRunning() {
-		// TODO Auto-generated method stub
-		return currentState == AppRunningState.IS_RUNNING;
-	}
+
+
 	public synchronized void setDoublePreference(String key, double val) {
 		setPreference(key, Double.toString(val));
 	}

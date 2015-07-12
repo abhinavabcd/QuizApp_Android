@@ -166,7 +166,7 @@ public class ProfileAndChatController extends AppController {
 						return null;
 					}
 				};//new gcm message from server
-				NotificationReciever.setListener(NotificationType.NOTIFICATION_GCM_INBOX_MESSAGE, gcmListener);
+				quizApp.getNotificationReciever().setListener(NotificationType.NOTIFICATION_GCM_INBOX_MESSAGE, gcmListener);
 				if(userMessages.size()==0){
 					chatScreen.setDebugMessage(UiText.NO_RECENT_MESSAGES.getValue());
 				}
@@ -199,9 +199,9 @@ public class ProfileAndChatController extends AppController {
 	}
 
 	public void removeChatListeners() {
-		NotificationReciever.removeListener(NotificationType.NOTIFICATION_GCM_INBOX_MESSAGE);
+		quizApp.getNotificationReciever().removeListener(NotificationType.NOTIFICATION_GCM_INBOX_MESSAGE);
 		//restore old chat listner
-		NotificationReciever.setListener(NotificationType.NOTIFICATION_GCM_INBOX_MESSAGE , quizApp.defaultChatMessagesListener);
+		quizApp.getNotificationReciever().setListener(NotificationType.NOTIFICATION_GCM_INBOX_MESSAGE , quizApp.defaultChatMessagesListener);
 	}
 	
 

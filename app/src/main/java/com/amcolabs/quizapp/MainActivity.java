@@ -5,6 +5,7 @@ package com.amcolabs.quizapp;
 import java.io.IOException;
 
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -32,6 +33,7 @@ import com.google.android.gms.common.Scopes;
 public class MainActivity extends FragmentActivity {
 
 	QuizApp quizApp;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,6 +43,10 @@ public class MainActivity extends FragmentActivity {
 		getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         setContentView(R.layout.activity_main);
+
+        //Initialize notificaton reciever
+
+
         initQuizApp(savedInstanceState);
 //        SatelliteMenu menu = (SatelliteMenu) findViewById(R.id.menu);
 //        
@@ -81,7 +87,7 @@ public class MainActivity extends FragmentActivity {
                     .replace(R.id.container, quizApp)
                     .commit();
         }
-        quizApp.setMenu(getMenu());             
+        quizApp.setMenu(getMenu());
 
     }
  
@@ -115,7 +121,6 @@ public class MainActivity extends FragmentActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-
         if(activityResultListener!=null){
         	activityResultListener.onData(requestCode, resultCode, data);
         }
@@ -123,24 +128,23 @@ public class MainActivity extends FragmentActivity {
     
 	@Override
 	protected void onPause() {
-		UserDeviceManager.setAppRunningState(AppRunningState.IS_IN_BACKGROUND);
-		UserDeviceManager.lastActiveTime = Config.getCurrentServerTimeStamp();
 		super.onPause();
+        NotificationReciever.setOffline();
+        UserDeviceManager.lastActiveTime = Config.getCurrentServerTimeStamp();
 	}
 	
 	@Override
 	protected void onResume() {
-		quizApp.setMainActivity(this);
-		quizApp.setMenu(getMenu());
-		UserDeviceManager.setAppRunningState(AppRunningState.IS_RUNNING);
 		super.onResume();
-	}
+        NotificationReciever.setOnline();
+        quizApp.setMainActivity(this);
+        quizApp.setMenu(getMenu());
+    }
 	
 	@Override
 	protected void onDestroy() {
-		quizApp.onDestroy();
-		UserDeviceManager.lastActiveTime = Config.getCurrentServerTimeStamp();
-		UserDeviceManager.setAppRunningState(AppRunningState.IS_DESTROYED);
+        quizApp.onDestroy();
+        UserDeviceManager.lastActiveTime = Config.getCurrentServerTimeStamp();
 		super.onDestroy();
 	}
  }

@@ -20,10 +20,26 @@ import com.amcolabs.quizapp.uiutils.UiUtils;
 import com.amcolabs.quizapp.uiutils.UiUtils.UiText;
 import com.google.gson.Gson;
 
-
+/*
+This is a little dirty , two instances of this class operate , one with iAppAlive= true , when the app comes to foreground
+and other verion if with false for default. will refactor it later.
+ */
 public class NotificationReciever extends BroadcastReceiver{
-				
-			public static class NotificationPayload{
+
+
+	private static boolean isAppAlive= false;
+
+	public static void setOffline() {
+		isAppAlive = false;
+		destroyAllListeners();
+	}
+
+	public static void setOnline(){
+		destroyAllListeners();
+		isAppAlive = true;
+	}
+
+	public static class NotificationPayload{
 				public int messageType = -1;
 				public String fromUser;
 				public String fromUserName;
@@ -36,6 +52,20 @@ public class NotificationReciever extends BroadcastReceiver{
 				public String payload2;
 				public String payload3;
 				public String payload4;
+
+				public static NotificationPayload getNotificationPayloadFromBundle(Bundle bundle){
+					JSONObject json = new JSONObject();
+					Set<String> keys = bundle.keySet();
+					for (String key : keys) {
+						try {
+							// json.put(key, bundle.get(key)); see edit below
+							json.put(key, bundle.get(key));
+						} catch(JSONException e) {
+							//Handle exception here
+						}
+					}
+					return new Gson().fromJson(json.toString(),NotificationPayload.class );
+				}
 			}
 	
 			public static enum NotificationType{
@@ -56,19 +86,7 @@ public class NotificationReciever extends BroadcastReceiver{
 					this.value = val;
 				}
 			}
-			public static NotificationPayload getNotificationPayload(Bundle bundle){
-					JSONObject json = new JSONObject();
-					Set<String> keys = bundle.keySet();
-					for (String key : keys) {
-					    try {
-					        // json.put(key, bundle.get(key)); see edit below
-					        json.put(key, bundle.get(key));
-					    } catch(JSONException e) {
-					        //Handle exception here
-					    }
-					}
-					return new Gson().fromJson(json.toString(),NotificationPayload.class );
-			}
+
 			public static NotificationType getNotificationTypeFromInt(int x){
 				NotificationType[] values = NotificationType.values();
 				if(x >0 && x < values.length)
@@ -94,17 +112,15 @@ public class NotificationReciever extends BroadcastReceiver{
 				
 				String titleText = null;
 				String messageToDisplay = UiText.NEW_TEXT_AVAILABLE.getValue();
-				boolean abortThisRequest = false;
 				boolean generateNotification = true;
 				boolean payloadConsumed = false;
 				NotificationPayload payload = null;
 				if(extras!=null){
-					payload = getNotificationPayload(extras);
+					payload = NotificationPayload.getNotificationPayloadFromBundle(extras);
 					switch(type){
 						case NOTIFICATION_GCM_INBOX_MESSAGE:
 							//type.setPayload(extras);
-							payload = getNotificationPayload(extras);
-							if(checkAndCallListener(type , payload)){
+							if(isAppAlive && checkAndCallListener(type , payload)){
 								payloadConsumed = true;
 								generateNotification = false;
 							}
@@ -116,8 +132,7 @@ public class NotificationReciever extends BroadcastReceiver{
 						case DONT_KNOW:
 							break;
 						case NOTIFICATION_GCM_CHALLENGE_NOTIFICATION:
-							payload = getNotificationPayload(extras);
-							if(checkAndCallListener(type , payload)){
+							if(isAppAlive && checkAndCallListener(type , payload)){
 								payloadConsumed= true;
 								generateNotification = false; // listener says ok
 							}
@@ -138,7 +153,7 @@ public class NotificationReciever extends BroadcastReceiver{
 							messageToDisplay = payload.textMessage;
 							break;
 						case NOTIFICATION_GCM_OFFLINE_CHALLENGE_NOTIFICATION:
-							if(checkAndCallListener(type , getNotificationPayload(extras))){
+							if(isAppAlive && checkAndCallListener(type , payload)){
 								payloadConsumed = true;
 								generateNotification = false;
 							}
@@ -159,11 +174,9 @@ public class NotificationReciever extends BroadcastReceiver{
 							break;
 					}
 				}
-				if(abortThisRequest)
-					abortBroadcast();
 				if(generateNotification) // inside app all notifications should be handled without notifications
 					UiUtils.generateNotification(context, titleText , messageToDisplay, extras);
-				if(!payloadConsumed){
+				if(!payloadConsumed){//queue it
 					QuizApp.pendingNotifications.put(type, new ArrayList<NotificationPayload>());
 					QuizApp.pendingNotifications.get(type).add(payload);
 				}
@@ -171,7 +184,7 @@ public class NotificationReciever extends BroadcastReceiver{
 			
 			static HashMap<NotificationType, DataInputListener<NotificationPayload>> listeners = new HashMap<NotificationReciever.NotificationType, DataInputListener<NotificationPayload>>();
 			
-			public static void setListener(NotificationType type , DataInputListener<NotificationPayload> listener){
+			public void setListener(NotificationType type , DataInputListener<NotificationPayload> listener){
 				listeners.put(type, listener);
 			}
 			
@@ -180,13 +193,13 @@ public class NotificationReciever extends BroadcastReceiver{
 			}
 
 
-			public static void removeListener(
+			public void removeListener(
 					NotificationType notificationGcmInboxMessage) {
 				listeners.remove(notificationGcmInboxMessage);
 			}
 			
-			public static boolean checkAndCallListener(NotificationType type, NotificationPayload notificationPayload){
-				if(UserDeviceManager.isRunning() && QuizApp.nState==NotifificationProcessingState.CONTINUE){
+			public boolean checkAndCallListener(NotificationType type, NotificationPayload notificationPayload){
+				if(QuizApp.nState==NotifificationProcessingState.CONTINUE){
 					if(listeners.containsKey(type)){
 							listeners.get(type).onData(notificationPayload);
 							return true;
@@ -195,11 +208,9 @@ public class NotificationReciever extends BroadcastReceiver{
 				return false; // we wont call listener until state is continue , setting to continue is very important 
 			}
 			
-			public static DataInputListener<NotificationPayload> getListener( NotificationType type) {
-				if(UserDeviceManager.isRunning()){
-					if(listeners.containsKey(type)){
-							return listeners.get(type);
-					}
+			public DataInputListener<NotificationPayload> getListener( NotificationType type) {
+				if(listeners.containsKey(type)){
+						return listeners.get(type);
 				}
 				return null;
 			}

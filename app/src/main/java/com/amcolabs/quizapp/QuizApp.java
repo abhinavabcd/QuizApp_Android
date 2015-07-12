@@ -95,7 +95,7 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 
 	private BadgeEvaluator badgeEvaluator;
 	public DataInputListener<NotificationPayload> defaultChatMessagesListener;
-
+	private NotificationReciever notificationReciever;
 
 	public void setMainActivity(MainActivity mainActivity) {
 		ref = mainActivity;
@@ -150,7 +150,8 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 			badgeEvaluator = new BadgeEvaluator(this);
 			setStaticPopupDialogBoxes(new StaticPopupDialogBoxes(this));
 			loadingView = userDeviceManager.getLoadingView(this.getActivity());
-			disposeScreens = new ArrayList<Screen>();
+			disposeScreens = new ArrayList<>();
+			notificationReciever = new NotificationReciever();
 //			addMenuItems();
 		}
 		setNotificationProcessingState(NotifificationProcessingState.CONTINUE);
@@ -159,13 +160,13 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 	public static HashMap<NotificationType , ArrayList<NotificationPayload>> pendingNotifications = new HashMap<NotificationReciever.NotificationType, ArrayList<NotificationPayload>>();
 	
 	private void removeAllNotificationListeners() {
-		NotificationReciever.destroyAllListeners();
+		getNotificationReciever().destroyAllListeners();
 	}
 	
 	private void addNotificationListeners() {
-		NotificationReciever.setListener(NotificationType.NOTIFICATION_GCM_CHALLENGE_NOTIFICATION, new DataInputListener<NotificationPayload>(){
+		getNotificationReciever().setListener(NotificationType.NOTIFICATION_GCM_CHALLENGE_NOTIFICATION, new DataInputListener<NotificationPayload>() {
 			@Override
-			public String onData(final NotificationPayload payload) { 
+			public String onData(final NotificationPayload payload) {
 				getDataBaseHelper().getAllUsersByUid(Arrays.asList(payload.fromUser), new DataInputListener<Boolean>() {
 					@Override
 					public String onData(Boolean s) {
@@ -184,7 +185,7 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 			}
 		});
 		//notify user that he has a new offline challenge
-		NotificationReciever.setListener(NotificationType.NOTIFICATION_GCM_OFFLINE_CHALLENGE_NOTIFICATION, new DataInputListener<NotificationPayload>(){
+		getNotificationReciever().setListener(NotificationType.NOTIFICATION_GCM_OFFLINE_CHALLENGE_NOTIFICATION, new DataInputListener<NotificationPayload>(){
 			@Override
 			public String onData(final NotificationPayload payload) { 
 				Quiz quiz = getDataBaseHelper().getQuizById(payload.quizId);
@@ -228,7 +229,7 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 		};
 
 
-		NotificationReciever.setListener(NotificationType.NOTIFICATION_GCM_INBOX_MESSAGE, defaultChatMessagesListener);
+		getNotificationReciever().setListener(NotificationType.NOTIFICATION_GCM_INBOX_MESSAGE, defaultChatMessagesListener);
 		setNotificationProcessingState(NotifificationProcessingState.CONTINUE);
 	}
 
@@ -240,7 +241,7 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 				if(pendingNotifications.containsKey(type) && pendingNotifications.get(type)!=null && pendingNotifications.get(type).size()>0){
 					NotificationPayload p=null;
 					while(pendingNotifications.get(type).size()>0)
-						NotificationReciever.checkAndCallListener(type, (p = pendingNotifications.get(type).remove(0)));
+						getNotificationReciever().checkAndCallListener(type, (p = pendingNotifications.get(type).remove(0)));
 					setNotificationProcessingState(NotifificationProcessingState.DEFER);
 					return; // only one notification at a time , if notification returns something , then we do stuff
 				} 
@@ -251,7 +252,9 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 	public GameUtils getGameUtils() {
 		return gameUtils;
 	}
-
+	public NotificationReciever getNotificationReciever(){
+		return notificationReciever;
+	}
 
 	private void addView(Screen screen) {
 		ViewParent tmp = screen.getParent();
@@ -775,6 +778,7 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 	public void onDestroy() {
 		destroyAllScreens();
 		doUnbindMusicService();
+		NotificationReciever.setOffline();
 		super.onDestroy();
 	}
 

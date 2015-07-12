@@ -23,8 +23,8 @@ public class QuizAppGcmListenerService extends GcmListenerService{
         intent2.setAction(Config.GCM_NOTIFICATION_INTENT_ACTION);
         intent2.addCategory(Intent.CATEGORY_DEFAULT);
         intent2.putExtras(data);
-        intent2.setClass(context, NotificationReciever
-                .class);
+        //?
+        intent2.setClass(context, NotificationReciever.class);
         context.sendOrderedBroadcast(intent2, null);
     }
 }
