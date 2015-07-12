@@ -1,32 +1,60 @@
-Latest: Made some improvements to get it to work faster, moved to android studio and gradle. I have to admit , this was my 2nd attempt at android app : ) , it might be buggy architechture adding and removing views onto a single fragment, i wanted to have a game and a state machine model. but tried it keep the code classified as possible.
-
-#QuizApp android
-This a  clone of popular trivia app QuizUp , written totally in android, without use of any graphic libraries.
-The server runs on tornado, can horizontally scale over multiple instances by deploying more servers.
-QuizApp uses websockets for the multiplayer game.
-
+#Latest commit:
+Made some improvements to load the project faster, moved to android studio and gradle. I have to admit , this was my 2nd attempt at android app : ) , little buggy on the concepts of controllers and screens. I wanted to have a game and a state machine model when i started the code. I tried it keep the code classified as possible. Just email me if you want some feature or any short modifications.  If you felt something about the project, just drop a Hello email , would make me happy. : )
 
 Live Version here:
 https://storage.googleapis.com/quizappassets/files/app-release.apk
 
+ - controllers manages screens(one or more screens).
+ - A screen is just a linearlayout , when you need a screen to be shown, load the controller(by calling quizApp.loadAppController(Controller.class) ) do some logic and create the screen. quizApp.addView(Screen) will animate it.
+ - All server related functionality is in ServerCalls.java , all calls are handled asynchronously with a generic listener , will more to tasks from bolt library if i find time.
+
+
+
+
+#QuizApp android
+This a  clone of popular trivia app QuizUp , written totally in android, without use of any graphic libraries.
+The server side runs on tornado, can horizontally scale over multiple instances by deploying more servers.
+QuizApp uses websockets for the multiplayer game.
+
+
+
 Depends on:(included in libs)
 	Autobahn websockets (https://github.com/tavendo/AutobahnAndroid)
 	MPCharts Lib (https://github.com/PhilJay/MPAndroidChart)
+	ormlite.
 
 Most client configuration is in Config.java , do have a look into it. All the 'in game App strings' in UiUtils.java , use them to navigate though the code.
 
-you will have to download a "google-services.json" with google-plus and gcm enables , i have included one by default , you can start from here
+you will have to download a "google-services.json" with google-plus and gcm enables if you want to use it for a different build, i have included one by default , you can start from here to generate it.
+
 https://developers.google.com/mobile/add?platform=android&cntapi=signin&cnturl=https:%2F%2Fdevelopers.google.com%2Fidentity%2Fsign-in%2Fandroid%2Fsign-in%3Fconfigured%3Dtrue&cntlbl=Continue%20Adding%20Sign-In.
 
 
 
-You will need QuizApp_tornado_server to launch the app you can clone it from here.
-[Github quizApp Server](https://github.com/abhinavabcd/QuizApp_server) ,
+You will need QuizApp_tornado_server to launch the app you can clone it from here. I have deployed the mongo instances and the web server instances on google compute.
+[Github quizApp Server](https://github.com/abhinavabcd/QuizApp_server),
 
 ###Steps to get the client and server working.
 
 #Setting up Server :
-1. Launch mongoDB
+
+- you need to have gspread.  https://github.com/burnash/gspread , go through , http://gspread.readthedocs.org/en/latest/oauth2.html for the oauth authorization part to sync sheet from google drive.
+	- git clone https://github.com/burnash/gspread.git
+	- python setup.py install
+
+- python-lxml for 2.7 python , this is absolutely not needed , but good to have for crawling scripts.
+	- sudo apt-get install libxml2-dev libxslt-dev python-dev
+	- sudo pip install lxml
+
+- tornado , http://www.tornadoweb.org/en/stable/
+	- pip install tornado
+
+- mongoengine, http://docs.mongoengine.org/guide/installing.html
+ 	- pip install mongoengine
+
+
+
+1. Launch mongoDB. there is a one click deploy on google compute, but it will cost you price.
 2. Configure Config.py , change the dbServer address to point to mongoDb.
 3. Change the WebServerMap and ExternalWebServerMap to point which are internal and external ip's for your server instances.
 4. when you want to launch or change the existing webservers update Config.py and relaunch it, this will propapage to existing servers.
