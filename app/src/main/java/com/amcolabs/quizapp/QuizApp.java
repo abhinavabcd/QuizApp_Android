@@ -73,7 +73,7 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 	public static final int MENU_MESSAGES=5;
 	private static final int MENU_CHATS = 6;
 	private static final int MENU_PROFILE = 7;
-
+	private static final int MENU_SHARE_WITH_FRIENDS = 8;
 	
 	private User currentUser;
 	private AppController currentAppController;
@@ -654,6 +654,14 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 				c.showProfileScreen(getUser());
 				currentActiveMenu = MENU_PROFILE;
 				break;
+			case MENU_SHARE_WITH_FRIENDS:
+				Intent sharingIntent = new Intent(Intent.ACTION_SEND);
+				sharingIntent.setType("text/plain");
+				sharingIntent.putExtra(Intent.EXTRA_SUBJECT, "Play realtime quizzes with your friends on tollywood.");
+				String link = "https://play.google.com/store/apps/details?id=com.amcolabs.quizapp";
+				sharingIntent.putExtra(Intent.EXTRA_TEXT, link);
+				getContext().startActivity(sharingIntent);
+				break;
 		}
 	}
 
@@ -724,6 +732,7 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 			menuItems.put(QuizApp.MENU_ALL_QUIZZES, UiText.SHOW_QUIZZES);
 			menuItems.put(QuizApp.MENU_CHATS,UiText.CHATS);
 			menuItems.put(QuizApp.MENU_FRIENDS, UiText.FRIENDS);
+			menuItems.put(QuizApp.MENU_SHARE_WITH_FRIENDS, UiText.TELL_SOMONE);
 
 		}
 		return menuItems;
