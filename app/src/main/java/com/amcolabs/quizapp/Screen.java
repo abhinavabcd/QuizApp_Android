@@ -21,7 +21,23 @@ public class Screen extends LinearLayout {
 		CLASH_SCREEN, 
 		HOME_SCREEN, 
 		WELCOME_SCREEN,
-		PROFILE_SCREEN;
+		PROFILE_SCREEN, BADGES_SCREEN, CHAT_SCREEN,
+		LEADERBOARD_SCREEN,
+		LOGIN_SCREEN, SELECT_FRIENDS_SCREEN, CHAT_LIST_SCREEN, SIGNUP_SCREEN, WIN_LOOSE_SCREEN;
+
+		String data;
+
+		public void setData(String data){
+			this.data  = data;
+ 		}
+		public String getData(){
+			return data;
+		}
+
+		public ScreenType withData(String quizId) {
+			this.data = quizId;
+			return this;
+		}
 	}
 	
 	protected AppController controller = null;

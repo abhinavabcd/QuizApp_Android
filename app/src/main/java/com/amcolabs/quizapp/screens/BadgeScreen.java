@@ -45,4 +45,9 @@ public class BadgeScreen extends Screen implements OnItemClickListener{
 	public boolean showMenu() {
 		return true;
 	}
+
+	@Override
+	public ScreenType getScreenType() {
+		return ScreenType.BADGES_SCREEN;
+	}
 }

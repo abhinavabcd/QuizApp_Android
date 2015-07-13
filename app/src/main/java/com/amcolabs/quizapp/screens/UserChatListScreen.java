@@ -63,12 +63,16 @@ public class UserChatListScreen extends Screen{
 				
 					});
 					((ListView) lView.findViewById(R.id.listView)).setAdapter(chatListAdapter);
-					chatListWrapper.addView(lView,0);
+					chatListWrapper.addView(lView, 0);
 					addToScrollView(chatListWrapper);
 	}
 	@Override
 	public boolean showMenu() {
 		// TODO Auto-generated method stub
 		return true;
+	}
+
+	public ScreenType getScreenType(){
+		return ScreenType.CHAT_LIST_SCREEN;
 	}
 }

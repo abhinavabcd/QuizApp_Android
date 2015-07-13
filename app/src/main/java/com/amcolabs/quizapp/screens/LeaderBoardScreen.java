@@ -24,6 +24,8 @@ import com.amcolabs.quizapp.widgets.GothamTextView;
 
 public class LeaderBoardScreen extends Screen {
 
+	private String quizId=null;
+
 	public LeaderBoardScreen(AppController controller) {
 		super(controller);
 	}
@@ -74,5 +76,13 @@ public class LeaderBoardScreen extends Screen {
 	public boolean showMenu() {
 		// TODO Auto-generated method stub
 		return true;
+	}
+
+	public ScreenType getScreenType(){
+		return ScreenType.LEADERBOARD_SCREEN.withData(quizId);
+	}
+
+	public void setQuizId(String quizId) {
+		this.quizId = quizId;
 	}
 }

@@ -57,6 +57,16 @@
                     android:background="@drawable/list_item_bg"
                     android:gravity="center"
                     android:text="Add Friend" />
+
+                <com.amcolabs.quizapp.widgets.GothamButtonView
+                    android:id="@+id/chat_with_user"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:background="@drawable/list_item_bg"
+                    android:gravity="center"
+                    android:text="Chat" />
+
             </LinearLayout>
 
             <LinearLayout

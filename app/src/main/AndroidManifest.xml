@@ -23,6 +23,7 @@
     <uses-permission android:name="com.amcolabs.quizapp.permission.C2D_MESSAGE" />
     
     <application
+        android:name=".QuizAppInit"
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
@@ -97,15 +98,36 @@
 
 
         <service android:name="MusicService" android:enabled="true"></service>
-        <!--<meta-data-->
-            <!--android:name="io.fabric.ApiKey"-->
-            <!--android:value="a4b5122d79f1397abfb6d824672d113cc05f9a64" />-->
+        <!-- Optionally, register AnalyticsReceiver and AnalyticsService to support background
+      dispatching on non-Google Play devices -->
+        <receiver android:name="com.google.android.gms.analytics.AnalyticsReceiver"
+            android:enabled="true">
+            <intent-filter>
+                <action android:name="com.google.android.gms.analytics.ANALYTICS_DISPATCH" />
+            </intent-filter>
+        </receiver>
+        <service android:name="com.google.android.gms.analytics.AnalyticsService"
+            android:enabled="true"
+            android:exported="false"/>
+
+        <!-- Optionally, register CampaignTrackingReceiver and CampaignTrackingService to enable
+             installation campaign reporting -->
+        <receiver android:name="com.google.android.gms.analytics.CampaignTrackingReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.android.vending.INSTALL_REFERRER" />
+            </intent-filter>
+        </receiver>
+        <service android:name="com.google.android.gms.analytics.CampaignTrackingService" />
 
         <activity android:name="com.facebook.FacebookActivity"
             android:theme="@android:style/Theme.Translucent.NoTitleBar"
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
             android:label="@string/app_name" />
 
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="3208f2e596357aec8cb8b315234efe612e6546ca" />
     </application>
 
 </manifest>

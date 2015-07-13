@@ -146,4 +146,7 @@ public class ChatScreen extends Screen {
 			chatList.setSelection(chatListAdapter.getCount() - 1);
 	}
 
+	public ScreenType getScreenType(){
+		return ScreenType.CHAT_SCREEN;
+	}
 }

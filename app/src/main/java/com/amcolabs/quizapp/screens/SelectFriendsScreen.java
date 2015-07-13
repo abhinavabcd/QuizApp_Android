@@ -299,5 +299,9 @@ public class SelectFriendsScreen extends Screen {
 		// TODO Auto-generated method stub
 		return !doNotShowOnBackPress;
 	}
+
+	public ScreenType getScreenType(){
+		return ScreenType.SELECT_FRIENDS_SCREEN;
+	}
 	
 }

@@ -100,4 +100,9 @@ public class ClashScreen extends Screen {
 	public boolean showOnBackPressed() {
 		return false;
 	}
+
+	public ScreenType getScreenType(){
+		return ScreenType.CLASH_SCREEN;
+	}
 }
+

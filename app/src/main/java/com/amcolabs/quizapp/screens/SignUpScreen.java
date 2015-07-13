@@ -12,5 +12,7 @@ public class SignUpScreen extends Screen {
 		super(appManager);
 		// TODO Auto-generated constructor stub
 	}
-
+	public ScreenType getScreenType(){
+		return ScreenType.SIGNUP_SCREEN;
+	}
 }

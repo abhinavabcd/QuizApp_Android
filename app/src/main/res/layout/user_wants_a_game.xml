@@ -32,7 +32,8 @@
             android:gravity="center"
             android:text="User wants to have a game with you in "
             android:textSize="18sp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:textColor="@color/white"/>
 
         <com.amcolabs.quizapp.widgets.GothamTextView
             android:id="@+id/quiz_name"

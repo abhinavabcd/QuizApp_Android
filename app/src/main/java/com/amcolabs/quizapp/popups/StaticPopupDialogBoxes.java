@@ -358,7 +358,7 @@ public class StaticPopupDialogBoxes {
 					listener.onData(false);
 				d.dismiss();
 			}
-		});
+		}) ;
 		d.setContentView(baseLayout);
 		d.show();
 		

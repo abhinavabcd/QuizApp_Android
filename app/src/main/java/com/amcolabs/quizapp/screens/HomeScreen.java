@@ -382,20 +382,20 @@ public class HomeScreen extends Screen {
 		GothamTextView titleView = (GothamTextView) lView.findViewById(R.id.title_text_view);
 		titleView.setText(title);
 		searchText.addTextChangedListener(new TextWatcher() {
-		    @Override
-		    public void onTextChanged(CharSequence cs, int arg1, int arg2, int arg3) {
-		        quizAdaptor.getFilter().filter(cs);  
-		    }
-		     
-		    @Override
-		    public void beforeTextChanged(CharSequence arg0, int arg1, int arg2,
-		            int arg3) {
-		    }
+			@Override
+			public void onTextChanged(CharSequence cs, int arg1, int arg2, int arg3) {
+				quizAdaptor.getFilter().filter(cs);
+			}
+
+			@Override
+			public void beforeTextChanged(CharSequence arg0, int arg1, int arg2,
+										  int arg3) {
+			}
 
 			@Override
 			public void afterTextChanged(Editable s) {
 			}
-	
+
 		});
 		((ListView) lView.findViewById(R.id.listView)).setAdapter(quizAdaptor);
 		FrameLayout viewMore = (FrameLayout) lView.findViewById(R.id.view_all_wrapper);
@@ -407,5 +407,9 @@ public class HomeScreen extends Screen {
 	public boolean showMenu() {
 		// TODO Auto-generated method stub
 		return true;
+	}
+
+	public ScreenType getScreenType(){
+		return ScreenType.HOME_SCREEN;
 	}
 }

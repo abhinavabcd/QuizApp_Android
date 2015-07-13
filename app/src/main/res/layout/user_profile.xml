@@ -20,7 +20,7 @@
 
         <com.amcolabs.quizapp.widgets.SeperatorView
             android:id="@+id/seperatorView1"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="2dp"
             android:layout_margin="5dp" />
 
@@ -59,7 +59,7 @@
 
         <com.amcolabs.quizapp.widgets.SeperatorView
             android:id="@+id/seperatorView2"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="2dp"
             android:layout_margin="5dp" />
 

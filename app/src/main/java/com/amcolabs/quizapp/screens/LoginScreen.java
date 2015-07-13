@@ -16,5 +16,7 @@ public class LoginScreen extends Screen {
 		// TODO Auto-generated method stub
 		return false;
 	}
-	
+	public ScreenType getScreenType(){
+		return ScreenType.LOGIN_SCREEN;
+	}
 }

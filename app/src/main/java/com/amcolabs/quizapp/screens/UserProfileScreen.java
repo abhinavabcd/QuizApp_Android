@@ -68,7 +68,7 @@ public class UserProfileScreen extends Screen {
 	public void showUser(User user){
 		userProfile = (ScrollView) LayoutInflater.from(controller.getContext()).inflate(R.layout.user_profile, this, false);
 		userProfileWrapper = (LinearLayout) userProfile.findViewById(R.id.profile_data_wrapper);
-		userProfile.findViewById(R.id.user_info_card).setBackgroundColor(getResources().getColor(R.color.black));		
+		userProfile.findViewById(R.id.user_info_card).setBackgroundColor(getResources().getColor(R.color.black));
 		userName = (GothamTextView) userProfile.findViewById(R.id.user_card_name);
 		userImage = (ImageView)userProfile.findViewById(R.id.user_card_small_pic);
 		userStatusMessage = (GothamTextView) userProfile.findViewById(R.id.user_status_msg);
@@ -442,5 +442,9 @@ public class UserProfileScreen extends Screen {
 	public boolean showMenu() {
 		// TODO Auto-generated method stub
 		return true;
+	}
+
+	public ScreenType getScreenType(){
+		return ScreenType.PROFILE_SCREEN;
 	}
 }

@@ -48,6 +48,7 @@ import com.amcolabs.quizapp.popups.StaticPopupDialogBoxes;
 import com.amcolabs.quizapp.serverutils.ServerCalls;
 import com.amcolabs.quizapp.uiutils.UiUtils;
 import com.amcolabs.quizapp.uiutils.UiUtils.UiText;
+import com.google.android.gms.analytics.HitBuilders;
 
 /**
  * 
@@ -256,6 +257,12 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 	}
 
 	private void addView(Screen screen) {
+		QuizAppInit.tracker().send(new HitBuilders.EventBuilder()
+				.setCategory(Tracking.SCREEN_ACTIVITY.toString())
+				.setAction(screen.getScreenType().toString())
+				.setLabel(screen.getScreenType().getData())
+				.build());
+
 		ViewParent tmp = screen.getParent();
 		if(tmp!=null){
 			((ViewGroup) tmp).removeView(screen);

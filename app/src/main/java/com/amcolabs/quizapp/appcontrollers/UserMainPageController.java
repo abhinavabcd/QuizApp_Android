@@ -382,7 +382,7 @@ public class UserMainPageController  extends AppController{
 		showAllUserQuizzes(titleText, null);
 	}
 	
-	public void showLeaderBoards(String  quizId){
+	public void showLeaderBoards(final String  quizId){
 		clearScreen(); 
 		quizApp.getServerCalls().getScoreBoards(quizId , new DataInputListener2<HashMap<String , Integer[]>, HashMap<String , Integer[]>,Void , Void>(){
 			@Override
@@ -393,6 +393,7 @@ public class UserMainPageController  extends AppController{
 					@Override
 					public String onData(Boolean s) {
 						LeaderBoardScreen lscreen = new LeaderBoardScreen(UserMainPageController.this);
+						lscreen.setQuizId(quizId);
 						lscreen.addLeaderBoards(a, UiText.GLOBAL_RANKINGS.getValue());
 						lscreen.addLeaderBoards(b, UiText.LOCAL_RANKINGS.getValue());
 						insertScreen(lscreen);

@@ -1,5 +1,5 @@
 #Latest commit:
-Made some improvements to load the project faster, moved to android studio and gradle. I have to admit , this was my 2nd attempt at android app : ) , little buggy on the concepts of controllers and screens. I wanted to have a game and a state machine model when i started the code. I tried it keep the code classified as possible. Just email me if you want some feature or any short modifications.  If you felt something about the project, just drop a Hello email , would make me happy. : )
+Made some improvements to load the project faster, moved to android studio and gradle. I have to admit , this was my 2nd attempt at android app : ) , little buggy on the concepts of controllers and screens. I wanted to have a game and a state machine model when i started the code. I tried it keep the code classified as possible. Just email me if you want some feature or any short modifications.  If you felt something about the project, just drop a Hello email to abhinavabcd@gmail.com , would make me happy. : )
 
 Live Version here:
 https://storage.googleapis.com/quizappassets/files/app-release.apk
@@ -103,6 +103,3 @@ All contributions and modifications are copylefted.
 Thanks Vinay for contributions to code.
 
 #--
-you may want to add the googleplay services lib by importing from sdk/extras
-
-

@@ -1,6 +1,7 @@
 package com.amcolabs.quizapp.screens;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -23,12 +24,14 @@ import com.amcolabs.quizapp.AppController;
 import com.amcolabs.quizapp.R;
 import com.amcolabs.quizapp.Screen;
 import com.amcolabs.quizapp.User;
+import com.amcolabs.quizapp.appcontrollers.ProfileAndChatController;
 import com.amcolabs.quizapp.appcontrollers.ProgressiveQuizController;
 import com.amcolabs.quizapp.appcontrollers.ProgressiveQuizController.QuizMode;
 import com.amcolabs.quizapp.appcontrollers.ProgressiveQuizController.UserAnswer;
 import com.amcolabs.quizapp.appcontrollers.UserMainPageController;
 import com.amcolabs.quizapp.configuration.Config;
 import com.amcolabs.quizapp.databaseutils.Quiz;
+import com.amcolabs.quizapp.datalisteners.DataInputListener;
 import com.amcolabs.quizapp.gameutils.GameUtils;
 import com.amcolabs.quizapp.uiutils.UiUtils;
 import com.amcolabs.quizapp.uiutils.UiUtils.UiText;
@@ -185,7 +188,14 @@ public class WinOrLoseScreen extends Screen{
 				progressiveQuizController.showProfileScreen(user2);
 			}
 		});
-        
+		GothamButtonView chatButton = (GothamButtonView) quizResult.findViewById(R.id.chat_with_user);
+		chatButton.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View view) {
+				((ProfileAndChatController) getApp().loadAppController(ProfileAndChatController.class)).loadChatScreen(user2, -1); //load chat screen
+			}
+		});
+
         addAnswerBitmaps(answerBitmaps);
         addView(quizResult);
 	}
@@ -526,5 +536,8 @@ public class WinOrLoseScreen extends Screen{
 		// TODO Auto-generated method stub
 		bgTask = loadAnswerBitmapsInBackground;
 	}
-	
+
+	public ScreenType getScreenType(){
+		return ScreenType.WIN_LOOSE_SCREEN;
+	}
 }

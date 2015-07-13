@@ -28,12 +28,13 @@
 
         <com.amcolabs.quizapp.widgets.GothamTextView
             android:id="@+id/userName"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_toLeftOf="@+id/userImageSmall"
             android:gravity="right"
             android:text="Amigo"
+            android:minLines="1"
             android:textStyle="bold"
             android:textSize="12sp"
              />

@@ -15,9 +15,10 @@
 
         <com.amcolabs.quizapp.widgets.GothamTextView
             android:id="@+id/userName"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
+            android:minLines="1"
             android:layout_toRightOf="@id/userImageSmall"
             android:gravity="left"
             android:text="Amigo"
