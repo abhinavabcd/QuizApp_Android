@@ -205,7 +205,7 @@ public class StaticPopupDialogBoxes {
 			return;
 		}
 		((GothamTextView)quizMenuDialog.findViewById(R.id.descText)).setText(quiz.name); 
-		quizApp.getUiUtils().loadImageIntoView(quizApp.getContext(), (ImageView) quizMenuDialog.findViewById(R.id.quiz_icon) , quiz.assetPath , true);
+		quizApp.getUiUtils().loadImageIntoView(quizApp.getContext(), (ImageView) quizMenuDialog.findViewById(R.id.quiz_icon) , quiz.assetPath , true, new CircleTransform());
 		quizMenuDialog.show();
 	}
 	
