@@ -229,7 +229,8 @@ public class UiUtils {
 		SIGNEDOUT("You have been signed out"),
 		REMATCH("Rematch"),
 		LEAVE("leave"),
-		ANSWERS_LIST("Your Answers");
+		ANSWERS_LIST("Your Answers"), SEND_FEEDBACK("Feedback"),
+		TELL_SOMETHING_ABOUT_APP("Feedback us.");
 
 		String value = null;
 		UiText(String value){
@@ -241,6 +242,7 @@ public class UiUtils {
 		public String getValue(Object...args){
 			return String.format(value,args);
 		}
+
 
 	}
 

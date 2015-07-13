@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.EmptyStackException;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Stack;
@@ -75,7 +76,8 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 	private static final int MENU_CHATS = 6;
 	private static final int MENU_PROFILE = 7;
 	private static final int MENU_SHARE_WITH_FRIENDS = 8;
-	
+	private static final int SEND_FEEDBACK = 9;
+
 	private User currentUser;
 	private AppController currentAppController;
 	private UserDeviceManager userDeviceManager;
@@ -109,7 +111,7 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		mainFrame = (FrameLayout)getActivity().getLayoutInflater().inflate(R.layout.quizapp_layout,null);
-		//mainFrame.addView(loadingView);
+		mainFrame.addView(loadingView);
 		((UserMainPageController)loadAppController(UserMainPageController.class))
 		.checkAndShowCategories();
 		return mainFrame;
@@ -262,6 +264,7 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 				.setAction(screen.getScreenType().toString())
 				.setLabel(screen.getScreenType().getData())
 				.build());
+		loadingView.setVisibility(View.GONE);
 
 		ViewParent tmp = screen.getParent();
 		if(tmp!=null){
@@ -472,7 +475,6 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 	public void animateScreenIn(Screen newScreen, boolean fromRight){
 //		synchronized (uiSync) {
 			addView(newScreen);
-			//loadingView.setVisibility(View.VISIBLE);
 			if(fromRight){
 					setAnimationListener(getUiUtils().getAnimationSlideInRight() , null);
 					newScreen.startAnimation(getUiUtils().getAnimationSlideInRight());
@@ -596,7 +598,7 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
     int currentActiveMenu = -1;
 
 	private HashMap<Integer, UiText> menuItems = null;
-	public void onMenuClick(int id) {
+	public synchronized  void onMenuClick(int id) {
 		if(isRapidReClick()) return;
 		synchronized (uiSync) {
 			if (isScreenAnimationActive != 0) {
@@ -670,6 +672,17 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 					sharingIntent.putExtra(Intent.EXTRA_TEXT, link);
 					getContext().startActivity(sharingIntent);
 					break;
+
+				case SEND_FEEDBACK:
+
+					getStaticPopupDialogBoxes().promptInput(UiText.TELL_SOMETHING_ABOUT_APP.getValue(), 100 , "" , new DataInputListener<String>(){
+						@Override
+						public String onData(String s) {
+							getServerCalls().sendFeedBack(s);
+							return super.onData(s);
+						}
+					});
+
 			}
 		}
 	}
@@ -734,7 +747,7 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 
 	protected HashMap<Integer, UiText> getMenuItems() {
 		if(menuItems==null){
-			menuItems = new HashMap<Integer, UiUtils.UiText>();
+			menuItems = new LinkedHashMap<Integer, UiText>();
 			menuItems.put(QuizApp.MENU_HOME, UiText.HOME);
 			menuItems.put(QuizApp.MENU_PROFILE, UiText.PROFILE);
 			menuItems.put(QuizApp.MENU_BADGES,UiText.BADGES);
@@ -742,6 +755,7 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 			menuItems.put(QuizApp.MENU_CHATS,UiText.CHATS);
 			menuItems.put(QuizApp.MENU_FRIENDS, UiText.FRIENDS);
 			menuItems.put(QuizApp.MENU_SHARE_WITH_FRIENDS, UiText.TELL_SOMONE);
+			menuItems.put(QuizApp.SEND_FEEDBACK, UiText.SEND_FEEDBACK);
 
 		}
 		return menuItems;

@@ -187,45 +187,49 @@ public class ServerCalls {
 		}
 	}
 	public void makeServerCall(final String url,final ServerNotifier serverNotifier,final boolean blockUi){
-	      makeServerCall(url,serverNotifier,blockUi , false);
+	      makeServerCall(url, serverNotifier, blockUi, false);
 	}
 	public void makeServerCall(final String url,final ServerNotifier serverNotifier,final boolean blockUi , boolean sync){
 				final long nano1 = Config.getCurrentNanos();
 				final AsyncHttpClient c = sync ? sClinet : client;
 				c.get(url, new AsyncHttpResponseHandler() {
-						int retryCount = 0;
-							@Override
-						 public void onStart() {
-							if(blockUi){
-								quizApp.addUiBlock();
-									//open a loadingDialogue
-								}
+					int retryCount = 0;
+
+					@Override
+					public void onStart() {
+						if (blockUi) {
+							quizApp.addUiBlock();
+							//open a loadingDialogue
 						}
-						@Override
-						public void onSuccess(int arg0, Header[] arg1, byte[] responseBytes) {
-							String response = new String(responseBytes);
-						    ServerResponse serverResponse= quizApp.getConfig().getGson().fromJson(response, ServerResponse.class);
-						    serverResponse.setResponseTime(Config.getCurrentNanos() - nano1);
-						    MessageType messageType = serverResponse.getStatusCode();
-						    handleResponseCodes(messageType, serverResponse);
-						    serverNotifier.onServerResponse(messageType , serverResponse);
+					}
+
+					@Override
+					public void onSuccess(int arg0, Header[] arg1, byte[] responseBytes) {
+						String response = new String(responseBytes);
+						ServerResponse serverResponse = quizApp.getConfig().getGson().fromJson(response, ServerResponse.class);
+						serverResponse.setResponseTime(Config.getCurrentNanos() - nano1);
+						MessageType messageType = serverResponse.getStatusCode();
+						handleResponseCodes(messageType, serverResponse);
+						serverNotifier.onServerResponse(messageType, serverResponse);
+					}
+
+					public void onFailure(int messageType, org.apache.http.Header[] headers, byte[] responseBody, Throwable error) {
+
+						serverNotifier.onServerResponse(MessageType.FAILED, null);
+						if (this.retryCount++ < Config.RETRY_URL_COUNT)
+							c.get(url, this); // retry Once More
+						else
+							handleResponseCodes(MessageType.FAILED, null);
+					}
+
+					@Override
+					public void onFinish() {
+						if (blockUi) {
+							//loadingDialogue.dismiss();
+							quizApp.getUiUtils().removeUiBlock();
 						}
-						public void  onFailure(int messageType, org.apache.http.Header[] headers, byte[] responseBody, Throwable error){
-							
-							serverNotifier.onServerResponse(MessageType.FAILED , null);
-							if(this.retryCount++<Config.RETRY_URL_COUNT)
-								c.get(url , this); // retry Once More
-							else
-								handleResponseCodes(MessageType.FAILED,null);
-						} 
-						 @Override
-						public void onFinish() {
-						    	if(blockUi){ 
-						    		//loadingDialogue.dismiss();
-						    		quizApp.getUiUtils().removeUiBlock();
-						    	}
-						} 
-			});
+					}
+				});
 	}
 
 	public  void makeGeneralServerPostCall(String url, Map<String,String> postData ,
@@ -308,7 +312,7 @@ public class ServerCalls {
 	
 	
 	public void makeServerCall(String url, ServerNotifier serverNotifier){
-		makeServerCall(url,serverNotifier,false);
+		makeServerCall(url, serverNotifier, false);
 	}	
 	
 	public void makeServerPostCall(String url, HashMap<String, String> postData , ServerNotifier serverNotifier){
@@ -324,7 +328,7 @@ public class ServerCalls {
 	public void getEncodedKey(final String deviceId, final String phoneNumber, ServerNotifier serverNotifier) {
 		String url = getAServerAddr()+"/func?task=getEncodedKey";
 		url+="&deviceId="+deviceId+"&phoneNumber="+phoneNumber;
-		makeServerCall(url,serverNotifier,true);
+		makeServerCall(url, serverNotifier, true);
 	}
 	
 
@@ -746,17 +750,18 @@ public class ServerCalls {
 		String url = getAServerAddr()+"/func?task=getPreviousMessages";
 		url+="&encodedKey="+quizApp.getUserDeviceManager().getEncodedKey()+"&toIndex="+toIndex+"&uid2="+user2.uid;
 		makeServerCall(url, new ServerNotifier() {
-			
+
 			@Override
-			public void onServerResponse(MessageType messageType,ServerResponse response) {
-				switch(messageType){
-				case OK_MESSAGES:
-					List<UserInboxMessage> messages = quizApp.getConfig().getGson().fromJson(response.payload, new TypeToken<List<UserInboxMessage>>(){}.getType());
-					dataInputListener.onData(messages);
-					break;
-				default:
-					dataInputListener.onData(new ArrayList<UserInboxMessage>());
-					break;
+			public void onServerResponse(MessageType messageType, ServerResponse response) {
+				switch (messageType) {
+					case OK_MESSAGES:
+						List<UserInboxMessage> messages = quizApp.getConfig().getGson().fromJson(response.payload, new TypeToken<List<UserInboxMessage>>() {
+						}.getType());
+						dataInputListener.onData(messages);
+						break;
+					default:
+						dataInputListener.onData(new ArrayList<UserInboxMessage>());
+						break;
 				}
 			}
 		});
@@ -795,9 +800,10 @@ public class ServerCalls {
 		makeServerPostCall(url, params, new ServerNotifier() {
 			@Override
 			public void onServerResponse(MessageType messageType, ServerResponse response) {
-				switch(messageType){
-					case OK_USERS_INFO: 
-						usersInfo.onData((List<User>) quizApp.getConfig().getGson().fromJson(response.payload, new TypeToken<List<User>>(){}.getType()));
+				switch (messageType) {
+					case OK_USERS_INFO:
+						usersInfo.onData((List<User>) quizApp.getConfig().getGson().fromJson(response.payload, new TypeToken<List<User>>() {
+						}.getType()));
 						return;
 					default:
 						usersInfo.onData(null);
@@ -814,11 +820,13 @@ public class ServerCalls {
 		url+="&quizId="+quizId;
 		makeServerCall(url, new ServerNotifier() {
 			@Override
-			public void onServerResponse(MessageType messageType,ServerResponse response) {
-				switch(messageType){
+			public void onServerResponse(MessageType messageType, ServerResponse response) {
+				switch (messageType) {
 					case OK_SCORE_BOARD:
-						localGlobalRanksDataListener.onData((HashMap<String, Integer[]>)quizApp.getConfig().getGson().fromJson(response.payload,new TypeToken<HashMap<String,Integer[]>>(){}.getType()), 
-															(HashMap<String, Integer[]>)quizApp.getConfig().getGson().fromJson(response.payload1, new TypeToken<HashMap<String,Integer[]>>(){}.getType()), null);
+						localGlobalRanksDataListener.onData((HashMap<String, Integer[]>) quizApp.getConfig().getGson().fromJson(response.payload, new TypeToken<HashMap<String, Integer[]>>() {
+						}.getType()),
+								(HashMap<String, Integer[]>) quizApp.getConfig().getGson().fromJson(response.payload1, new TypeToken<HashMap<String, Integer[]>>() {
+								}.getType()), null);
 						break;
 				}
 			}
@@ -847,14 +855,14 @@ public class ServerCalls {
 		
 		
 
-		makeServerPostCall(url, params , new ServerNotifier() {
-		@Override
-		public void onServerResponse(MessageType messageType,ServerResponse response) {
-			switch(messageType){
-				case OK:
-					break;
+		makeServerPostCall(url, params, new ServerNotifier() {
+			@Override
+			public void onServerResponse(MessageType messageType, ServerResponse response) {
+				switch (messageType) {
+					case OK:
+						break;
+				}
 			}
-		}
 		});
 		//update history item
 	}
@@ -970,21 +978,21 @@ public class ServerCalls {
 		params.put("badgeIds",quizApp.getConfig().getGson().toJson(badgeIds));
 		
 		makeServerPostCall(url, params, new ServerNotifier() {
-		@Override
-		public void onServerResponse(MessageType messageType,ServerResponse response) {
-			switch(messageType){
-				case OK:
-					if(listener!=null){
-						listener.onData(true);
-					}
-					break;
-				default:
-					if(listener!=null){
-						listener.onData(false);
-					}
-					break;
+			@Override
+			public void onServerResponse(MessageType messageType, ServerResponse response) {
+				switch (messageType) {
+					case OK:
+						if (listener != null) {
+							listener.onData(true);
+						}
+						break;
+					default:
+						if (listener != null) {
+							listener.onData(false);
+						}
+						break;
+				}
 			}
-		}
 		});
 	}
 
@@ -993,21 +1001,22 @@ public class ServerCalls {
 		String url = getAServerAddr()+"/func?task=searchByUserName";
 		url+="&encodedKey="+quizApp.getUserDeviceManager().getEncodedKey();
 		url+="&searchQ="+currentSearchQuery;
-		makeServerCall(url,new ServerNotifier() {			
-		@Override
-		public void onServerResponse(MessageType messageType, ServerResponse response) {
-			switch (messageType) {
-			case OK:
-				List<User> users = quizApp.getConfig().getGson().fromJson(response.payload, new TypeToken<List<User>>(){}.getType());
-				for(User user : users){
-					user.isFriend = false;
+		makeServerCall(url, new ServerNotifier() {
+			@Override
+			public void onServerResponse(MessageType messageType, ServerResponse response) {
+				switch (messageType) {
+					case OK:
+						List<User> users = quizApp.getConfig().getGson().fromJson(response.payload, new TypeToken<List<User>>() {
+						}.getType());
+						for (User user : users) {
+							user.isFriend = false;
+						}
+						listener.onData(users);
+						break;
+					default:
+						break;
 				}
-				listener.onData(users);
-				break;
-			default:
-				break;
 			}
-		}
 		});
 	}
 
@@ -1023,16 +1032,16 @@ public class ServerCalls {
 			makeServerPostCall(url, params, new ServerNotifier() {
 				@Override
 				public void onServerResponse(MessageType messageType, ServerResponse response) {
-						switch(messageType){
-							case OK:
-								dataInputListener.onData(quizApp.getConfig().getGson().fromJson(response.payload, OfflineChallenge.class));
-								break;
-							default:
-								dataInputListener.onData(null);
-								break;
-						}
+					switch (messageType) {
+						case OK:
+							dataInputListener.onData(quizApp.getConfig().getGson().fromJson(response.payload, OfflineChallenge.class));
+							break;
+						default:
+							dataInputListener.onData(null);
+							break;
+					}
 				}
-			} , false);
+			}, false);
 	}
 
 
@@ -1085,20 +1094,37 @@ public class ServerCalls {
 		String url = getAServerAddr()+"/func?task=setStatusMsg";
 		url+="&encodedKey="+quizApp.getUserDeviceManager().getEncodedKey();
 		url+="&statusMsg="+status.substring(0, status.length()>30 ? 30 : status.length());
-		makeServerCall(url,new ServerNotifier() {			
-		@Override
-		public void onServerResponse(MessageType messageType, ServerResponse response) {
-			switch (messageType) {
-			case OK:
-				dataInputListener.onData(true);
-				break;
-			default:
-				dataInputListener.onData(false);
-				break;
+		makeServerCall(url, new ServerNotifier() {
+			@Override
+			public void onServerResponse(MessageType messageType, ServerResponse response) {
+				switch (messageType) {
+					case OK:
+						dataInputListener.onData(true);
+						break;
+					default:
+						dataInputListener.onData(false);
+						break;
+				}
 			}
-		}
 		});
 	}
 
+	public void sendFeedBack(String feedback) {
+		String url = getAServerAddr()+"/func?task=sendFeedback";
+		url+="&encodedKey="+quizApp.getUserDeviceManager().getEncodedKey();
+		HashMap<String,String > params = new HashMap<String, String>();
+		params.put("feedback",feedback);
+		makeServerPostCall(url, params, new ServerNotifier() {
+					@Override
+					public void onServerResponse(MessageType messageType, ServerResponse response) {
+						switch (messageType) {
+							case OK:
+								break;
+							default:
+								break;
+						}
+					}
+				});
+	}
 }
 

@@ -46,14 +46,7 @@ public class ProfileAndChatController extends AppController {
 	@Override
 	public void onDestroy() {
 	}
-	
-	public static void showProfileScreen(QuizApp quizApp , User user) {
-		if(user!=null){
-			ProfileAndChatController profileAndChat = (ProfileAndChatController) quizApp.loadAppController(ProfileAndChatController.class);
-	//		profileAndChat.loadChatScreen(user, -1, true);
-			profileAndChat.showProfileScreen(user);
-		}
-	}
+
 
 	public void fetchAndLoadProfile(String uid){
 		clearScreen();
@@ -148,7 +141,7 @@ public class ProfileAndChatController extends AppController {
 	}
 	
 	public void loadChatScreen(final User user2 , int toIndex){
-		if(toIndex==0){
+		if(toIndex==0 || user2==null || user2.uid.equalsIgnoreCase(quizApp.getUser().uid)){
 			return;
 		}
 		clearScreen();

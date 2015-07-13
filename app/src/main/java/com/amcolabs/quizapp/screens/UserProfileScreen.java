@@ -20,6 +20,7 @@ import com.amcolabs.quizapp.Screen;
 import com.amcolabs.quizapp.User;
 import com.amcolabs.quizapp.adapters.GameEventsListItemAdaptor;
 import com.amcolabs.quizapp.adapters.QuizHistoryListAdapter;
+import com.amcolabs.quizapp.appcontrollers.ProfileAndChatController;
 import com.amcolabs.quizapp.configuration.Config;
 import com.amcolabs.quizapp.databaseutils.Badge;
 import com.amcolabs.quizapp.databaseutils.GameEvents;
@@ -65,7 +66,7 @@ public class UserProfileScreen extends Screen {
 		screenType = ScreenType.PROFILE_SCREEN;
 	}
 	
-	public void showUser(User user){
+	public void showUser(final User user){
 		userProfile = (ScrollView) LayoutInflater.from(controller.getContext()).inflate(R.layout.user_profile, this, false);
 		userProfileWrapper = (LinearLayout) userProfile.findViewById(R.id.profile_data_wrapper);
 		userProfile.findViewById(R.id.user_info_card).setBackgroundColor(getResources().getColor(R.color.black));
@@ -84,6 +85,13 @@ public class UserProfileScreen extends Screen {
 		FlowLayout badgesLayout = (FlowLayout) userProfile.findViewById(R.id.userbadges);
 		userName.setText(user.getName());
 		getApp().getUiUtils().loadImageIntoView(getApp().getContext(), userImage, user.pictureUrl, false, new CircleTransform());
+
+		userName.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View view) {
+				((ProfileAndChatController)controller).loadChatScreen(user, -1);
+			}
+		});
 		userStatusMessage.setText(user.getStatus());
 		userMoreInfo.setText(user.place);
 		
