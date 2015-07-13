@@ -13,14 +13,13 @@
         android:gravity="center"
         android:orientation="vertical" >
 
-        <com.amcolabs.quizapp.widgets.CircularImageView
+        <ImageView
             android:id="@+id/quiz_icon"
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:scaleType="fitXY"
             android:src="@drawable/dark_bg"
-            app:border_color="@color/white"
-            app:border_width="3dp" />
+           />
 
         <com.amcolabs.quizapp.widgets.GothamTextView
             android:id="@+id/descText"

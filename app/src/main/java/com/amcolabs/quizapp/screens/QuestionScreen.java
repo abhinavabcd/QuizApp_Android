@@ -278,7 +278,7 @@ public class QuestionScreen extends Screen implements View.OnClickListener, Anim
 				getApp().getUiUtils().loadImageIntoView(getApp().getContext(), userProgressView.userImageView, user.pictureUrl, false);
 			}
 			else
-				getApp().getUiUtils().loadImageIntoViewBackground(getApp().getContext(), userProgressView.userImageView, user.pictureUrl, false);
+				getApp().getUiUtils().loadImageIntoViewDoInBackground(getApp().getContext(), userProgressView.userImageView, user.pictureUrl, false);
 				
 			userProgressView.userProgressView.setProgress(0);
 			userProgressView.userProgressView.setMax(maxScore);
@@ -350,10 +350,10 @@ public class QuestionScreen extends Screen implements View.OnClickListener, Anim
 			optionsViewWrapper.setOrientation(LinearLayout.HORIZONTAL);
 			optionsViewWrapper.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, 0,0.4f));			
 			if(!isLoadingForBitmaps){
-				isImageAvailable = getApp().getUiUtils().loadImageIntoView(getApp().getContext(), questionImageView, ques.getPictures().get(0), false);
+				isImageAvailable = getApp().getUiUtils().loadImageIntoView(getApp().getContext(), questionImageView, ques.getPictures().get(0), false).getResult()!=null;
 			}
 			else
-				isImageAvailable = getApp().getUiUtils().loadImageIntoViewBackground(getApp().getContext(), questionImageView, ques.getPictures().get(0), false);
+				isImageAvailable = getApp().getUiUtils().loadImageIntoViewDoInBackground(getApp().getContext(), questionImageView, ques.getPictures().get(0), false);
 				
 			if(!isImageAvailable){
 				// TODO: Show could not load image or quit quiz

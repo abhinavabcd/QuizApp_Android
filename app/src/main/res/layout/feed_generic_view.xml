@@ -17,7 +17,7 @@
         android:padding="3dp"
         android:textColor="#ffffff" >
 
-        <com.amcolabs.quizapp.widgets.CircularImageView
+        <ImageView
             android:id="@+id/title_image"
             android:layout_width="50dp"
             android:layout_height="50dp"

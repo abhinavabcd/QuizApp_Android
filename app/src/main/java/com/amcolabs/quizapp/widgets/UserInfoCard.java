@@ -16,6 +16,7 @@ import com.amcolabs.quizapp.QuizApp;
 import com.amcolabs.quizapp.R;
 import com.amcolabs.quizapp.User;
 import com.amcolabs.quizapp.databaseutils.Badge;
+import com.amcolabs.quizapp.uiutils.CircleTransform;
 import com.amcolabs.quizapp.uiutils.UiUtils;
 import com.amcolabs.quizapp.uiutils.UiUtils.UiText;
 import com.squareup.picasso.Picasso;
@@ -36,7 +37,7 @@ public class UserInfoCard extends LinearLayout implements IViewType{
 		super(quizApp.getContext());
 		LinearLayout mainView = (LinearLayout) quizApp.getActivity().getLayoutInflater().inflate(R.layout.user_info_card, this, false);
 		mainView.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.WRAP_CONTENT));
-		this.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,0,1f));
+		this.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, 0, 1f));
 		setGravity(gravity);
 		if(bgAssetPath==null){
 			bgAssetPath = (user.coverUrl!=null && !user.coverUrl.trim().equalsIgnoreCase(""))?user.coverUrl:quizApp.getConfig().getRandomImageBg();
@@ -51,7 +52,7 @@ public class UserInfoCard extends LinearLayout implements IViewType{
 		debugTextView = (GothamTextView)mainView.findViewById(R.id.user_more_info);
 		name.setText(user.getName());
 		if(user.pictureUrl!=null){
-			quizApp.getUiUtils().loadImageIntoView(quizApp.getContext(), imgView, user.pictureUrl, false);
+			quizApp.getUiUtils().loadImageIntoView(quizApp.getContext(), imgView, user.pictureUrl, false, new CircleTransform());
 		}
 		
 		FlowLayout badgesLayout = (FlowLayout)mainView.findViewById(R.id.userbadges);

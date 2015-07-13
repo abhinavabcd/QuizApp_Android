@@ -28,9 +28,9 @@ import com.amcolabs.quizapp.databaseutils.OfflineChallenge;
 import com.amcolabs.quizapp.databaseutils.Quiz;
 import com.amcolabs.quizapp.datalisteners.DataInputListener;
 import com.amcolabs.quizapp.gameutils.GameUtils;
+import com.amcolabs.quizapp.uiutils.CircleTransform;
 import com.amcolabs.quizapp.uiutils.UiUtils;
 import com.amcolabs.quizapp.uiutils.UiUtils.UiText;
-import com.amcolabs.quizapp.widgets.CircularImageView;
 import com.amcolabs.quizapp.widgets.GothamButtonView;
 import com.amcolabs.quizapp.widgets.GothamTextView;
 import com.amcolabs.quizapp.widgets.QuizAppMenuItem;
@@ -325,7 +325,7 @@ public class StaticPopupDialogBoxes {
 	public void challengeRequestedPopup(User user, Quiz quiz , final NotificationPayload payload , final DataInputListener<Boolean> listener) {
 		final Dialog d = new Dialog(quizApp.getContext(),R.style.CustomDialogTheme); 
 		 LinearLayout mainWrapper;
-		 CircularImageView titleImage;
+		 ImageView titleImage;
 		 GothamTextView userWantsChalengeText;
 		 GothamTextView quizName;
 		 QuizAppMenuItem startChallenge;
@@ -333,13 +333,13 @@ public class StaticPopupDialogBoxes {
 		 
 		LinearLayout baseLayout = (LinearLayout)quizApp.getActivity().getLayoutInflater().inflate(R.layout.user_wants_a_game, null);
 
-		titleImage = (CircularImageView) baseLayout.findViewById(R.id.title_image);
+		titleImage = (ImageView) baseLayout.findViewById(R.id.title_image);
 		userWantsChalengeText = (GothamTextView) baseLayout.findViewById(R.id.user_wants_chalenge_text);
 		quizName = (GothamTextView) baseLayout.findViewById(R.id.quiz_name);
 		startChallenge = (QuizAppMenuItem) baseLayout.findViewById(R.id.start_challenge);
 		closeButton = (QuizAppMenuItem) baseLayout.findViewById(R.id.close_button);
 		
-		quizApp.getUiUtils().loadImageIntoView(quizApp.getContext(), titleImage, user.pictureUrl, false);
+		quizApp.getUiUtils().loadImageIntoView(quizApp.getContext(), titleImage, user.pictureUrl, false, new CircleTransform());
 		quizName.setText(quiz.name);
 		userWantsChalengeText.setText(UiText.USER_WANTS_A_GAME.getValue(user.getName()));
 		startChallenge.setOnClickListener(new OnClickListener() {

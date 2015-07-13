@@ -22,6 +22,7 @@ import com.amcolabs.quizapp.databaseutils.Feed.FeedType;
 import com.amcolabs.quizapp.databaseutils.OfflineChallenge;
 import com.amcolabs.quizapp.datalisteners.DataInputListener;
 import com.amcolabs.quizapp.gameutils.GameUtils;
+import com.amcolabs.quizapp.uiutils.CircleTransform;
 import com.amcolabs.quizapp.uiutils.UiUtils.UiText;
 import com.amcolabs.quizapp.widgets.FlowLayout;
 import com.amcolabs.quizapp.widgets.GothamTextView;
@@ -146,7 +147,7 @@ public class FeedListItemAdaptor extends ArrayAdapter<Feed> {
 			 case FEED_CHALLENGE:
 				user = quizApp.cachedUsers.get(feed.fromUid);
 				feedHolder.user = user;
-				quizApp.getUiUtils().loadImageIntoView(quizApp.getContext(), feedHolder.titleImage, user.pictureUrl, false);
+				quizApp.getUiUtils().loadImageIntoView(quizApp.getContext(), feedHolder.titleImage, user.pictureUrl, false , new CircleTransform());
 				feedHolder.titleName.setText(user.getName());
 				OfflineChallenge offlineChallenge = quizApp.getDataBaseHelper().getOfflineChallengeByChallengeId(feed.message);
 				int user1Points = GameUtils.getLastElement(offlineChallenge.getChallengeData(quizApp).userAnswers).whatUserGot;
@@ -163,7 +164,7 @@ public class FeedListItemAdaptor extends ArrayAdapter<Feed> {
 			 case FEED_USED_JOINED:
 				user = quizApp.cachedUsers.get(feed.fromUid);
 				feedHolder.user = user;
-				quizApp.getUiUtils().loadImageIntoView(quizApp.getContext(), feedHolder.titleImage, user.pictureUrl, false);
+				quizApp.getUiUtils().loadImageIntoView(quizApp.getContext(), feedHolder.titleImage, user.pictureUrl, false, new CircleTransform());
 				feedHolder.titleName.setText(user.getName());
 				quizApp.getUiUtils().setTextViewHTML(feedHolder.textContent1, UiText.FRIEND_USER_STARTED_QUIZAPP.getValue(user.getName() , user.uid), new DataInputListener<String>(){
 					@Override
@@ -184,7 +185,7 @@ public class FeedListItemAdaptor extends ArrayAdapter<Feed> {
 		case FEED_USER_WON_BADGES:
 			user = quizApp.cachedUsers.get(feed.fromUid);
 			feedHolder.user = user;
-			quizApp.getUiUtils().loadImageIntoView(quizApp.getContext(), feedHolder.titleImage, user.pictureUrl, false);
+			quizApp.getUiUtils().loadImageIntoView(quizApp.getContext(), feedHolder.titleImage, user.pictureUrl, false, new CircleTransform());
 			feedHolder.titleName.setText(user.getName());
 			feedHolder.textContent1.setVisibility(View.GONE);
 			feedHolder.textContent2.setText(UiText.HAS_UNLOCKED_A_BADGE.getValue());

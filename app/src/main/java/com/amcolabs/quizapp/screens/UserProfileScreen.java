@@ -27,6 +27,7 @@ import com.amcolabs.quizapp.databaseutils.LocalQuizHistory;
 import com.amcolabs.quizapp.databaseutils.Quiz;
 import com.amcolabs.quizapp.datalisteners.DataInputListener;
 import com.amcolabs.quizapp.gameutils.GameUtils;
+import com.amcolabs.quizapp.uiutils.CircleTransform;
 import com.amcolabs.quizapp.uiutils.UiUtils;
 import com.amcolabs.quizapp.uiutils.UiUtils.UiText;
 import com.amcolabs.quizapp.widgets.BarChartViewMultiDataset;
@@ -82,7 +83,7 @@ public class UserProfileScreen extends Screen {
 		addView(userProfile);
 		FlowLayout badgesLayout = (FlowLayout) userProfile.findViewById(R.id.userbadges);
 		userName.setText(user.getName());
-		getApp().getUiUtils().loadImageIntoView(getApp().getContext(), userImage, user.pictureUrl, false);
+		getApp().getUiUtils().loadImageIntoView(getApp().getContext(), userImage, user.pictureUrl, false, new CircleTransform());
 		userStatusMessage.setText(user.getStatus());
 		userMoreInfo.setText(user.place);
 		

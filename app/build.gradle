@@ -15,7 +15,7 @@ android {
     buildToolsVersion '21.1.2'
     defaultConfig {
         applicationId "com.amcolabs.quizapp"
-        minSdkVersion 13
+        minSdkVersion 14
         targetSdkVersion 19
         versionCode 1
         versionName "1.0"

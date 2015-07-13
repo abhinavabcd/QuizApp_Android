@@ -1,23 +1,25 @@
 package com.amcolabs.quizapp.uiutils;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.Callable;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Point;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
@@ -63,6 +65,10 @@ import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.RequestCreator;
 import com.squareup.picasso.Target;
+import com.squareup.picasso.Transformation;
+
+import bolts.Continuation;
+import bolts.Task;
 
 
 public class UiUtils {
@@ -384,7 +390,7 @@ public class UiUtils {
         mNotificationManager.notify(notificationId, notificationBuilder.build()); //will show a notification and when clicked will open the app.	    
 	}
 	public static void generateNotification(Context pContext, String message) {
-		generateNotification(pContext, null ,  message, null);
+		generateNotification(pContext, null, message, null);
 	}
     
     public static void sendSMS(Context context , String phoneNumber , String text) {  
@@ -448,23 +454,47 @@ public class UiUtils {
 	}
 	public Animation getAnimationSlideInRight() {
 		return animationSlideInRight;
-	}        
+	}
 
-	public static void into(RequestCreator requestCreator, Drawable placeHolder, Drawable errorDrawable, Target target) {
-        boolean mainThread = Looper.myLooper() == Looper.getMainLooper();
-        if (mainThread) {
-            requestCreator.into(target);
-        } else {
-            try {
-                target.onBitmapFailed(placeHolder);
-                Bitmap bitmap = requestCreator.get();
-                target.onBitmapLoaded(bitmap, Picasso.LoadedFrom.MEMORY);
-            } catch (IOException e) {
-                target.onBitmapFailed(errorDrawable);
-            }
-        }
-    }
-	
+
+	public Task<RequestCreator> getRequestCreatorTask(final String assetPath, final boolean downloadToAssets){
+		return Task.callInBackground(new Callable<RequestCreator>() {
+			@Override
+			public RequestCreator call() throws Exception {
+
+				if(assetPath.startsWith("http://") || assetPath.startsWith("https://")){
+					return Picasso.with(quizApp.getContext()).load(assetPath).error(R.drawable.error_image);
+				}
+				try {
+					InputStream ims = quizApp.getContext().getAssets().open("images/"+assetPath); //assets folder
+					return Picasso.with(quizApp.getContext()).load("file:///android_asset/images/" + assetPath).error(R.drawable.error_image);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				File file = new File(quizApp.getContext().getFilesDir().getParentFile().getPath()+"/images/"+assetPath);
+				if(file.exists()){
+					return Picasso.with(quizApp.getContext()).load(file).error(R.drawable.error_image);
+				}
+
+				RequestCreator requestCreator =  Picasso.with(quizApp.getContext()).load(ServerCalls.CDN_IMAGES_PATH + assetPath).error(R.drawable.error_image);
+
+				if(downloadToAssets) {
+					try {
+						Bitmap bitmap = requestCreator.get();
+						File saveImageFile = new File(quizApp.getContext().getFilesDir().getParentFile().getPath() + "/images/" + assetPath);
+						saveImageFile.createNewFile();
+						FileOutputStream ostream = new FileOutputStream(saveImageFile);
+						bitmap.compress(assetPath.endsWith(".png") ? Bitmap.CompressFormat.PNG : Bitmap.CompressFormat.JPEG, 75, ostream);
+						ostream.close();
+					}
+					catch (Exception e){
+					}
+				}
+				return requestCreator;
+			}
+		});
+	}
+
 	public static void into(RequestCreator requestCreator, ImageView imageView, Callback callback) {
 		  boolean mainThread = Looper.myLooper() == Looper.getMainLooper();
 		  if (mainThread) {
@@ -483,16 +513,13 @@ public class UiUtils {
 		    }
 		  }
 	}
-	
-	public static boolean loadImageIntoView(Context ctx , final ImageView imgView, final String assetPath , final boolean downloadToAssets){
-		return loadImageIntoView(ctx , imgView,  assetPath , downloadToAssets , -1 , -1 , null);
-	}
-	
-	public static boolean loadImageIntoViewBackground(Context ctx , final ImageView imgView, final String assetPath , final boolean downloadToAssets){
-			return loadImageIntoViewBackground(ctx , imgView,  assetPath , downloadToAssets , -1 , -1 , null);
+
+
+	public static boolean loadImageIntoViewDoInBackground(Context ctx, final ImageView imgView, final String assetPath, final boolean downloadToAssets){
+			return loadImageIntoViewDoInBackground(ctx, imgView, assetPath, downloadToAssets, -1, -1, null);
 	}
 
-	public static boolean loadImageIntoViewBackground(Context ctx , final ImageView imgView, final String assetPath , final boolean downloadToAssets ,int width , int height , DataInputListener<Boolean> completedLoadingImage){
+	public static boolean loadImageIntoViewDoInBackground(Context ctx, final ImageView imgView, final String assetPath, final boolean downloadToAssets, int width, int height, DataInputListener<Boolean> completedLoadingImage){
 		if(assetPath==null || assetPath.isEmpty())
 			return false;
 		try{
@@ -508,7 +535,7 @@ public class UiUtils {
 			if(width>0 && height>0)
 				into(Picasso.with(ctx).load("file:///android_asset/images/"+assetPath).resize(width, height),imgView, null);
 			else
-				into(Picasso.with(ctx).load("file:///android_asset/images/"+assetPath), imgView, null);
+				into(Picasso.with(ctx).load("file:///android_asset/images/" + assetPath), imgView, null);
 			return true;
 		}
 		catch(IOException ex) {//files in SD card
@@ -535,50 +562,31 @@ public class UiUtils {
 		}
 		return true;
 	}
+	public Task<RequestCreator> loadImageIntoView(Context ctx, final ImageView imgView, final String assetPath, final boolean downloadToAssets){
+		return loadImageIntoView(ctx , imgView,  assetPath , downloadToAssets , null);
+	}
 
-	
-	public static boolean loadImageIntoView(Context ctx , final ImageView imgView, final String assetPath , final boolean downloadToAssets ,int width , int height , DataInputListener<Boolean> completedLoadingImage){
-		if(assetPath==null || assetPath.isEmpty())
-			return false;
-		try{
-			if(assetPath.startsWith("http://") || assetPath.startsWith("https://")){
-				if(width> 0 && height>0)
-					Picasso.with(ctx).load(assetPath).resize(width , height).into(imgView);
-				else
-					Picasso.with(ctx).load(assetPath).into(imgView);
-			    return true;
+
+	public Task<RequestCreator> loadImageIntoView(Context ctx, final ImageView imgView, final String assetPath, final boolean downloadToAssets, Transformation t){
+		return loadImageIntoView(ctx , imgView,  assetPath , downloadToAssets , -1 , -1 , t);
+	}
+
+	public Task<RequestCreator> loadImageIntoView(Context ctx, final ImageView imgView, final String assetPath, final boolean downloadToAssets, final int width, final int height, final Transformation transformation){
+		return getRequestCreatorTask(assetPath , downloadToAssets).onSuccess(new Continuation<RequestCreator, RequestCreator>() {
+
+			@Override
+			public RequestCreator then(Task<RequestCreator> task) throws Exception {
+				RequestCreator requestCreator = task.getResult();
+				if(transformation!=null)
+					requestCreator.transform(transformation);
+
+				if(width> 0 && height >0)
+					requestCreator.resize(width, height);
+
+				requestCreator.into(imgView);
+				return requestCreator;
 			}
-			
-		    InputStream ims = ctx.getAssets().open("images/"+assetPath); //assets folder 
-			if(width>0 && height>0)
-				Picasso.with(ctx).load("file:///android_asset/images/"+assetPath).resize(width, height).into(imgView);
-			else
-				Picasso.with(ctx).load("file:///android_asset/images/"+assetPath).into(imgView);
-			return true;
-		}
-		catch(IOException ex) {//files in SD card
-			File file = new File(ctx.getFilesDir().getParentFile().getPath()+"/images/"+assetPath);
-			if(file.exists()){
-				Picasso.with(ctx).load(file).fit().centerCrop().into(imgView);
-			}
-			else{
-				if(downloadToAssets){//from cdn 
-					imgView.setTag(new LoadAndSave(imgView, file, assetPath, downloadToAssets, completedLoadingImage));
-					if(width>0 && height>0)
-						Picasso.with(ctx).load(ServerCalls.CDN_IMAGES_PATH+assetPath).error(R.drawable.error_image).resize(width , height).into((LoadAndSave)imgView.getTag());
-					else{
-						Picasso.with(ctx).load(ServerCalls.CDN_IMAGES_PATH+assetPath).error(R.drawable.error_image).into((LoadAndSave)imgView.getTag());
-					}
-				}
-				else{
-					Picasso.with(ctx).load(ServerCalls.CDN_IMAGES_PATH+assetPath).error(R.drawable.error_image).into(imgView);//directly
-				}
-			}
-		}		 
-		catch (Exception e) {
-			return false;
-		}
-		return true;
+		}, Task.UI_THREAD_EXECUTOR);
 	}
 	
 	
