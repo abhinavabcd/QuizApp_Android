@@ -20,6 +20,7 @@ import com.amcolabs.quizapp.R;
 import com.amcolabs.quizapp.User;
 import com.amcolabs.quizapp.databaseutils.Quiz;
 import com.amcolabs.quizapp.datalisteners.DataInputListener;
+import com.amcolabs.quizapp.uiutils.CircleTransform;
 import com.amcolabs.quizapp.uiutils.UiUtils;
 import com.amcolabs.quizapp.widgets.GothamTextView;
 
@@ -98,7 +99,7 @@ public class LeaderboardItemListAdapter extends ArrayAdapter<User> {
 			holder = (LeaderBoardItemViewHolder) convertView.getTag();
 		}
 		holder.item = user;//on every reset
-		quizApp.getUiUtils().loadImageIntoView(quizApp.getContext(), holder.imageView, user.pictureUrl,false);
+		quizApp.getUiUtils().loadImageIntoView(quizApp.getContext(), holder.imageView, user.pictureUrl,false, new CircleTransform());
 		holder.userName.setText(user.getName());
 //		if(user.status==null || user.status.trim().equalsIgnoreCase("")){
 //			holder.userStatus.setVisibility(View.GONE);

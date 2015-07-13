@@ -31,6 +31,7 @@ import com.amcolabs.quizapp.databaseutils.LocalQuizHistory;
 import com.amcolabs.quizapp.databaseutils.Question;
 import com.amcolabs.quizapp.datalisteners.DataInputListener;
 import com.amcolabs.quizapp.gameutils.GameUtils;
+import com.amcolabs.quizapp.uiutils.CircleTransform;
 import com.amcolabs.quizapp.widgets.CircularCounter;
 import com.amcolabs.quizapp.widgets.CustomProgressBar;
 import com.amcolabs.quizapp.widgets.GothamButtonView;
@@ -275,7 +276,7 @@ public class QuestionScreen extends Screen implements View.OnClickListener, Anim
 			
 			userProgressView.userNameView.setText(user.getName());
 			if(!isLoadingForBitmaps){
-				getApp().getUiUtils().loadImageIntoView(getApp().getContext(), userProgressView.userImageView, user.pictureUrl, false);
+				getApp().getUiUtils().loadImageIntoView(getApp().getContext(), userProgressView.userImageView, user.pictureUrl, false, new CircleTransform());
 			}
 			else
 				getApp().getUiUtils().loadImageIntoViewDoInBackground(getApp().getContext(), userProgressView.userImageView, user.pictureUrl, false);
