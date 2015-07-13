@@ -26,6 +26,7 @@ import com.amcolabs.quizapp.datalisteners.DataInputListener;
 import com.amcolabs.quizapp.datalisteners.DataInputListener2;
 import com.amcolabs.quizapp.loginutils.FacebookLoginHelper;
 import com.amcolabs.quizapp.loginutils.GoogleLoginHelper;
+import com.amcolabs.quizapp.notificationutils.NotifificationProcessingState;
 import com.amcolabs.quizapp.popups.StaticPopupDialogBoxes.YesNoDialog;
 import com.amcolabs.quizapp.screens.HomeScreen;
 import com.amcolabs.quizapp.screens.LeaderBoardScreen;
@@ -207,8 +208,10 @@ public class UserMainPageController  extends AppController{
 		List<Badge> pendingBadges = quizApp.getDataBaseHelper().getAllPendingBadges();
 		if(pendingBadges!=null)
 			quizApp.getBadgeEvaluator().newBadgeUnlocked(new ArrayList<Badge>(pendingBadges));
-		
-		
+
+		quizApp.setNotificationProcessingState(NotifificationProcessingState.CONTINUE);
+
+
 //		insertScreen(new UserProfileScreen(this));
 //		insertScreen(new WinOrLoseScreen(this));
 	}

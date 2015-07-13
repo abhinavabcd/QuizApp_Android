@@ -111,7 +111,6 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 		//mainFrame.addView(loadingView);
 		((UserMainPageController)loadAppController(UserMainPageController.class))
 		.checkAndShowCategories();
-		setNotificationProcessingState(NotifificationProcessingState.CONTINUE);
 		return mainFrame;
 	} 
 	
