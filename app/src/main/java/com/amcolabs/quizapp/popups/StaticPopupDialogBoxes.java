@@ -231,7 +231,7 @@ public class StaticPopupDialogBoxes {
 		menuContainer.addView(getMenuItem(UiText.START_CONVERSATION.getValue(""), 2, listener , Gravity.CENTER));
 		menuContainer.addView(getMenuItem(UiText.CHALLENGE.getValue(), 3, listener , Gravity.CENTER));
 		((GothamTextView)dialogLayout.findViewById(R.id.descText)).setText(user.getName()); 
-		quizApp.getUiUtils().loadImageIntoView(quizApp.getContext(), (ImageView) userMenu.findViewById(R.id.quiz_icon) , user.pictureUrl , true);
+		quizApp.getUiUtils().loadImageIntoView(quizApp.getContext(), (ImageView) userMenu.findViewById(R.id.quiz_icon) , user.pictureUrl , true, new CircleTransform());
 		userMenu.show();
 	}
 
