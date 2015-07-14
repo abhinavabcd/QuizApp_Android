@@ -399,7 +399,7 @@ public class StaticPopupDialogBoxes {
 		t.setId(id);
 		t.setTextSize(25);
 		//t.setAllCaps(true);
-		t.setPadding(10, 10, 10, 10);
+		t.setPadding(10, 20, 10, 10);
 		t.setGravity(gravity);
 		t.setTextColor(quizApp.getConfig().getUniqueThemeColor(t.getText().toString()));
 		t.setOnClickListener(listener);

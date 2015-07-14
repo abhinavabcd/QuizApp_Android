@@ -75,7 +75,7 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 	public static final int MENU_MESSAGES=5;
 	private static final int MENU_CHATS = 6;
 	private static final int MENU_PROFILE = 7;
-	private static final int MENU_SHARE_WITH_FRIENDS = 8;
+	public static final int MENU_SHARE_WITH_FRIENDS = 8;
 	private static final int SEND_FEEDBACK = 9;
 
 	private User currentUser;

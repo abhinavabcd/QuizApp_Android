@@ -19,7 +19,7 @@
 
         <ImageView
             android:id="@+id/title_image"
-            android:layout_width="0dp"
+            android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_gravity="start|center_vertical"
             android:layout_marginTop="10dp"

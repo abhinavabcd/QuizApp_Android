@@ -17,6 +17,7 @@ import android.widget.TabHost.TabSpec;
 import android.widget.TabWidget;
 
 import com.amcolabs.quizapp.AppController;
+import com.amcolabs.quizapp.QuizApp;
 import com.amcolabs.quizapp.R;
 import com.amcolabs.quizapp.Screen;
 import com.amcolabs.quizapp.User;
@@ -237,7 +238,13 @@ public class SelectFriendsScreen extends Screen {
 		if(gPlusFriendsAdapter.getCount()==0){
 			debugMessageWrapper.setVisibility(View.VISIBLE);
 			debugMessage.setVisibility(View.VISIBLE);
-			getApp().getUiUtils().setTextViewHTML(debugMessage, UiText.INVITE_YOUR_FRIENDS.getValue(), null);
+			getApp().getUiUtils().setTextViewHTML(debugMessage, UiText.INVITE_YOUR_FRIENDS.getValue(), new DataInputListener<String>(){
+				@Override
+				public String onData(String s) {
+					getApp().onMenuClick(QuizApp.MENU_SHARE_WITH_FRIENDS);
+					return null;
+				}
+			});
 			gPlusButton.setVisibility(View.GONE);
 			fbButton.setVisibility(View.GONE);
 		}		
@@ -275,7 +282,13 @@ public class SelectFriendsScreen extends Screen {
 		if(fbFriendsAdapter.getCount()==0){
 			debugMessageWrapper.setVisibility(View.VISIBLE);
 			debugMessage.setVisibility(View.VISIBLE);
-			getApp().getUiUtils().setTextViewHTML(debugMessage, UiText.INVITE_YOUR_FB_FRIENDS.getValue(), null);
+			getApp().getUiUtils().setTextViewHTML(debugMessage, UiText.INVITE_YOUR_FB_FRIENDS.getValue(), new DataInputListener<String>(){
+				@Override
+				public String onData(String s) {
+					getApp().onMenuClick(QuizApp.MENU_SHARE_WITH_FRIENDS);
+					return null;
+				}
+			});
 			gPlusButton.setVisibility(View.GONE);
 			fbButton.setVisibility(View.GONE);
 		}				

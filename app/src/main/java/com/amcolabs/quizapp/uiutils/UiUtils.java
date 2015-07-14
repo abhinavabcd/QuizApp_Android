@@ -24,6 +24,7 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Looper;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.NotificationCompat;
@@ -483,7 +484,7 @@ public class UiUtils {
 				if(downloadToAssets) {
 					try {
 						Bitmap bitmap = requestCreator.get();
-						File saveImageFile = new File(quizApp.getContext().getFilesDir().getParentFile().getPath() + "/images/" + assetPath);
+						File saveImageFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/images/" + assetPath);
 						saveImageFile.createNewFile();
 						FileOutputStream ostream = new FileOutputStream(saveImageFile);
 						bitmap.compress(assetPath.endsWith(".png") ? Bitmap.CompressFormat.PNG : Bitmap.CompressFormat.JPEG, 75, ostream);

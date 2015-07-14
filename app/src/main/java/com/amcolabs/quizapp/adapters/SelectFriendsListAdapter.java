@@ -108,7 +108,7 @@ public  class SelectFriendsListAdapter extends ArrayAdapter<User>{
 			else{
 				holder.addFriendButton.setVisibility(View.VISIBLE);
 			}
-			quizApp.getUiUtils().loadImageIntoView(quizApp.getContext(), holder.imageView, getItem(position).pictureUrl,true);
+			quizApp.getUiUtils().loadImageIntoView(quizApp.getContext(), holder.imageView, getItem(position).pictureUrl,false);
 			holder.userName.setText(user.getName());
 			holder.statusDescription.setText(user.getStatus());
 			return convertView;
