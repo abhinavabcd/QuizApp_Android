@@ -57,7 +57,7 @@ import com.google.android.gms.analytics.HitBuilders;
  * Main base , and delegate to other objects in controllers and screen 
  * takes care of layouts/screen animations
  */
-public class QuizApp extends Fragment implements AnimationListener , IMenuClickListener ,ServiceConnection {
+public class QuizApp extends Fragment implements AnimationListener , IMenuClickListener {
 
 
 
@@ -121,34 +121,26 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		reinit(false);
-		// start music 
-		startMusicService();
+		//cleanup music service start music
+		MusicService.release();
 	}
 	
 	@Override
 	public void onPause() {
 		super.onPause();
 		removeAllNotificationListeners();
-		pauseMusic();
+		MusicService.pause();
 	}
 	
 	@Override
 	public void onResume() {
 		super.onResume();
 		addNotificationListeners();
-		playMusic();
+		if(userDeviceManager.isLoggedInUser())
+			MusicService.start(getContext(), MusicService.MUSIC_GAME);
 	}
 
-	void playMusic(){
-		if(mServ!=null)
-			mServ.playAnother(-1);
-	}
 
-	void pauseMusic(){
-		if(mServ!=null)
-			mServ.pause();
-	}
-	
 	public void reinit(boolean force) {
 		if(!initialized || force){
 			initialized = true;
@@ -791,9 +783,6 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 		};
 	};
 
-	private MusicService mServ;
-
-	private boolean mIsBound;
 
 
 	public void cacheUsersList(List<User> users) {
@@ -805,52 +794,10 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 	@Override
 	public void onDestroy() {
 		destroyAllScreens();
-		doUnbindMusicService();
 		NotificationReciever.setOffline();
+		MusicService.release();
 		super.onDestroy();
 	}
-
-	
-	public void doBindMusicService(){
-			Intent intent = new Intent(this.getActivity(), MusicService.class);
-			intent.putExtra(Config.MUSIC_ID, R.raw.app_music);
-			getActivity().bindService(intent, this, Context.BIND_AUTO_CREATE);
-			mIsBound = true;
-	}
-	public void doUnbindMusicService(){
-		if(mIsBound){
-			getActivity().unbindService(this);
-			mIsBound = false;
-		}
-	}
-	
-	@Override
-	public void onServiceConnected(ComponentName name, IBinder binder){
-		mServ = ((MusicService.ServiceBinder) binder).getService();
-		int musicState = getUserDeviceManager().getPreference(Config.PREF_MUSIC_STATE, 1);
-		mServ.volume_max = musicState*100;
-		mServ.start();
-	}
-	
-	@Override
-	public void onServiceDisconnected(ComponentName name){
-		mServ = null;
-	}
-	
-	private void startMusicService() {
-		Intent music = new Intent(getActivity(), MusicService.class);
-		getActivity().startService(music);
-		doBindMusicService();
-		
-	}
-	
-	public void changeMusic(int musicId){
-		if(musicId<0){
-			musicId = R.raw.app_music;
-		}
-		mServ.playAnother(musicId);
-	}
-	
 	public static NotifificationProcessingState nState = NotifificationProcessingState.CONTINUE;
 	
 	public void setNotificationProcessingState(
@@ -874,8 +821,7 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 	public synchronized void toggleMusic() {
 		int musicState = getUserDeviceManager().getPreference(Config.PREF_MUSIC_STATE, 1);
 		musicState^=1;
-		getUserDeviceManager().setPreference(Config.PREF_MUSIC_STATE,musicState+"");
-		mServ.volume_max = musicState*100;
-		mServ.playAnother(-1);
+		getUserDeviceManager().setPreference(Config.PREF_MUSIC_STATE, musicState);
+		MusicService.setApplicationMusicVolume(musicState * 99);//0-99 is the volume
 	}
 }

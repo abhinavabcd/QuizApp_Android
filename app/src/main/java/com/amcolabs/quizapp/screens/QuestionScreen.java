@@ -21,6 +21,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.amcolabs.quizapp.AppController;
+import com.amcolabs.quizapp.MusicService;
 import com.amcolabs.quizapp.R;
 import com.amcolabs.quizapp.Screen;
 import com.amcolabs.quizapp.User;
@@ -149,7 +150,7 @@ public class QuestionScreen extends Screen implements View.OnClickListener, Anim
 			
 	        possitiveButtonSounds = MediaPlayer.create(getApp().getActivity(),R.raw.tap_correct);
 	        negetiveButtonSounds = MediaPlayer.create(getApp().getActivity(),R.raw.tap_wrong);
-	        getApp().changeMusic(R.raw.quiz_play);
+			MusicService.changeMusic(getApp().getContext() , MusicService.MUSIC_QUIZ);
 //        PowerManager pManager = (PowerManager) getApp().getContext().getSystemService(Context.POWER_SERVICE);
 //		wklock = pManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK|PowerManager.ON_AFTER_RELEASE,"quizapp");
 //		wklock.acquire();
@@ -498,7 +499,7 @@ public class QuestionScreen extends Screen implements View.OnClickListener, Anim
 	
 	@Override
 	public void onRemovedFromScreen() {
-		getApp().changeMusic(R.raw.app_music);		
+		MusicService.changeMusic(getApp().getContext(), MusicService.MUSIC_GAME);
 //		wklock.release();
 		super.onRemovedFromScreen();
 	}

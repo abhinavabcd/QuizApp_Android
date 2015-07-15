@@ -1,326 +1,145 @@
 package com.amcolabs.quizapp;
 
-import java.util.Timer;
-import java.util.TimerTask;
-
-import android.app.Service;
-import android.content.Intent;
+import android.content.Context;
 import android.media.MediaPlayer;
-import android.media.MediaPlayer.OnErrorListener;
-import android.os.Binder;
-import android.os.IBinder;
-import android.widget.MediaController;
-import android.widget.Toast;
+import android.util.Log;
 
-//---------------------------------------------------------------------------------------
-public class MusicService extends Service 
-	implements
-		MediaPlayer.OnErrorListener,
-		
-		// Interface used by the visual representation of the player controls.
-		MediaController.MediaPlayerControl,
-		
-		// implemented to possibly upgrade the media player interface.
-		MediaPlayer.OnBufferingUpdateListener
-	
-	{
-	// Connect service who to call onBind
-    private final IBinder mBinder = new ServiceBinder();
-    
-    // Instance of media player
-    MediaPlayer mPlayer;
-    private static int FADE_IN_DURATION = 3000;
-    // Saves the data buffer of the media player (used by MediaController).
-    private int mBuffer = 0;
+import com.amcolabs.quizapp.configuration.Config;
 
-	private int musicId = R.raw.app_music;
-    
-    public MusicService() { }
-    
-    // Called by the interface ServiceConnected when calling the service
-    public class ServiceBinder extends Binder {
-     	 MusicService getService()
-    	 {
-    		return MusicService.this;
-    	 }
-    }
+import java.util.Collection;
+import java.util.HashMap;
 
-    @Override
-    public IBinder onBind(Intent context)
-    {
-    	return mBinder;
-    }
+public class MusicService {
+	private static final String TAG = "MusicService";
 
-    @Override
-    public void onCreate () {
-    	super.onCreate();
-    	
-    	create();
+	public static final int MUSIC_PREVIOUS = -1;
+	public static final int MUSIC_GAME = 1;
+	public static final int MUSIC_QUIZ = 2;
+
+	private static HashMap<Integer, MediaPlayer> players = new HashMap();
+	private static int currentMusic = -1;
+	private static int previousMusic = -1;
+
+	private static float musicVolume = 100;
+	private static float maxVolume = 100;
+	public static float getMusicVolume(Context context) {
+			return musicVolume;
 	}
 
-    @Override
-	public int onStartCommand (Intent intent, int flags, int startId) {
-         return START_STICKY;
+	public static void start(Context context, int music) {
+		start(context, music, false);
 	}
 
-    public void destroy(){
-		if(mPlayer != null)
-		{
-			try{
-				 mPlayer.stop();
-				 mPlayer.release();
-			}finally {
-				mPlayer = null;
-			}
-		}
-
-    }
-	@Override
-	public void onDestroy () {
-		super.onDestroy();
-		destroy();
-	}
-
-	public boolean onError(MediaPlayer mp, int what, int extra) {
-		Toast.makeText(this, "music player failed", Toast.LENGTH_SHORT).show();
-		
-		if(mPlayer != null)
-		{
-			try{
-				mPlayer.stop();
-				mPlayer.release();
-			}finally {
-				mPlayer = null;
-			}
-		}
-		return false;
-	}
-	
-	public void create(){
-    	mPlayer = MediaPlayer.create(this, musicId);
-    	mPlayer.setLooping(true);
-
-    	mPlayer.setOnErrorListener(this);
-
-    	mPlayer.setOnErrorListener(new OnErrorListener() {
-    		public boolean onError(MediaPlayer mp, int what, int extra) {
-    			onError(mPlayer, what, extra);
-    			return true;
-    		}
-    	});
-	}
-	
-	@Override
-	public boolean canPause() {
-		return true;
-	}
-
-	@Override
-	public boolean canSeekBackward() {
-		return true;
-	}
-
-	@Override
-	public boolean canSeekForward() {
-		return true;
-	}
-
-	@Override
-	public int getBufferPercentage() {
-		return mBuffer;
-	}
-
-	@Override
-	public int getCurrentPosition() {
-		return mPlayer.getCurrentPosition();
-	}
-
-	@Override
-	public int getDuration() {
-		return mPlayer.getDuration();
-	}
-
-	@Override
-	public boolean isPlaying() {
-		return mPlayer.isPlaying();
-	}
-
-	@Override
-	public void pause() {
-		if(mPlayer != null && isPlaying())
-		{
-			mPlayer.pause();
-		}
-	}
-
-	@Override
-	public void seekTo(int pos) {
-		mPlayer.seekTo(pos);
-	}
-	
-	public void resume()
-	{
-		if(isPlaying() == false)
-		{
-			seekTo(getCurrentPosition());
-			play(FADE_IN_DURATION);
-		}
-	}
-	
-	@Override
-	public void start() {
-		if (mPlayer == null) create();
-		
-		Thread th = new Thread(new Runnable() {
-			@Override
-			public void run()
-			{
-				mPlayer.start();
-			}
-		});
-		th.start();
-	}
-	
-	public void stop() {
-		mPlayer.stop();
-		mPlayer.release();
-		mPlayer = null;
-	}
-
-	@Override
-	public void onBufferingUpdate(MediaPlayer mp, int percent) {
-		mBuffer = percent;
-	}
-
-	public void playAnother(int musicId) {
-		if(musicId< 0 || musicId==this.musicId){
-			play(FADE_IN_DURATION);
+	public static void start(Context context, int music, boolean force) {
+		if (!force && currentMusic > -1) {
+// already playing some music and not forced to change
 			return;
 		}
-		destroy();
-		this.musicId = musicId;
-		create();
-		// start new 
-		Thread th = new Thread(new Runnable() {
-			@Override
-			public void run(){
-				play(FADE_IN_DURATION);
+		if (music == MUSIC_PREVIOUS) {
+			Log.d(TAG, "Using previous music [" + previousMusic + "]");
+			music = previousMusic;
+		}
+		if (currentMusic == music) {
+// already playing this music
+			return;
+		}
+		if (currentMusic != -1) {
+			previousMusic = currentMusic;
+			Log.d(TAG, "Previous music was [" + previousMusic + "]");
+// playing some other music, pause it and change
+			pause();
+		}
+		currentMusic = music;
+		Log.d(TAG, "Current music is now [" + currentMusic + "]");
+		MediaPlayer mp = players.get(music);
+		if (mp != null) {
+			if (!mp.isPlaying()) {
+				mp.start();
 			}
-		});
-		th.start();
-	}
-	
-	private int iVolume;
-
-	public int volume_max = 100;
-	private final static int INT_VOLUME_MIN = 0;
-	private final static float FLOAT_VOLUME_MAX = 1;
-	private final static float FLOAT_VOLUME_MIN = 0;
-	
-	public void play(int fadeDuration){
-	    //Set current volume, depending on fade or not
-	    if (fadeDuration > 0) 
-	        iVolume = INT_VOLUME_MIN;
-	    else 
-	        iVolume = volume_max;
-
-	    updateVolume(0);
-
-	    //Play music
-	    if(!mPlayer.isPlaying()) mPlayer.start();
-
-	    //Start increasing volume in increments
-	    if(fadeDuration > 0)
-	    {
-	        final Timer timer = new Timer(true);
-	        TimerTask timerTask = new TimerTask() 
-	        {
-	            @Override
-	            public void run() 
-	            {
-	                updateVolume(1);
-	                
-	                if (iVolume >= (musicId == R.raw.app_music ? volume_max :(volume_max *2)/3))
-	                {
-	                    timer.cancel();
-	                    timer.purge();
-	                }
-	            }
-	        };
-
-	        // calculate delay, cannot be zero, set to 1 if zero
-	        int delay = volume_max==0? 0 :(fadeDuration/ volume_max);
-	        if (delay == 0) delay = 1;
-
-	        timer.schedule(timerTask, delay, delay);
-	    }
+		} else {
+			if (music == MUSIC_GAME) {
+				mp = MediaPlayer.create(context, R.raw.app_music);
+			} else if (music == MUSIC_QUIZ) {
+				mp = MediaPlayer.create(context, R.raw.quiz_play);
+			} else {
+				Log.e(TAG, "unsupported music number - " + music);
+				return;
+			}
+			players.put(music, mp);
+			float volume = getMusicVolume(context);
+			Log.d(TAG, "Setting music volume to " + volume);
+			mp.setVolume(volume, volume);
+			try {
+				mp.setLooping(true);
+				mp.start();
+			} catch (Exception e) {
+				Log.e(TAG, e.getMessage(), e);
+			}
+		}
 	}
 
-	public void pause(int fadeDuration)
-	{
-	    //Set current volume, depending on fade or not
-	    if (fadeDuration > 0) 
-	        iVolume = volume_max;
-	    else 
-	        iVolume = INT_VOLUME_MIN;
-
-	    updateVolume(0);
-
-	    //Start increasing volume in increments
-	    if(fadeDuration > 0)
-	    {
-	        final Timer timer = new Timer(true);
-	        TimerTask timerTask = new TimerTask() 
-	        {
-	            @Override
-	            public void run() 
-	            {   
-	                updateVolume(-1);
-	                if (iVolume == INT_VOLUME_MIN)
-	                {
-	                    //Pause music
-	                    if (mPlayer.isPlaying()) mPlayer.pause();
-	                    timer.cancel();
-	                    timer.purge();
-	                }
-	            }
-	        };
-
-	        // calculate delay, cannot be zero, set to 1 if zero
-	        int delay = fadeDuration/ volume_max;
-	        if (delay == 0) delay = 1;
-
-	        timer.schedule(timerTask, delay, delay);
-	    }           
+	public static void pause() {
+		Collection<MediaPlayer> mps = players.values();
+		for (MediaPlayer p : mps) {
+			if (p.isPlaying()) {
+				p.pause();
+			}
+		}
+// previousMusic should always be something valid
+		if (currentMusic != -1) {
+			previousMusic = currentMusic;
+			Log.d(TAG, "Previous music was [" + previousMusic + "]");
+		}
+		currentMusic = -1;
+		Log.d(TAG, "Current music is now [" + currentMusic + "]");
 	}
 
-	private void updateVolume(int change)
-	{
-	    //increment or decrement depending on type of fade
-	    iVolume = iVolume + change;
-
-	    //ensure iVolume within boundaries
-	    if (iVolume < INT_VOLUME_MIN)
-	        iVolume = INT_VOLUME_MIN;
-	    else if (iVolume > volume_max)
-	        iVolume = volume_max;
-
-	    //convert to float value
-	    float fVolume = 1 - ((float) Math.log(volume_max - iVolume) / (float) Math.log(volume_max));
-
-	    //ensure fVolume within boundaries
-	    if (fVolume < FLOAT_VOLUME_MIN)
-	        fVolume = FLOAT_VOLUME_MIN;
-	    else if (fVolume > FLOAT_VOLUME_MAX)
-	        fVolume = FLOAT_VOLUME_MAX;     
-
-	    mPlayer.setVolume(fVolume, fVolume);
+	public static void release() {
+		Log.d(TAG, "Releasing media players");
+		Collection<MediaPlayer> mps = players.values();
+		for (MediaPlayer mp : mps) {
+			try {
+				if (mp != null) {
+					if (mp.isPlaying()) {
+						mp.stop();
+					}
+					mp.release();
+				}
+			} catch (Exception e) {
+				Log.e(TAG, e.getMessage(), e);
+			}
+		}
+		mps.clear();
+		if (currentMusic != -1) {
+			previousMusic = currentMusic;
+			Log.d(TAG, "Previous music was [" + previousMusic + "]");
+		}
+		currentMusic = -1;
+		Log.d(TAG, "Current music is now [" + currentMusic + "]");
 	}
 
-	@Override
-	public int getAudioSessionId() {
-		// TODO Auto-generated method stub
-		return 0;
+	public static void setMusicVolume(float volume) {
+		musicVolume = (float) (1 - (Math.log(maxVolume - volume) / Math.log(maxVolume)));;
+		if(players.get(currentMusic)!=null)
+			players.get(currentMusic).setVolume(volume, volume);
 	}
-	
+
+	public static void setApplicationMusicVolume(float volume) {
+		Log.d(TAG, "Setting volume : "+volume);
+		musicVolume = (float) (1 - (Math.log(maxVolume - volume) / Math.log(maxVolume)));
+		Collection<MediaPlayer> mps = players.values();
+		for (MediaPlayer mp : mps) {
+			try {
+				if (mp != null)
+					mp.setVolume(musicVolume, musicVolume);
+			} catch (Exception e) {
+				Log.e(TAG, e.getMessage(), e);
+			}
+		}
+	}
+
+	public static void changeMusic(Context context  , int music) {
+		pause();
+		start(context, music, true);
+	}
 }

@@ -16,7 +16,7 @@
         android:id="@+id/utils_icons"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
+        android:orientation="vertical"
         android:layout_alignParentBottom="true"
         android:paddingBottom="10dp"
         android:gravity="center">
@@ -24,15 +24,15 @@
         <ImageView
             android:layout_width="32dp"
             android:layout_height="32dp"
+            android:layout_marginBottom="30dp"
             android:id="@+id/music_icon"
-            android:layout_marginRight="15dp"
             />
         <com.amcolabs.quizapp.widgets.GothamTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="#CCCCCC"
             android:textStyle="bold"
-            android:text="TollywoodQuiz build[1]"/>
+            android:text="@string/build_name"/>
     </LinearLayout>
 
 

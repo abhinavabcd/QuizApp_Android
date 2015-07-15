@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.util.Log;
 
 import com.amcolabs.quizapp.AppController;
+import com.amcolabs.quizapp.MusicService;
 import com.amcolabs.quizapp.QuizApp;
 import com.amcolabs.quizapp.QuizAppGcmRegistrationService;
 import com.amcolabs.quizapp.Screen;
@@ -78,6 +79,7 @@ public class UserMainPageController  extends AppController{
 						quizApp.getDataBaseHelper().updateOfflineChallenge(offlineChallenge);
 					}
 					if(s){
+						MusicService.start(quizApp.getContext(), MusicService.MUSIC_GAME);
 						showUserHomeScreen(feeds);
 					}
 					else{ // called twice , so need a flag here
@@ -330,6 +332,7 @@ public class UserMainPageController  extends AppController{
 	public WelcomeScreen showWelcomeScreen(){
 		  WelcomeScreen welcomeScreen = new WelcomeScreen(this);
         insertScreen(welcomeScreen);
+		MusicService.pause();
         return welcomeScreen;
 	}
   

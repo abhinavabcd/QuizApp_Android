@@ -118,7 +118,7 @@ public class FacebookLoginHelper {
 					} catch (ParseException e) {
 						e.printStackTrace();
 					}
-					if (fbUser.optString("location") != null) {
+					if (fbUser.optJSONObject("location") != null) {
 						user.place = fbUser.optJSONObject("location").optString("name");
 					}
 					if (fbUser.optJSONObject("cover") != null) {
@@ -149,7 +149,8 @@ public class FacebookLoginHelper {
 					}
 					JSONArray jsonArray = response.getJSONObject().optJSONArray("data");
 
-					hasMoreFriends = response.getJSONObject().optJSONObject("paging").optString("next")!=null;
+					JSONObject paging = response.getJSONObject().optJSONObject("paging");
+					hasMoreFriends = paging!=null && paging.optString("next")!=null;
 					if(!hasMoreFriends){
 						return null;
 					}

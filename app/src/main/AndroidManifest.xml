@@ -97,7 +97,6 @@
 
 
 
-        <service android:name="MusicService" android:enabled="true"></service>
         <!-- Optionally, register AnalyticsReceiver and AnalyticsService to support background
       dispatching on non-Google Play devices -->
         <receiver android:name="com.google.android.gms.analytics.AnalyticsReceiver"

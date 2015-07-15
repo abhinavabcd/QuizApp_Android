@@ -79,18 +79,26 @@ public class UserDeviceManager {
         	return prefs.getString(key, defValue);
 
     }
-    
+
+
+	public void setPreference(String key, int value) {
+		SharedPreferences prefs = preferences;
+		SharedPreferences.Editor editor = prefs.edit();
+		if(key!=null)
+			editor.putString(key, value+"");
+
+		//       preferenceCache.put(key,value);
+		editor.apply();
+	}
 
     public void setPreference(String key, String value) {
         SharedPreferences prefs = preferences;
         SharedPreferences.Editor editor = prefs.edit();
         if(key!=null)
         	editor.putString(key, value);
-        else{
-        	editor.remove(key);
-        }
+
  //       preferenceCache.put(key,value);
-        editor.commit();
+        editor.apply();
     }
 
     public String getPreference(String key , String defaultValue) {
@@ -102,7 +110,7 @@ public class UserDeviceManager {
     }
     
 	public int getPreference(String key, int defValue) {
-		return Integer.parseInt(preferences.getString(key, defValue+""));
+		return Integer.parseInt(preferences.getString(key, defValue + ""));
 	}	
 
     
@@ -153,8 +161,12 @@ public class UserDeviceManager {
 //		return sharingText;		
 		return null;
 	}
-	
-	
+
+	public boolean isLoggedInUser() {
+		return getEncodedKey()!=null;
+	}
+
+
 	static enum AppRunningState{
 		IS_IN_BACKGROUND,
 		IS_RUNNING,
