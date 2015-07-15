@@ -13,8 +13,10 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.amcolabs.quizapp.QuizApp;
@@ -27,6 +29,7 @@ import com.amcolabs.quizapp.databaseutils.Badge;
 import com.amcolabs.quizapp.databaseutils.OfflineChallenge;
 import com.amcolabs.quizapp.databaseutils.Quiz;
 import com.amcolabs.quizapp.datalisteners.DataInputListener;
+import com.amcolabs.quizapp.gameutils.AssetPaths;
 import com.amcolabs.quizapp.gameutils.GameUtils;
 import com.amcolabs.quizapp.uiutils.CircleTransform;
 import com.amcolabs.quizapp.uiutils.UiUtils;
@@ -34,9 +37,7 @@ import com.amcolabs.quizapp.uiutils.UiUtils.UiText;
 import com.amcolabs.quizapp.widgets.GothamButtonView;
 import com.amcolabs.quizapp.widgets.GothamTextView;
 import com.amcolabs.quizapp.widgets.QuizAppMenuItem;
-
-
-
+import com.squareup.picasso.Picasso;
 
 
 public class StaticPopupDialogBoxes {
@@ -367,7 +368,7 @@ public class StaticPopupDialogBoxes {
 	public void showMenu(final HashMap<Integer, UiText> map) {
 		if(menuDialog==null){
 			menuDialog = new Dialog(quizApp.getContext(),R.style.CustomDialogTheme); 
-			LinearLayout dialogLayout = (LinearLayout)quizApp.getActivity().getLayoutInflater().inflate(R.layout.menu_items, null);
+			RelativeLayout dialogLayout = (RelativeLayout)quizApp.getActivity().getLayoutInflater().inflate(R.layout.menu_items, null);
 			OnClickListener listener = new OnClickListener() {
 				@Override
 				public void onClick(View v) {
@@ -381,6 +382,18 @@ public class StaticPopupDialogBoxes {
 	
 				container.addView(getMenuItem(map.get(id).getValue().toUpperCase(Locale.getDefault()) , id, listener , Gravity.LEFT));
 			}
+
+			//add music on/off
+			final ImageView musicButton = (ImageView) dialogLayout.findViewById(R.id.music_icon);
+			musicButton.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View view) {
+					quizApp.toggleMusic();
+					showMusicStateIcon(musicButton);
+				}
+			});
+			showMusicStateIcon(musicButton);
+
 			container.setOnClickListener(listener);
 			
 			dialogLayout.setOnClickListener(listener);
@@ -392,6 +405,16 @@ public class StaticPopupDialogBoxes {
 		menuDialog.show();
 	}
 
+	private void showMusicStateIcon(final ImageView musicButton){
+		int musicState = quizApp.getUserDeviceManager().getPreference(Config.PREF_MUSIC_STATE, 1);
+		if(musicState==1) {
+			Picasso.with(quizApp.getContext()).load(R.drawable.sound_on).into(musicButton);
+		}
+		else{
+			Picasso.with(quizApp.getContext()).load(R.drawable.sound_off).into(musicButton);
+		}
+
+	}
 	private View getMenuItem(String text , int id , OnClickListener listener , int gravity) {
 
 		GothamTextView t = new GothamTextView(quizApp.getActivity());

@@ -461,38 +461,42 @@ public class UiUtils {
 
 
 	public Task<RequestCreator> getRequestCreatorTask(final String assetPath, final boolean downloadToAssets){
-		return Task.callInBackground(new Callable<RequestCreator>() {
+		return Task.call(new Callable<RequestCreator>() {
 			@Override
 			public RequestCreator call() throws Exception {
 
 				if(assetPath.startsWith("http://") || assetPath.startsWith("https://")){
 					return Picasso.with(quizApp.getContext()).load(assetPath).error(R.drawable.error_image);
 				}
-				try {
-					InputStream ims = quizApp.getContext().getAssets().open("images/"+assetPath); //assets folder
-					return Picasso.with(quizApp.getContext()).load("file:///android_asset/images/" + assetPath).error(R.drawable.error_image);
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-				File file = new File(quizApp.getContext().getFilesDir().getParentFile().getPath()+"/images/"+assetPath);
-				if(file.exists()){
-					return Picasso.with(quizApp.getContext()).load(file).error(R.drawable.error_image);
-				}
+//				try {
+//					InputStream ims = quizApp.getContext().getAssets().open("images/" + assetPath); //assets folder
+//					ims.close();
+//					return Picasso.with(quizApp.getContext()).load("file:///android_asset/images/" + assetPath).error(R.drawable.error_image);
+//				} catch (IOException e) {
+//					Log.d(Config.QUIZAPP_ERR_LOG_TAG, "failed to load from assets");
+//					e.printStackTrace();
+//				}
+//				File file = new File(quizApp.getContext().getFilesDir().getParentFile().getPath()+"/images/"+assetPath);
+//				if(file.exists()){
+//					return Picasso.with(quizApp.getContext()).load(file).error(R.drawable.error_image);
+//				}
+
+//				Log.d(Config.QUIZAPP_ERR_LOG_TAG, "loading from CDN");
 
 				RequestCreator requestCreator =  Picasso.with(quizApp.getContext()).load(ServerCalls.CDN_IMAGES_PATH + assetPath).error(R.drawable.error_image);
 
-				if(downloadToAssets) {
-					try {
-						Bitmap bitmap = requestCreator.get();
-						File saveImageFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/images/" + assetPath);
-						saveImageFile.createNewFile();
-						FileOutputStream ostream = new FileOutputStream(saveImageFile);
-						bitmap.compress(assetPath.endsWith(".png") ? Bitmap.CompressFormat.PNG : Bitmap.CompressFormat.JPEG, 75, ostream);
-						ostream.close();
-					}
-					catch (Exception e){
-					}
-				}
+//				if(downloadToAssets) {
+//					try {
+//						Bitmap bitmap = requestCreator.get();
+//						File saveImageFile = new File(quizApp.getContext().getFilesDir().getParentFile().getPath() + "/images/" + assetPath);
+//						saveImageFile.createNewFile();
+//						FileOutputStream ostream = new FileOutputStream(saveImageFile);
+//						bitmap.compress(assetPath.endsWith(".png") ? Bitmap.CompressFormat.PNG : Bitmap.CompressFormat.JPEG, 75, ostream);
+//						ostream.close();
+//					}
+//					catch (Exception e){
+//					}
+//				}
 				return requestCreator;
 			}
 		});

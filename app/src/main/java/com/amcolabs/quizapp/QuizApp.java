@@ -127,18 +127,26 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 	
 	@Override
 	public void onPause() {
-		removeAllNotificationListeners();
-		if(mServ!=null)
-			mServ.pause();
 		super.onPause();
+		removeAllNotificationListeners();
+		pauseMusic();
 	}
 	
 	@Override
 	public void onResume() {
+		super.onResume();
 		addNotificationListeners();
+		playMusic();
+	}
+
+	void playMusic(){
 		if(mServ!=null)
 			mServ.playAnother(-1);
-		super.onResume();
+	}
+
+	void pauseMusic(){
+		if(mServ!=null)
+			mServ.pause();
 	}
 	
 	public void reinit(boolean force) {
@@ -598,7 +606,7 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
     int currentActiveMenu = -1;
 
 	private HashMap<Integer, UiText> menuItems = null;
-	public synchronized  void onMenuClick(int id) {
+	public void onMenuClick(int id) {
 		if(isRapidReClick()) return;
 		synchronized (uiSync) {
 			if (isScreenAnimationActive != 0) {
@@ -819,6 +827,8 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 	@Override
 	public void onServiceConnected(ComponentName name, IBinder binder){
 		mServ = ((MusicService.ServiceBinder) binder).getService();
+		int musicState = getUserDeviceManager().getPreference(Config.PREF_MUSIC_STATE, 1);
+		mServ.volume_max = musicState*100;
 		mServ.start();
 	}
 	
@@ -857,5 +867,15 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 
 	public void showHomeScreen() {
 
+	}
+
+
+
+	public synchronized void toggleMusic() {
+		int musicState = getUserDeviceManager().getPreference(Config.PREF_MUSIC_STATE, 1);
+		musicState^=1;
+		getUserDeviceManager().setPreference(Config.PREF_MUSIC_STATE,musicState+"");
+		mServ.volume_max = musicState*100;
+		mServ.playAnother(-1);
 	}
 }

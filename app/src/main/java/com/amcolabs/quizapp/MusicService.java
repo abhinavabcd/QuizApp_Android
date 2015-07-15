@@ -194,7 +194,7 @@ public class MusicService extends Service
 
 	public void playAnother(int musicId) {
 		if(musicId< 0 || musicId==this.musicId){
-			if(!mPlayer.isPlaying()) play(FADE_IN_DURATION);
+			play(FADE_IN_DURATION);
 			return;
 		}
 		destroy();
@@ -212,7 +212,7 @@ public class MusicService extends Service
 	
 	private int iVolume;
 
-	private final static int INT_VOLUME_MAX = 100;
+	public int volume_max = 100;
 	private final static int INT_VOLUME_MIN = 0;
 	private final static float FLOAT_VOLUME_MAX = 1;
 	private final static float FLOAT_VOLUME_MIN = 0;
@@ -222,7 +222,7 @@ public class MusicService extends Service
 	    if (fadeDuration > 0) 
 	        iVolume = INT_VOLUME_MIN;
 	    else 
-	        iVolume = INT_VOLUME_MAX;
+	        iVolume = volume_max;
 
 	    updateVolume(0);
 
@@ -240,7 +240,7 @@ public class MusicService extends Service
 	            {
 	                updateVolume(1);
 	                
-	                if (iVolume >= (musicId == R.raw.app_music ? INT_VOLUME_MAX:(INT_VOLUME_MAX*2)/3))
+	                if (iVolume >= (musicId == R.raw.app_music ? volume_max :(volume_max *2)/3))
 	                {
 	                    timer.cancel();
 	                    timer.purge();
@@ -249,7 +249,7 @@ public class MusicService extends Service
 	        };
 
 	        // calculate delay, cannot be zero, set to 1 if zero
-	        int delay = fadeDuration/INT_VOLUME_MAX;
+	        int delay = volume_max==0? 0 :(fadeDuration/ volume_max);
 	        if (delay == 0) delay = 1;
 
 	        timer.schedule(timerTask, delay, delay);
@@ -260,7 +260,7 @@ public class MusicService extends Service
 	{
 	    //Set current volume, depending on fade or not
 	    if (fadeDuration > 0) 
-	        iVolume = INT_VOLUME_MAX;
+	        iVolume = volume_max;
 	    else 
 	        iVolume = INT_VOLUME_MIN;
 
@@ -287,7 +287,7 @@ public class MusicService extends Service
 	        };
 
 	        // calculate delay, cannot be zero, set to 1 if zero
-	        int delay = fadeDuration/INT_VOLUME_MAX;
+	        int delay = fadeDuration/ volume_max;
 	        if (delay == 0) delay = 1;
 
 	        timer.schedule(timerTask, delay, delay);
@@ -302,11 +302,11 @@ public class MusicService extends Service
 	    //ensure iVolume within boundaries
 	    if (iVolume < INT_VOLUME_MIN)
 	        iVolume = INT_VOLUME_MIN;
-	    else if (iVolume > INT_VOLUME_MAX)
-	        iVolume = INT_VOLUME_MAX;
+	    else if (iVolume > volume_max)
+	        iVolume = volume_max;
 
 	    //convert to float value
-	    float fVolume = 1 - ((float) Math.log(INT_VOLUME_MAX - iVolume) / (float) Math.log(INT_VOLUME_MAX));
+	    float fVolume = 1 - ((float) Math.log(volume_max - iVolume) / (float) Math.log(volume_max));
 
 	    //ensure fVolume within boundaries
 	    if (fVolume < FLOAT_VOLUME_MIN)
