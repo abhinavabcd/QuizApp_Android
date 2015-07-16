@@ -24,7 +24,7 @@
             android:scaleType="fitXY"
             android:src="@drawable/close_icon" />
 
-        <com.amcolabs.quizapp.widgets.GothamTextView
+        <com.quizapp.tollywood.widgets.GothamTextView
             android:id="@+id/title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -52,7 +52,7 @@
     	    android:maxLines="5"
     	    android:minHeight="100dp" />
 
-	<com.amcolabs.quizapp.widgets.GothamButtonView
+	<com.quizapp.tollywood.widgets.GothamButtonView
 	    android:id="@+id/ok_button"
 	    style="?android:attr/buttonStyleSmall"
 	    android:layout_width="wrap_content"

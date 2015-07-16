@@ -21,7 +21,7 @@
             android:scaleType="fitXY"
             android:src="@drawable/close_icon" />
 
-        <com.amcolabs.quizapp.widgets.GothamTextView
+        <com.quizapp.tollywood.widgets.GothamTextView
             android:id="@+id/title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -42,7 +42,7 @@
         android:layout_margin="10dp"
         android:src="@drawable/ic_launcher" />
 
-    <com.amcolabs.quizapp.widgets.GothamTextView
+    <com.quizapp.tollywood.widgets.GothamTextView
         android:id="@+id/badgeName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -54,7 +54,7 @@
         android:textStyle="bold"
         android:typeface="normal" />
 
-    <com.amcolabs.quizapp.widgets.GothamTextView
+    <com.quizapp.tollywood.widgets.GothamTextView
         android:id="@+id/badgeDescription"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

@@ -14,7 +14,7 @@
             layout="@layout/user_quiz_progress" />
         
 
-        <com.amcolabs.quizapp.widgets.CircularCounter
+        <com.quizapp.tollywood.widgets.CircularCounter
                     xmlns:meter="http://schemas.android.com/apk/res-auto"
 			        android:id="@+id/timerView"
 			        android:layout_width="70dp"

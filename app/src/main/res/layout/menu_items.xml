@@ -27,7 +27,7 @@
             android:layout_marginBottom="30dp"
             android:id="@+id/music_icon"
             />
-        <com.amcolabs.quizapp.widgets.GothamTextView
+        <com.quizapp.tollywood.widgets.GothamTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="#CCCCCC"

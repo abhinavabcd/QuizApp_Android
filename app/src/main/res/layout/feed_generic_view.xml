@@ -42,7 +42,7 @@
                 android:gravity="center_vertical"
                 android:orientation="vertical" >
 
-                <com.amcolabs.quizapp.widgets.GothamTextView
+                <com.quizapp.tollywood.widgets.GothamTextView
                     android:id="@+id/title_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -51,7 +51,7 @@
                     android:textSize="16sp"
                     android:textStyle="bold" />
 
-                <com.amcolabs.quizapp.widgets.GothamTextView
+                <com.quizapp.tollywood.widgets.GothamTextView
                     android:id="@+id/text_content_1"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -62,7 +62,7 @@
                     android:text=""
                     android:textSize="15sp" />
 
-                <com.amcolabs.quizapp.widgets.GothamTextView
+                <com.quizapp.tollywood.widgets.GothamTextView
                     android:id="@+id/text_content_2"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -81,16 +81,16 @@
                 android:paddingLeft="10dp"
                 >
 
-                <com.amcolabs.quizapp.widgets.FlowLayout
+                <com.quizapp.tollywood.widgets.FlowLayout
                     android:id="@+id/userbadges"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center" >
-                </com.amcolabs.quizapp.widgets.FlowLayout>
+                </com.quizapp.tollywood.widgets.FlowLayout>
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>
-    <com.amcolabs.quizapp.widgets.GothamTextView
+    <com.quizapp.tollywood.widgets.GothamTextView
         android:id="@+id/time_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

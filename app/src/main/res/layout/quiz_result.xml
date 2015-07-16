@@ -8,7 +8,7 @@
         android:layout_height="match_parent"
         android:orientation="vertical" >
 
-        <com.amcolabs.quizapp.widgets.BarChartViewMultiDataset
+        <com.quizapp.tollywood.widgets.BarChartViewMultiDataset
             android:id="@+id/bar_chart"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />

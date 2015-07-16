@@ -20,7 +20,7 @@
 	        android:gravity="center"
 	        android:orientation="vertical" >
 	
-	        <com.amcolabs.quizapp.widgets.GothamTextView
+	        <com.quizapp.tollywood.widgets.GothamTextView
 	            android:id="@+id/quizPoints"
 	            android:layout_width="60dp"
 	            android:layout_height="wrap_content"
@@ -31,7 +31,7 @@
 	            android:text="+20"
 	            android:textSize="15sp" />
 	
-	        <com.amcolabs.quizapp.widgets.GothamTextView
+	        <com.quizapp.tollywood.widgets.GothamTextView
 	            android:id="@+id/quizPointsText"
 	            android:layout_width="wrap_content"
 	            android:layout_height="wrap_content"
@@ -51,7 +51,7 @@
 	        android:gravity="center"
 	        android:orientation="vertical" >
 	
-	        <com.amcolabs.quizapp.widgets.GothamTextView
+	        <com.quizapp.tollywood.widgets.GothamTextView
 	            android:id="@+id/quizWinPoints"
 	            android:layout_width="60dp"
 	            android:layout_height="wrap_content"
@@ -62,7 +62,7 @@
 	            android:text="+20"
 	            android:textSize="15sp" />
 	
-	        <com.amcolabs.quizapp.widgets.GothamTextView
+	        <com.quizapp.tollywood.widgets.GothamTextView
 	            android:id="@+id/quizWinPointsText"
 	            android:layout_width="wrap_content"
 	            android:layout_height="wrap_content"
@@ -82,7 +82,7 @@
 	        android:gravity="center"
 	        android:orientation="vertical" >
 	
-	        <com.amcolabs.quizapp.widgets.GothamTextView
+	        <com.quizapp.tollywood.widgets.GothamTextView
 	            android:id="@+id/quizLevelupPoints"
 	            android:layout_width="60dp"
 	            android:layout_height="wrap_content"
@@ -94,7 +94,7 @@
 	            android:text="+20"
 	            android:textSize="15sp" />
 	
-	        <com.amcolabs.quizapp.widgets.GothamTextView
+	        <com.quizapp.tollywood.widgets.GothamTextView
 	            android:id="@+id/quizLevelupPointsText"
 	            android:layout_width="wrap_content"
 	            android:layout_height="wrap_content"
@@ -114,7 +114,7 @@
 	        android:gravity="center"
 	        android:orientation="vertical" >
 	
-	        <com.amcolabs.quizapp.widgets.GothamTextView
+	        <com.quizapp.tollywood.widgets.GothamTextView
 	            android:id="@+id/quizFinishPoints"
 	            android:layout_width="60dp"
 	            android:layout_height="wrap_content"
@@ -126,7 +126,7 @@
 	            android:text="+20"
 	            android:textSize="15sp" />
 	
-	        <com.amcolabs.quizapp.widgets.GothamTextView
+	        <com.quizapp.tollywood.widgets.GothamTextView
 	            android:id="@+id/quizFinishPointsText"
 	            android:layout_width="wrap_content"
 	            android:layout_height="wrap_content"
@@ -153,7 +153,7 @@
 	        android:gravity="center"
 	        android:orientation="vertical" >
 	
-	        <com.amcolabs.quizapp.widgets.GothamTextView
+	        <com.quizapp.tollywood.widgets.GothamTextView
 	            android:id="@+id/quizTotalPoints"
 	            android:layout_width="60dp"
 	            android:layout_height="wrap_content"
@@ -165,7 +165,7 @@
 	            android:text="+60"
 	            android:textSize="15sp" />
 	
-	        <com.amcolabs.quizapp.widgets.GothamTextView
+	        <com.quizapp.tollywood.widgets.GothamTextView
 	            android:id="@+id/quizTotalPointsText"
 	            android:layout_width="wrap_content"
 	            android:layout_height="wrap_content"

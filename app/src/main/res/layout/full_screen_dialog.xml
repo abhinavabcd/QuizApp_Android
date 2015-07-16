@@ -8,7 +8,7 @@
     android:gravity="center"
     android:orientation="vertical" >
 
-    <com.amcolabs.quizapp.widgets.GothamTextView
+    <com.quizapp.tollywood.widgets.GothamTextView
         android:id="@+id/textView1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -24,7 +24,7 @@
         android:layout_height="wrap_content"
         android:gravity="center" >
         
-        <com.amcolabs.quizapp.widgets.QuizAppMenuItem
+        <com.quizapp.tollywood.widgets.QuizAppMenuItem
             android:id="@+id/button1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -41,9 +41,9 @@
             fancy:text="Yes"
             fancy:textColor="#FFFFFF" >
 
-        </com.amcolabs.quizapp.widgets.QuizAppMenuItem>
+        </com.quizapp.tollywood.widgets.QuizAppMenuItem>
         
-       <com.amcolabs.quizapp.widgets.QuizAppMenuItem
+       <com.quizapp.tollywood.widgets.QuizAppMenuItem
            android:id="@+id/button2"
            android:layout_width="wrap_content"
            android:layout_height="wrap_content"
@@ -60,7 +60,7 @@
            fancy:text="No"
            fancy:textColor="#FFFFFF" >
 
-	  </com.amcolabs.quizapp.widgets.QuizAppMenuItem>
+	  </com.quizapp.tollywood.widgets.QuizAppMenuItem>
         
     </LinearLayout>
 

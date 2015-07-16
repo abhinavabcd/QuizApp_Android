@@ -11,7 +11,7 @@
         android:gravity="center_vertical"
         android:orientation="horizontal" >
 
-        <com.amcolabs.quizapp.widgets.GothamTextView
+        <com.quizapp.tollywood.widgets.GothamTextView
             android:id="@+id/user_name"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -23,7 +23,7 @@
             android:textColor="@color/white"
             android:textStyle="bold" />
 
-        <com.amcolabs.quizapp.widgets.GothamTextView
+        <com.quizapp.tollywood.widgets.GothamTextView
             android:id="@+id/totalXp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -43,7 +43,7 @@
 
     </LinearLayout>
 
-    <com.amcolabs.quizapp.widgets.GothamTextView
+    <com.quizapp.tollywood.widgets.GothamTextView
         android:id="@+id/status_msg"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

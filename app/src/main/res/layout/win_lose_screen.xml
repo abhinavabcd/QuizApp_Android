@@ -9,7 +9,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical" >
 
-        <com.amcolabs.quizapp.widgets.GothamTextView
+        <com.quizapp.tollywood.widgets.GothamTextView
             android:id="@+id/quizResultMessage"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -40,7 +40,7 @@
                 android:layout_weight="1"
                 android:orientation="vertical" >
 
-                <com.amcolabs.quizapp.widgets.GothamButtonView
+                <com.quizapp.tollywood.widgets.GothamButtonView
                     android:id="@+id/rematchButton"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -49,7 +49,7 @@
                     android:gravity="center"
                     android:text="Rematch" />
 
-                <com.amcolabs.quizapp.widgets.GothamButtonView
+                <com.quizapp.tollywood.widgets.GothamButtonView
                     android:id="@+id/addFriendButton"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -58,7 +58,7 @@
                     android:gravity="center"
                     android:text="Add Friend" />
 
-                <com.amcolabs.quizapp.widgets.GothamButtonView
+                <com.quizapp.tollywood.widgets.GothamButtonView
                     android:id="@+id/chat_with_user"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -76,7 +76,7 @@
                 android:layout_weight="1"
                 android:orientation="vertical" >
 
-                <com.amcolabs.quizapp.widgets.GothamButtonView
+                <com.quizapp.tollywood.widgets.GothamButtonView
                     android:id="@+id/challengeButton"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -85,7 +85,7 @@
                     android:gravity="center"
                     android:text="LeaderBoards" />
 
-                <com.amcolabs.quizapp.widgets.GothamButtonView
+                <com.quizapp.tollywood.widgets.GothamButtonView
                     android:id="@+id/viewProfileButton"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -116,7 +116,7 @@
                 android:layout_weight="1"
                 android:orientation="vertical" >
 
-                <com.amcolabs.quizapp.widgets.PieChartView
+                <com.quizapp.tollywood.widgets.PieChartView
                     android:id="@id/pie_chart"
                     android:layout_width="match_parent"
                     android:layout_height="250dp"
@@ -130,7 +130,7 @@
                 android:layout_weight="1"
                 android:orientation="vertical" >
 
-                <com.amcolabs.quizapp.widgets.PieChartView
+                <com.quizapp.tollywood.widgets.PieChartView
                     android:id="@id/pie_chart"
                     android:layout_width="match_parent"
                     android:layout_height="250dp"
@@ -138,7 +138,7 @@
             </LinearLayout>
         </LinearLayout>
 
-        <com.amcolabs.quizapp.widgets.BarChartViewMultiDataset
+        <com.quizapp.tollywood.widgets.BarChartViewMultiDataset
             android:id="@+id/bar_chart"
             android:layout_width="match_parent"
             android:layout_height="300dp"

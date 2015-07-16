@@ -70,7 +70,7 @@
         android:layout_height="wrap_content"
         layout="@layout/users_header_2" />
 
-    <com.amcolabs.quizapp.widgets.GothamTextView
+    <com.quizapp.tollywood.widgets.GothamTextView
         android:id="@+id/empty"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

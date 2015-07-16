@@ -9,7 +9,7 @@ xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:padding="30dp" >
 
-    <com.amcolabs.quizapp.widgets.GothamTextView
+    <com.quizapp.tollywood.widgets.GothamTextView
         android:id="@+id/textView1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -28,7 +28,7 @@ xmlns:tools="http://schemas.android.com/tools"
         android:gravity="center" 
         android:orientation="horizontal" >
         
-       <com.amcolabs.quizapp.widgets.QuizAppMenuItem
+       <com.quizapp.tollywood.widgets.QuizAppMenuItem
            android:id="@+id/start_offline_challenge"
            android:layout_width="wrap_content"
            android:layout_height="wrap_content"
@@ -44,9 +44,9 @@ xmlns:tools="http://schemas.android.com/tools"
            fancy:text="Start Now"
            fancy:textColor="#FFFFFF" >
 
-                </com.amcolabs.quizapp.widgets.QuizAppMenuItem>
+                </com.quizapp.tollywood.widgets.QuizAppMenuItem>
         
-          <com.amcolabs.quizapp.widgets.QuizAppMenuItem
+          <com.quizapp.tollywood.widgets.QuizAppMenuItem
               android:id="@+id/exit_challenge_button"
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
@@ -61,7 +61,7 @@ xmlns:tools="http://schemas.android.com/tools"
               fancy:text="Exit Challenge"
               fancy:textColor="#FFFFFF" >
               
-          </com.amcolabs.quizapp.widgets.QuizAppMenuItem>
+          </com.quizapp.tollywood.widgets.QuizAppMenuItem>
         
     </LinearLayout>
 

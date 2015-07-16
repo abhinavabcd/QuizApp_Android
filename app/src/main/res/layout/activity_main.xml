@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_gravity="center"
-    tools:context="com.amcolabs.quizapp.QuizApp"
+    tools:context="com.quizapp.tollywood.QuizApp"
     tools:ignore="MergeRootFrame" >
    	<FrameLayout
         android:id="@+id/container"
@@ -14,7 +14,7 @@
         android:layout_height="match_parent" >
     </FrameLayout>
 
-   	<com.amcolabs.quizapp.widgets.GothamTextView
+   	<com.quizapp.tollywood.widgets.GothamTextView
    	    android:id="@+id/menu_button"
    	    android:layout_width="wrap_content"
    	    android:layout_height="wrap_content"

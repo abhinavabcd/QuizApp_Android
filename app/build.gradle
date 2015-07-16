@@ -14,7 +14,7 @@ android {
     compileSdkVersion 21
     buildToolsVersion '21.1.2'
     defaultConfig {
-        applicationId "com.amcolabs.quizapp"
+        applicationId "com.quizapp.tollywood"
         minSdkVersion 14
         targetSdkVersion 19
         versionCode 1

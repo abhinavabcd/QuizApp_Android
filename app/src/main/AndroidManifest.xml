@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.amcolabs.quizapp"
+    package="com.quizapp.tollywood"
     android:versionCode="1"
     android:versionName="0.1b" >
 
@@ -18,12 +18,12 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
     <permission
-        android:name="com.amcolabs.quizapp.permission.C2D_MESSAGE"
+        android:name="com.quizapp.tollywood.permission.C2D_MESSAGE"
         android:protectionLevel="signature" />
-    <uses-permission android:name="com.amcolabs.quizapp.permission.C2D_MESSAGE" />
+    <uses-permission android:name="com.quizapp.tollywood.permission.C2D_MESSAGE" />
     
     <application
-        android:name=".QuizAppInit"
+        android:name="com.quizapp.tollywood.QuizAppInit"
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
@@ -35,7 +35,7 @@
 
 
         <activity
-            android:name="com.amcolabs.quizapp.MainActivity"
+            android:name="com.quizapp.tollywood.MainActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait" >
             <intent-filter>
@@ -64,7 +64,7 @@
 
         <!-- [START gcm_listener] -->
         <service
-            android:name="com.amcolabs.quizapp.QuizAppGcmListenerService"
+            android:name="com.quizapp.tollywood.QuizAppGcmListenerService"
             android:exported="false" >
             <intent-filter>
                 <action android:name="com.google.android.c2dm.intent.RECEIVE" />
@@ -73,7 +73,7 @@
         <!-- [END gcm_listener] -->
         <!-- [START instanceId_listener] -->
         <service
-            android:name=".QuizAppGcmInstanceIdChangeListener"
+            android:name="com.quizapp.tollywood.QuizAppGcmInstanceIdChangeListener"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.google.android.gms.iid.InstanceID"/>
@@ -81,17 +81,17 @@
         </service>
         <!-- [END instanceId_listener] -->
         <service
-            android:name=".QuizAppGcmRegistrationService"
+            android:name="com.quizapp.tollywood.QuizAppGcmRegistrationService"
             android:exported="false">
         </service>
 
         <!-- broadcast from gcmlistener will be listened by this -->
         <receiver
-            android:name="com.amcolabs.quizapp.NotificationReciever"
+            android:name="com.quizapp.tollywood.NotificationReciever"
             android:exported="false"
             android:enabled="true" >
             <intent-filter android:priority="2" >
-                <action android:name="com.amcolabs.quizapp.gcmnotification" />
+                <action android:name="com.quizapp.tollywood.gcmnotification" />
             </intent-filter>
         </receiver>
 

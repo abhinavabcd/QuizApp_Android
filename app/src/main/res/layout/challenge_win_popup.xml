@@ -15,7 +15,7 @@
         android:scaleType="fitXY"
         android:src="@drawable/close_icon" />
 
-    <com.amcolabs.quizapp.widgets.GothamTextView
+    <com.quizapp.tollywood.widgets.GothamTextView
         android:id="@+id/GothamTextView01"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -25,7 +25,7 @@
         android:textColor="@color/white"
         android:textSize="20sp" />
 
-    <com.amcolabs.quizapp.widgets.GothamTextView
+    <com.quizapp.tollywood.widgets.GothamTextView
         android:id="@+id/win_loose_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -41,14 +41,14 @@
         android:layout_height="wrap_content"
         android:gravity="center_horizontal" >
 
-        <com.amcolabs.quizapp.widgets.GothamTextView
+        <com.quizapp.tollywood.widgets.GothamTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="against"
 	        android:textColor="@color/white"
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
-        <com.amcolabs.quizapp.widgets.GothamTextView
+        <com.quizapp.tollywood.widgets.GothamTextView
             android:id="@+id/challenge_with_user"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -65,14 +65,14 @@
         android:layout_height="wrap_content"
         android:gravity="center_horizontal" >
 
-        <com.amcolabs.quizapp.widgets.GothamTextView
+        <com.quizapp.tollywood.widgets.GothamTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="in"
             android:textColor="@color/white"
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
-        <com.amcolabs.quizapp.widgets.GothamTextView
+        <com.quizapp.tollywood.widgets.GothamTextView
             android:id="@+id/quiz_desc"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -90,7 +90,7 @@
         android:layout_marginBottom="5dp"
         layout="@layout/pointswrapper" />
 
-    <com.amcolabs.quizapp.widgets.GothamTextView
+    <com.quizapp.tollywood.widgets.GothamTextView
         android:id="@+id/textView1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

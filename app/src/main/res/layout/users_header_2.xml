@@ -35,7 +35,7 @@
                 android:layout_gravity="center_vertical"
                 android:orientation="vertical" >
 
-                <com.amcolabs.quizapp.widgets.GothamTextView
+                <com.quizapp.tollywood.widgets.GothamTextView
                     android:id="@+id/user_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -45,7 +45,7 @@
                     android:textColor="@color/white"
                     android:textSize="14sp" />
 
-                <com.amcolabs.quizapp.widgets.GothamTextView
+                <com.quizapp.tollywood.widgets.GothamTextView
                     android:id="@+id/user_status_msg"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -56,7 +56,7 @@
             </LinearLayout>
         </LinearLayout>
 
-        <com.amcolabs.quizapp.widgets.FlowLayout
+        <com.quizapp.tollywood.widgets.FlowLayout
             android:id="@+id/user1badges"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
@@ -84,7 +84,7 @@
                 android:gravity="right"
                 android:orientation="vertical" >
 
-                <com.amcolabs.quizapp.widgets.GothamTextView
+                <com.quizapp.tollywood.widgets.GothamTextView
                     android:id="@+id/user_name_2"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -95,7 +95,7 @@
                     android:textColor="@color/white"
                     android:textSize="14sp" />
 
-                <com.amcolabs.quizapp.widgets.GothamTextView
+                <com.quizapp.tollywood.widgets.GothamTextView
                     android:id="@+id/user_status_msg_2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -116,7 +116,7 @@
             </ImageView>
         </LinearLayout>
 
-        <com.amcolabs.quizapp.widgets.FlowLayout
+        <com.quizapp.tollywood.widgets.FlowLayout
             android:id="@+id/user2badges"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />

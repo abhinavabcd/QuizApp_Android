@@ -13,7 +13,7 @@
         android:drawableLeft="@drawable/abc_ic_search"
         android:hint="Search" />
 
-    <com.amcolabs.quizapp.widgets.GothamTextView
+    <com.quizapp.tollywood.widgets.GothamTextView
         android:id="@+id/title_text_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -25,7 +25,7 @@
         android:textColor="@color/white"
         android:textSize="18dp" />
     
-    <com.amcolabs.quizapp.widgets.GothamTextView
+    <com.quizapp.tollywood.widgets.GothamTextView
         android:id="@+id/debugMessage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -35,7 +35,7 @@
         android:textSize="15sp" 
         android:visibility="gone"/>
 
-    <com.amcolabs.quizapp.widgets.ExpandableHeightListView
+    <com.quizapp.tollywood.widgets.ExpandableHeightListView
         android:id="@+id/listView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -57,7 +57,7 @@
         android:layout_marginBottom="5dp"
 	>
 
-        <com.amcolabs.quizapp.widgets.GothamTextView
+        <com.quizapp.tollywood.widgets.GothamTextView
             android:id="@+id/view_more"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

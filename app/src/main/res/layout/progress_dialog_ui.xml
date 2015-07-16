@@ -19,7 +19,7 @@
         android:minWidth="50dp"
         android:progress="1" />
 
-    <com.amcolabs.quizapp.widgets.GothamTextView
+    <com.quizapp.tollywood.widgets.GothamTextView
         android:id="@+id/progress_bar_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

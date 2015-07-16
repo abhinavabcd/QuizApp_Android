@@ -10,14 +10,14 @@
     android:orientation="vertical"
     android:padding="10dp" >
 
-    <com.amcolabs.quizapp.widgets.GothamTextView
+    <com.quizapp.tollywood.widgets.GothamTextView
         android:id="@+id/textContent"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="This is a sample Dialog Box"
         android:textSize="15sp" />
 
-    <com.amcolabs.quizapp.widgets.GothamButtonView
+    <com.quizapp.tollywood.widgets.GothamButtonView
         android:id="@+id/Continuebutton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

@@ -71,7 +71,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center">
                     
-                    <!--<com.amcolabs.quizapp.widgets.GothamButtonView-->
+                    <!--<com.quizapp.tollywood.widgets.GothamButtonView-->
                         <!--android:id="@+id/hint_button"-->
                         <!--style="@color/grey"-->
                         <!--android:layout_width="wrap_content"-->

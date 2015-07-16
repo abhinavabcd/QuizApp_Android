@@ -18,7 +18,7 @@
             android:layout_height="wrap_content"
             layout="@layout/user_info_card" />
 
-        <com.amcolabs.quizapp.widgets.SeperatorView
+        <com.quizapp.tollywood.widgets.SeperatorView
             android:id="@+id/seperatorView1"
             android:layout_width="match_parent"
             android:layout_height="2dp"
@@ -29,7 +29,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content" >
 
-            <com.amcolabs.quizapp.widgets.GothamTextView
+            <com.quizapp.tollywood.widgets.GothamTextView
                 android:id="@+id/win_count"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -38,7 +38,7 @@
                 android:gravity="center"
                 android:text="10 Won" />
 
-            <com.amcolabs.quizapp.widgets.GothamTextView
+            <com.quizapp.tollywood.widgets.GothamTextView
                 android:id="@+id/lose_count"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -47,7 +47,7 @@
                 android:gravity="center"
                 android:text="10 Lost" />
 
-            <com.amcolabs.quizapp.widgets.GothamTextView
+            <com.quizapp.tollywood.widgets.GothamTextView
                 android:id="@+id/tie_count"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -57,7 +57,7 @@
 
         </LinearLayout>
 
-        <com.amcolabs.quizapp.widgets.SeperatorView
+        <com.quizapp.tollywood.widgets.SeperatorView
             android:id="@+id/seperatorView2"
             android:layout_width="match_parent"
             android:layout_height="2dp"
@@ -69,13 +69,13 @@
             android:layout_height="wrap_content"
             android:orientation="vertical" >
 
-            <com.amcolabs.quizapp.widgets.PieChartView
+            <com.quizapp.tollywood.widgets.PieChartView
                 android:id="@+id/pie_chart"
                 android:layout_width="match_parent"
                 android:layout_height="300dp"
               />
 
-            <com.amcolabs.quizapp.widgets.BarChartViewMultiDataset
+            <com.quizapp.tollywood.widgets.BarChartViewMultiDataset
                 android:id="@+id/bar_chart"
                 android:layout_width="match_parent"
                 android:layout_height="300dp"

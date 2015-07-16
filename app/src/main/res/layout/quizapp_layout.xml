@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_gravity="center"
-    tools:context="com.amcolabs.quizapp.QuizApp"
+    tools:context="com.quizapp.tollywood.QuizApp"
     tools:ignore="MergeRootFrame" >
      
 </FrameLayout>

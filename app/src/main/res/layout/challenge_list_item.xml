@@ -15,7 +15,7 @@
         android:padding="3dp"
         android:textColor="#ffffff" >
 
-        <com.amcolabs.quizapp.widgets.GothamTextView
+        <com.quizapp.tollywood.widgets.GothamTextView
             android:id="@+id/sNoText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -47,7 +47,7 @@
                 android:gravity="center_horizontal"
                 android:orientation="horizontal" >
 
-                <com.amcolabs.quizapp.widgets.GothamTextView
+                <com.quizapp.tollywood.widgets.GothamTextView
                     android:id="@+id/item_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -57,7 +57,7 @@
                     android:textSize="14sp"
                     android:textStyle="bold" />
 
-                <com.amcolabs.quizapp.widgets.GothamTextView
+                <com.quizapp.tollywood.widgets.GothamTextView
                     android:id="@+id/TextView01"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -76,14 +76,14 @@
                 android:gravity="center_horizontal"
                 android:orientation="horizontal" >
 
-                <com.amcolabs.quizapp.widgets.GothamTextView
+                <com.quizapp.tollywood.widgets.GothamTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="5dp"
                     android:gravity="center"
                     android:text="in" />
 
-                <com.amcolabs.quizapp.widgets.GothamTextView
+                <com.quizapp.tollywood.widgets.GothamTextView
                     android:id="@+id/short_desc_1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -92,7 +92,7 @@
                     android:textStyle="bold" />
             </LinearLayout>
 
-            <com.amcolabs.quizapp.widgets.GothamTextView
+            <com.quizapp.tollywood.widgets.GothamTextView
                 android:id="@+id/short_desc"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

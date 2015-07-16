@@ -13,19 +13,19 @@
             android:scaleType="fitXY"
             android:src="@drawable/ic_launcher" />
 
-        <com.amcolabs.quizapp.widgets.GothamTextView
+        <com.quizapp.tollywood.widgets.GothamTextView
             android:id="@+id/userName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
-            android:minLines="1"
+            android:maxLines="1"
             android:layout_toRightOf="@id/userImageSmall"
             android:gravity="left"
             android:text="Amigo"
             android:textStyle="bold"
             android:textSize="12sp" />
 
-        <com.amcolabs.quizapp.widgets.CustomProgressBar
+        <com.quizapp.tollywood.widgets.CustomProgressBar
             android:id="@+id/userProgress"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -38,7 +38,7 @@
             android:minHeight="7dip"
             android:progressDrawable="@drawable/fat_progress_bar" />
 
-        <com.amcolabs.quizapp.widgets.GothamTextView
+        <com.quizapp.tollywood.widgets.GothamTextView
             android:id="@+id/userPointsEarned"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

@@ -19,7 +19,7 @@
             android:layout_height="wrap_content"
             android:src="@drawable/logo" />
 
-        <com.amcolabs.quizapp.widgets.GothamTextView
+        <com.quizapp.tollywood.widgets.GothamTextView
             android:id="@+id/status_msg"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -29,7 +29,7 @@
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:textSize="18dp" />
 
-        <com.amcolabs.quizapp.widgets.GothamTextView
+        <com.quizapp.tollywood.widgets.GothamTextView
             android:id="@+id/GothamTextView01"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
