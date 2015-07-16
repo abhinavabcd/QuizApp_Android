@@ -129,6 +129,7 @@ public class NotificationReciever extends BroadcastReceiver{
 							}
 							break;
 						case DONT_KNOW:
+							messageToDisplay = payload.toString();
 							break;
 						case NOTIFICATION_GCM_CHALLENGE_NOTIFICATION:
 							if(isAppAlive && checkAndCallListener(type , payload)){

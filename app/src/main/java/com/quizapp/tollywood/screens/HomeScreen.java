@@ -35,20 +35,20 @@ import com.quizapp.tollywood.uiutils.UiUtils.UiText;
 import com.quizapp.tollywood.widgets.ExpandableHeightListView;
 import com.quizapp.tollywood.widgets.GothamTextView;
 
-public class HomeScreen extends Screen { 
+public class HomeScreen extends Screen {
 	List<Category> categories = new ArrayList<Category>();
 	List<QuizItemListAdapter> quizAdaptorList = new ArrayList<QuizItemListAdapter>();
 	List<ArrayAdapter> listViewsAdaptors = new ArrayList<ArrayAdapter>();
-	
+
 	private UserMainPageController userMainController;
 	public HomeScreen(AppController appController) {
 		super(appController);
 		userMainController = (UserMainPageController)appController;
-	} 
+	}
 
 	public void addCategoriesView(List<Category> categories, boolean showViewMore) {
 		this.categories = categories;
-		
+
 		CategoryItemListAdapter categoryAdaptor = new CategoryItemListAdapter(getApp(),0,categories,new DataInputListener<Category>(){
 			@Override
 			public String onData(Category s) {
@@ -57,7 +57,7 @@ public class HomeScreen extends Screen {
 				return null;
 			}
 		});
-		
+
 		LinearLayout lView = (LinearLayout) getApp().getActivity().getLayoutInflater().inflate(R.layout.block_list_view,this,false);
 		lView.setBackgroundColor(getApp().getConfig().getAThemeColor());
 		TextView title = (TextView) lView.findViewById(R.id.title_text_view);
@@ -70,7 +70,7 @@ public class HomeScreen extends Screen {
 		else{
 			viewMore.setOnClickListener(new OnClickListener() {
 				@Override
-				public void onClick(View v) { 
+				public void onClick(View v) {
 					userMainController.showAllCategories();
 				}
 			});
@@ -79,7 +79,7 @@ public class HomeScreen extends Screen {
 		addToScrollView(lView);
 	}
 
-	
+
 //	private void addListenersToQuizListItem2(SwipeMenuListView listView){
 //		SwipeMenuCreator creator = new SwipeMenuCreator() {
 //			int color1 =getApp().getConfig().getAThemeColor();
@@ -117,15 +117,15 @@ public class HomeScreen extends Screen {
 //				}
 //			}
 //		});
-//		
+//
 //		// set SwipeListener
 //		listView.setOnSwipeListener(new OnSwipeListener() {
-//			
+//
 //			@Override
 //			public void onSwipeStart(int position) {
 //				// swipe start
 //			}
-//			
+//
 //			@Override
 //			public void onSwipeEnd(int position) {
 //				// swipe end
@@ -133,7 +133,7 @@ public class HomeScreen extends Screen {
 //		});
 //
 //	}
-	
+
 	@Override
 	public void refresh() {
 		// TODO Auto-generated method stub
@@ -145,21 +145,22 @@ public class HomeScreen extends Screen {
 				}
 			}
 		}
+
 		if(totalXp!=null) // prolly screen is used for other purposes
 			totalXp.setText(getApp().getUser().getTotalPoints()+"xp");
-		
+
 		for(int i=0;i<listViewsAdaptors.size();i++){
 			listViewsAdaptors.get(i).notifyDataSetChanged();;
 		}
 	}
-	
-	
+
+
 	double challengesClickTime = 0;
 	private OfflineChallengesAdapter offlineChallengeAdaptor;
 	private List<OfflineChallenge> offlineChallenges;
 	private List<Quiz> quizzes;
 	private TextView totalXp;
-	
+
 	public void addOfflineChallengesView(List<OfflineChallenge> offlineChallenges, boolean showViewMore , String text , boolean spanOnFullWidth) {
 		this.offlineChallenges = offlineChallenges;
 		for(OfflineChallenge offlineChallenge : offlineChallenges){
@@ -175,7 +176,7 @@ public class HomeScreen extends Screen {
 				}
 				challengesClickTime = Config.getCurrentNanos();
 				userMainController.startNewOfflineChallenge(offlineChallenge);
-				return null; 
+				return null;
 			}
 		});
 		LinearLayout lView = (LinearLayout) getApp().getActivity().getLayoutInflater().inflate(R.layout.block_list_view, this, false);
@@ -186,15 +187,15 @@ public class HomeScreen extends Screen {
 		titleView.setText(text);
 		ExpandableHeightListView listView = (ExpandableHeightListView) lView.findViewById(R.id.listView);
 		listView.setAdapter(offlineChallengeAdaptor);
-		
+
 		listViewsAdaptors.add(offlineChallengeAdaptor);
 	//	addListenersToQuizListItem(listView);
-		
-		
+
+
 		addToScrollView(lView);
-		if(spanOnFullWidth) 
+		if(spanOnFullWidth)
 			listView.setExpanded(true);
-		
+
 		FrameLayout viewMore = (FrameLayout) lView.findViewById(R.id.view_all_wrapper);
 		if(!showViewMore){
 			viewMore.setVisibility(View.GONE);
@@ -208,7 +209,7 @@ public class HomeScreen extends Screen {
 			});
 		}
 	}
-		
+
 	public void addFeedView(List<Feed> feeds, String title){
 		final FeedListItemAdaptor feedAdapter = new FeedListItemAdaptor(getApp(), 0, feeds);
 		LinearLayout lView = (LinearLayout) getApp().getActivity().getLayoutInflater().inflate(R.layout.block_list_view, this, false);
@@ -232,24 +233,24 @@ public class HomeScreen extends Screen {
 		lParams.setMargins(5, 0, 0, 5);
 		listView.setLayoutParams(lParams);
 		listView.setAdapter(feedAdapter);
-		
+
 		listViewsAdaptors.add(feedAdapter);
 	//	addListenersToQuizListItem(listView);
-		
-		
-		
+
+
+
 
 //		UiUtils.setListViewHeightBasedOnChildren(listView);
-		
+
 		FrameLayout viewMore = (FrameLayout) lView.findViewById(R.id.view_all_wrapper);
 		viewMore.setVisibility(View.GONE);
 		((LayoutParams)lView.getLayoutParams()).weight = 1.0f;
 		addToScrollView(lView);
 		addShortProfileStats();
 	}
-	
-	
-	
+
+
+
 	private void addShortProfileStats() {
 		LinearLayout wrapUserStrip;
 		GothamTextView userName;
@@ -261,7 +262,7 @@ public class HomeScreen extends Screen {
 		final GothamTextView userStatus = (GothamTextView) baseLayout.findViewById(R.id.status_msg);
 		totalXp = (GothamTextView) baseLayout.findViewById(R.id.totalXp);
 		viewProfileButton = (ImageButton) baseLayout.findViewById(R.id.view_profile_button);
-		
+
 		userName.setText(getApp().getUser().getName());
 		totalXp.setText(getApp().getUser().getTotalPoints()+"xp");
 		userStatus.setText(getApp().getUser().getStatus());
@@ -278,9 +279,9 @@ public class HomeScreen extends Screen {
 				});
 			}
 		};
-		
+
 		userStatus.setOnClickListener(statusMessageClick);
-		
+
 		OnClickListener profileClickListener = new OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -303,11 +304,11 @@ public class HomeScreen extends Screen {
 	private DataInputListener<Quiz> quizClickListener = new DataInputListener<Quiz>(){
 		@Override
 		public String onData(final Quiz quiz) {
-			getApp().getStaticPopupDialogBoxes().showQuizSelectMenu(quiz, new DataInputListener<Integer>(){ 
+			getApp().getStaticPopupDialogBoxes().showQuizSelectMenu(quiz, new DataInputListener<Integer>(){
 				@Override
 				public String onData(Integer s) {
 					switch(s){
-						case 1: 
+						case 1:
 							userMainController.onQuizPlaySelected(quiz);
 							break;
 						case 2:
@@ -326,7 +327,7 @@ public class HomeScreen extends Screen {
 			return null;
 		}
 	};
-	
+
 	public DataInputListener<Quiz> getQuizClickListener() {
 		return quizClickListener;
 	}
@@ -346,14 +347,14 @@ public class HomeScreen extends Screen {
 		titleView.setText(text);
 		ExpandableHeightListView listView = (ExpandableHeightListView) lView.findViewById(R.id.listView);
 		listView.setAdapter(quizAdaptor);
-		
+
 		listViewsAdaptors.add(quizAdaptor);
 	//	addListenersToQuizListItem(listView);
-		
-		
-		
+
+
+
 		listView.setExpanded(true);
-		
+
 		FrameLayout viewMore = (FrameLayout) lView.findViewById(R.id.view_all_wrapper);
 		if(!showViewMore){
 			viewMore.setVisibility(View.GONE);
@@ -368,9 +369,9 @@ public class HomeScreen extends Screen {
 		}
 		addToScrollView(lView);
 	}
-	
-	
-	
+
+
+
 	public void addQuizzesToListFullView(String title ,List<Quiz> quizzes){
 		this.quizzes = quizzes;
 		final QuizItemListAdapter quizAdaptor = new QuizItemListAdapter(getApp(),0,quizzes, quizClickListener);

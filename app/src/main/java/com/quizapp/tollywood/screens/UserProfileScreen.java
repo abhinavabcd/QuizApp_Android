@@ -3,6 +3,7 @@ package com.quizapp.tollywood.screens;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -125,6 +126,7 @@ public class UserProfileScreen extends Screen {
 		}
 		searchText.setVisibility(View.GONE);//hide search
 		GothamTextView titleView = (GothamTextView) lView.findViewById(R.id.title_text_view);
+		titleView.setTextColor(Color.BLACK);
 		titleView.setText(UiText.ACTIVITY_LOG.getValue());
 		ExpandableHeightListView listView = (ExpandableHeightListView) lView.findViewById(R.id.listView);
 		listView.setDivider(new ColorDrawable(this.getResources().getColor(R.color.translucent_black)));
@@ -417,6 +419,7 @@ public class UserProfileScreen extends Screen {
 		searchText.setVisibility(View.GONE);//hide search
 		GothamTextView titleView = (GothamTextView) lView.findViewById(R.id.title_text_view);
 		titleView.setText(UiText.LOCAL_QUIZ_HISTORY.getValue());
+		titleView.setTextColor(Color.GRAY);
 		ExpandableHeightListView listView = (ExpandableHeightListView) lView.findViewById(R.id.listView);
 		listView.setDivider(new ColorDrawable(this.getResources().getColor(R.color.translucent_black)));
 		listView.setDividerHeight(1);

@@ -188,7 +188,18 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 			@Override
 			public String onData(final NotificationPayload payload) { 
 				Quiz quiz = getDataBaseHelper().getQuizById(payload.quizId);
-				getStaticPopupDialogBoxes().yesOrNo(UiText.NEW_OFFLINE_CHALLENGE_IN.getValue(payload.fromUserName , UiText.IN.getValue(quiz.name)), null, UiText.OK.getValue(), null);
+				getStaticPopupDialogBoxes().yesOrNo(UiText.NEW_OFFLINE_CHALLENGE_IN.getValue(payload.fromUserName , UiText.IN.getValue(quiz.name)), UiText.VIEW_CHALLENGE.getValue(), UiText.OK.getValue(), new DataInputListener<Boolean>(){
+					@Override
+					public String onData(Boolean s) {
+						if(s){
+							reinit(false);//should show first screen fetching updates and shit again
+							((UserMainPageController) loadAppController(UserMainPageController.class))
+									.checkAndShowCategories();
+
+						}
+						return super.onData(s);
+					}
+				});
 				return null;
 			}
 		});
@@ -407,7 +418,7 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 				try {
 					// TODO: overridePendingTransition(R.anim.in,R.anim.out); fragment activity to animate screen out and in
 					Screen screen = peekCurrentScreen();
-					if (screenStack.size() < 2 || screen == null) {
+					if (screenStack.size() ==0 || screen == null) {
 						this.getActivity().finish();
 						return;
 					}

@@ -6,7 +6,7 @@
 
 
     <uses-sdk
-        android:maxSdkVersion="29"
+        android:maxSdkVersion="23"
         android:minSdkVersion="11"
         android:targetSdkVersion="19" /> <!-- use 9  as min -->
     <uses-permission android:name="android.permission.INTERNET" />

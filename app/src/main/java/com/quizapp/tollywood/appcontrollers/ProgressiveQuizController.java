@@ -388,7 +388,7 @@ public class ProgressiveQuizController extends AppController{
 			}, Config.QUESTION_END_DELAY_TIME);
 		}
 	}
-	
+
 	private void scheduleChallengedAnswer(final UserAnswer userAnswer){
 		new Handler().postDelayed(new Runnable() {
 
@@ -798,7 +798,7 @@ public class ProgressiveQuizController extends AppController{
 
 
 	public String onNoAnswer(Question currentQuestion) {
-		UserAnswer payload = null; 
+		UserAnswer payload = null;
 		currentScore += 0;
 		payload = new UserAnswer(currentQuestion.questionId, quizApp.getUser().uid, "", currentQuestion.getTime(), currentScore,0);//all time elapsed
 		if(isNormalMode()){
@@ -1030,15 +1030,15 @@ public class ProgressiveQuizController extends AppController{
 			List<UserAnswer> currentUserAnswers = ( List<UserAnswer> )(params[5]);
 			List<UserAnswer> otherUserAnswers = ( List<UserAnswer> )(params[6]);
 			dataListener = (DataInputListener<List<Bitmap>>) params[7];
-			
-		    return QuestionScreen.getBitmapOfQuestions(controller,
-		    			questions,
-		    			uid,
-						currentUsers, 
-						maxScore, 
-						currentUserAnswers, 
+
+			return QuestionScreen.getBitmapOfQuestions(controller,
+						questions,
+						uid,
+						currentUsers,
+						maxScore,
+						currentUserAnswers,
 						otherUserAnswers);
-		    
+
 		}
 		
 	     protected void onPostExecute(List<Bitmap> bitmaps ) {

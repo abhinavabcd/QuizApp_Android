@@ -16,7 +16,7 @@ android {
     defaultConfig {
         applicationId "com.quizapp.tollywood"
         minSdkVersion 14
-        targetSdkVersion 19
+        targetSdkVersion 21
         versionCode 1
         versionName "1.0"
     }

@@ -169,51 +169,61 @@ public class QuestionScreen extends Screen implements View.OnClickListener, Anim
 		// show highlights of answers 
 		// for each get the bitmaps
 		// add Ab view horozontal scroll
-		//		// on click on the bitmap , open a dialog , with little lesser height and the close button with the image on it ? 
+		//		// on click on the bitmap , open a dialog , with little lesser height and the close button with the image on it ?
 		List<Bitmap> ret = new ArrayList<Bitmap>();
 		int questionIndex = 0;
-		QuestionScreen questionScreen = new QuestionScreen(controller, true);
-		questionScreen.isLoadingForBitmaps  = true;
-		for(Question question : questions){
-			questionScreen.showUserInfo(users,maxScore); //load user info
-			questionScreen.loadQuestion(question, questionIndex++);
-			questionScreen.questionAndOptionsViewWrapper.setVisibility(View.VISIBLE);//show it
-			((FrameLayout.LayoutParams)questionScreen.questionAndOptionsViewWrapper.getLayoutParams()).width = 700;
-			//TODO: Currently only for two users only
-			UserAnswer userAnswer1  = null;
-			for(UserAnswer a : answers1){
-				if(a.questionId.equalsIgnoreCase(question.questionId)){
-					userAnswer1 = a;
-					break;
+		try {
+			QuestionScreen questionScreen = new QuestionScreen(controller, true);
+			questionScreen.isLoadingForBitmaps = true;
+			for (Question question : questions) {
+				questionScreen.showUserInfo(users, maxScore); //load user info
+				questionScreen.loadQuestion(question, questionIndex++);
+				questionScreen.questionAndOptionsViewWrapper.setVisibility(View.VISIBLE);//show it
+				((FrameLayout.LayoutParams) questionScreen.questionAndOptionsViewWrapper.getLayoutParams()).width = 700;
+				//TODO: Currently only for two users only
+				UserAnswer userAnswer1 = null;
+				for (UserAnswer a : answers1) {
+					if (a.questionId.equalsIgnoreCase(question.questionId)) {
+						userAnswer1 = a;
+						break;
+					}
 				}
-			}
-			
-			UserAnswer userAnswer2  = null;
-			for(UserAnswer a : answers2){
-				if(a.questionId.equalsIgnoreCase(question.questionId)){
-					userAnswer2 = a;
-					break;
-				}
-			}
-			questionScreen.getTimerView().setValues(userAnswer1.elapsedTime, userAnswer2.elapsedTime, 0);
-			 
-			questionScreen.highlightCorrectAnswer();
-			questionScreen.highlightOtherUsersOption(userAnswer1.uid, userAnswer1.userAnswer);
-			questionScreen.highlightOtherUsersOption(userAnswer2.uid, userAnswer2.userAnswer);
-			
-			questionScreen.userViews.get(userAnswer1.uid).userProgressView.setProgress(userAnswer1.whatUserGot);
-			questionScreen.userViews.get(userAnswer2.uid).userProgressView.setProgress(userAnswer2.whatUserGot);
-			
-			questionScreen.userViews.get(userAnswer1.uid).userScoreView.setText(userAnswer1.whatUserGot+" xp");
-			questionScreen.userViews.get(userAnswer2.uid).userScoreView.setText(userAnswer2.whatUserGot+" xp");
 
-			questionScreen.getTimerView().attachToWindow(true);
-			Bitmap viewBitmap = getScreenViewBitmap(questionScreen);
-			if(viewBitmap!=null)
-				ret.add(viewBitmap);
-			questionScreen.getTimerView().dettachToWindow(true);
+				UserAnswer userAnswer2 = null;
+				if (answers2 != null) {
+					for (UserAnswer a : answers2) {
+						if (a.questionId.equalsIgnoreCase(question.questionId)) {
+							userAnswer2 = a;
+							break;
+						}
+					}
+				}
+
+				questionScreen.getTimerView().setValues(userAnswer1.elapsedTime, userAnswer2 == null ? 0 : userAnswer2.elapsedTime, 0);
+
+				questionScreen.highlightCorrectAnswer();
+				questionScreen.highlightOtherUsersOption(userAnswer1.uid, userAnswer1.userAnswer);
+				if (userAnswer2 != null)
+					questionScreen.highlightOtherUsersOption(userAnswer2.uid, userAnswer2.userAnswer);
+
+				questionScreen.userViews.get(userAnswer1.uid).userProgressView.setProgress(userAnswer1.whatUserGot);
+				if (userAnswer2 != null)
+					questionScreen.userViews.get(userAnswer2.uid).userProgressView.setProgress(userAnswer2.whatUserGot);
+
+				questionScreen.userViews.get(userAnswer1.uid).userScoreView.setText(userAnswer1.whatUserGot + " xp");
+				if (userAnswer2 != null)
+					questionScreen.userViews.get(userAnswer2.uid).userScoreView.setText(userAnswer2 == null ? "?" : userAnswer2.whatUserGot + " xp");
+
+				questionScreen.getTimerView().attachToWindow(true);
+				Bitmap viewBitmap = getScreenViewBitmap(questionScreen);
+				if (viewBitmap != null)
+					ret.add(viewBitmap);
+				questionScreen.getTimerView().dettachToWindow(true);
+			}
 		}
-			
+		catch (Exception ex){
+			ex.printStackTrace();
+		}
 		return ret;
 	}
 	

@@ -304,10 +304,10 @@ public class WinOrLoseScreen extends Screen{
 		if(lastAnswer!=null)
 			qPoints = (int)Math.floor(lastAnswer.whatUserGot);
 
-		UserAnswer lastAnswerOtherUser = opponentAns.get(opponentAns.size() - 1);
-		int opponentQPoints = (int)Math.floor(lastAnswerOtherUser.whatUserGot);
-		
+
 		if(matchResult>0&&!isChallengeMode){
+			UserAnswer lastAnswerOtherUser = opponentAns.get(opponentAns.size() - 1);
+			int opponentQPoints = (int)Math.floor(lastAnswerOtherUser.whatUserGot);
 			qwPoints = (int)Math.floor(Config.QUIZ_WIN_BONUS+ qPoints-opponentQPoints); // Adding differential score to bonus
 		}
 		animatePoints(qPoints,qwPoints,(int)Math.floor(levelUp?Config.QUIZ_LEVEL_UP_BONUS:0));

@@ -18,6 +18,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -29,6 +30,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.NotificationCompat;
 import android.text.Html;
 import android.text.SpannableStringBuilder;
+import android.text.TextPaint;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.text.style.URLSpan;
@@ -229,8 +231,7 @@ public class UiUtils {
 		REMATCH("Rematch"),
 		LEAVE("leave"),
 		ANSWERS_LIST("Your Answers"), SEND_FEEDBACK("Feedback"),
-		TELL_SOMETHING_ABOUT_APP("Feedback us.");
-
+		TELL_SOMETHING_ABOUT_APP("Feedback us."),VIEW_CHALLENGE("View Challange");
 		String value = null;
 		UiText(String value){
 			this.value = value;
@@ -605,14 +606,14 @@ public class UiUtils {
 				if (assetPath.startsWith("http://") || assetPath.startsWith("https://")) {
 					requestCreator = Picasso.with(quizApp.getContext()).load(assetPath).error(R.drawable.error_image);
 				}
-				try {
-					InputStream ims = quizApp.getContext().getAssets().open("images/" + assetPath); //assets folder
-					ims.close();
-					requestCreator = Picasso.with(quizApp.getContext()).load("file:///android_asset/images/" + assetPath).error(R.drawable.error_image);
-				} catch (IOException e) {
-					Log.d(Config.QUIZAPP_ERR_LOG_TAG, "failed to load from assets");
-					e.printStackTrace();
-				}
+//				try {
+//					InputStream ims = quizApp.getContext().getAssets().open("images/" + assetPath); //assets folder
+//					ims.close();
+//					requestCreator = Picasso.with(quizApp.getContext()).load("file:///android_asset/images/" + assetPath).error(R.drawable.error_image);
+//				} catch (IOException e) {
+//					Log.d(Config.QUIZAPP_ERR_LOG_TAG, "failed to load from assets");
+//					e.printStackTrace();
+//				}
 //				File file = new File(quizApp.getContext().getFilesDir().getParentFile().getPath()+"/images/"+assetPath);
 //				if(file.exists()){
 //					return Picasso.with(quizApp.getContext()).load(file).error(R.drawable.error_image);
@@ -709,6 +710,11 @@ public class UiUtils {
 	        		  genericLinkClickListener(span.getURL());
 	        	  }
 	          }
+			@Override
+			public void updateDrawState(TextPaint ds) {
+				ds.setColor(Color.BLACK);
+
+			}
 	    };
 	    strBuilder.setSpan(clickable, start, end, flags);
 	    strBuilder.removeSpan(span);
