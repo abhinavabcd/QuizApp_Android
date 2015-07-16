@@ -100,12 +100,12 @@ public class ChatScreen extends Screen {
 		user1Status.setText(user.getStatus());
 		user1Name.setText(user.getName());
 		if(user.pictureUrl!=null){
-			Picasso.with(getApp().getContext()).load(user.pictureUrl).into(user1Image);
+			getApp().getUiUtils().loadImageIntoView(getContext(), user1Image, user.pictureUrl, false);
 		}
 		user2Status.setText(user2.getStatus());
 		user2Name.setText(user2.getName());
 		if(user2.pictureUrl!=null){
-			Picasso.with(getApp().getContext()).load(user2.pictureUrl).into(user2Image);
+			getApp().getUiUtils().loadImageIntoView(getContext(), user2Image , user2.pictureUrl, false);
 		}
 	}
 	

@@ -684,16 +684,20 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
     	ArrayList<String> pendingList = new ArrayList<String>();
     	for(String uid : uids){
     		try {
-    			User u = getUsersInfoDao().queryBuilder().where().eq("uid",uid).queryForFirst();
-    			if(!quizApp.cachedUsers.containsKey(uid) && u!=null)
-    				quizApp.cachedUsers.put( uid , u);
-    			else if(quizApp.cachedUsers.containsKey(uid) && u==null){
-    				getUsersInfoDao().createOrUpdate(u);
-    			}
-    			else if(!quizApp.cachedUsers.containsKey(uid)){
-    				pendingList.add(uid);
-    			}
-			} catch (SQLException e) {
+//    			User u = getUsersInfoDao().queryBuilder().where().eq("uid",uid).queryForFirst();
+//    			if(!quizApp.cachedUsers.containsKey(uid) && u!=null)
+//    				quizApp.cachedUsers.put( uid , u);
+//    			else if(quizApp.cachedUsers.containsKey(uid) && u==null){
+//    				getUsersInfoDao().createOrUpdate(quizApp.cachedUsers.get(uid));
+//    			}
+//    			else if(!quizApp.cachedUsers.containsKey(uid)){
+//    				pendingList.add(uid);
+//    			}
+				if(!quizApp.cachedUsers.containsKey(uid)){
+					pendingList.add(uid);
+				}
+
+			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 				pendingList.add(uid);

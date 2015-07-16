@@ -527,7 +527,7 @@ public class UiUtils {
 	public static boolean loadImageIntoViewDoInBackground(Context ctx, final ImageView imgView, final String assetPath, final boolean downloadToAssets, int width, int height, DataInputListener<Boolean> completedLoadingImage){
 		if(assetPath==null || assetPath.isEmpty())
 			return false;
-		try{
+//		try{
 			if(assetPath.startsWith("http://") || assetPath.startsWith("https://")){
 				if(width> 0 && height>0)
 					into(Picasso.with(ctx).load(assetPath).resize(width , height), imgView, null);
@@ -536,35 +536,35 @@ public class UiUtils {
 			    return true;
 			}
 			
-		    InputStream ims = ctx.getAssets().open("images/"+assetPath); //assets folder 
-			if(width>0 && height>0)
-				into(Picasso.with(ctx).load("file:///android_asset/images/"+assetPath).resize(width, height),imgView, null);
-			else
-				into(Picasso.with(ctx).load("file:///android_asset/images/" + assetPath), imgView, null);
-			return true;
-		}
-		catch(IOException ex) {//files in SD card
-			File file = new File(ctx.getFilesDir().getParentFile().getPath()+"/images/"+assetPath);
-			if(file.exists()){
-				into(Picasso.with(ctx).load(file).fit().centerCrop() , imgView, null);
-			}
-			else{
-				if(downloadToAssets){//from cdn //TODO: convert this for synchronous use
-					imgView.setTag(new LoadAndSave(imgView, file, assetPath, downloadToAssets, completedLoadingImage));
-					if(width>0 && height>0)
-						Picasso.with(ctx).load(ServerCalls.CDN_IMAGES_PATH+assetPath).error(R.drawable.error_image).resize(width , height).into((LoadAndSave)imgView.getTag());
-					else{
-						Picasso.with(ctx).load(ServerCalls.CDN_IMAGES_PATH+assetPath).error(R.drawable.error_image).into((LoadAndSave)imgView.getTag());
-					}
-				}
-				else{
-					into(Picasso.with(ctx).load(ServerCalls.CDN_IMAGES_PATH+assetPath).error(R.drawable.error_image), imgView,null);//directly
-				}
-			}
-		}		 
-		catch (Exception e) {
-			return false;
-		}
+//		    InputStream ims = ctx.getAssets().open("images/"+assetPath); //assets folder
+//			if(width>0 && height>0)
+//				into(Picasso.with(ctx).load("file:///android_asset/images/"+assetPath).resize(width, height),imgView, null);
+//			else
+//				into(Picasso.with(ctx).load("file:///android_asset/images/" + assetPath), imgView, null);
+//			return true;
+//		}
+//		catch(IOException ex) {//files in SD card
+//			File file = new File(ctx.getFilesDir().getParentFile().getPath()+"/images/"+assetPath);
+//			if(file.exists()){
+//				into(Picasso.with(ctx).load(file).fit().centerCrop() , imgView, null);
+//			}
+//			else{
+//				if(downloadToAssets){//from cdn //TODO: convert this for synchronous use
+//					imgView.setTag(new LoadAndSave(imgView, file, assetPath, downloadToAssets, completedLoadingImage));
+//					if(width>0 && height>0)
+//						Picasso.with(ctx).load(ServerCalls.CDN_IMAGES_PATH+assetPath).error(R.drawable.error_image).resize(width , height).into((LoadAndSave)imgView.getTag());
+//					else{
+//						Picasso.with(ctx).load(ServerCalls.CDN_IMAGES_PATH+assetPath).error(R.drawable.error_image).into((LoadAndSave)imgView.getTag());
+//					}
+//				}
+//				else{
+			into(Picasso.with(ctx).load(ServerCalls.CDN_IMAGES_PATH+assetPath).error(R.drawable.error_image), imgView,null);//directly
+//				}
+//			}
+//		}
+//		catch (Exception e) {
+//			return false;
+//		}
 		return true;
 	}
 	public Task<RequestCreator> loadImageIntoView(Context ctx, final ImageView imgView, final String assetPath, final boolean downloadToAssets){
