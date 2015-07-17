@@ -54,7 +54,8 @@ public class ClashScreen extends Screen {
 		else{//updating the users cards
 			userInfoViews.get(index).setVisibility(View.GONE);
 			UserInfoCard userInfoCard = new UserInfoCard(getApp(), null,user);
-			userInfoViews.set(index,userInfoCard); 
+			userInfoCard.addLevelIndicator(getApp(), user.getPoints(quiz.quizId));
+			userInfoViews.set(index,userInfoCard);
 			addView(userInfoCard, index);
 			userInfoCard.setAnimation(getApp().getUiUtils().getAnimationSlideInLeft());
 		}

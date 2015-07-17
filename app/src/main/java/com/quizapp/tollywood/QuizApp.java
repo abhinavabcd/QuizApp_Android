@@ -409,7 +409,7 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 					return;
 				}
 				currentActiveMenu = -1;
-				if (Config.getCurrentTimeStamp() - wantsToExitLastTimestamp < 2) {
+				if (Config.getCurrentTimeStamp() - wantsToExitLastTimestamp < 4) {
 					getActivity().finish();//all controllers finished
 					wantsToExitLastTimestamp = Config.getCurrentTimeStamp();
 					return;
@@ -418,10 +418,11 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 				try {
 					// TODO: overridePendingTransition(R.anim.in,R.anim.out); fragment activity to animate screen out and in
 					Screen screen = peekCurrentScreen();
-					if (screenStack.size() ==0 || screen == null) {
-						this.getActivity().finish();
-						return;
+					if (screen==null || screenStack.size() < 2) {
+						wantsToExitLastTimestamp  = Config.getCurrentTimeStamp();
 					}
+					if(screen==null)
+						return;
 					Log.d(">>>screens<<<", screenStack.size() + " \n" + screenStack);
 					if(screen.removeOnBackPressed()) {
 						screen = popCurrentScreen();

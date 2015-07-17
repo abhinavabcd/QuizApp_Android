@@ -291,7 +291,7 @@ public class ProgressiveQuizController extends AppController{
 				public void run() {
 					if (noResponseFromServer && !preventBot) {
 						if (serverSocket != null)
-							serverSocket.sendTextMessage(constructSocketMessage(MessageType.ACTIVATE_BOT, null, null));
+								serverSocket.sendTextMessage(constructSocketMessage(MessageType.ACTIVATE_BOT, null, null));
 					}
 					preventBot = false;
 				}

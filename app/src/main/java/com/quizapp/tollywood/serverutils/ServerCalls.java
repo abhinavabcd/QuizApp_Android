@@ -81,12 +81,12 @@ class RandomSelector <T>{
 
 public class ServerCalls {
 
-	public static final String SERVER_ADDR = Config.IS_TEST_BUILD? "http://130.211.241.110:8085" :"http://130.211.241.110:8085";
-	//CDN storage
+	public static final String SERVER_ADDR = "http://quizapp.appsandlabs.com";
+
 	public static final String CDN_IMAGES_PATH = "https://storage.googleapis.com/quizapp-tollywood/";
 
 	public double lastLoginTime = 0d;
-	
+
 	private HashMap<String, String> serverMap;
 	
 	
@@ -684,7 +684,8 @@ public class ServerCalls {
 		 URI uri;
 			try {
 				uri = new URI(serverMap.get(serverId));
-				startProgressiveQuiz("ws://"+uri.getHost()+":"+uri.getPort() , pController, quiz , serverId, additionalParams);
+				String portString =  uri.getPort()>0 ? (":"+uri.getPort()) : "";
+				startProgressiveQuiz("ws://"+uri.getHost()+portString , pController, quiz , serverId, additionalParams);
 			} catch (URISyntaxException e) {
 				e.printStackTrace();
 			}
@@ -711,7 +712,8 @@ public class ServerCalls {
 						URI uri;
 						try {
 							uri = new URI(response.payload2);
-							startProgressiveQuiz("ws://"+uri.getHost()+":"+uri.getPort() , pController, quiz , sid, additionalParams);
+							String portString =  uri.getPort()>0 ? (":"+uri.getPort()) : "";
+							startProgressiveQuiz("ws://"+uri.getHost()+portString , pController, quiz , sid, additionalParams);
 						} catch (URISyntaxException e) {
 							e.printStackTrace();
 						}

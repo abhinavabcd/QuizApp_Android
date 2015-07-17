@@ -704,10 +704,14 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 			}
     	}
     	
-    	if(pendingList.size()>0){//synchronized call ?	 
+    	if(pendingList.size()>0){//synchronized call ?
+			Log.e(Config.QUIZAPP_ERR_LOG_TAG, pendingList.toString());
     		quizApp.getServerCalls().getUids(pendingList, new DataInputListener<List<User>>(){
     			@Override
     			public String onData(List<User> s) {
+					if(s==null){
+						return null; // server error
+					}
     				for(User user :s){
     					try {
 							getUsersInfoDao().createOrUpdate(user);
