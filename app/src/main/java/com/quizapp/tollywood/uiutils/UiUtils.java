@@ -1,9 +1,6 @@
 package com.quizapp.tollywood.uiutils;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Timer;
@@ -482,7 +479,7 @@ public class UiUtils {
 
 //				Log.d(Config.QUIZAPP_ERR_LOG_TAG, "loading from CDN");
 
-				RequestCreator requestCreator =  Picasso.with(quizApp.getContext()).load(ServerCalls.CDN_IMAGES_PATH + assetPath).error(R.drawable.error_image);
+				RequestCreator requestCreator =  Picasso.with(quizApp.getContext()).load(ServerCalls.CDN_PATH + assetPath).error(R.drawable.error_image);
 
 //				if(downloadToAssets) {
 //					try {
@@ -553,13 +550,13 @@ public class UiUtils {
 //				if(downloadToAssets){//from cdn //TODO: convert this for synchronous use
 //					imgView.setTag(new LoadAndSave(imgView, file, assetPath, downloadToAssets, completedLoadingImage));
 //					if(width>0 && height>0)
-//						Picasso.with(ctx).load(ServerCalls.CDN_IMAGES_PATH+assetPath).error(R.drawable.error_image).resize(width , height).into((LoadAndSave)imgView.getTag());
+//						Picasso.with(ctx).load(ServerCalls.CDN_PATH+assetPath).error(R.drawable.error_image).resize(width , height).into((LoadAndSave)imgView.getTag());
 //					else{
-//						Picasso.with(ctx).load(ServerCalls.CDN_IMAGES_PATH+assetPath).error(R.drawable.error_image).into((LoadAndSave)imgView.getTag());
+//						Picasso.with(ctx).load(ServerCalls.CDN_PATH+assetPath).error(R.drawable.error_image).into((LoadAndSave)imgView.getTag());
 //					}
 //				}
 //				else{
-			into(Picasso.with(ctx).load(ServerCalls.CDN_IMAGES_PATH+assetPath).error(R.drawable.error_image), imgView,null);//directly
+			into(Picasso.with(ctx).load(ServerCalls.CDN_PATH +assetPath).error(R.drawable.error_image), imgView,null);//directly
 //				}
 //			}
 //		}
@@ -619,7 +616,7 @@ public class UiUtils {
 //					return Picasso.with(quizApp.getContext()).load(file).error(R.drawable.error_image);
 //				}
 				if(requestCreator==null)
-					requestCreator = Picasso.with(quizApp.getContext()).load(ServerCalls.CDN_IMAGES_PATH + assetPath).error(R.drawable.error_image);
+					requestCreator = Picasso.with(quizApp.getContext()).load(ServerCalls.CDN_PATH + assetPath).error(R.drawable.error_image);
 				return requestCreator.get();
 			}
 		}).onSuccess(new Continuation<Bitmap, Void>() {

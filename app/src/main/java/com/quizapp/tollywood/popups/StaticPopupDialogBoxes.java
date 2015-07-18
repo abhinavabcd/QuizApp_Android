@@ -1,6 +1,7 @@
 package com.quizapp.tollywood.popups;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Locale;
 
@@ -64,31 +65,31 @@ public class StaticPopupDialogBoxes {
 		
 	}
 	
-	public void showChallengeWinDialog(OfflineChallenge offlineChallenge ){
+	public void showChallengeWinDialog(final OfflineChallenge offlineChallenge ){
 		 final Dialog d = new Dialog(quizApp.getContext(),R.style.CustomDialogTheme); 
-		 LinearLayout challengeWinLooseDialog = (LinearLayout)quizApp.getActivity().getLayoutInflater().inflate(R.layout.challenge_win_popup, null);
+		 final LinearLayout challengeWinLooseDialog = (LinearLayout)quizApp.getActivity().getLayoutInflater().inflate(R.layout.challenge_win_popup, null);
 
-		 GothamTextView winLooseText;
-		 GothamTextView challengeWithUser;
-		 GothamTextView quizDesc;
+		 final GothamTextView winLooseText;
+		 final GothamTextView challengeWithUser;
+		 final GothamTextView quizDesc;
 		 
 		 LinearLayout points1;
-		 GothamTextView points1QuizPoints;
+		 final GothamTextView points1QuizPoints;
 		 GothamTextView points1QuizPointsText;
-		 GothamTextView points1QuizWinPoints;
+		 final GothamTextView points1QuizWinPoints;
 		 GothamTextView points1QuizWinPointsText;
-		 GothamTextView points1QuizLevelupPoints;
+		 final GothamTextView points1QuizLevelupPoints;
 		 GothamTextView points1QuizLevelupPointsText;
-		 GothamTextView points1QuizTotalPoints;
+		 final GothamTextView points1QuizTotalPoints;
 		 GothamTextView points1QuizTotalPointsText;
 		 LinearLayout points2;
-		 GothamTextView points2QuizPoints;
+		 final GothamTextView points2QuizPoints;
 		 GothamTextView points2QuizPointsText;
-		 GothamTextView points2QuizWinPoints;
+		 final GothamTextView points2QuizWinPoints;
 		 GothamTextView points2QuizWinPointsText;
-		 GothamTextView points2QuizLevelupPoints;
+		 final GothamTextView points2QuizLevelupPoints;
 		 GothamTextView points2QuizLevelupPointsText;
-		 GothamTextView points2QuizTotalPoints;
+		 final GothamTextView points2QuizTotalPoints;
 		 GothamTextView points2QuizTotalPointsText;
 
 		winLooseText = (GothamTextView) challengeWinLooseDialog.findViewById(R.id.win_loose_text);
@@ -111,7 +112,8 @@ public class StaticPopupDialogBoxes {
 		(points1QuizLevelupPointsText = (GothamTextView) points1.findViewById(R.id.quizLevelupPointsText)).setTextColor(Color.WHITE);;
 		points1QuizTotalPoints = (GothamTextView) points1.findViewById(R.id.quizTotalPoints);
 		(points1QuizTotalPointsText = (GothamTextView) points1.findViewById(R.id.quizTotalPointsText)).setTextColor(Color.WHITE);;
-		
+
+
 		points2 = (LinearLayout) challengeWinLooseDialog.findViewById(R.id.points_2);
 		points2QuizPoints = (GothamTextView) points2.findViewById(R.id.quizPoints);
 		(points2QuizPointsText = (GothamTextView) points2.findViewById(R.id.quizPointsText)).setTextColor(Color.WHITE);;
@@ -122,15 +124,30 @@ public class StaticPopupDialogBoxes {
 		points2QuizTotalPoints = (GothamTextView) points2.findViewById(R.id.quizTotalPoints);
 		(points2QuizTotalPointsText = (GothamTextView) points2.findViewById(R.id.quizTotalPointsText)).setTextColor(Color.WHITE);;
 
-		challengeWithUser.setText(offlineChallenge.getFromUser(quizApp).getName());
-		challengeWithUser.setTextColor(quizApp.getConfig().getUniqueThemeColor(challengeWithUser.getText().toString()));
-		
+
+		quizApp.getDataBaseHelper().getAllUsersByUid(Arrays.asList(offlineChallenge.getToUserUid()), new DataInputListener<Boolean>() {
+					@Override
+					public String onData(Boolean s) {
+						challengeWithUser.setText(quizApp.cachedUsers.get(offlineChallenge.getToUserUid()).getName());
+						challengeWithUser.setTextColor(quizApp.getConfig().getUniqueThemeColor(challengeWithUser.getText().toString()));
+						return super.onData(s);
+					}
+				}
+		);
 		quizDesc.setText(quizApp.getDataBaseHelper().getQuizById(offlineChallenge.getChallengeData(quizApp).quizId).name);
 		quizDesc.setTextColor(quizApp.getConfig().getUniqueThemeColor(quizDesc.getText().toString()));
-		
-		int user1Points = GameUtils.getLastElement(offlineChallenge.getChallengeData(quizApp).userAnswers).whatUserGot;
-		int user2Points = GameUtils.getLastElement(offlineChallenge.getChallengeData2(quizApp).userAnswers).whatUserGot;
-		
+
+
+		int user1Points = 0;
+		int user2Points = 0;
+		try{
+			user1Points = GameUtils.getLastElement(offlineChallenge.getChallengeData(quizApp).userAnswers).whatUserGot;
+			user2Points  = GameUtils.getLastElement(offlineChallenge.getChallengeData2(quizApp).userAnswers).whatUserGot;
+		}
+		catch (Exception e){
+
+		}
+
 		int user1Bonus = (int) (user1Points>user2Points?Config.QUIZ_WIN_BONUS:0);
 		if(user1Points==user2Points){
 			winLooseText.setText(UiText.TIE_QUIZ_MESAGE.getValue());
@@ -149,6 +166,8 @@ public class StaticPopupDialogBoxes {
 		points1QuizTotalPoints.setText(user1TotalPoints+"");
 		
 		int user2Bonus = (int) (user2Points>user1Points?Config.QUIZ_WIN_BONUS:0);
+
+
 		int user2TotalPoints = user2Points+user2Bonus;
 		
 		points2QuizPoints.setText(user2Points+"");

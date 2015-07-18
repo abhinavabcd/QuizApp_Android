@@ -76,7 +76,7 @@ public class UserMainPageController  extends AppController{
 						quizApp.getDataBaseHelper().updateOfflineChallenge(offlineChallenge);
 					}
 					if(s){
-						MusicService.start(quizApp.getContext(), MusicService.MUSIC_GAME);
+						MusicService.start(quizApp.getContext(), MusicService.MusicFiles.GAME_MUSIC);
 						showUserHomeScreen(feeds);
 					}
 					else{ // called twice , so need a flag here
@@ -440,6 +440,7 @@ public class UserMainPageController  extends AppController{
 			public String onData(Boolean s) {
 				if(s){
 					((ProgressiveQuizController)quizApp.loadAppController(ProgressiveQuizController.class)).startChallengedGame(offlineChallenge);
+					offlineChallenge.setCompleted(true);
 				}
 				return super.onData(s);
 			}

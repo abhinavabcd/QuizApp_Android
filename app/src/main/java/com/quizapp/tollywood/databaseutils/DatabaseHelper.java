@@ -670,16 +670,6 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 		}
     }
 
-    public User getUserByUid(String uid){
-		try {
-			User u = getUsersInfoDao().queryBuilder().where().eq("uid",uid).queryForFirst();
-			return u;
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return null;
-
-    }
     public HashMap<String , User> getAllUsersByUid(List<String> uids , final DataInputListener<Boolean> usersListener){
     	ArrayList<String> pendingList = new ArrayList<String>();
     	for(String uid : uids){

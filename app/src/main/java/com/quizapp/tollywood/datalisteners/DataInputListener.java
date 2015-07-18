@@ -35,12 +35,7 @@ public class DataInputListener<T> implements IDataInputListener<T> {
 		return null;
 	}
 	
-	@Override
-	public String onDataObject(Object s) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	
+
 	@Override
 	public String onData(T s,MessageType code) {
 		// TODO Auto-generated method stub
@@ -51,40 +46,5 @@ public class DataInputListener<T> implements IDataInputListener<T> {
 	public String onData(T s, int a) {
 		return null;
 	}
-	@Override
-	public Object onDataReturnObj(T s){
-		return null;
-	}
-	@Override
-	public String onData2(T s1, T s2) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public String onData2(T s1, int s2) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public String onData3(T s1, T s2, T s3) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public String onData3(T s1, int s2, int s3) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-
-	@Override
-	public String onData3(T s1, int s2, String s3) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 
 }

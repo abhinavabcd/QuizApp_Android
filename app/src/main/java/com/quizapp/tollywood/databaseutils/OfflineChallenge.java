@@ -8,7 +8,9 @@ import com.quizapp.tollywood.appcontrollers.ProgressiveQuizController.UserAnswer
 import com.j256.ormlite.field.DatabaseField;
 
 public class OfflineChallenge {
-	
+
+
+
 	public static class ChallengeData{
 		public ChallengeData(String quizId, List<UserAnswer> userAnswers2) {
 			this.quizId = quizId;
@@ -53,6 +55,12 @@ public class OfflineChallenge {
 	public String getFromUserUid(){
 		return fromUid_userChallengeIndex.split("_")[0];
 	}
+
+	public String getToUserUid(){
+		return toUid_userChallengeIndex.split("_")[0];
+	}
+
+
 
 	private User cachedUser = null;
 	public User getFromUser(QuizApp quizApp) { 

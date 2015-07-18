@@ -300,10 +300,12 @@ public class WinOrLoseScreen extends Screen{
 		List<UserAnswer> opponentAns = userAnswersStack.get(((ProgressiveQuizController) controller).getOtherUser().uid);
 		int qwPoints = 0;
 		int qPoints = 0;
-		UserAnswer lastAnswer = ans.get(ans.size() - 1);
-		if(lastAnswer!=null)
-			qPoints = (int)Math.floor(lastAnswer.whatUserGot);
 
+		if(ans!=null && ans.size()>0) {
+			UserAnswer lastAnswer = ans.get(ans.size() - 1);
+			if (lastAnswer != null)
+				qPoints = (int) Math.floor(lastAnswer.whatUserGot);
+		}
 
 		if(matchResult>0&&!isChallengeMode){
 			UserAnswer lastAnswerOtherUser = opponentAns.get(opponentAns.size() - 1);
@@ -489,7 +491,10 @@ public class WinOrLoseScreen extends Screen{
 	 * @param userAnswersStack HashMap of user answers as List of userAnswer objects mapped with uid's of users
 	 */
 	public void showResultInChart() {
-		int columns = userAnswersStack.get(currentUsers.get(0).uid).size(); // to get questions size
+		List<UserAnswer> userAnswers = userAnswersStack.get(currentUsers.get(0).uid);
+		if(userAnswers==null)
+			return;
+		int columns = userAnswers!=null?userAnswers.size():0; // to get questions size
 		ArrayList<String> xVals = new ArrayList<String>();
         for (int i = 0; i < columns; i++) {
             xVals.add("Q"+(i+1));

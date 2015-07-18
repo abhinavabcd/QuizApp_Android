@@ -150,7 +150,7 @@ public class QuestionScreen extends Screen implements View.OnClickListener, Anim
 			
 	        possitiveButtonSounds = MediaPlayer.create(getApp().getActivity(),R.raw.tap_correct);
 	        negetiveButtonSounds = MediaPlayer.create(getApp().getActivity(),R.raw.tap_wrong);
-			MusicService.changeMusic(getApp().getContext() , MusicService.MUSIC_QUIZ);
+			MusicService.changeMusic(getApp().getContext() , MusicService.MusicFiles.QUIZ_MUSIC);
 //        PowerManager pManager = (PowerManager) getApp().getContext().getSystemService(Context.POWER_SERVICE);
 //		wklock = pManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK|PowerManager.ON_AFTER_RELEASE,"quizapp");
 //		wklock.acquire();
@@ -509,7 +509,7 @@ public class QuestionScreen extends Screen implements View.OnClickListener, Anim
 	
 	@Override
 	public void onRemovedFromScreen() {
-		MusicService.changeMusic(getApp().getContext(), MusicService.MUSIC_GAME);
+		MusicService.changeMusic(getApp().getContext(), MusicService.MusicFiles.GAME_MUSIC);
 //		wklock.release();
 		super.onRemovedFromScreen();
 	}

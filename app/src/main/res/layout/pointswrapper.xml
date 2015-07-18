@@ -106,37 +106,7 @@
 	
 	    </LinearLayout>
 	    
-	    <LinearLayout
-	        android:id="@+id/quizFinishPointsWrapper"
-	        android:layout_width="match_parent"
-	        android:layout_height="match_parent"
-	        android:layout_weight="1"
-	        android:gravity="center"
-	        android:orientation="vertical" >
-	
-	        <com.quizapp.tollywood.widgets.GothamTextView
-	            android:id="@+id/quizFinishPoints"
-	            android:layout_width="60dp"
-	            android:layout_height="wrap_content"
-	            android:layout_gravity="center"
-	            android:layout_margin="10dp"
-	            android:background="@drawable/list_item_bg"
-	            android:gravity="center_horizontal"
-	            android:lines="1"
-	            android:text="+20"
-	            android:textSize="15sp" />
-	
-	        <com.quizapp.tollywood.widgets.GothamTextView
-	            android:id="@+id/quizFinishPointsText"
-	            android:layout_width="wrap_content"
-	            android:layout_height="wrap_content"
-	            android:layout_gravity="center"
-	            android:gravity="center_horizontal"
-	            android:lines="1"
-	            android:text="Finish Bonus"
-	            android:textSize="10sp" />
-	
-	    </LinearLayout>
+
 	</LinearLayout>
 	
 	<LinearLayout 

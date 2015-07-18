@@ -188,6 +188,9 @@ public class ProgressiveQuizController extends AppController{
 			if(backPressedCount>1){
 				backPressedCount = 0;
 				gracefullyCloseSocket();
+				if(isChallengedMode())
+					updateChallengedModeOnserver(false);
+
 				return true;
 			}
 			return false;
@@ -681,6 +684,10 @@ public class ProgressiveQuizController extends AppController{
 	private void loadQuestionsAndUsers(String questionsJson , List<User> currentUsers, DataInputListener<Boolean> questionsLoadedListener) {
 		setCurrentQuestions((List<Question>) quizApp.getConfig().getGson().fromJson(questionsJson, new TypeToken<List<Question>>(){}.getType()), questionsJson);
 		this.currentUsers = currentUsers;
+		for(User user : currentUsers){
+			userAnswersStack.put(user.uid, new ArrayList<UserAnswer>());
+		}
+
 		if(checkAndRemoveDuplicateUsers(currentUsers)){
 			quizApp.getStaticPopupDialogBoxes().yesOrNo(UiText.UNEXPECTED_ERROR.getValue(), null, UiText.CLOSE.getValue(), null);
 			gracefullyCloseSocket();
@@ -955,23 +962,7 @@ public class ProgressiveQuizController extends AppController{
 			final boolean hasWon = quizResult==Quiz.WON;
 			
 			if(isChallengedMode()){
-				quizApp.getServerCalls().completeOfflineChallenge( quizMode.getId() , new ChallengeData(quiz.quizId, userAnswersStack.get(quizApp.getUser().uid)),  new DataInputListener<Boolean>(){
-					@Override 
-					public String onData(Boolean s) {
-						if(s){ 
-							OfflineChallenge offlineChallenge = ((OfflineChallenge)quizMode.getTag());
-							offlineChallenge.setCompleted(true);
-							offlineChallenge.hasWon = hasWon;
-							offlineChallenge.setChallengeData2(quizApp.getConfig().getGson().toJson(new ChallengeData(ProgressiveQuizController.this.quiz.quizId, ProgressiveQuizController.this.userAnswersStack.get(quizApp.getUser().uid))));
-							quizApp.getDataBaseHelper().updateOfflineChallenge(offlineChallenge);
-						}
-						else{
-							quizApp.getStaticPopupDialogBoxes().yesOrNo(UiText.SERVER_ERROR_MESSAGE.getValue(), null, UiText.CLOSE.getValue(), null);
-						}
-						return super.onData(s);
-					}
-				});//server call
-				
+				updateChallengedModeOnserver(hasWon);
 			}
 
 			quizApp.getDataBaseHelper().createOrUpdateQuizSummary(qPlaySummary);
@@ -1015,6 +1006,25 @@ public class ProgressiveQuizController extends AppController{
 		}
 		quizResultScreen.showResult(userAnswersStack,quizResult,isLevelUp , quizMode);
 		insertScreen(quizResultScreen);
+	}
+
+
+	public void updateChallengedModeOnserver(final boolean hasWon){
+		if(!isChallengedMode()) return;
+		quizApp.getServerCalls().completeOfflineChallenge(quizMode.getId(), new ChallengeData(quiz.quizId, userAnswersStack.get(quizApp.getUser().uid)), new DataInputListener<Boolean>() {
+			@Override
+			public String onData(Boolean s) {
+				OfflineChallenge offlineChallenge = ((OfflineChallenge) quizMode.getTag());
+				offlineChallenge.setCompleted(true);
+				offlineChallenge.hasWon = hasWon;
+				offlineChallenge.setChallengeData2(quizApp.getConfig().getGson().toJson(new ChallengeData(ProgressiveQuizController.this.quiz.quizId, ProgressiveQuizController.this.userAnswersStack.get(quizApp.getUser().uid))));
+				quizApp.getDataBaseHelper().updateOfflineChallenge(offlineChallenge);
+				if (!s) {
+					quizApp.getStaticPopupDialogBoxes().yesOrNo(UiText.SERVER_ERROR_MESSAGE.getValue(), null, UiText.CLOSE.getValue(), null);
+				}
+				return super.onData(s);
+			}
+		});//server call
 	}
 	
 	// not working // should call from main thread ?  not possible i guess 

@@ -50,9 +50,10 @@ public class WaitingForUserView extends LinearLayout {
 			Random rand = new Random();
 			@Override
 			public String onData(Integer s) {
-				Picasso.with(quizApp.getContext()).load("file:///android_asset/images/avatars/"+(1+rand.nextInt(6))+".png").into(imageViews.get((s)%imageViews.size()));
-				Picasso.with(quizApp.getContext()).load((File)null).into(imageViews.get((s-1)%imageViews.size()));
-				
+				ImageView currentImageView = imageViews.get((s) % imageViews.size());
+				ImageView oldImageView = imageViews.get((s - 1) % imageViews.size());
+				quizApp.getUiUtils().loadImageIntoView(quizApp.getContext(), currentImageView, "avatars/" + (1 + rand.nextInt(6))+".png", false);
+				Picasso.with(quizApp.getContext()).load((File)null).into(oldImageView);
 				return super.onData(s);
 			}
 		});

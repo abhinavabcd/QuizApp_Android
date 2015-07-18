@@ -83,7 +83,7 @@ public class ServerCalls {
 
 	public static final String SERVER_ADDR = "http://quizapp.appsandlabs.com";
 
-	public static final String CDN_IMAGES_PATH = "https://storage.googleapis.com/quizapp-tollywood/";
+	public static final String CDN_PATH = "https://storage.googleapis.com/quizapp-tollywood/";
 
 	public double lastLoginTime = 0d;
 
@@ -367,23 +367,7 @@ public class ServerCalls {
 	public static void unsetUserGCMKey(Context context, String registrationId) {
 		
 	}
- 
-	public void getUserInfo(final DataInputListener<String> dataInputListener) {
-			String url = getAServerAddr()+"/func?task=getUserInfo";
-			url+="&encodedKey="+quizApp.getUserDeviceManager().getEncodedKey();
-			makeServerCall(url,new ServerNotifier() {			
-			@Override
-			public void onServerResponse(MessageType messageType, ServerResponse response) {
-				switch(messageType){
-					case FAILED: 
-						if(dataInputListener!=null){
-							dataInputListener.onData(null);
-						}
-						break;
-				}
-			}
-		},true); 
-	}		
+
 	
 	public void getUserByUid(String uid , final DataInputListener<User> dataInputListener) {
 		String url = getAServerAddr()+"/func?task=getUserByUid";

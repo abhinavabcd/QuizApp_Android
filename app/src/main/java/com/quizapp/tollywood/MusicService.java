@@ -2,21 +2,38 @@ package com.quizapp.tollywood;
 
 import android.content.Context;
 import android.media.MediaPlayer;
+import android.net.Uri;
+import android.os.Environment;
 import android.util.Log;
 
+import com.quizapp.tollywood.serverutils.ServerCalls;
+
+import org.apache.http.util.ByteArrayBuffer;
+
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.concurrent.Callable;
+
+import bolts.Continuation;
+import bolts.Task;
 
 public class MusicService {
 	private static final String TAG = "MusicService";
 
-	public static final int MUSIC_PREVIOUS = -1;
-	public static final int MUSIC_GAME = 1;
-	public static final int MUSIC_QUIZ = 2;
+	public static  MusicFiles MUSIC_PREVIOUS = MusicFiles.NONE;
 
-	private static HashMap<Integer, MediaPlayer> players = new HashMap();
-	private static int currentMusic = -1;
-	private static int previousMusic = -1;
+	private static HashMap<MusicFiles, MediaPlayer> players = new HashMap();
+	private static MusicFiles currentMusic = MusicFiles.NONE;
+	private static MusicFiles previousMusic = MusicFiles.NONE;
 
 	private static float musicVolume = 100;
 	private static float maxVolume = 100;
@@ -24,12 +41,87 @@ public class MusicService {
 			return musicVolume;
 	}
 
-	public static void start(Context context, int music) {
-		start(context, music, false);
+	public enum MusicFiles{
+		QUIZ_MUSIC("music/quiz_play.mp3"),
+		GAME_MUSIC("music/app_music.mp3"),
+		NONE(null);
+
+		String path = null;
+		MusicFiles(String path){
+			this.path = path;
+		}
+
+		public Task<Uri> cache(){
+			return Task.callInBackground(new Callable<Uri>() {
+				@Override
+				public Uri call() throws Exception {
+					if(path==null) return null;
+					File f = new File(path);
+					String directory = f.getParent();
+					String fileName = f.getName();
+					String root = Environment.getExternalStorageDirectory().getPath();
+					File myDir = new File(root + "/"+directory);
+					File audioFile = new File(myDir, fileName);
+					if(!audioFile.exists()){
+						myDir.mkdirs();
+						//download and save
+						URL url = new URL(ServerCalls.CDN_PATH+path);
+						URLConnection connection = url.openConnection();
+						InputStream inputStream = connection.getInputStream();
+						try { // Make sure the Pictures directory exists.path.mkdirs() ; URL url = new URL ( "http: / /androidsaveitem .appspot.com/download.jpg") ; URLConnection ucon = url.openConnection ( ) ;
+							FileOutputStream outputStream = new FileOutputStream(audioFile);
+
+							byte buffer[] = new byte[1024];
+							int dataSize;
+							while ((dataSize = inputStream.read(buffer)) != -1) {
+								outputStream.write(buffer, 0, dataSize);
+							}
+							outputStream.close();
+						}
+						catch (Exception ex){
+							return null;
+						}
+						finally {
+							inputStream.close();
+						}
+					}
+					return Uri.parse(audioFile.toString());
+				};
+			});
+
+		}
+		public Uri getUri(){
+			if(path==null) return null;
+			String root = Environment.getExternalStorageDirectory().getPath();
+			File f = new File(path);
+			String directory = f.getParent();
+			String fileName = f.getName();
+
+			File myDir = new File(root + "/"+directory);
+			File audioFile = new File(myDir, fileName);
+			return Uri.parse(audioFile.toString());
+
+		}
+
 	}
 
-	public static void start(Context context, int music, boolean force) {
-		if (!force && currentMusic > -1) {
+    public static void start(final Context context, final MusicFiles music) {
+        start(context, music, false);
+    }
+
+    public static void start(final Context context, final MusicFiles music, final boolean force) {
+		music.cache().onSuccess(new Continuation<Uri, Void>() {
+			@Override
+			public Void then(Task<Uri> task) throws Exception {
+				startMusic(context, music, force);
+				return null;
+			}
+		}, Task.UI_THREAD_EXECUTOR);
+
+	}
+
+	private static void startMusic(Context context, MusicFiles music, boolean force) {
+		if (!force && currentMusic!=MusicFiles.NONE) {
 // already playing some music and not forced to change
 			return;
 		}
@@ -41,7 +133,7 @@ public class MusicService {
 // already playing this music
 			return;
 		}
-		if (currentMusic != -1) {
+		if (currentMusic != MusicFiles.NONE) {
 			previousMusic = currentMusic;
 			Log.d(TAG, "Previous music was [" + previousMusic + "]");
 // playing some other music, pause it and change
@@ -55,13 +147,16 @@ public class MusicService {
 				mp.start();
 			}
 		} else {
-			if (music == MUSIC_GAME) {
-				mp = MediaPlayer.create(context, R.raw.app_music);
-			} else if (music == MUSIC_QUIZ) {
-				mp = MediaPlayer.create(context, R.raw.quiz_play);
-			} else {
-				Log.e(TAG, "unsupported music number - " + music);
-				return;
+			switch(music){
+
+				case QUIZ_MUSIC:
+					mp = MediaPlayer.create(context, music.getUri());
+					break;
+				case GAME_MUSIC:
+					mp = MediaPlayer.create(context, music.getUri());
+					break;
+				case NONE:
+					break;
 			}
 			players.put(music, mp);
 			float volume = getMusicVolume(context);
@@ -84,11 +179,11 @@ public class MusicService {
 			}
 		}
 // previousMusic should always be something valid
-		if (currentMusic != -1) {
+		if (currentMusic != MusicFiles.NONE) {
 			previousMusic = currentMusic;
 			Log.d(TAG, "Previous music was [" + previousMusic + "]");
 		}
-		currentMusic = -1;
+		currentMusic = MusicFiles.NONE;
 		Log.d(TAG, "Current music is now [" + currentMusic + "]");
 	}
 
@@ -108,11 +203,11 @@ public class MusicService {
 			}
 		}
 		mps.clear();
-		if (currentMusic != -1) {
+		if (currentMusic != MusicFiles.NONE) {
 			previousMusic = currentMusic;
 			Log.d(TAG, "Previous music was [" + previousMusic + "]");
 		}
-		currentMusic = -1;
+		currentMusic = MusicFiles.NONE;
 		Log.d(TAG, "Current music is now [" + currentMusic + "]");
 	}
 
@@ -136,7 +231,7 @@ public class MusicService {
 		}
 	}
 
-	public static void changeMusic(Context context  , int music) {
+	public static void changeMusic(Context context  , MusicFiles music) {
 		pause();
 		start(context, music, true);
 	}

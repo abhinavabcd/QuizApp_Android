@@ -134,7 +134,7 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 		super.onResume();
 		addNotificationListeners();
 		if(userDeviceManager.isLoggedInUser())
-			MusicService.start(getContext(), MusicService.MUSIC_GAME);
+			MusicService.start(getContext(), MusicService.MusicFiles.GAME_MUSIC);
 	}
 
 
@@ -399,7 +399,7 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 		return badgeEvaluator;
 	}
 	
-	private double wantsToExitLastTimestamp = 0;
+	private double wantsToExitLastTimestamp = Config.getCurrentTimeStamp();
 	private boolean shouldToggleNextScreen = false;
 
 	private int isScreenAnimationActive = 0;
@@ -778,18 +778,7 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 
 	
 	
-	public HashMap<String , User> cachedUsers = new HashMap<String, User>(){
-		public User get(Object key) {
-			if(!super.containsKey(key)){
-				User u =getDataBaseHelper().getUserByUid(key.toString());
-				if(u!=null){
-					put(u.uid, u);
-					return u;
-				}
-			}
-			return super.get(key);
-		};
-	};
+	public HashMap<String , User> cachedUsers = new HashMap<String, User>();
 
 
 
