@@ -57,7 +57,6 @@ import com.google.android.gms.analytics.HitBuilders;
 public class QuizApp extends Fragment implements AnimationListener , IMenuClickListener {
 
 
-
 	private FrameLayout mainFrame;
 
 	static final boolean FROM_LEFT = false;
@@ -74,6 +73,7 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 	private static final int MENU_PROFILE = 7;
 	public static final int MENU_SHARE_WITH_FRIENDS = 8;
 	private static final int SEND_FEEDBACK = 9;
+	private static final int COPY_RIGHTS = 10;
 
 	private User currentUser;
 	private AppController currentAppController;
@@ -140,6 +140,7 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 
 	public void reinit(boolean force) {
 		if(!initialized || force){
+			cachedUsers = new HashMap<>();
 			initialized = true;
 			userDeviceManager = new UserDeviceManager(this);//initialized preferences , device badgeId , pertaining to device
 			config = new Config(this);
@@ -404,22 +405,26 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 
 	private int isScreenAnimationActive = 0;
 	public void onBackPressed() {
-			synchronized (uiSync) {
-				if (isScreenAnimationActive != 0) {
-					return;
-				}
-				currentActiveMenu = -1;
-				if (Config.getCurrentTimeStamp() - wantsToExitLastTimestamp < 4) {
-					getActivity().finish();//all controllers finished
-					wantsToExitLastTimestamp = Config.getCurrentTimeStamp();
-					return;
-				}
+		if (isScreenAnimationActive != 0) {
+			return;
+		}
+		synchronized (uiSync) {
+			if (isScreenAnimationActive != 0) {
+				return;
+			}
+
+			currentActiveMenu = -1;
 
 				try {
 					// TODO: overridePendingTransition(R.anim.in,R.anim.out); fragment activity to animate screen out and in
 					Screen screen = peekCurrentScreen();
 					if (screen==null || screenStack.size() < 2) {
 						wantsToExitLastTimestamp  = Config.getCurrentTimeStamp();
+						if (Config.getCurrentTimeStamp() - wantsToExitLastTimestamp < 5) {
+							getActivity().finish();//all controllers finished
+							wantsToExitLastTimestamp = Config.getCurrentTimeStamp();
+							return;
+						}
 					}
 					if(screen==null)
 						return;
@@ -683,13 +688,18 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 
 				case SEND_FEEDBACK:
 
-					getStaticPopupDialogBoxes().promptInput(UiText.TELL_SOMETHING_ABOUT_APP.getValue(), 100 , "" , new DataInputListener<String>(){
+					getStaticPopupDialogBoxes().promptInput(UiText.TELL_SOMETHING_ABOUT_APP.getValue(), 100, "", new DataInputListener<String>() {
 						@Override
 						public String onData(String s) {
 							getServerCalls().sendFeedBack(s);
 							return super.onData(s);
 						}
 					});
+					break;
+
+				case COPY_RIGHTS:
+					getStaticPopupDialogBoxes().showCopyRightActivity();
+					break;
 
 			}
 		}
@@ -764,6 +774,7 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 			menuItems.put(QuizApp.MENU_FRIENDS, UiText.FRIENDS);
 			menuItems.put(QuizApp.MENU_SHARE_WITH_FRIENDS, UiText.TELL_SOMONE);
 			menuItems.put(QuizApp.SEND_FEEDBACK, UiText.SEND_FEEDBACK);
+			menuItems.put(QuizApp.COPY_RIGHTS, UiText.COPY_RIGHTS);
 
 		}
 		return menuItems;
@@ -778,7 +789,7 @@ public class QuizApp extends Fragment implements AnimationListener , IMenuClickL
 
 	
 	
-	public HashMap<String , User> cachedUsers = new HashMap<String, User>();
+	public static HashMap<String , User> cachedUsers = new HashMap<String, User>();
 
 
 

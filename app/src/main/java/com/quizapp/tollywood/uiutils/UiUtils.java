@@ -228,7 +228,7 @@ public class UiUtils {
 		REMATCH("Rematch"),
 		LEAVE("leave"),
 		ANSWERS_LIST("Your Answers"), SEND_FEEDBACK("Feedback"),
-		TELL_SOMETHING_ABOUT_APP("Feedback us."),VIEW_CHALLENGE("View Challange");
+		TELL_SOMETHING_ABOUT_APP("Feedback us."),VIEW_CHALLENGE("View Challange"), COPY_RIGHTS("Copyrights.");
 		String value = null;
 		UiText(String value){
 			this.value = value;

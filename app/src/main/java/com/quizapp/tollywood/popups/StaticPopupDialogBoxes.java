@@ -13,6 +13,7 @@ import android.graphics.Color;
 import android.view.Gravity;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -363,16 +364,17 @@ public class StaticPopupDialogBoxes {
 		startChallenge.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				if(listener!=null);
-					listener.onData(true);
-				((ProgressiveQuizController)quizApp.loadAppController(ProgressiveQuizController.class)).startChallengedLiveGame(payload.serverId, payload.quizPoolWaitId, payload.quizId);;
+				if (listener != null) ;
+				listener.onData(true);
+				((ProgressiveQuizController) quizApp.loadAppController(ProgressiveQuizController.class)).startChallengedLiveGame(payload.serverId, payload.quizPoolWaitId, payload.quizId);
+				;
 				d.dismiss();
 			}
 		});
 		closeButton.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				if(listener!=null)
+				if (listener != null)
 					listener.onData(false);
 				d.dismiss();
 			}
@@ -381,6 +383,27 @@ public class StaticPopupDialogBoxes {
 		d.show();
 		
 	}
+
+	public void showCopyRightActivity(){
+		final Dialog dialog = new Dialog(quizApp.getContext(), R.style.CustomDialogTheme);
+		TextView textView = new TextView(quizApp.getContext());
+		textView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+		textView.setVerticalScrollBarEnabled(true);
+		textView.setText(quizApp.getContext().getResources().getString(R.string.copyrightText));
+		textView.setTextSize(12);
+		textView.setTextColor(Color.WHITE);
+		dialog.setContentView(textView);
+		textView.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View view) {
+				dialog.cancel();
+			}
+		});
+		dialog.setCancelable(true);
+		dialog.show();
+	}
+
+
 	Dialog  menuDialog = null;
 	public void showMenu(final HashMap<Integer, UiText> map) {
 		if(menuDialog==null){
