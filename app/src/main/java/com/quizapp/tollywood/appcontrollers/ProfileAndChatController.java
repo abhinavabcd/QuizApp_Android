@@ -103,7 +103,6 @@ public class ProfileAndChatController extends AppController {
 				return null; 
    		    	}
    		    });
-			
 		}
 		else{
 				final List<LocalQuizHistory> history = quizApp.getDataBaseHelper().getQuizHistoryListByUid(user.uid);
@@ -242,7 +241,7 @@ public class ProfileAndChatController extends AppController {
 		quizApp.getDataBaseHelper().getAllUsersByUid(new ArrayList<String>(quizApp.getUser().getSubscribedTo()), new DataInputListener<Boolean>(){
 			@Override
 			public String onData(Boolean s) {
-				SelectFriendsScreen friendsScreen = new SelectFriendsScreen(ProfileAndChatController.this);
+				final SelectFriendsScreen friendsScreen = new SelectFriendsScreen(ProfileAndChatController.this);
 				ArrayList<User> users = new ArrayList<User>();
 				for(String uid: quizApp.getUser().getSubscribedTo()){
 					if(quizApp.cachedUsers.containsKey(uid)){//if exists in db
@@ -274,7 +273,17 @@ public class ProfileAndChatController extends AppController {
 										};
 									});
 									break;
-								}
+
+								case 4:
+									quizApp.getDataBaseHelper().toggleSubscription(user, new DataInputListener<Boolean>(){
+										@Override
+										public String onData(Boolean s) {
+											friendsScreen.refreshFriends();
+											return null;
+										}
+									});
+									break;
+							}
 								return null;
 							};
 						});

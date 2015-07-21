@@ -20,11 +20,14 @@ import com.quizapp.tollywood.User;
 import com.quizapp.tollywood.adapters.GameEventsListItemAdaptor;
 import com.quizapp.tollywood.adapters.QuizHistoryListAdapter;
 import com.quizapp.tollywood.appcontrollers.ProfileAndChatController;
+import com.quizapp.tollywood.appcontrollers.ProgressiveQuizController;
+import com.quizapp.tollywood.appcontrollers.UserMainPageController;
 import com.quizapp.tollywood.configuration.Config;
 import com.quizapp.tollywood.databaseutils.Badge;
 import com.quizapp.tollywood.databaseutils.GameEvents;
 import com.quizapp.tollywood.databaseutils.LocalQuizHistory;
 import com.quizapp.tollywood.databaseutils.Quiz;
+import com.quizapp.tollywood.datalisteners.DataInputListener;
 import com.quizapp.tollywood.gameutils.GameUtils;
 import com.quizapp.tollywood.uiutils.CircleTransform;
 import com.quizapp.tollywood.uiutils.UiUtils;
@@ -87,7 +90,36 @@ public class UserProfileScreen extends Screen {
 		userName.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View view) {
-				((ProfileAndChatController)controller).loadChatScreen(user, -1);
+				if(!getApp().getUser().uid.equalsIgnoreCase(user.uid))
+					getApp().getStaticPopupDialogBoxes().showUserSelectedMenu(user, new DataInputListener<Integer>(){
+						@Override
+						public String onData(Integer s) {
+							switch (s){
+							case 2:
+								((ProfileAndChatController)controller).loadChatScreen(user, -1);
+							break;
+							case 3:
+							((UserMainPageController)getApp().loadAppController(UserMainPageController.class)).showAllUserQuizzes(UiText.SELECT_TO_CHALLENGE_USER.getValue(user.getName()), new DataInputListener<Quiz>(){
+								public String onData(Quiz quiz) {
+									((ProgressiveQuizController)getApp().loadAppController(ProgressiveQuizController.class)).startNewChallenge(user, quiz);
+									return null;
+								};
+							});
+							break;
+
+							case 4:
+							getApp().getDataBaseHelper().toggleSubscription(user, new DataInputListener<Boolean>(){
+								@Override
+								public String onData(Boolean s) {
+									return null;
+								}
+							});
+							break;
+						}
+						return null;
+						}
+
+					});
 			}
 		});
 		userStatusMessage.setText(user.getStatus());

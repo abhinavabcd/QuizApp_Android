@@ -75,19 +75,12 @@
         android:layout_height="match_parent"
         android:orientation="vertical" >
 
-        <TabWidget
-            android:id="@android:id/tabs"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true">
-
-            
-        </TabWidget>
-
         <FrameLayout
             android:id="@android:id/tabcontent"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" >
+            android:layout_height="match_parent"
+            android:layout_alignParentTop="false"
+            android:layout_marginBottom="50dp">
 
             <ListView
                 android:id="@+id/listView"
@@ -125,6 +118,15 @@
                 android:scrollbars="none" >
             </ListView>
         </FrameLayout>
+
+        <TabWidget
+            android:id="@android:id/tabs"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true">
+
+            
+        </TabWidget>
 
     </RelativeLayout>
 </TabHost>

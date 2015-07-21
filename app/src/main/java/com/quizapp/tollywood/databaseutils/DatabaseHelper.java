@@ -15,6 +15,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
+import android.view.View;
 
 import com.quizapp.tollywood.QuizApp;
 import com.quizapp.tollywood.R;
@@ -28,6 +29,7 @@ import com.j256.ormlite.dao.RuntimeExceptionDao;
 import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
+import com.quizapp.tollywood.uiutils.UiUtils;
 
 /**
  * Database helper class used to manage the creation and upgrading of your database. This class also usually provides
@@ -175,8 +177,63 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 		}
 		return null;
     }
-    
-	
+
+
+	public void addFriend(final User user, final DataInputListener<Boolean> done) {
+		quizApp.getServerCalls().subscribeTo(user, new DataInputListener<Boolean>() {
+			@Override
+			public String onData(Boolean s) {
+				if (s) {
+					quizApp.getUser().getSubscribedTo().add(user.uid);
+					quizApp.getStaticPopupDialogBoxes().yesOrNo(UiUtils.UiText.ADDED_USER.getValue(user.getName()), null, UiUtils.UiText.CLOSE.getValue(), null);
+					user.isFriend = true;
+				}
+				if (done != null)
+					done.onData(s);
+				return super.onData(s);
+			}
+		});
+	}
+
+	public void removeFriend(final User user , final DataInputListener<Boolean> done) {
+			quizApp.getServerCalls().unSubscribeTo(user, new DataInputListener<Boolean>() {
+				@Override
+				public String onData(Boolean s) {
+					if (s) {
+						quizApp.getUser().getSubscribedTo().remove(user.uid);
+						quizApp.getStaticPopupDialogBoxes().yesOrNo(UiUtils.UiText.REMOVED_USER.getValue(user.getName()), null, UiUtils.UiText.CLOSE.getValue(), null);
+						user.isFriend = false;
+					}
+					if (done != null)
+						done.onData(s);
+					return super.onData(s);
+				}
+			});
+	}
+
+	public void toggleSubscription(User user2, final DataInputListener<Boolean> dataInputListener) {
+		if(quizApp.getUser().getSubscribedTo().contains(user2.uid)){
+			removeFriend(user2, new DataInputListener<Boolean>(){
+				@Override
+				public String onData(Boolean s) {
+					if(dataInputListener!=null)
+						dataInputListener.onData(false);// is not a friend now
+					return null;
+				}
+			});
+		}
+		else{
+			addFriend(user2, new DataInputListener<Boolean>() {
+				@Override
+				public String onData(Boolean s) {
+					if(dataInputListener!=null)
+						dataInputListener.onData(true);// is  a friend now
+					return null;
+				}
+			});
+		}
+	}
+
 	/**
 	 * Comparator to get quizzes Ordered by XP in Descending order
 	 * @author vinay

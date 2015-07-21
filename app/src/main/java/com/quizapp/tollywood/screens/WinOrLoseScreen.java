@@ -30,6 +30,7 @@ import com.quizapp.tollywood.appcontrollers.ProgressiveQuizController.UserAnswer
 import com.quizapp.tollywood.appcontrollers.UserMainPageController;
 import com.quizapp.tollywood.configuration.Config;
 import com.quizapp.tollywood.databaseutils.Quiz;
+import com.quizapp.tollywood.datalisteners.DataInputListener;
 import com.quizapp.tollywood.gameutils.GameUtils;
 import com.quizapp.tollywood.uiutils.UiUtils;
 import com.quizapp.tollywood.uiutils.UiUtils.UiText;
@@ -157,27 +158,19 @@ public class WinOrLoseScreen extends Screen{
 		});
         
         addFriendButton = (GothamButtonView)quizResult.findViewById(R.id.addFriendButton);
-		for(String uid : getApp().getUser().getSubscribedTo()){
-			if(uid.equalsIgnoreCase(getApp().getUser().uid)){
-					addFriendButton.setText(UiText.UNSUBSCRIBE.getValue());
-					addFriendButton.setOnClickListener(new OnClickListener() {
-						@Override
-						public void onClick(View v) {
-							progressiveQuizController.removeFriend(user2);
-							addFriendButton.setText(UiText.SUBSCRIBE.getValue());
-						}
-					});
-					break;
-			}
-			else{
-		        addFriendButton.setOnClickListener(new OnClickListener() {
+		addFriendButton.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View view) {
+				getApp().getDataBaseHelper().toggleSubscription(user2, new DataInputListener<Boolean>(){
 					@Override
-					public void onClick(View v) {
-						progressiveQuizController.addFriend(user2);
+					public String onData(Boolean isFriendNow) {
+						addFriendButton.setText(isFriendNow  ? UiText.UNSUBSCRIBE.getValue() : UiText.SUBSCRIBE.getValue() );
+						return null;
 					}
 				});
 			}
-		}
+		});
+
 			
         viewProfileButton = (GothamButtonView)quizResult.findViewById(R.id.viewProfileButton);
         viewProfileButton.setOnClickListener(new OnClickListener() {

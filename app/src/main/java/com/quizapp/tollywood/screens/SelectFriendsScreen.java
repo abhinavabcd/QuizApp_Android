@@ -315,5 +315,13 @@ public class SelectFriendsScreen extends Screen {
 	public ScreenType getScreenType(){
 		return ScreenType.SELECT_FRIENDS_SCREEN;
 	}
-	
+
+	public void refreshFriends() {
+		if(friendsAdapter!=null)
+			friendsAdapter.notifyDataSetChanged();
+		if(fbFriendsAdapter!=null)
+			fbFriendsAdapter.notifyDataSetChanged();
+		if(gPlusFriendsAdapter!=null)
+			gPlusFriendsAdapter.notifyDataSetChanged();
+	}
 }

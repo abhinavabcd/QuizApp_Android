@@ -227,7 +227,7 @@ public class StaticPopupDialogBoxes {
 		quizApp.getUiUtils().loadImageIntoView(quizApp.getContext(), (ImageView) quizMenuDialog.findViewById(R.id.quiz_icon) , quiz.assetPath , true, new CircleTransform());
 		quizMenuDialog.show();
 	}
-	
+
 	public void showUserSelectedMenu(User user, final DataInputListener<Integer> onUserSelectedListener){
 		final Dialog userMenu = new Dialog(quizApp.getContext(),R.style.CustomDialogTheme); 
 		LinearLayout dialogLayout = (LinearLayout)quizApp.getActivity().getLayoutInflater().inflate(R.layout.quiz_menu, null);
@@ -249,7 +249,8 @@ public class StaticPopupDialogBoxes {
 		menuContainer.addView(getMenuItem(UiText.VIEW_PROFILE.getValue(), 1, listener , Gravity.CENTER));
 		menuContainer.addView(getMenuItem(UiText.START_CONVERSATION.getValue(""), 2, listener , Gravity.CENTER));
 		menuContainer.addView(getMenuItem(UiText.CHALLENGE.getValue(), 3, listener , Gravity.CENTER));
-		((GothamTextView)dialogLayout.findViewById(R.id.descText)).setText(user.getName()); 
+		menuContainer.addView(getMenuItem(user.isFriend(quizApp) ? UiText.UNSUBSCRIBE.getValue() : UiText.SUBSCRIBE.getValue(), 4, listener , Gravity.CENTER));
+		((GothamTextView)dialogLayout.findViewById(R.id.descText)).setText(user.getName());
 		quizApp.getUiUtils().loadImageIntoView(quizApp.getContext(), (ImageView) userMenu.findViewById(R.id.quiz_icon) , user.pictureUrl , true, new CircleTransform());
 		userMenu.show();
 	}

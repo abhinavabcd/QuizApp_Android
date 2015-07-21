@@ -1251,37 +1251,8 @@ public class ProgressiveQuizController extends AppController{
 			insertScreen(clashingScreen);
 	}
 	
-	public void addFriend(final User user) {
-		quizApp.getServerCalls().subscribeTo(user, new DataInputListener<Boolean>(){
-			@Override
-			public String onData(Boolean s) {
-				if(s){
-					quizApp.getUser().getSubscribedTo().add(user.uid);
-					quizApp.getStaticPopupDialogBoxes().yesOrNo(UiText.ADDED_USER.getValue(user.getName()), null, UiText.CLOSE.getValue(), null);
-					user.isFriend = true;
-				}
-				return super.onData(s);
-			}
-		});
-	}
 
 
-	public void removeFriend(final User user) {
-		quizApp.getServerCalls().unSubscribeTo(user, new DataInputListener<Boolean>(){
-			@Override
-			public String onData(Boolean s) {
-				if(s){
-					for(String uid : quizApp.getUser().getSubscribedTo()){
-						if(user.uid.equalsIgnoreCase(uid)){
-							quizApp.getUser().getSubscribedTo().remove(user);
-							break;
-						}
-					}
-					quizApp.getStaticPopupDialogBoxes().yesOrNo(UiText.REMOVED_USER.getValue(user.getName()), null, UiText.CLOSE.getValue(), null);
-					user.isFriend = false;
-				}
-				return super.onData(s);
-			}
-		});
-	}
+
+
 }

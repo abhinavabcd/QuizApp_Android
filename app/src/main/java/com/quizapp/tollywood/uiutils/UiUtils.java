@@ -165,7 +165,7 @@ public class UiUtils {
 		DO_YOU_START_CHALLENGE("Do you want to start the challenge?"), 
 		START("Start"), 
 		CANCEL("Cancel"), COMPLETED_CHALLENGE("Challenge Completed"), 
-		YOU_WON_LOOSE_CHALLENGE_FEED("%s! , here are the <a href='offlineChallengeId/%s'>Challenge Details</a>"),
+		YOU_WON_LOOSE_CHALLENGE_FEED("%s, here are the <a href='offlineChallengeId/%s'>Challenge Details</a>"),
 		USER_FEED("User Feed"),
 		FRIEND_USER_STARTED_QUIZAPP("Your Friend %s started using quizApp <a href='userProfile/%s'>view profile</a>"), 
 		CONENCT_WITH_GOOGLE("Connect With Google"),

@@ -213,5 +213,8 @@ public class User {
 		this.badges = badges;
 	}
 
+	public boolean isFriend(QuizApp quizApp) {
+		return quizApp.getUser().getSubscribedTo().contains(uid);
+	}
 }
 
