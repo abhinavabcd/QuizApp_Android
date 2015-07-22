@@ -279,6 +279,7 @@ public class StaticPopupDialogBoxes {
 		((TextView) dialogLayout.findViewById(R.id.textView1)).setText(text);
 		QuizAppMenuItem button1 = (QuizAppMenuItem) dialogLayout.findViewById(R.id.button1);
 		if(possitiveText!=null){
+			button1.setVisibility(View.VISIBLE);
 			button1.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {

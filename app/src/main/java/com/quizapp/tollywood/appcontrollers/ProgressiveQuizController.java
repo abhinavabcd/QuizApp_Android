@@ -242,7 +242,6 @@ public class ProgressiveQuizController extends AppController{
 	private int playType = RANDOM_USER_TYPE;
 	private DataInputListener2<ServerWebSocketConnection, Quiz, Void, Void> socketConnectedListener = null;
 	private YesNoDialog rematchDialog = null;
-	protected double userLevel;
 	private String currentQuestionsJson;
 	
 	private void setQuizMode(QuizMode mode){
@@ -416,9 +415,9 @@ public class ProgressiveQuizController extends AppController{
 			public void run() {
 					for(User user:currentUsers){ // check for any bots and schedule
 						if(!user.isBotUser()) continue;
-						userLevel = quizApp.getUser().getLevel(quizApp,quiz.quizId);
+						double userLevel = quizApp.getUser().getLevel(quizApp, quiz.quizId);
 						int elapsedTime = rand.nextInt((int) (5*Math.max(0, (100-userLevel)/100))); 
-						boolean isRightAnswer = rand.nextInt(100) < (50+Math.sqrt(25*userLevel))? true:false;
+						boolean isRightAnswer = rand.nextInt(100) < Math.sqrt(171*userLevel+1428);
 						if(isRightAnswer){
 							botScore+=Math.ceil((currentQuestion.getTime() - elapsedTime)*currentQuestion.xp/currentQuestion.getTime())*quizApp.getGameUtils().multiplyFactor(currentQuestions.size());
 						}
@@ -1126,19 +1125,11 @@ public class ProgressiveQuizController extends AppController{
 		HashMap<String , String> temp = new HashMap<String, String>();
 		temp.put("isChallenge", withUser.uid);
 		clearScreen();
-		if(otherUser.isBotUser()){
-			setOnSocketConnectionOpenListener(new DataInputListener2<ServerWebSocketConnection, Quiz, Void, Void>(){
-				@Override
-				public void onData(ServerWebSocketConnection a, Quiz b, Void c) {
-					showChallengeScreen(withUser, quiz);
-				}
-			});
+		preventBot = true;
+		showChallengeScreen(otherUser, quiz);
+		if(!otherUser.isBotUser()) {
+			quizApp.getServerCalls().startProgressiveQuiz(this, quiz, CHALLENGE_QUIZ_TYPE, temp);
 		}
-		else{
-			preventBot = true;
-			showChallengeScreen(otherUser, quiz);
-		}
-		quizApp.getServerCalls().startProgressiveQuiz(this, quiz, CHALLENGE_QUIZ_TYPE ,temp);
 	}
 	
 	public void startChallengedLiveGame(String serverId , String poolId, String quizId ){
