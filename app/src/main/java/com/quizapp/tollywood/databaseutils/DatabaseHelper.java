@@ -844,11 +844,11 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 
 	public int getLastChallengeIndex() {
 		try {
-			OfflineChallenge offlineChallenge = getOfflineChallengesDao().queryBuilder().orderBy("toUid_userChallengeIndex", false).queryForFirst();
+			OfflineChallenge offlineChallenge = getOfflineChallengesDao().queryBuilder().orderBy("toUid_userChallengeIndex", false).where().and().like("toUser_userChallengeIndex", quizApp.getUser().uid + "_%").queryForFirst();
 			if(offlineChallenge!=null){
 				return Integer.parseInt(offlineChallenge.toUid_userChallengeIndex.split("_")[1]);
 			}
-		} catch (SQLException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return 0;
