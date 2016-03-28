@@ -76,8 +76,8 @@ You will need QuizApp_tornado_server to launch the app you can clone it from her
 ##Loading data to server
 5. You will have to download Configure load_spreadsheet.py.
 [QuizApp server google SpreadSheet](https://docs.google.com/spreadsheets/d/1fXS6D8crBo9p-xWyFG4keqHI5P8-9qqi230IKlcw5Iw/edit?usp=sharing)
-The process is a little heavy , create a project in https://console.developers.google.com/ , go from API's enable drive Api , then from Credentials you have to create a OAuth Service client and download that json.
-Take the service account id , and share the clones spread sheet sheet with that random  email( this will enable api access to read from drive).
+The process is a little heavy, create a project in https://console.developers.google.com/ , go from API's enable drive Api , then from Credentials you have to create a OAuth Service client and download that json.
+Take the service account id and share the cloned spread sheet with your service account email id( this will enable api access to read from drive - https://developers.google.com/google-apps/spreadsheets/#creating_a_spreadsheet).
 
 6 Place the downloaded credentials in a folder names config_files in the root directory. You may run "python load_spreedsheet.py"
  'python load_spreadsheet.py syncall'    to sync all the sheet.. else it will sync only the data marked with <b>"isDirty:1"</b> in the sheet.
